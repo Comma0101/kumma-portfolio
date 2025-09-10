@@ -1,0 +1,55 @@
+/* blog.module.css */
+
+.blogContainer {
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+}
+
+.blogItem {
+  border-bottom: 2px solid #f5efef;
+  margin-bottom: 20px;
+  padding: 10px 20px;
+  position: relative;
+}
+
+.blogItem h2 {
+  font-size: 2.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0;
+}
+
+.arrow {
+  margin-left: auto;
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+.blogLink {
+  font-size: inherit;
+  font-weight: inherit;
+  text-transform: inherit;
+  color: inherit;
+}
+
+.blogItem p {
+  font-size: 1rem;
+  margin-top: 5px;
+}
+
+.blogLink:hover {
+  text-decoration: underline;
+}
+
+@media (min-width: 768px) {
+  .blogItem h2 {
+    font-size: 2.5rem;
+  }
+  .arrow {
+    font-size: 3rem;
+  }
+}

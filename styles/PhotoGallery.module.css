@@ -1,0 +1,73 @@
+/* PhotoGallery.module.css */
+.menu {
+  position: relative;
+  padding: 20px;
+}
+
+.menuItem {
+  position: relative;
+  margin-bottom: 30px;
+  cursor: pointer;
+}
+
+.menuItemText {
+  font-size: 2rem;
+  color: #e3d9d9;
+  display: block;
+}
+
+.menuItemTextInner {
+  position: relative;
+}
+
+.menuItemSub {
+  font-size: 1rem;
+  color: #666;
+  display: block;
+}
+
+.hoverReveal {
+  position: absolute;
+  z-index: 10;
+  width: 220px;
+  height: 320px;
+  top: 0;
+  left: 100%;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(0);
+}
+
+.hoverRevealInner {
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+.hoverRevealImage {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+}
+/* PhotoGallery.module.css */
+
+/* ... existing styles ... */
+
+.trailContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.trailImage {
+  position: fixed;
+  width: 120px;
+  height: 220px;
+  background-size: cover;
+  background-position: center;
+
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}

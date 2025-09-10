@@ -1,0 +1,111 @@
+/* Overall container: full viewport with a subtle static gradient */
+.homeContainer {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Subtle coder overlay in the background */
+.coderOverlay {
+  position: absolute;
+  top: 15%;
+  right: 5%;
+  opacity: 0.1;
+  transform: rotate(5deg);
+  pointer-events: none;
+}
+
+.codeSnippet {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 1rem;
+  color: #ffda79;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 10px;
+  border-radius: 5px;
+}
+
+/* Content container arranged in a poster-style layout */
+.content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 900px;
+}
+
+/* Headline styled in an ultra-bold, poster typography style */
+.headline {
+  font-size: 6rem;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+  margin: 0;
+  line-height: 1;
+  text-transform: uppercase;
+  color: #f0f0f0;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+/* Each letter is an inline-block for individual animation control */
+.letter {
+  display: inline-block;
+  opacity: 1;
+}
+
+/* Subheadline: a lighter, complementary typographic statement */
+.subheadline {
+  font-size: 2rem;
+  font-weight: 300;
+  margin: 20px 0;
+  color: #f0f0f0;
+}
+
+/* Links container arranged with ample spacing */
+.links {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* Interactive links styled with a modern poster feel */
+.interactiveLink {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #ffda79;
+  text-decoration: none;
+  position: relative;
+  padding: 10px 20px;
+  border: 2px solid transparent;
+  transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+.interactiveLink::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background-color: #ffda79;
+  transition: width 0.3s ease, left 0.3s ease;
+}
+
+.interactiveLink:hover {
+  color: #ff9f1c;
+  border-color: #ff9f1c;
+}
+
+.interactiveLink:hover::before {
+  width: 100%;
+  left: 0;
+}

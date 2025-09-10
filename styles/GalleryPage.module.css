@@ -1,0 +1,104 @@
+/* GalleryPage.module.css */
+.galleryPage {
+  /* Remove padding, let the container handle full space */
+  /* padding: 20px; */
+  position: relative;
+  width: 100vw; /* Ensure full viewport width */
+  height: 100vh; /* Ensure full viewport height */
+  background-color: #000; /* Pure black background */
+  overflow: hidden; /* Hide anything outside the main container */
+}
+
+/* Grain effect */
+.galleryPage::after {
+  animation: grain 6s steps(10) infinite;
+  background-image: url("/images/grain.png"); /* Placeholder path */
+  background-repeat: repeat;
+  content: "";
+  height: 300%;
+  left: -100%;
+  opacity: 0; /* Start hidden */
+  pointer-events: none;
+  position: fixed; /* Use fixed to cover viewport regardless of scroll */
+  top: -100%;
+  transition: opacity 0.4s ease;
+  width: 300%;
+  will-change: transform;
+  z-index: 2; /* Above background, below title/content */
+}
+
+/* Fade in grain when loaded */
+.galleryPage.loaded::after {
+  opacity: 0.06;
+}
+
+.pageTitle {
+  /* Renamed from h1 to avoid conflict if needed */
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #eee; /* Light text color for dark background */
+  position: relative; /* Keep title above canvas */
+  z-index: 10;
+}
+
+/* Container for the WebGL Canvas */
+.webglContainer {
+  position: absolute; /* Take up full page or specific area */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden; /* Crucial to hide parts of meshes outside */
+  z-index: 1; /* Behind title but above page background */
+  /* background-color: rgba(255, 0, 0, 0.2); */ /* Temporary: For debugging bounds */
+}
+
+/* Style the canvas itself if needed, though Three.js usually handles it */
+.webglContainer canvas {
+  display: block; /* Remove extra space below canvas */
+  width: 100%;
+  height: 100%;
+}
+
+/* Remove old grid styles */
+/*
+.galleryGrid { ... }
+.galleryImage { ... }
+*/
+
+@keyframes grain {
+  0% {
+    transform: translate(20%, -15%);
+  }
+  10% {
+    transform: translate(-20%, -15%);
+  }
+  20% {
+    transform: translate(20%, -5%);
+  }
+  30% {
+    transform: translate(-20%, -5%);
+  }
+  40% {
+    transform: translate(20%, 5%);
+  }
+  50% {
+    transform: translate(-20%, 5%);
+  }
+  60% {
+    transform: translate(20%, 15%);
+  }
+  70% {
+    transform: translate(-20%, 15%);
+  }
+  80% {
+    transform: translate(20%, 5%);
+  }
+  90% {
+    transform: translate(-20%, 5%);
+  }
+  100% {
+    transform: translate(20%, -5%);
+  }
+}
