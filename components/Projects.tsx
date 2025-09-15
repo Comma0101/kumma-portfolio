@@ -1,6 +1,7 @@
-'use client';
+"use client";
 import { useState } from "react";
 import styles from "../styles/projects.module.css";
+import BackButton from "./BackButton";
 
 // Define project interface
 interface Project {
@@ -83,6 +84,7 @@ const Projects = () => {
 
   return (
     <div className={styles.projectsContainer}>
+      <BackButton />
       <div className={styles.header}>
         <h1 className={styles.title}>Projects</h1>
       </div>
@@ -112,7 +114,9 @@ const Projects = () => {
                     </span>
                   ))}
                 </div>
-                <p className={styles.projectDescription}>{project.description}</p>
+                <p className={styles.projectDescription}>
+                  {project.description}
+                </p>
 
                 <div className={styles.projectLinks}>
                   {project.links.demo && (

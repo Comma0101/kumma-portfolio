@@ -2,6 +2,7 @@
 import { menuItems } from "./menuItems";
 import styles from "../styles/GalleryPage.module.css";
 import MenuItem from "./MenuItem";
+import BackButton from "./BackButton";
 interface MenuItemData {
   title: string;
   subtitle: string;
@@ -25,11 +26,14 @@ interface MenuItemData {
 
 const PhotoGallery = () => {
   return (
-    <nav className={styles.menu}>
-      {menuItems.map((item, index) => (
-        <MenuItem key={index} item={item} index={index} />
-      ))}
-    </nav>
+    <>
+      <BackButton />
+      <nav className={styles.menu}>
+        {menuItems.map((item, index) => (
+          <MenuItem key={index} item={item} index={index} />
+        ))}
+      </nav>
+    </>
   );
 };
 

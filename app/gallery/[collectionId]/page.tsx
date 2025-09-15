@@ -1,7 +1,11 @@
-import GalleryPage from '@/components/GalleryPage';
+import GalleryPage from "@/components/GalleryPage";
 
-const GalleryCollectionPage = ({ params }: { params: { collectionId: string } }) => {
-  return <GalleryPage collectionId={params.collectionId} />;
+const GalleryCollectionPage = ({
+  params: { collectionId },
+}: {
+  params: { collectionId: string };
+}) => {
+  return <GalleryPage collectionId={collectionId} />;
 };
 
 export default GalleryCollectionPage;

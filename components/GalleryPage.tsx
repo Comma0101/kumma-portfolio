@@ -1,10 +1,12 @@
-import { FunctionComponent } from "preact";
-import { useEffect, useRef, useState } from "preact/hooks";
-import { route } from "preact-router";
+"use client";
+
+import { FC, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import * as THREE from "three";
 import { PlaneGeometry, ShaderMaterial, Uniform } from "three"; // Import necessary types
 import { menuItems } from "./menuItems";
-import styles from "../style/GalleryPage.module.css";
+import styles from "../styles/GalleryPage.module.css";
+import BackButton from "./BackButton";
 
 // Simple Math Lerp function (if not available elsewhere)
 // Consider moving to a utils file if used in multiple places
@@ -89,11 +91,11 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
         setTitle(collection.title);
       } else {
         console.error("Collection not found or has no images, redirecting.");
-        route("/");
+        router.push("/");
       }
     } else {
       console.error("No collectionId provided, redirecting.");
-      route("/");
+      router.push("/");
     }
   }, [collectionId]);
 
@@ -466,6 +468,7 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
 
   return (
     <div className={styles.galleryPage}>
+      <BackButton />
       {title && <h1 className={styles.pageTitle}>{title}</h1>}
       {/* Container for the Three.js Canvas */}
       <div ref={mountRef} className={styles.webglContainer}>

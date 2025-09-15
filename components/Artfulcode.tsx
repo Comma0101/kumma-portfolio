@@ -4,6 +4,7 @@ import { useState } from "react";
 import styles from "../styles/artfulcode.module.css";
 import { projects } from "./artfulData";
 import { FC } from "react";
+import BackButton from "./BackButton";
 const Artfulcode: FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const totalProjects = projects.length;
@@ -22,6 +23,7 @@ const Artfulcode: FC = () => {
 
   return (
     <div className={styles.projectsContainer}>
+      <BackButton />
       <div
         className={styles.gallery}
         style={{ transform: `translateX(-${currentIndex * 100}%)` }}
