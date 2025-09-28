@@ -18,6 +18,7 @@ const Home = () => {
   const subheadlineRef = useRef<HTMLHeadingElement>(null);
   const linksRef = useRef<HTMLDivElement>(null);
   const scrollY = useRef(0);
+  const taoismIconRef = useRef<HTMLImageElement>(null);
 
   // Helper function to split the headline text into individual spans
   const splitTextToSpans = (text: string) => {
@@ -131,6 +132,13 @@ const Home = () => {
           },
         });
       }
+
+      gsap.to(taoismIconRef.current, {
+        rotation: 360,
+        repeat: -1,
+        duration: 10,
+        ease: "none",
+      });
     },
     { scope: containerRef }
   );
@@ -165,6 +173,18 @@ const Home = () => {
       
       <div id="about" className={`${styles.section} ${styles.aboutSection}`}>
         <HomeGallery />
+        <img
+          ref={taoismIconRef}
+          src="/images/Taoism.svg"
+          alt="Taoism Symbol"
+          style={{
+            width: "100px",
+            height: "100px",
+            marginTop: "2rem",
+            position: "relative",
+            zIndex: 1,
+          }}
+        />
         <div className={styles.aboutContent} style={{ zIndex: 1 }}>
           <p className={styles.manifestoText}>
             Over 20 years helping startups disrupt markets & build value.
