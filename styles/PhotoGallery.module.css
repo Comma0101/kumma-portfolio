@@ -1,73 +1,45 @@
-/* PhotoGallery.module.css */
-.menu {
+.galleryContainer {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.collection {
+  margin-bottom: 4rem;
+}
+
+.collectionTitle {
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #ffda79;
+}
+
+.imageList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.imageWrapper {
   position: relative;
-  padding: 20px;
-}
-
-.menuItem {
-  position: relative;
-  margin-bottom: 30px;
-  cursor: pointer;
-}
-
-.menuItemText {
-  font-size: 2rem;
-  color: #e3d9d9;
-  display: block;
-}
-
-.menuItemTextInner {
-  position: relative;
-}
-
-.menuItemSub {
-  font-size: 1rem;
-  color: #666;
-  display: block;
-}
-
-.hoverReveal {
-  position: absolute;
-  z-index: 10;
-  width: 220px;
-  height: 320px;
-  top: 0;
-  left: 100%;
-  pointer-events: none;
-  opacity: 0;
-  transform: translateX(0);
-}
-
-.hoverRevealInner {
   overflow: hidden;
+  border-radius: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.imageWrapper:hover {
+  transform: scale(1.05) rotateZ(-2deg);
+  box-shadow: 0 0 20px rgba(128, 0, 128, 0.8);
+}
+
+.image {
   width: 100%;
-  height: 100%;
+  height: auto;
+  display: block;
+  transition: transform 0.3s ease;
 }
 
-.hoverRevealImage {
-  width: 100%;
-  height: 100%;
-  background-size: cover;
-  background-position: center;
-}
-/* PhotoGallery.module.css */
-
-/* ... existing styles ... */
-
-.trailContainer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-}
-
-.trailImage {
-  position: fixed;
-  width: 120px;
-  height: 220px;
-  background-size: cover;
-  background-position: center;
-
-  pointer-events: none;
-  transform: translate(-50%, -50%);
+.imageWrapper:hover .image {
+  transform: scale(1.1);
 }

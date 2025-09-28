@@ -1,39 +1,44 @@
-// PhotoGallery.tsx
-import { menuItems } from "./menuItems";
-import styles from "../styles/GalleryPage.module.css";
-import MenuItem from "./MenuItem";
-import BackButton from "./BackButton";
-interface MenuItemData {
-  title: string;
-  subtitle: string;
-  imageUrl: string;
-  galleryImages: string[];
-}
+"use client";
+import React from "react";
+import styles from "../styles/PhotoGallery.module.css";
 
-// const menuItems: MenuItemData[] = [
-//   {
-//     title: "Collection One",
-//     subtitle: "Style Reset 66 Berlin",
-//     imageUrl: "/images/collection1.jpg",
-//     galleryImages: [
-//       "/images/collection1/img1.jpg",
-//       "/images/collection1/img2.jpg",
-//       // Add more images
-//     ],
-//   },
-//   // Add more collections
-// ];
+const collections = [
+  {
+    id: "collection1",
+    name: "Generative Art",
+    images: [
+      { id: "img1", src: "/images/collection1/img1.jpg", alt: "Abstract generative art" },
+      { id: "img2", src: "/images/collection1/img2.jpg", alt: "Colorful geometric patterns" },
+      { id: "img3", src: "/images/collection1/img3.jpg", alt: "Organic digital formations" },
+    ],
+  },
+  {
+    id: "collection2",
+    name: "Interactive Installations",
+    images: [
+      { id: "img1", src: "/images/collection2/img1.jpg", alt: "Light installation" },
+      { id: "img2", src: "/images/collection2/img2.jpg", alt: "Interactive projection mapping" },
+      { id: "img3", src: "/images/collection2/img3.jpg", alt: "Kinetic sculpture" },
+    ],
+  },
+];
 
 const PhotoGallery = () => {
   return (
-    <>
-      <BackButton />
-      <nav className={styles.menu}>
-        {menuItems.map((item, index) => (
-          <MenuItem key={index} item={item} index={index} />
-        ))}
-      </nav>
-    </>
+    <div className={styles.galleryContainer}>
+      {collections.map((collection) => (
+        <div key={collection.id} className={styles.collection}>
+          <h3 className={styles.collectionTitle}>{collection.name}</h3>
+          <div className={styles.imageList}>
+            {collection.images.map((image) => (
+              <div key={image.id} className={`${styles.imageWrapper} imageWrapper`}>
+                <img src={image.src} alt={image.alt} className={styles.image} loading="lazy" />
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
   );
 };
 

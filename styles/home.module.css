@@ -1,111 +1,253 @@
-/* Overall container: full viewport with a subtle static gradient */
 .homeContainer {
-  position: relative;
+  background-color: #0a0a0a;
+  color: #fafafa;
+  font-family: "Inter", sans-serif;
+  overflow-x: hidden;
+}
+
+
+.heroSection {
   height: 100vh;
-  width: 100vw;
-  background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
   display: flex;
+  justify-content: center;
   align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-/* Subtle coder overlay in the background */
-.coderOverlay {
-  position: absolute;
-  top: 15%;
-  right: 5%;
-  opacity: 0.1;
-  transform: rotate(5deg);
-  pointer-events: none;
-}
-
-.codeSnippet {
-  font-family: "Courier New", Courier, monospace;
-  font-size: 1rem;
-  color: #ffda79;
-  background: rgba(0, 0, 0, 0.4);
-  padding: 10px;
-  border-radius: 5px;
-}
-
-/* Content container arranged in a poster-style layout */
-.content {
-  position: relative;
-  z-index: 2;
   text-align: center;
-  max-width: 900px;
+  position: relative;
+  z-index: 1;
 }
 
-/* Headline styled in an ultra-bold, poster typography style */
+.content {
+  z-index: 1;
+}
+
 .headline {
-  font-size: 6rem;
-  font-weight: bold;
-  letter-spacing: 0.1em;
+  font-size: 8rem;
+  font-weight: 900;
   margin: 0;
-  line-height: 1;
-  text-transform: uppercase;
-  color: #f0f0f0;
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: center;
-  white-space: nowrap;
+  letter-spacing: -0.02em;
+  overflow: hidden;
+  padding: 10px 0;
 }
 
-/* Each letter is an inline-block for individual animation control */
 .letter {
   display: inline-block;
-  opacity: 1;
 }
 
-/* Subheadline: a lighter, complementary typographic statement */
 .subheadline {
   font-size: 2rem;
-  font-weight: 300;
-  margin: 20px 0;
-  color: #f0f0f0;
+  font-weight: 400;
+  margin: 1rem 0 2rem;
+  color: #a0a0a0;
 }
 
-/* Links container arranged with ample spacing */
 .links {
-  margin-top: 40px;
   display: flex;
   justify-content: center;
-  gap: 20px;
-  flex-wrap: wrap;
+  gap: 2rem;
+  margin-top: 2rem;
 }
 
-/* Interactive links styled with a modern poster feel */
 .interactiveLink {
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: #ffda79;
+  color: #fafafa;
   text-decoration: none;
+  font-size: 1.2rem;
   position: relative;
-  padding: 10px 20px;
-  border: 2px solid transparent;
-  transition: color 0.3s ease, border-color 0.3s ease;
+  transition: color 0.3s ease;
+  padding-bottom: 0.5rem;
 }
 
-.interactiveLink::before {
+.interactiveLink::after {
   content: "";
   position: absolute;
-  left: 50%;
   bottom: 0;
-  width: 0;
+  left: 0;
+  width: 100%;
   height: 2px;
-  background-color: #ffda79;
-  transition: width 0.3s ease, left 0.3s ease;
+  background-color: #800080;
+  transform: scaleX(0);
+  transform-origin: bottom right;
+  transition: transform 0.3s ease;
+}
+
+.interactiveLink:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
 }
 
 .interactiveLink:hover {
-  color: #ff9f1c;
-  border-color: #ff9f1c;
+  color: #800080;
 }
 
-.interactiveLink:hover::before {
+.interactiveLink.active {
+  color: #800080;
+}
+
+.scrollIndicator {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1rem;
+  color: #a0a0a0;
+}
+
+.section {
+  padding: 10rem 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.aboutSection {
+  padding: 0;
+  text-align: center;
+  position: relative;
+}
+
+.aboutContainer {
+  position: relative;
   width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.aboutContent {
+  max-width: 800px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  text-align: center;
+}
+
+.manifestoText {
+  font-size: 4rem;
+  font-weight: 700;
+  margin: 1rem 0;
+  position: relative;
+  display: inline-block;
+  color: #555; /* Initial gray color */
+  transition: color 0.4s ease-in-out;
+}
+
+.manifestoText.filled {
+  color: #fafafa; /* Final white color */
+}
+
+.gallerySection,
+.blogSection {
+  position: relative;
+}
+
+.ideasOverlay {
+  position: absolute;
+  top: 0;
   left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20vw;
+  font-weight: 900;
+  color: #fff;
+  opacity: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.gallerySection,
+.blogSection,
+.projectsSection,
+.contactSection {
+  padding: 8rem 5%;
+}
+
+.sectionTitle,
+.projectsTitle {
+  font-size: 4rem;
+  font-weight: 800;
+  margin-bottom: 4rem;
+  text-align: center;
+}
+
+.contactForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 600px;
+}
+
+.formInput,
+.formTextarea {
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  color: #fafafa;
+  padding: 1rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  transition: box-shadow 0.3s ease;
+}
+
+.formInput:focus,
+.formTextarea:focus {
+  outline: none;
+  box-shadow: 0 0 10px #800080;
+}
+
+.formButton {
+  background-color: #800080;
+  color: #fafafa;
+  border: none;
+  padding: 1rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.formButton:hover {
+  background-color: #a040a0;
+  transform: scale(1.05);
+}
+
+.threeSceneContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.aboutGallery {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  z-index: 0;
+}
+
+.galleryImage {
+  width: 250px;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.galleryImage:hover {
+  transform: scale(1.1);
 }

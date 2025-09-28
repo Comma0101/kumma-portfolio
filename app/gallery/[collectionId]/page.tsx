@@ -1,6 +1,6 @@
 import GalleryPage from "@/components/GalleryPage";
 
-const GalleryCollectionPage = ({
+const GalleryCollectionPage = async ({
   params: { collectionId },
 }: {
   params: { collectionId: string };

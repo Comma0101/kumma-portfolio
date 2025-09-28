@@ -1,18 +1,23 @@
 "use client";
 import { useEffect, useRef } from "react";
-import Link from "next/link";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Lenis from "lenis";
 import styles from "../styles/home.module.css";
+import galleryStyles from "../styles/GalleryPage.module.css";
 import ThreeScene from "../components/ThreeScene";
+import HomeGallery from "../components/HomeGallery";
 import { useGSAP } from "@gsap/react";
+gsap.registerPlugin(ScrollTrigger);
 
 const Home = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const headlineRef = useRef<HTMLHeadingElement>(null);
   const subheadlineRef = useRef<HTMLHeadingElement>(null);
   const linksRef = useRef<HTMLDivElement>(null);
-  const coderOverlayRef = useRef<HTMLDivElement>(null);
+  const scrollY = useRef(0);
 
   // Helper function to split the headline text into individual spans
   const splitTextToSpans = (text: string) => {
@@ -23,54 +28,109 @@ const Home = () => {
     ));
   };
 
+  useEffect(() => {
+    const lenis = new Lenis();
+
+    lenis.on("scroll", (e: { scroll: number }) => {
+      ScrollTrigger.update();
+      scrollY.current = e.scroll;
+    });
+
+    gsap.ticker.add((time) => {
+      lenis.raf(time * 1000);
+    });
+
+    gsap.ticker.lagSmoothing(0);
+  }, []);
+
   useGSAP(
     () => {
-      const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
+      const tl = gsap.timeline({
+        defaults: { ease: "power4.out", duration: 2.5 },
+      });
 
-      tl.from(containerRef.current, {
+      tl.from(headlineRef.current!.querySelectorAll(`.${styles.letter}`), {
+        y: 120,
         opacity: 0,
-        scale: 0.95,
-        duration: 1,
+        stagger: 0.08,
+        rotateX: -90,
+        transformOrigin: "center top",
       })
         .from(
-          coderOverlayRef.current,
-          {
-            x: 100,
-            y: -50,
-            opacity: 0,
-            rotation: 5,
-            duration: 1.2,
-          },
-          "-=0.8"
-        )
-        .from(
-          headlineRef.current!.querySelectorAll(`.${styles.letter}`),
-          {
-            opacity: 0,
-            y: -50,
-            rotationX: 90,
-            duration: 0.8,
-            stagger: 0.05,
-            ease: "back.out(1.7)",
-          },
-          "-=1"
-        )
-        .from(
           subheadlineRef.current,
-          { opacity: 0, y: 30, duration: 1, ease: "power3.out" },
-          "-=0.5"
+          { y: 60, opacity: 0, duration: 2 },
+          "-=2"
         )
-        .from(
-          linksRef.current!.querySelectorAll(`.${styles.interactiveLink}`),
-          {
-            opacity: 0,
-            scale: 0.8,
-            duration: 0.6,
-            stagger: 0.2,
-            ease: "back.out(1.7)",
+        .from(linksRef.current, { opacity: 0, y: 30, duration: 1.5 }, "-=1.5");
+
+      // Scroll-triggered animations
+      gsap.to(contentRef.current, {
+        opacity: 0,
+        scale: 1.05,
+        scrollTrigger: {
+          trigger: heroRef.current,
+          start: "center center",
+          end: "bottom top",
+          scrub: true,
+        },
+      });
+
+      const aboutSection = document.querySelector("#about");
+      const manifestoLines = gsap.utils.toArray<HTMLElement>(
+        `.${styles.manifestoText}`
+      );
+      const aboutEntryTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: aboutSection,
+          start: "top center",
+          end: "top top",
+          scrub: true,
+        },
+      });
+
+      aboutEntryTl
+        .from(manifestoLines, { y: 50, opacity: 0, stagger: 0.2 });
+
+      const exitTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: aboutSection,
+          start: "bottom center",
+          end: "bottom top",
+          scrub: true,
+        },
+      });
+
+      exitTl.to(manifestoLines, { y: -50, opacity: 0, scale: 1.1 });
+
+      // Text stroke animation
+      manifestoLines.forEach((line) => {
+        gsap.to(line, {
+          className: `${styles.manifestoText} ${styles.filled}`,
+          scrollTrigger: {
+            trigger: line,
+            start: "top center+=50",
+            end: "bottom center",
+            scrub: true,
           },
-          "-=0.5"
-        );
+        });
+      });
+
+      // Animate HomeGallery visibility
+      const galleryContainer = document.querySelector(
+        `.${galleryStyles.webglContainer}`
+      );
+      if (galleryContainer) {
+        gsap.to(galleryContainer, {
+          opacity: 1,
+          pointerEvents: "auto",
+          scrollTrigger: {
+            trigger: aboutSection,
+            start: "top center",
+            end: "bottom top",
+            scrub: true,
+          },
+        });
+      }
     },
     { scope: containerRef }
   );
@@ -81,41 +141,35 @@ const Home = () => {
 
   return (
     <div ref={containerRef} className={styles.homeContainer}>
-      {/* Subtle coder overlay in the background */}
-      <div ref={coderOverlayRef} className={styles.coderOverlay}>
-        <pre className={styles.codeSnippet}>
-          {`// Code is poetry
-const dream = () => "Create Magic";`}
-        </pre>
-      </div>
-      <div ref={contentRef} className={styles.content}>
-        <h1 ref={headlineRef} className={styles.headline}>
-          {splitTextToSpans(headlineText)}
-        </h1>
+      <div ref={heroRef} className={styles.heroSection}>
+        <div className={styles.threeSceneContainer}>
+          <ThreeScene scrollY={scrollY} />
+        </div>
+        <div ref={contentRef} className={styles.content}>
+          <h1 ref={headlineRef} className={styles.headline}>
+            {splitTextToSpans(headlineText)}
+          </h1>
         <h2 ref={subheadlineRef} className={styles.subheadline}>
           {subheadlineText}
         </h2>
         <div ref={linksRef} className={styles.links}>
-          <Link href="/artfulcode" className={styles.interactiveLink}>
-            Artful Code
-          </Link>
-          <Link href="/gallery" className={styles.interactiveLink}>
-            Gallery
-          </Link>
-          <Link href="/blog" className={styles.interactiveLink}>
-            Blog
-          </Link>
-          <Link href="/projects" className={styles.interactiveLink}>
-            Projects
-          </Link>
-          <Link href="/test" className={styles.interactiveLink}>
-            Test Page
-          </Link>
-          <Link href="/threetest" className={styles.interactiveLink}>
-            Three Test
-          </Link>
+          <a href="#about" className={styles.interactiveLink}>
+            About
+          </a>
         </div>
-        <ThreeScene />
+        
+
+        <div className={styles.scrollIndicator}>Scroll ↓ to Begin</div>
+        </div>
+      </div>
+      
+      <div id="about" className={`${styles.section} ${styles.aboutSection}`}>
+        <HomeGallery />
+        <div className={styles.aboutContent} style={{ zIndex: 1 }}>
+          <p className={styles.manifestoText}>
+            Over 20 years helping startups disrupt markets & build value.
+          </p>
+        </div>
       </div>
     </div>
   );

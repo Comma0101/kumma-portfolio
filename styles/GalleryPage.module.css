@@ -4,7 +4,7 @@
   /* padding: 20px; */
   position: relative;
   width: 100vw; /* Ensure full viewport width */
-  height: 100vh; /* Ensure full viewport height */
+  height: 300vh; /* Ensure full viewport height */
   background-color: #000; /* Pure black background */
   overflow: hidden; /* Hide anything outside the main container */
 }
@@ -19,7 +19,7 @@
   left: -100%;
   opacity: 0; /* Start hidden */
   pointer-events: none;
-  position: fixed; /* Use fixed to cover viewport regardless of scroll */
+  position: absolute; /* Use absolute to contain within the parent */
   top: -100%;
   transition: opacity 0.4s ease;
   width: 300%;
@@ -44,13 +44,15 @@
 
 /* Container for the WebGL Canvas */
 .webglContainer {
-  position: absolute; /* Take up full page or specific area */
+  position: fixed; /* Lock to the viewport */
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   overflow: hidden; /* Crucial to hide parts of meshes outside */
   z-index: 1; /* Behind title but above page background */
+  opacity: 0; /* Hidden by default */
+  pointer-events: none; /* Not interactive when hidden */
   /* background-color: rgba(255, 0, 0, 0.2); */ /* Temporary: For debugging bounds */
 }
 
