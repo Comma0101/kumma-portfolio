@@ -1,10 +1,32 @@
-.homeContainer {
-  background-color: #0a0a0a;
-  color: #fafafa;
-  font-family: "Inter", sans-serif;
+.wrapper,
+.content {
+  position: relative;
+  width: 100%;
+  z-index: 1;
+}
+
+.content {
   overflow-x: hidden;
 }
 
+.taoismIcon {
+  position: fixed;
+  bottom: 3rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 60px;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.taoismIcon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
 
 .heroSection {
   height: 100vh;
@@ -250,4 +272,35 @@
 
 .galleryImage:hover {
   transform: scale(1.1);
+}
+
+.aboutGallery > div {
+  width: 250px !important;
+  height: auto !important;
+}
+
+.projectsSection {
+  min-height: 100vh;
+  padding: 10rem 5%;
+  background-color: #0a0a0a;
+  color: #fafafa;
+}
+
+.projectGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  width: 100%;
+  max-width: 1200px;
+  margin-top: 4rem;
+}
+
+.projectCard {
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  color: #fafafa;
+  padding: 2rem;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 1.5rem;
 }
