@@ -19,6 +19,7 @@ const ThreeScene = ({ scrollY }: { scrollY: React.MutableRefObject<number> }) =>
   const materialRef = useRef<THREE.MeshBasicMaterial | null>(null);
   const animationFrameRef = useRef<number | null>(null);
   const flyingRef = useRef<number>(0);
+  const frameCountRef = useRef<number>(0);
 
   useEffect(() => {
     setKey((prevKey) => prevKey + 1);
@@ -49,8 +50,8 @@ const ThreeScene = ({ scrollY }: { scrollY: React.MutableRefObject<number> }) =>
     renderer.setClearColor(0x000000, 0);
     mountRef.current.appendChild(renderer.domElement);
 
-    const cols = 100;
-    const rows = 100;
+    const cols = 50; // Reduced from 100 for better performance
+    const rows = 50; // Reduced from 100 for better performance
     const terrainWidth = 400;
     const terrainHeight = 400;
 
@@ -98,7 +99,12 @@ const ThreeScene = ({ scrollY }: { scrollY: React.MutableRefObject<number> }) =>
     };
 
     const animate = () => {
-      updateTerrain();
+      // Update terrain every 2 frames for better performance
+      if (frameCountRef.current % 2 === 0) {
+        updateTerrain();
+      }
+      frameCountRef.current++;
+      
       camera.position.y = 50 - scrollY.current * 0.2;
       camera.rotation.z = -scrollY.current * 0.0001;
       renderer.render(scene, camera);

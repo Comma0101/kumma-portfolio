@@ -1,10 +1,11 @@
 import GalleryPage from "@/components/GalleryPage";
 
 const GalleryCollectionPage = async ({
-  params: { collectionId },
+  params,
 }: {
-  params: { collectionId: string };
+  params: Promise<{ collectionId: string }>;
 }) => {
+  const { collectionId } = await params;
   return <GalleryPage collectionId={collectionId} />;
 };
 

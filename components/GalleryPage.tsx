@@ -4,6 +4,8 @@ import { FC, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import * as THREE from "three";
 import { PlaneGeometry, ShaderMaterial, Uniform } from "three"; // Import necessary types
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 import { menuItems } from "./menuItems";
 import styles from "../styles/GalleryPage.module.css";
 import BackButton from "./BackButton";
@@ -55,6 +57,8 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
   const [title, setTitle] = useState("");
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const mountRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const pageRef = useRef<HTMLDivElement>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
@@ -64,16 +68,9 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
   const isInitialized = useRef(false);
   const router = useRouter();
 
-  // --- State for Interaction and Scrolling ---
-  const scroll = useRef({
-    current: 0,
-    target: 0,
-    last: 0,
-    ease: 0.1, // Slightly less smoothing
-  });
-  const isDown = useRef(false);
-  const startScroll = useRef(0);
-  const startClientY = useRef(0);
+  // --- State for Scrolling ---
+  const scrollY = useRef(0);
+  const lastScrollY = useRef(0);
 
   // --- State for Layout ---
   const viewport = useRef({ width: 0, height: 0 });
@@ -98,6 +95,33 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
       router.push("/");
     }
   }, [collectionId]);
+
+  // --- Page Entrance Animations ---
+  useGSAP(() => {
+    if (!pageRef.current) return;
+
+    const tl = gsap.timeline({
+      defaults: { ease: "power3.out" }
+    });
+
+    // Title entrance
+    if (titleRef.current) {
+      tl.from(titleRef.current, {
+        y: 100,
+        opacity: 0,
+        duration: 1.2,
+      });
+    }
+
+    // Canvas container fade in
+    if (mountRef.current) {
+      tl.from(mountRef.current, {
+        opacity: 0,
+        scale: 0.95,
+        duration: 1,
+      }, "-=0.8");
+    }
+  }, [title]); // Run when title is set
 
   // --- Initialize Three.js and Medias ---
   useEffect(() => {
@@ -324,30 +348,14 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
       }
     };
 
-    // --- Interaction Handlers ---
-    const onTouchDown = (event: TouchEvent | MouseEvent) => {
-      isDown.current = true;
-      startScroll.current = scroll.current.current; // Store scroll position at touch start
-      startClientY.current =
-        "touches" in event ? event.touches[0].clientY : event.clientY;
-    };
-
-    const onTouchMove = (event: TouchEvent | MouseEvent) => {
-      if (!isDown.current) return;
-      const currentClientY =
-        "touches" in event ? event.touches[0].clientY : event.clientY;
-      const deltaY = startClientY.current - currentClientY; // How much the finger/mouse moved
-      scroll.current.target = startScroll.current + deltaY * 0.2; // Further reduced scroll speed multiplier
-    };
-
-    const onTouchUp = () => {
-      isDown.current = false;
-    };
-
-    const onWheel = (event: WheelEvent) => {
-      // Basic wheel scroll - consider using normalize-wheel for consistency
-      scroll.current.target += event.deltaY * 0.05; // Further reduced scroll speed multiplier
-    };
+    // --- Get global Lenis scroll ---
+    const lenis = (window as any).lenis;
+    if (lenis) {
+      const handleScroll = (e: { scroll: number }) => {
+        scrollY.current = e.scroll;
+      };
+      lenis.on("scroll", handleScroll);
+    }
 
     // --- Animation Loop ---
     const animate = () => {
@@ -361,44 +369,26 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
         return;
       }
 
-      const elapsedTime = clockRef.current.getElapsedTime();
-
-      // Smooth scroll & calculate speed
-      const speed = scroll.current.current - scroll.current.last;
-      scroll.current.current = lerp(
-        scroll.current.current,
-        scroll.current.target,
-        scroll.current.ease
-      );
-
-      // Update media positions and handle wrapping
+      // Update media positions based on Lenis scroll
       const totalHeight = galleryHeight.current;
-      const viewportHeight = viewport.current.height;
+      const currentScroll = scrollY.current * 0.5; // Adjust multiplier for scroll speed
 
       mediasRef.current.forEach((media) => {
         if (!media) return; // Skip if media not fully loaded yet
 
-        // REMOVED uStrength calculation and update logic
-
         // Calculate target Y based on scroll and initial position
-        // Adjust initialY to be relative to the center of the gallery space for easier modulo
         const centeredInitialY = media.initialY + totalHeight / 2;
-        let currentY = centeredInitialY - scroll.current.current;
+        let currentY = centeredInitialY - currentScroll;
 
         // Wrap using modulo
-        // The formula ensures the item wraps correctly around the total gallery height
         currentY = ((currentY % totalHeight) + totalHeight) % totalHeight;
         currentY -= totalHeight / 2; // Re-center
 
         media.mesh.position.y = currentY;
-
-        // Optional: Add effects based on position (e.g., scaling, rotation)
-        // const scaleFactor = 1 - Math.abs(currentY / (viewportHeight / 2)) * 0.1; // Example scale effect
-        // media.mesh.scale.set(scaleFactor * media.width, scaleFactor * media.height, 1);
       });
 
       rendererRef.current.render(sceneRef.current, cameraRef.current);
-      scroll.current.last = scroll.current.current;
+      lastScrollY.current = scrollY.current;
       animationFrameId.current = requestAnimationFrame(animate);
     };
 
@@ -409,14 +399,6 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
 
     // --- Add Event Listeners ---
     window.addEventListener("resize", handleResize);
-    mount.addEventListener("wheel", onWheel);
-    mount.addEventListener("mousedown", onTouchDown);
-    mount.addEventListener("mousemove", onTouchMove);
-    mount.addEventListener("mouseup", onTouchUp);
-    mount.addEventListener("mouseleave", onTouchUp); // Handle mouse leaving the area
-    mount.addEventListener("touchstart", onTouchDown, { passive: true });
-    mount.addEventListener("touchmove", onTouchMove, { passive: true });
-    mount.addEventListener("touchend", onTouchUp);
 
     isInitialized.current = true;
 
@@ -427,14 +409,11 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
         cancelAnimationFrame(animationFrameId.current);
       }
       window.removeEventListener("resize", handleResize);
-      mount.removeEventListener("wheel", onWheel);
-      mount.removeEventListener("mousedown", onTouchDown);
-      mount.removeEventListener("mousemove", onTouchMove);
-      mount.removeEventListener("mouseup", onTouchUp);
-      mount.removeEventListener("mouseleave", onTouchUp);
-      mount.removeEventListener("touchstart", onTouchDown);
-      mount.removeEventListener("touchmove", onTouchMove);
-      mount.removeEventListener("touchend", onTouchUp);
+      
+      // Clean up Lenis scroll listener
+      if (lenis) {
+        lenis.off("scroll");
+      }
 
       // Dispose Three.js objects
       mediasRef.current.forEach((media) => {
@@ -467,9 +446,9 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
   }, [imageUrls]); // Re-run effect if imageUrls change
 
   return (
-    <div className={styles.galleryPage}>
+    <div ref={pageRef} className={styles.galleryPage}>
       <BackButton />
-      {title && <h1 className={styles.pageTitle}>{title}</h1>}
+      {title && <h1 ref={titleRef} className={styles.pageTitle}>{title}</h1>}
       {/* Container for the Three.js Canvas */}
       <div ref={mountRef} className={styles.webglContainer}>
         {/* Canvas will be appended here by Three.js */}

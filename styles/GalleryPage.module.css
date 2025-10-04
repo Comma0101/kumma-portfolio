@@ -36,10 +36,15 @@
   /* Renamed from h1 to avoid conflict if needed */
   font-size: 2.5rem;
   margin-bottom: 20px;
+  padding-top: 100px;
   text-align: center;
   color: #eee; /* Light text color for dark background */
-  position: relative; /* Keep title above canvas */
+  position: fixed; /* Fixed positioning above canvas */
+  top: 0;
+  left: 0;
+  right: 0;
   z-index: 10;
+  opacity: 1;
 }
 
 /* Container for the WebGL Canvas */
@@ -47,13 +52,13 @@
   position: fixed; /* Lock to the viewport */
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   overflow: hidden; /* Crucial to hide parts of meshes outside */
   z-index: 1; /* Behind title but above page background */
-  opacity: 0; /* Hidden by default */
-  pointer-events: none; /* Not interactive when hidden */
-  /* background-color: rgba(255, 0, 0, 0.2); */ /* Temporary: For debugging bounds */
+  opacity: 1; /* Visible by default - GSAP will animate from 0 */
+  pointer-events: auto; /* Interactive */
+  background-color: #111; /* Match scene clear color */
 }
 
 /* Style the canvas itself if needed, though Three.js usually handles it */
