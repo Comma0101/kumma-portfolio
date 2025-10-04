@@ -17,7 +17,7 @@ const Home = () => {
   const subheadlineRef = useRef<HTMLHeadingElement>(null);
   const linksRef = useRef<HTMLDivElement>(null);
   const scrollY = useRef(0);
-  const taoismIconRef = useRef<HTMLImageElement>(null);
+  // const taoismIconRef = useRef<HTMLImageElement>(null);
   const transitionTriggerRef = useRef<HTMLDivElement>(null);
 
   // Helper function to split the headline text into individual spans
@@ -410,65 +410,65 @@ const Home = () => {
         `.${styles.projectsSection}`
       );
       if (projectsSection) {
-        gsap.set(projectsSection, { opacity: 0 });
+        // gsap.set(projectsSection, { opacity: 0 });
 
-        const transitionTl = gsap.timeline({
-          scrollTrigger: {
-            trigger: transitionTriggerRef.current,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 1,
-          },
-        });
+        // const transitionTl = gsap.timeline({
+        //   scrollTrigger: {
+        //     trigger: transitionTriggerRef.current,
+        //     start: "top bottom",
+        //     end: "bottom top",
+        //     scrub: 1,
+        //   },
+        // });
 
-        transitionTl
-          .to(taoismIconRef.current, {
-            top: "50%",
-            y: "-50%",
-            ease: "power1.inOut",
-          })
-          .to(
-            taoismIconRef.current,
-            {
-              scale: 50,
-              ease: "power1.inOut",
-            },
-            ">"
-          )
-          .to(
-            aboutSection,
-            {
-              opacity: 0,
-              ease: "power1.inOut",
-            },
-            "<"
-          )
-          .to(
-            taoismIconRef.current,
-            {
-              scale: 1,
-              ease: "power1.inOut",
-            },
-            ">"
-          )
-          .to(
-            projectsSection,
-            {
-              opacity: 1,
-              ease: "power1.inOut",
-            },
-            "<"
-          )
-          .to(
-            taoismIconRef.current,
-            {
-              top: "auto",
-              bottom: "3rem",
-              y: "0%",
-              ease: "power1.inOut",
-            },
-            ">"
-          );
+        // transitionTl
+        //   .to(taoismIconRef.current, {
+        //     top: "50%",
+        //     y: "-50%",
+        //     ease: "power1.inOut",
+        //   })
+        //   .to(
+        //     taoismIconRef.current,
+        //     {
+        //       scale: 50,
+        //       ease: "power1.inOut",
+        //     },
+        //     ">"
+        //   )
+        //   .to(
+        //     aboutSection,
+        //     {
+        //       opacity: 0,
+        //       ease: "power1.inOut",
+        //     },
+        //     "<"
+        //   )
+        //   .to(
+        //     taoismIconRef.current,
+        //     {
+        //       scale: 1,
+        //       ease: "power1.inOut",
+        //     },
+        //     ">"
+        //   )
+        //   .to(
+        //     projectsSection,
+        //     {
+        //       opacity: 1,
+        //       ease: "power1.inOut",
+        //     },
+        //     "<"
+        //   )
+        //   .to(
+        //     taoismIconRef.current,
+        //     {
+        //       top: "auto",
+        //       bottom: "3rem",
+        //       y: "0%",
+        //       ease: "power1.inOut",
+        //     },
+        //     ">"
+        //   );
       }
     },
     { scope: containerRef }
@@ -498,9 +498,6 @@ const Home = () => {
           </div>
           <div className={styles.scrollIndicator}>Scroll ↓ to Begin</div>
         </div>
-      </div>
-      <div ref={taoismIconRef} className={styles.taoismIcon}>
-        <img src="/images/Taoism.svg" alt="Taoism Symbol" />
       </div>
       <div id="about" className={`${styles.section} ${styles.aboutSection}`}>
         <div className={styles.aboutWrapper}>
@@ -767,16 +764,6 @@ const Home = () => {
           {/* Decorative elements */}
           <div className={styles.contactGlow1}></div>
           <div className={styles.contactGlow2}></div>
-        </div>
-      </div>
-      <div ref={transitionTriggerRef} style={{ height: "100vh" }}></div>
-      <div className={styles.projectsSection}>
-        <h2>Projects</h2>
-        <div className={styles.projectGrid}>
-          <div className={styles.projectCard}>Project 1</div>
-          <div className={styles.projectCard}>Project 2</div>
-          <div className={styles.projectCard}>Project 3</div>
-          <div className={styles.projectCard}>Project 4</div>
         </div>
       </div>
     </div>
