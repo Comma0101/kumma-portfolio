@@ -4,6 +4,8 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import styles from "../styles/navigation.module.css";
+import Logo3D from "./Logo3D";
+import TransitionLink from "./TransitionLink";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -199,29 +201,44 @@ const Navigation = () => {
         {/* Logo/Brand */}
         <a
           href="#home"
-          className={styles.logo}
+          className={styles.logoWrapper}
           onClick={scrollToTop}
           aria-label="KUMMA - Scroll to top"
         >
-          KUMMA
+          <Logo3D />
         </a>
 
         {/* Desktop Navigation Links */}
         <div className={styles.navLinks}>
-          {navLinks.map((link) => (
-            <a
-              key={link.name}
-              href={link.href}
-              className={`${styles.navLink} ${
-                activeSection === link.href.substring(1) ? styles.active : ""
-              }`}
-              onClick={(e) => scrollToSection(e, link.href)}
-              aria-current={activeSection === link.href.substring(1) ? "page" : undefined}
-            >
-              {link.name}
-              <span className={styles.underline}></span>
-            </a>
-          ))}
+          {navLinks.map((link) =>
+            link.href.startsWith("/") ? (
+              <TransitionLink
+                key={link.name}
+                href={link.href}
+                className={`${styles.navLink} ${
+                  activeSection === link.href.substring(1) ? styles.active : ""
+                }`}
+              >
+                {link.name}
+                <span className={styles.underline}></span>
+              </TransitionLink>
+            ) : (
+              <a
+                key={link.name}
+                href={link.href}
+                className={`${styles.navLink} ${
+                  activeSection === link.href.substring(1) ? styles.active : ""
+                }`}
+                onClick={(e) => scrollToSection(e, link.href)}
+                aria-current={
+                  activeSection === link.href.substring(1) ? "page" : undefined
+                }
+              >
+                {link.name}
+                <span className={styles.underline}></span>
+              </a>
+            )
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -248,18 +265,30 @@ const Navigation = () => {
           className={styles.mobileLinksContainer}
           onClick={(e) => e.stopPropagation()}
         >
-          {navLinks.map((link) => (
-            <a
-              key={link.name}
-              href={link.href}
-              className={`${styles.mobileLink} ${
-                activeSection === link.href.substring(1) ? styles.active : ""
-              }`}
-              onClick={(e) => scrollToSection(e, link.href)}
-            >
-              {link.name}
-            </a>
-          ))}
+          {navLinks.map((link) =>
+            link.href.startsWith("/") ? (
+              <TransitionLink
+                key={link.name}
+                href={link.href}
+                className={`${styles.mobileLink} ${
+                  activeSection === link.href.substring(1) ? styles.active : ""
+                }`}
+              >
+                {link.name}
+              </TransitionLink>
+            ) : (
+              <a
+                key={link.name}
+                href={link.href}
+                className={`${styles.mobileLink} ${
+                  activeSection === link.href.substring(1) ? styles.active : ""
+                }`}
+                onClick={(e) => scrollToSection(e, link.href)}
+              >
+                {link.name}
+              </a>
+            )
+          )}
         </div>
       </div>
     </nav>

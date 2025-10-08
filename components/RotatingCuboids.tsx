@@ -1,7 +1,10 @@
 "use client";
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import styles from "../styles/rotatingCuboids.module.css";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const RotatingCuboids = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -21,7 +24,13 @@ const RotatingCuboids = () => {
     gsap.set(containerRef.current, { autoAlpha: 1 });
 
     // Initial animation
-    const tl = gsap.timeline({ delay: 0.5 });
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: containerRef.current,
+        start: "top 80%", // Trigger when the top of the container is 80% from the top of the viewport
+        toggleActions: "restart none none reverse",
+      },
+    });
     
     tl.from(".hi__location--lat", {
       x: 100,
@@ -42,25 +51,35 @@ const RotatingCuboids = () => {
         ease: "elastic(0.4,0.3)",
       }, 0);
 
-    // Continuous rotation
-    gsap.to(cuboids, {
-      rotateX: -360,
-      duration: 8,
-      repeat: -1,
-      ease: "none",
+    // Scroll-triggered rotation
+    cuboids.forEach((cuboid, index) => {
+      gsap.fromTo(cuboid, {
+        rotateX: 0,
+      }, {
+        rotateX: -720,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1 + index * 0.2,
+          immediateRender: false,
+          invalidateOnRefresh: true,
+        },
+      });
     });
 
-    // Wobble animation
+    // Subtle wobble animation (reduced intensity)
     gsap.fromTo(
       cuboids,
       {
-        rotateY: 8,
-        rotate: -10,
+        rotateY: 4,
+        rotate: -5,
       },
       {
-        rotateY: -8,
-        rotate: 10,
-        duration: 2.2,
+        rotateY: -4,
+        rotate: 5,
+        duration: 3,
         yoyo: true,
         repeat: -1,
         ease: "sine.inOut",
@@ -130,22 +149,22 @@ const RotatingCuboids = () => {
         <div className={styles.hi__cuboid} ref={addCuboidRef}>
           <div className={`${styles.face} ${styles["face--front"]}`}>
             <p className={styles.hi__word} ref={addWordRef}>
-              Creative
+              KUMMA
             </p>
           </div>
           <div className={`${styles.face} ${styles["face--back"]}`}>
             <p className={styles.hi__word} ref={addWordRef}>
-              Creative
+              KUMMA
             </p>
           </div>
           <div className={`${styles.face} ${styles["face--top"]}`}>
             <p className={styles.hi__word} ref={addWordRef}>
-              Creative
+              KUMMA
             </p>
           </div>
           <div className={`${styles.face} ${styles["face--bottom"]}`}>
             <p className={styles.hi__word} ref={addWordRef}>
-              Creative
+              KUMMA
             </p>
           </div>
         </div>
@@ -153,22 +172,22 @@ const RotatingCuboids = () => {
         <div className={styles.hi__cuboid} ref={addCuboidRef}>
           <div className={`${styles.face} ${styles["face--front"]}`}>
             <p className={styles.hi__word} ref={addWordRef}>
-              Code
+              THE
             </p>
           </div>
           <div className={`${styles.face} ${styles["face--back"]}`}>
             <p className={styles.hi__word} ref={addWordRef}>
-              Code
+              THE
             </p>
           </div>
           <div className={`${styles.face} ${styles["face--top"]}`}>
             <p className={styles.hi__word} ref={addWordRef}>
-              Code
+              THE
             </p>
           </div>
           <div className={`${styles.face} ${styles["face--bottom"]}`}>
             <p className={styles.hi__word} ref={addWordRef}>
-              Code
+              THE
             </p>
           </div>
         </div>
@@ -176,22 +195,22 @@ const RotatingCuboids = () => {
         <div className={styles.hi__cuboid} ref={addCuboidRef}>
           <div className={`${styles.face} ${styles["face--front"]}`}>
             <p className={styles.hi__word} ref={addWordRef}>
-              Portfolio
+              CODER
             </p>
           </div>
           <div className={`${styles.face} ${styles["face--back"]}`}>
             <p className={styles.hi__word} ref={addWordRef}>
-              Portfolio
+              CODER
             </p>
           </div>
           <div className={`${styles.face} ${styles["face--top"]}`}>
             <p className={styles.hi__word} ref={addWordRef}>
-              Portfolio
+              CODER
             </p>
           </div>
           <div className={`${styles.face} ${styles["face--bottom"]}`}>
             <p className={styles.hi__word} ref={addWordRef}>
-              Portfolio
+              CODER
             </p>
           </div>
         </div>

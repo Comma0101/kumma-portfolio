@@ -76,34 +76,34 @@ const Home = () => {
 
       const aboutSection = document.querySelector("#about");
 
-      // Animate main headline
-      const textLine1 = document.querySelector(`.${styles.textLine1}`);
-      const textLine2 = document.querySelector(`.${styles.textLine2}`);
-      
-      if (textLine1 && textLine2) {
-        gsap.from(textLine1, {
-          x: -200,
-          opacity: 0,
-          scale: 0.8,
-          rotation: -5,
-          scrollTrigger: {
-            trigger: aboutSection,
-            start: "top 70%",
-            end: "top 40%",
-            scrub: 1.5,
-          },
-        });
+      // Variable font weight animation for about quote
+      const aboutQuote = document.querySelector("#aboutQuote");
+      if (aboutQuote) {
+        // Split text into words manually
+        const text = aboutQuote.textContent || "";
+        const words = text.split(" ");
+        aboutQuote.innerHTML = words
+          .map((word, i) => `<span class="${styles.word}" data-index="${i}">${word}</span>`)
+          .join(" ");
 
-        gsap.from(textLine2, {
-          x: 200,
+        const wordElements = aboutQuote.querySelectorAll(`.${styles.word}`);
+        
+        // Animate words appearing and changing color on scroll
+        gsap.fromTo(wordElements, {
           opacity: 0,
-          scale: 0.8,
-          rotation: 5,
+          y: 20,
+        }, {
+          opacity: 1,
+          y: 0,
+          fontWeight: 900,
+          color: "#fafafa",
+          stagger: 0.15,
+          ease: "power3.out",
           scrollTrigger: {
             trigger: aboutSection,
-            start: "top 70%",
-            end: "top 40%",
-            scrub: 1.5,
+            start: "top 60%",
+            end: "bottom 40%",
+            scrub: 2,
           },
         });
       }
@@ -175,15 +175,24 @@ const Home = () => {
 
       floatingElements.forEach((el, index) => {
         if (el) {
-          gsap.to(el, {
-            y: index % 2 === 0 ? -100 : -150,
-            x: index % 2 === 0 ? 50 : -50,
-            rotation: 360,
+          gsap.fromTo(el, {
+            y: 0,
+            x: 0,
+            rotation: 0,
+            scale: 1,
+          }, {
+            y: index % 2 === 0 ? -250 : -300,
+            x: index % 2 === 0 ? 150 : -150,
+            rotation: index % 2 === 0 ? 90 : -90,
+            scale: 1.3,
+            ease: "none",
             scrollTrigger: {
               trigger: aboutSection,
               start: "top bottom",
               end: "bottom top",
-              scrub: 3 + index,
+              scrub: 2 + index * 0.5,
+              immediateRender: false,
+              invalidateOnRefresh: true,
             },
           });
         }
@@ -193,97 +202,88 @@ const Home = () => {
       const skillsSection = document.querySelector("#skills");
       
       // Animate skills title
-      const skillsTitleLine1 = document.querySelector(`.${styles.skillsTitleLine1}`);
-      const skillsTitleLine2 = document.querySelector(`.${styles.skillsTitleLine2}`);
-      
-      if (skillsTitleLine1 && skillsTitleLine2) {
-        gsap.from(skillsTitleLine1, {
-          x: -300,
+      const skillsTitle = document.querySelector(`.${styles.skillsTitle}`);
+      if (skillsTitle) {
+        gsap.fromTo(skillsTitle, {
           opacity: 0,
-          rotation: -15,
+          y: 100,
+        }, {
+          opacity: 1,
+          y: 0,
           scrollTrigger: {
             trigger: skillsSection,
-            start: "top 75%",
-            end: "top 45%",
-            scrub: 1.5,
-          },
-        });
-
-        gsap.from(skillsTitleLine2, {
-          x: 300,
-          opacity: 0,
-          rotation: 15,
-          scrollTrigger: {
-            trigger: skillsSection,
-            start: "top 75%",
-            end: "top 45%",
-            scrub: 1.5,
+            start: "top 80%",
+            end: "top 50%",
+            scrub: 1,
           },
         });
       }
 
-      // Animate skill categories
-      const skillCategories = gsap.utils.toArray<HTMLElement>(`.${styles.skillCategory}`);
-      skillCategories.forEach((category, index) => {
-        gsap.from(category, {
-          y: 100,
-          opacity: 0,
-          scale: 0.8,
-          rotation: index % 2 === 0 ? -10 : 10,
+      // Scroll-based animation for skill groups
+      const skillGroups = gsap.utils.toArray<HTMLElement>(`.${styles.skillGroup}`);
+      
+      skillGroups.forEach((group) => {
+        const titleElement = group.querySelector(`.${styles.skillGroupTitle}`);
+        const skillItems = gsap.utils.toArray<HTMLElement>(group.querySelectorAll(`.${styles.skillItem}`));
+
+        const tl = gsap.timeline({
           scrollTrigger: {
-            trigger: category,
-            start: "top 85%",
-            end: "top 60%",
-            scrub: 1,
+            trigger: group,
+            start: "top 80%",
+            end: "top 50%",
+            scrub: 1.5,
           },
         });
 
-        // Parallax effect for skill categories
-        gsap.to(category, {
-          y: -60,
-          scrollTrigger: {
-            trigger: category,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 2,
-          },
-        });
-
-        // Animate skill bars on scroll
-        const skillBars = category.querySelectorAll(`.${styles.skillProgress}`);
-        skillBars.forEach((bar) => {
-          gsap.from(bar, {
-            width: "0%",
-            scrollTrigger: {
-              trigger: bar,
-              start: "top 80%",
-              end: "top 60%",
-              scrub: 1,
-            },
-          });
-        });
-      });
-
-      // Animate floating particles
-      const skillsParticles = [
-        document.querySelector(`.${styles.skillsParticle1}`),
-        document.querySelector(`.${styles.skillsParticle2}`),
-        document.querySelector(`.${styles.skillsParticle3}`),
-      ];
-
-      skillsParticles.forEach((particle, index) => {
-        if (particle) {
-          gsap.to(particle, {
-            y: index % 2 === 0 ? -120 : -180,
-            x: index % 2 === 0 ? 60 : -60,
-            scrollTrigger: {
-              trigger: skillsSection,
-              start: "top bottom",
-              end: "bottom top",
-              scrub: 3 + index,
-            },
+        if (titleElement) {
+          tl.from(titleElement, {
+            opacity: 0,
+            y: 30,
+            ease: "power2.out",
           });
         }
+
+        tl.from(skillItems, {
+          opacity: 0,
+          y: 20,
+          stagger: 0.05,
+          ease: "power2.out",
+        }, "-=0.3");
+      });
+
+      // Scramble text function for hover
+      const scrambleText = (element: HTMLElement) => {
+        const originalText = element.getAttribute('data-text') || element.textContent || '';
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*';
+        const textLength = originalText.length;
+        let iteration = 0;
+        
+        const interval = setInterval(() => {
+          element.textContent = originalText
+            .split('')
+            .map((char, index) => {
+              if (index < iteration) {
+                return originalText[index];
+              }
+              return chars[Math.floor(Math.random() * chars.length)];
+            })
+            .join('');
+          
+          iteration += 1 / 3;
+          
+          if (iteration >= textLength) {
+            clearInterval(interval);
+            element.textContent = originalText;
+          }
+        }, 30);
+      };
+      
+      // Add hover scramble effect to all skill items
+      const allSkillItems = gsap.utils.toArray<HTMLElement>(`.${styles.skillItem}`);
+      allSkillItems.forEach((item) => {
+        item.addEventListener('mouseenter', () => {
+          scrambleText(item);
+        });
       });
 
       // ====== CONTACT SECTION ANIMATIONS ======
@@ -492,62 +492,15 @@ const Home = () => {
             {subheadlineText}
           </h2>
           <div ref={linksRef} className={styles.links}>
-            <a href="#about" className={styles.interactiveLink}>
-              About
-            </a>
           </div>
-          <div className={styles.scrollIndicator}>Scroll ↓ to Begin</div>
         </div>
+        <div className={styles.scrollIndicator}>Scroll ↓ to Begin</div>
       </div>
       <div id="about" className={`${styles.section} ${styles.aboutSection}`}>
         <div className={styles.aboutWrapper}>
-          {/* Main headline with split animation */}
-          <div className={styles.aboutHeadline}>
-            <h2 className={styles.aboutMainText}>
-              <span className={styles.textLine1}>BUILDING</span>
-              <span className={styles.textLine2}>THE FUTURE</span>
-            </h2>
-          </div>
-
-          {/* Creative manifesto blocks */}
-          <div className={styles.manifestoGrid}>
-            <div className={styles.manifestoBlock}>
-              <span className={styles.blockNumber}>20+</span>
-              <p className={styles.blockText}>Years shaping digital experiences</p>
-            </div>
-            
-            <div className={styles.manifestoBlock}>
-              <span className={styles.blockHighlight}>DISRUPT</span>
-              <p className={styles.blockText}>Markets through innovation</p>
-            </div>
-            
-            <div className={styles.manifestoBlock}>
-              <span className={styles.blockHighlight}>CREATE</span>
-              <p className={styles.blockText}>Value from bold ideas</p>
-            </div>
-            
-            <div className={styles.manifestoBlock}>
-              <span className={styles.blockNumber}>∞</span>
-              <p className={styles.blockText}>Possibilities in every line of code</p>
-            </div>
-          </div>
-
-          {/* Animated quote section */}
-          <div className={styles.quoteSection}>
-            <p className={styles.quoteText}>
-              <span className={styles.quoteMark}>"</span>
-              <span className={styles.quoteContent}>
-                Where <span className={styles.highlight}>Art</span> meets{" "}
-                <span className={styles.highlight}>Technology</span>, magic happens.
-              </span>
-              <span className={styles.quoteMark}>"</span>
-            </p>
-          </div>
-
-          {/* Floating decorative elements */}
-          <div className={styles.floatingElement1}></div>
-          <div className={styles.floatingElement2}></div>
-          <div className={styles.floatingElement3}></div>
+          <h2 id="aboutQuote" className={styles.aboutQuote}>
+            Building tomorrow's digital experiences with passion, precision, and purpose. Where innovation meets artistry, and code becomes poetry.
+          </h2>
         </div>
       </div>
 
@@ -563,120 +516,69 @@ const Home = () => {
       <div id="skills" className={`${styles.section} ${styles.skillsSection}`}>
         <div className={styles.skillsWrapper}>
           <h2 className={styles.skillsTitle}>
-            <span className={styles.skillsTitleLine1}>TECH</span>
-            <span className={styles.skillsTitleLine2}>ARSENAL</span>
+            <span className={styles.skillsTitleAccent}>{'<'}</span>
+            Tech Stack
+            <span className={styles.skillsTitleAccent}>{' />'}</span>
           </h2>
-
+          
           <div className={styles.skillsGrid}>
             {/* Frontend */}
-            <div className={styles.skillCategory}>
-              <div className={styles.categoryIcon}>⚡</div>
-              <h3 className={styles.categoryTitle}>Frontend</h3>
-              <div className={styles.skillsList}>
-                <div className={styles.skillItem}>
-                  <span className={styles.skillName}>React / Next.js</span>
-                  <div className={styles.skillBar}>
-                    <div className={styles.skillProgress} style={{ width: '95%' }}></div>
-                  </div>
-                </div>
-                <div className={styles.skillItem}>
-                  <span className={styles.skillName}>TypeScript</span>
-                  <div className={styles.skillBar}>
-                    <div className={styles.skillProgress} style={{ width: '90%' }}></div>
-                  </div>
-                </div>
-                <div className={styles.skillItem}>
-                  <span className={styles.skillName}>GSAP / Three.js</span>
-                  <div className={styles.skillBar}>
-                    <div className={styles.skillProgress} style={{ width: '88%' }}></div>
-                  </div>
-                </div>
+            <div className={styles.skillGroup}>
+              <h3 className={styles.skillGroupTitle}>
+                Frontend
+              </h3>
+              <div className={styles.skillItems}>
+                <span className={`${styles.skillItem} ${styles.skillPrimary}`} data-text="React">React</span>
+                <span className={`${styles.skillItem} ${styles.skillPrimary}`} data-text="Next.js">Next.js</span>
+                <span className={`${styles.skillItem} ${styles.skillPrimary}`} data-text="TypeScript">TypeScript</span>
+                <span className={`${styles.skillItem}`} data-text="JavaScript">JavaScript</span>
+                <span className={`${styles.skillItem}`} data-text="HTML5">HTML5</span>
+                <span className={`${styles.skillItem}`} data-text="CSS3">CSS3</span>
               </div>
             </div>
 
-            {/* Backend */}
-            <div className={styles.skillCategory}>
-              <div className={styles.categoryIcon}>🔧</div>
-              <h3 className={styles.categoryTitle}>Backend</h3>
-              <div className={styles.skillsList}>
-                <div className={styles.skillItem}>
-                  <span className={styles.skillName}>Node.js / Express</span>
-                  <div className={styles.skillBar}>
-                    <div className={styles.skillProgress} style={{ width: '92%' }}></div>
-                  </div>
-                </div>
-                <div className={styles.skillItem}>
-                  <span className={styles.skillName}>Python / Django</span>
-                  <div className={styles.skillBar}>
-                    <div className={styles.skillProgress} style={{ width: '85%' }}></div>
-                  </div>
-                </div>
-                <div className={styles.skillItem}>
-                  <span className={styles.skillName}>PostgreSQL / MongoDB</span>
-                  <div className={styles.skillBar}>
-                    <div className={styles.skillProgress} style={{ width: '87%' }}></div>
-                  </div>
-                </div>
+            {/* Styling & Animation */}
+            <div className={styles.skillGroup}>
+              <h3 className={styles.skillGroupTitle}>
+                Styling & Animation
+              </h3>
+              <div className={styles.skillItems}>
+                <span className={`${styles.skillItem} ${styles.skillPrimary}`} data-text="GSAP">GSAP</span>
+                <span className={`${styles.skillItem}`} data-text="Three.js">Three.js</span>
+                <span className={`${styles.skillItem}`} data-text="Tailwind">Tailwind CSS</span>
+                <span className={`${styles.skillItem}`} data-text="Framer Motion">Framer Motion</span>
+                <span className={`${styles.skillItem}`} data-text="SCSS">SCSS</span>
               </div>
             </div>
 
-            {/* Tools & Cloud */}
-            <div className={styles.skillCategory}>
-              <div className={styles.categoryIcon}>☁️</div>
-              <h3 className={styles.categoryTitle}>Cloud & DevOps</h3>
-              <div className={styles.skillsList}>
-                <div className={styles.skillItem}>
-                  <span className={styles.skillName}>AWS / Vercel</span>
-                  <div className={styles.skillBar}>
-                    <div className={styles.skillProgress} style={{ width: '90%' }}></div>
-                  </div>
-                </div>
-                <div className={styles.skillItem}>
-                  <span className={styles.skillName}>Docker / K8s</span>
-                  <div className={styles.skillBar}>
-                    <div className={styles.skillProgress} style={{ width: '82%' }}></div>
-                  </div>
-                </div>
-                <div className={styles.skillItem}>
-                  <span className={styles.skillName}>CI/CD Pipelines</span>
-                  <div className={styles.skillBar}>
-                    <div className={styles.skillProgress} style={{ width: '88%' }}></div>
-                  </div>
-                </div>
+            {/* Backend & Database */}
+            <div className={styles.skillGroup}>
+              <h3 className={styles.skillGroupTitle}>
+                Backend & Database
+              </h3>
+              <div className={styles.skillItems}>
+                <span className={`${styles.skillItem} ${styles.skillPrimary}`} data-text="Node.js">Node.js</span>
+                <span className={`${styles.skillItem}`} data-text="Express">Express</span>
+                <span className={`${styles.skillItem} ${styles.skillPrimary}`} data-text="PostgreSQL">PostgreSQL</span>
+                <span className={`${styles.skillItem}`} data-text="MongoDB">MongoDB</span>
+                <span className={`${styles.skillItem}`} data-text="REST API">REST API</span>
               </div>
             </div>
 
-            {/* Design */}
-            <div className={styles.skillCategory}>
-              <div className={styles.categoryIcon}>🎨</div>
-              <h3 className={styles.categoryTitle}>Design</h3>
-              <div className={styles.skillsList}>
-                <div className={styles.skillItem}>
-                  <span className={styles.skillName}>UI/UX Design</span>
-                  <div className={styles.skillBar}>
-                    <div className={styles.skillProgress} style={{ width: '93%' }}></div>
-                  </div>
-                </div>
-                <div className={styles.skillItem}>
-                  <span className={styles.skillName}>Figma / Adobe XD</span>
-                  <div className={styles.skillBar}>
-                    <div className={styles.skillProgress} style={{ width: '91%' }}></div>
-                  </div>
-                </div>
-                <div className={styles.skillItem}>
-                  <span className={styles.skillName}>Motion Design</span>
-                  <div className={styles.skillBar}>
-                    <div className={styles.skillProgress} style={{ width: '86%' }}></div>
-                  </div>
-                </div>
+            {/* Tools & DevOps */}
+            <div className={styles.skillGroup}>
+              <h3 className={styles.skillGroupTitle}>
+                Tools & DevOps
+              </h3>
+              <div className={styles.skillItems}>
+                <span className={`${styles.skillItem} ${styles.skillPrimary}`} data-text="Git">Git</span>
+                <span className={`${styles.skillItem} ${styles.skillPrimary}`} data-text="Docker">Docker</span>
+                <span className={`${styles.skillItem}`} data-text="AWS">AWS</span>
+                <span className={`${styles.skillItem}`} data-text="Vercel">Vercel</span>
+                <span className={`${styles.skillItem}`} data-text="CI/CD">CI/CD</span>
               </div>
             </div>
           </div>
-
-          {/* Floating particles */}
-          <div className={styles.skillsParticle1}></div>
-          <div className={styles.skillsParticle2}></div>
-          <div className={styles.skillsParticle3}></div>
         </div>
       </div>
 

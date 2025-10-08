@@ -54,8 +54,13 @@ export default function GalleryLanding() {
   }, []);
 
   return (
-    <div ref={containerRef} className={styles.galleryLanding}>
-      <h1 ref={titleRef} className={styles.galleryTitle}>Gallery Collections</h1>
+    <div
+      ref={containerRef}
+      className={`${styles.galleryLanding} section-background`}
+    >
+      <h1 ref={titleRef} className={styles.galleryTitle}>
+        Gallery Collections
+      </h1>
       <div ref={menuRef} className={styles.menuContainer}>
         {menuItems.map((item, index) => (
           <MenuItem key={index} item={item} index={index} />

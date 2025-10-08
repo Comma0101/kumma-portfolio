@@ -8,7 +8,6 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { menuItems } from "./menuItems";
 import styles from "../styles/GalleryPage.module.css";
-import BackButton from "./BackButton";
 
 // Simple Math Lerp function (if not available elsewhere)
 // Consider moving to a utils file if used in multiple places
@@ -56,6 +55,8 @@ interface Media {
 const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
   const [title, setTitle] = useState("");
   const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadingProgress, setLoadingProgress] = useState(0);
   const mountRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const pageRef = useRef<HTMLDivElement>(null);
@@ -65,7 +66,6 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
   const clockRef = useRef<THREE.Clock | null>(null);
   const mediasRef = useRef<Media[]>([]);
   const animationFrameId = useRef<number | null>(null);
-  const isInitialized = useRef(false);
   const router = useRouter();
 
   // --- State for Scrolling ---
@@ -86,6 +86,7 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
       if (collection && collection.galleryImages) {
         setImageUrls(collection.galleryImages);
         setTitle(collection.title);
+        // Don't set isLoading to false here anymore
       } else {
         console.error("Collection not found or has no images, redirecting.");
         router.push("/");
@@ -97,7 +98,9 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
   }, [collectionId]);
 
   // --- Page Entrance Animations ---
-  useGSAP(() => {
+  // --- Page Entrance Animations ---
+  // This will now be triggered from the onLoad callback
+  const runEntranceAnimation = () => {
     if (!pageRef.current) return;
 
     const tl = gsap.timeline({
@@ -121,19 +124,23 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
         duration: 1,
       }, "-=0.8");
     }
-  }, [title]); // Run when title is set
+  };
 
   // --- Initialize Three.js and Medias ---
   useEffect(() => {
-    if (!mountRef.current || !imageUrls.length || isInitialized.current) return;
+    if (!mountRef.current || !imageUrls.length) return;
+
+    // Reset loading state when effect runs for a new collection
+    setIsLoading(true);
+    setLoadingProgress(0);
 
     const mount = mountRef.current;
-    // Add 'loaded' class shortly after initialization starts
-    // Use a small timeout to ensure styles are applied
-    // We add it to the parent (.galleryPage) which has the ::after pseudo-element
-    const loadTimer = setTimeout(() => {
-      mount.parentElement?.classList.add(styles.loaded);
-    }, 100);
+    const pageElement = mount.parentElement;
+    
+    // Add 'loaded' class immediately to prevent black screen
+    if (pageElement && !pageElement.classList.contains(styles.loaded)) {
+      pageElement.classList.add(styles.loaded);
+    }
 
     // --- Basic Three.js Setup ---
     const scene = new THREE.Scene();
@@ -161,8 +168,37 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
 
     clockRef.current = new THREE.Clock();
 
+    // --- Loading Manager ---
+    const loadingManager = new THREE.LoadingManager();
+
+    loadingManager.onStart = () => {
+      console.log("Loading started...");
+      setIsLoading(true);
+    };
+
+    loadingManager.onLoad = () => {
+      console.log("All textures loaded!");
+      setIsLoading(false);
+      // Add 'loaded' class when textures are ready
+      if (pageElement && !pageElement.classList.contains(styles.loaded)) {
+        pageElement.classList.add(styles.loaded);
+      }
+      animate(); // Start the animation loop here
+      runEntranceAnimation(); // Run the entrance animation here
+    };
+
+    loadingManager.onProgress = (url, itemsLoaded, itemsTotal) => {
+      const progress = itemsLoaded / itemsTotal;
+      setLoadingProgress(progress);
+      console.log(`Loading file: ${url}. \nLoaded ${itemsLoaded} of ${itemsTotal} files.`);
+    };
+
+    loadingManager.onError = (url) => {
+      console.error(`There was an error loading ${url}`);
+    };
+
     // --- Texture Loader ---
-    const textureLoader = new THREE.TextureLoader();
+    const textureLoader = new THREE.TextureLoader(loadingManager);
     const loadedMeshes: THREE.Mesh[] = [];
     let yOffset = 0; // Track Y position for layout
 
@@ -350,10 +386,10 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
 
     // --- Get global Lenis scroll ---
     const lenis = (window as any).lenis;
+    const handleScroll = (e: { scroll: number }) => {
+      scrollY.current = e.scroll;
+    };
     if (lenis) {
-      const handleScroll = (e: { scroll: number }) => {
-        scrollY.current = e.scroll;
-      };
       lenis.on("scroll", handleScroll);
     }
 
@@ -395,16 +431,13 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
     // --- Initial Setup Calls ---
     calculateViewport();
     createMedias();
-    animate(); // Start the loop
+    // animate(); // Don't start the loop here, it's started in onLoad
 
     // --- Add Event Listeners ---
     window.addEventListener("resize", handleResize);
 
-    isInitialized.current = true;
-
     // --- Cleanup ---
     return () => {
-      isInitialized.current = false;
       if (animationFrameId.current) {
         cancelAnimationFrame(animationFrameId.current);
       }
@@ -412,7 +445,7 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
       
       // Clean up Lenis scroll listener
       if (lenis) {
-        lenis.off("scroll");
+        lenis.off("scroll", handleScroll);
       }
 
       // Dispose Three.js objects
@@ -439,15 +472,19 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
       cameraRef.current = null;
       clockRef.current = null;
       console.log("Three.js cleanup complete.");
-      // Cleanup: Remove 'loaded' class and clear timer
-      mount.parentElement?.classList.remove(styles.loaded);
-      clearTimeout(loadTimer);
+      // Cleanup: Remove 'loaded' class
+      pageElement?.classList.remove(styles.loaded);
     };
-  }, [imageUrls]); // Re-run effect if imageUrls change
+  }, [imageUrls, collectionId]); // Re-run effect if imageUrls or collectionId change
 
   return (
     <div ref={pageRef} className={styles.galleryPage}>
-      <BackButton />
+      {isLoading && (
+        <div className={styles.loadingOverlay}>
+          <div className={styles.loadingSpinner}></div>
+          <p>Loading Gallery: {Math.round(loadingProgress * 100)}%</p>
+        </div>
+      )}
       {title && <h1 ref={titleRef} className={styles.pageTitle}>{title}</h1>}
       {/* Container for the Three.js Canvas */}
       <div ref={mountRef} className={styles.webglContainer}>

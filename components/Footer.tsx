@@ -29,13 +29,6 @@ const Footer = () => {
     }
   }, []);
 
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
-
   const currentYear = new Date().getFullYear();
 
   return (
@@ -161,16 +154,6 @@ const Footer = () => {
             </ul>
           </div>
         </div>
-
-        {/* Back to Top Button */}
-        <button
-          onClick={scrollToTop}
-          className={styles.backToTop}
-          aria-label="Back to top"
-        >
-          <span className={styles.backToTopIcon}>↑</span>
-          <span className={styles.backToTopText}>Back to Top</span>
-        </button>
 
         {/* Footer Bottom */}
         <div className={styles.footerBottom}>

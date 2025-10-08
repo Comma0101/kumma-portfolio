@@ -34,7 +34,7 @@
   font-size: 1.8rem;
   font-weight: 900;
   text-decoration: none;
-  background: linear-gradient(135deg, #ff9f1c 0%, #800080 100%);
+  background: linear-gradient(135deg, #00BFFF 0%, #ffffff 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -44,6 +44,19 @@
 
 .logo:hover {
   opacity: 0.8;
+}
+
+/* Logo Wrapper for 3D Logo */
+.logoWrapper {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+.logoWrapper:hover {
+  opacity: 0.9;
 }
 
 /* Desktop Navigation Links */
@@ -64,7 +77,7 @@
 }
 
 .navLink:hover {
-  color: #fafafa;
+  color: #00BFFF;
 }
 
 .navLink .underline {
@@ -73,7 +86,7 @@
   left: 0;
   width: 100%;
   height: 2px;
-  background: linear-gradient(135deg, #ff9f1c 0%, #800080 100%);
+  background: #00BFFF;
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.3s ease;
@@ -84,7 +97,7 @@
 }
 
 .navLink.active {
-  color: #800080;
+  color: #00BFFF;
   font-weight: 700;
 }
 
@@ -174,12 +187,12 @@
 }
 
 .mobileLink:hover {
-  color: #fafafa;
+  color: #00BFFF;
   transform: scale(1.1);
 }
 
 .mobileLink.active {
-  background: linear-gradient(135deg, #ff9f1c 0%, #800080 100%);
+  background: linear-gradient(135deg, #00BFFF 0%, #ffffff 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -242,7 +255,7 @@
 .mobileLink:focus,
 .logo:focus,
 .menuButton:focus {
-  outline: 2px solid #800080;
+  outline: 2px solid #00BFFF;
   outline-offset: 4px;
 }
 
@@ -253,7 +266,7 @@
   left: 50%;
   transform: translateX(-50%);
   padding: 1rem 2rem;
-  background-color: #800080;
+  background-color: #00BFFF;
   color: #fafafa;
   text-decoration: none;
   font-weight: 600;

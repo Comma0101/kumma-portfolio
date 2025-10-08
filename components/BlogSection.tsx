@@ -23,10 +23,8 @@ const BlogSection = forwardRef<HTMLDivElement>((props, ref) => {
 
   const sectionRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
-  const searchBarRef = useRef<HTMLDivElement>(null);
-  const filtersRef = useRef<HTMLDivElement>(null);
-  const featuredRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<HTMLDivElement>(null);
+  const controlsRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
 
   // Handle filtering
   useEffect(() => {
@@ -45,271 +43,150 @@ const BlogSection = forwardRef<HTMLDivElement>((props, ref) => {
     setFilteredPosts(posts);
   }, [selectedCategory, searchQuery]);
 
-  // GSAP Animations
-  useGSAP(() => {
-    if (!sectionRef.current) return;
+  // GSAP Animations for new layout
+  useGSAP(
+    () => {
+      if (!sectionRef.current) return;
 
-    const section = sectionRef.current;
-
-    // Page entrance animations (run once on mount)
-    const entranceTl = gsap.timeline({
-      defaults: { ease: "power3.out" }
-    });
-
-    // Title entrance
-    if (titleRef.current) {
-      entranceTl.from(titleRef.current.querySelectorAll(".title-line"), {
-        y: 100,
-        opacity: 0,
-        rotation: -5,
-        stagger: 0.15,
-        duration: 1.2,
-      });
-    }
-
-    // Search bar entrance
-    if (searchBarRef.current) {
-      entranceTl.from(searchBarRef.current, {
+      // Entrance animation for title and subtitle
+      gsap.from([titleRef.current, `.${styles.blogSubtitle}`], {
         y: 50,
         opacity: 0,
-        scale: 0.95,
-        duration: 0.8,
-      }, "-=0.6");
-    }
+        duration: 1,
+        ease: "power3.out",
+        stagger: 0.2,
+      });
 
-    // Filters entrance
-    if (filtersRef.current) {
-      entranceTl.from(filtersRef.current.querySelectorAll(".filter-btn"), {
-        y: 30,
-        opacity: 0,
-        stagger: 0.08,
-        duration: 0.6,
-      }, "-=0.4");
-    }
+      // Entrance for controls
+      if (controlsRef.current) {
+        gsap.from(controlsRef.current, {
+          y: 30,
+          opacity: 0,
+          duration: 1,
+          delay: 0.5,
+          ease: "power3.out",
+        });
+      }
 
-    // Featured card entrance
-    if (featuredRef.current) {
-      entranceTl.from(featuredRef.current, {
-        y: 80,
-        opacity: 0,
-        scale: 0.95,
-        duration: 0.8,
-      }, "-=0.3");
-    }
-
-    // Blog cards - animate when scrolled into view
-    if (cardsRef.current) {
-      const cards = cardsRef.current.querySelectorAll(".blog-card");
-      cards.forEach((card, index) => {
-        gsap.from(card, {
-          y: 60,
+      // Staggered entrance for article entries
+      if (listRef.current) {
+        const articles = listRef.current.querySelectorAll(
+          `.${styles.articleEntry}`
+        );
+        gsap.from(articles, {
+          y: 40,
           opacity: 0,
           duration: 0.8,
           ease: "power3.out",
+          stagger: 0.1,
           scrollTrigger: {
-            trigger: card,
+            trigger: listRef.current,
             start: "top 85%",
             once: true,
           },
         });
-      });
-    }
-
-    // Parallax effects only (removed conflicting scroll-triggered animations)
-    const mm = gsap.matchMedia();
-
-    mm.add("(min-width: 769px)", () => {
-      // Subtle parallax on featured card
-      if (featuredRef.current) {
-        gsap.to(featuredRef.current, {
-          y: -30,
-          scrollTrigger: {
-            trigger: featuredRef.current,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 2,
-          },
-        });
       }
-
-      // Subtle parallax on cards
-      if (cardsRef.current) {
-        const cards = cardsRef.current.querySelectorAll(".blog-card");
-        cards.forEach((card, index) => {
-          gsap.to(card, {
-            y: -40 * (index % 2 === 0 ? 1 : 0.5),
-            scrollTrigger: {
-              trigger: card,
-              start: "top bottom",
-              end: "bottom top",
-              scrub: 2,
-            },
-          });
-        });
-      }
-
-      // Floating particles animation
-      const particles = section.querySelectorAll(
-        `.${styles.floatingParticle}`
-      );
-      particles.forEach((particle) => {
-        gsap.to(particle, {
-          y: -80,
-          x: 40,
-          scrollTrigger: {
-            trigger: section,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 3,
-          },
-        });
-      });
-    });
-
-    return () => mm.revert();
-  }, [filteredPosts]);
-
-  const featuredPosts = filteredPosts.filter((post) => post.featured);
-  const regularPosts = filteredPosts.filter((post) => !post.featured);
-  const displayFeatured = featuredPosts[0];
+    },
+    [filteredPosts]
+  );
 
   return (
     <div className={styles.blogSection} ref={ref || sectionRef}>
       <div className={styles.blogWrapper}>
         {/* Section Title */}
         <div className={styles.blogTitle} ref={titleRef}>
-          <span className={`${styles.titleLine1} title-line`}>INSIGHTS</span>
-          <span className={`${styles.titleLine2} title-line`}>& STORIES</span>
+          <span className={styles.titleLine1}>Insights</span>
+          <span className={styles.titleLine2}>& Stories</span>
         </div>
 
         {/* Subtitle */}
         <p className={styles.blogSubtitle}>
-          Exploring the intersection of code, design, and creativity
+          Exploring the intersection of code, design, and creativity.
         </p>
 
-        {/* Search Bar */}
-        <div className={styles.searchBarWrapper} ref={searchBarRef}>
-          <div className={styles.searchBar}>
-            <svg
-              className={styles.searchIcon}
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <circle cx="11" cy="11" r="8" />
-              <path d="m21 21-4.35-4.35" />
-            </svg>
-            <input
-              type="text"
-              placeholder="Search articles..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className={styles.searchInput}
-            />
-            {searchQuery && (
-              <button
-                className={styles.clearButton}
-                onClick={() => setSearchQuery("")}
-                aria-label="Clear search"
+        {/* Search and Filters */}
+        <div className={styles.controlsWrapper} ref={controlsRef}>
+          <div className={styles.searchBarWrapper}>
+            <div className={styles.searchBar}>
+              <svg
+                className={styles.searchIcon}
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
               >
-                ✕
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" />
+              </svg>
+              <input
+                type="text"
+                placeholder="Search articles..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className={styles.searchInput}
+              />
+              {searchQuery && (
+                <button
+                  className={styles.clearButton}
+                  onClick={() => setSearchQuery("")}
+                  aria-label="Clear search"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+          </div>
+          <div className={styles.categoryFilters}>
+            {categories.map((category) => (
+              <button
+                key={category}
+                className={`${styles.filterButton} ${
+                  selectedCategory === category ? styles.active : ""
+                }`}
+                onClick={() => setSelectedCategory(category)}
+              >
+                {category}
               </button>
-            )}
+            ))}
           </div>
         </div>
 
-        {/* Category Filters */}
-        <div className={styles.categoryFilters} ref={filtersRef}>
-          {categories.map((category) => (
-            <button
-              key={category}
-              className={`${styles.filterButton} ${
-                selectedCategory === category ? styles.active : ""
-              } filter-btn`}
-              onClick={() => setSelectedCategory(category)}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
-
-        {/* Featured Article */}
-        {displayFeatured && (
-          <div className={styles.featuredSection} ref={featuredRef}>
-            <Link
-              href={`/blog/${displayFeatured.slug}`}
-              className={styles.featuredCard}
-            >
-              <div className={styles.featuredBadge}>✦ Featured</div>
-              <div className={styles.featuredImagePlaceholder}>
-                <div className={styles.featuredGradient} />
-                <div className={styles.featuredCategory}>
-                  {displayFeatured.category}
-                </div>
-              </div>
-              <div className={styles.featuredContent}>
-                <h2 className={styles.featuredTitle}>{displayFeatured.title}</h2>
-                <p className={styles.featuredExcerpt}>
-                  {displayFeatured.excerpt}
-                </p>
-                <div className={styles.featuredMeta}>
-                  <span className={styles.metaItem}>
-                    📖 {displayFeatured.readingTime} min read
-                  </span>
-                  <span className={styles.metaItem}>
-                    📅 {new Date(displayFeatured.publishedDate).toLocaleDateString(
-                      "en-US",
-                      { month: "short", day: "numeric", year: "numeric" }
-                    )}
-                  </span>
-                </div>
-                <div className={styles.readMoreButton}>
-                  Read Article
-                  <span className={styles.arrow}>→</span>
-                </div>
-              </div>
-            </Link>
-          </div>
-        )}
-
-        {/* Blog Cards Grid */}
-        <div className={styles.blogGrid} ref={cardsRef}>
-          {regularPosts.length > 0 ? (
-            regularPosts.map((post) => (
+        {/* Articles List */}
+        <div className={styles.articlesList} ref={listRef}>
+          {filteredPosts.length > 0 ? (
+            filteredPosts.map((post) => (
               <Link
                 key={post.id}
                 href={`/blog/${post.slug}`}
-                className={`${styles.blogCard} blog-card`}
+                className={styles.articleEntry}
               >
-                <div className={styles.cardBadge}>{post.category}</div>
-                <div className={styles.cardImagePlaceholder}>
-                  <div className={styles.cardGradient} />
+                <div className={styles.articleContent}>
+                  <h3 className={styles.articleTitle}>{post.title}</h3>
+                  <p className={styles.articleExcerpt}>{post.excerpt}</p>
                 </div>
-                <div className={styles.cardContent}>
-                  <h3 className={styles.cardTitle}>{post.title}</h3>
-                  <p className={styles.cardExcerpt}>{post.excerpt}</p>
-                  <div className={styles.cardTags}>
-                    {post.tags.slice(0, 3).map((tag) => (
-                      <span key={tag} className={styles.tag}>
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                  <div className={styles.cardMeta}>
-                    <span className={styles.metaItem}>
-                      📖 {post.readingTime} min
+                <div className={styles.articleMeta}>
+                  <span className={styles.articleCategory}>
+                    {post.category}
+                  </span>
+                  <span className={styles.articleDate}>
+                    {new Date(post.publishedDate).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </span>
+                  <span className={styles.articleReadingTime}>
+                    {post.readingTime} min read
+                  </span>
+                </div>
+                <div className={styles.articleTags}>
+                  {post.tags.slice(0, 4).map((tag) => (
+                    <span key={tag} className={styles.tag}>
+                      {tag}
                     </span>
-                    <span className={styles.metaItem}>
-                      📅{" "}
-                      {new Date(post.publishedDate).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </span>
-                  </div>
+                  ))}
                 </div>
               </Link>
             ))
@@ -330,11 +207,6 @@ const BlogSection = forwardRef<HTMLDivElement>((props, ref) => {
             </div>
           )}
         </div>
-
-        {/* Floating Decorative Elements */}
-        <div className={`${styles.floatingParticle} ${styles.particle1}`} />
-        <div className={`${styles.floatingParticle} ${styles.particle2}`} />
-        <div className={`${styles.floatingParticle} ${styles.particle3}`} />
       </div>
     </div>
   );

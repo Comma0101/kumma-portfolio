@@ -48,6 +48,13 @@ const ThreeScene = ({ scrollY }: { scrollY: React.MutableRefObject<number> }) =>
     rendererRef.current = renderer;
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0x000000, 0);
+    // Ensure canvas is properly styled for transparency
+    if (renderer.domElement.style) {
+      renderer.domElement.style.position = 'absolute';
+      renderer.domElement.style.top = '0';
+      renderer.domElement.style.left = '0';
+      renderer.domElement.style.pointerEvents = 'none';
+    }
     mountRef.current.appendChild(renderer.domElement);
 
     const cols = 50; // Reduced from 100 for better performance
@@ -64,10 +71,11 @@ const ThreeScene = ({ scrollY }: { scrollY: React.MutableRefObject<number> }) =>
     geometryRef.current = geometry;
 
     const material = new THREE.MeshBasicMaterial({
-      color: 0x800080,
+      color: 0xfafafa,
       wireframe: true,
       transparent: true,
       opacity: 0.7,
+      vertexColors: true,
     });
     materialRef.current = material;
 
@@ -77,6 +85,19 @@ const ThreeScene = ({ scrollY }: { scrollY: React.MutableRefObject<number> }) =>
     terrain.position.y = -50;
     scene.add(terrain);
     camera.lookAt(terrain.position);
+
+    const initialColors = new Float32Array(cols * rows * 3);
+    const energies = new Float32Array(cols * rows);
+    for (let i = 0; i < initialColors.length; i += 3) {
+      initialColors[i] = 1;
+      initialColors[i + 1] = 1;
+      initialColors[i + 2] = 1;
+    }
+    for (let i = 0; i < energies.length; i++) {
+      energies[i] = 0;
+    }
+    geometry.setAttribute('color', new THREE.BufferAttribute(initialColors, 3));
+    geometry.setAttribute('energy', new THREE.BufferAttribute(energies, 1));
 
     const updateTerrain = () => {
       flyingRef.current -= 0.01;
@@ -104,6 +125,30 @@ const ThreeScene = ({ scrollY }: { scrollY: React.MutableRefObject<number> }) =>
         updateTerrain();
       }
       frameCountRef.current++;
+
+      // Update colors based on energy decay
+      const colorAttribute = geometry.attributes.color as THREE.BufferAttribute;
+      const energyAttribute = geometry.attributes.energy as THREE.BufferAttribute;
+      const accentColor = new THREE.Color("#39FF14");
+      const baseColor = new THREE.Color(0xffffff);
+      let needsUpdate = false;
+
+      for (let i = 0; i < energyAttribute.count; i++) {
+        let energy = energyAttribute.getX(i);
+        if (energy > 0.001) { // Performance threshold
+          const currentColor = new THREE.Color().lerpColors(baseColor, accentColor, energy);
+          colorAttribute.setXYZ(i, currentColor.r, currentColor.g, currentColor.b);
+          
+          // Decay energy
+          energyAttribute.setX(i, energy * 0.96); // Adjust for desired fade speed
+          needsUpdate = true;
+        }
+      }
+
+      if (needsUpdate) {
+        colorAttribute.needsUpdate = true;
+        energyAttribute.needsUpdate = true;
+      }
       
       camera.position.y = 50 - scrollY.current * 0.2;
       camera.rotation.z = -scrollY.current * 0.0001;
@@ -130,11 +175,44 @@ const ThreeScene = ({ scrollY }: { scrollY: React.MutableRefObject<number> }) =>
       renderer.setSize(window.innerWidth, window.innerHeight);
     };
 
+    const mouse = new THREE.Vector2();
+    const raycaster = new THREE.Raycaster();
+
+    const handleMouseMove = (event: MouseEvent) => {
+      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObject(terrain);
+
+      if (intersects.length > 0) {
+        const intersectionPoint = intersects[0].point;
+        const energyAttribute = geometry.attributes.energy as THREE.BufferAttribute;
+        const positionAttribute = geometry.attributes.position as THREE.BufferAttribute;
+        const radius = 40;
+
+        for (let i = 0; i < positionAttribute.count; i++) {
+          const vertex = new THREE.Vector3().fromBufferAttribute(positionAttribute, i);
+          // Transform vertex to world space to compare with intersection point
+          vertex.applyMatrix4(terrain.matrixWorld);
+          const distance = vertex.distanceTo(intersectionPoint);
+
+          if (distance < radius) {
+            // Set energy to max
+            energyAttribute.setX(i, 1.0);
+          }
+        }
+        energyAttribute.needsUpdate = true;
+      }
+    };
+
     window.addEventListener("resize", handleResize);
+    window.addEventListener("mousemove", handleMouseMove);
     animate();
 
     return () => {
       window.removeEventListener("resize", handleResize);
+      window.removeEventListener("mousemove", handleMouseMove);
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }

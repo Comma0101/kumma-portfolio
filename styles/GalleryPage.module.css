@@ -1,12 +1,9 @@
 /* GalleryPage.module.css */
 .galleryPage {
-  /* Remove padding, let the container handle full space */
-  /* padding: 20px; */
   position: relative;
-  width: 100vw; /* Ensure full viewport width */
-  height: 300vh; /* Ensure full viewport height */
-  background-color: #000; /* Pure black background */
-  overflow: hidden; /* Hide anything outside the main container */
+  width: 100%;
+  background-color: #000;
+  overflow-x: hidden;
 }
 
 /* Grain effect */
@@ -49,16 +46,13 @@
 
 /* Container for the WebGL Canvas */
 .webglContainer {
-  position: fixed; /* Lock to the viewport */
-  top: 0;
-  left: 0;
+  position: relative;
   width: 100vw;
   height: 100vh;
-  overflow: hidden; /* Crucial to hide parts of meshes outside */
-  z-index: 1; /* Behind title but above page background */
-  opacity: 1; /* Visible by default - GSAP will animate from 0 */
-  pointer-events: auto; /* Interactive */
-  background-color: #111; /* Match scene clear color */
+  z-index: 1;
+  opacity: 1;
+  pointer-events: auto;
+  background-color: #111;
 }
 
 /* Style the canvas itself if needed, though Three.js usually handles it */
@@ -73,6 +67,43 @@
 .galleryGrid { ... }
 .galleryImage { ... }
 */
+
+/* --- Loading Overlay Styles --- */
+.loadingOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #111;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  color: #eee;
+  font-size: 1.2rem;
+  transition: opacity 0.5s ease-out;
+}
+
+.loadingSpinner {
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top: 4px solid #eee;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 
 @keyframes grain {
   0% {

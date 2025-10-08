@@ -2,9 +2,9 @@
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import gsap from "gsap";
-import styles from "../styles/PhotoGallery.module.css";
 import { FC } from "react";
 import { MenuItemData } from "./menuItems";
+import styles from "../styles/MenuItem.module.css";
 
 // interface MenuItemProps {
 //   item: MenuItemData;

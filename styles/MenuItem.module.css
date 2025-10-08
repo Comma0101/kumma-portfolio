@@ -1,0 +1,47 @@
+.menuItem {
+  position: relative;
+  cursor: pointer;
+  padding: 10px;
+  color: #fff;
+  text-align: center;
+}
+
+.menuItemText {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.menuItemTextInner {
+  display: inline-block;
+}
+
+.menuItemSub {
+  display: block;
+  font-size: 0.9rem;
+  color: #aaa;
+}
+
+.hoverReveal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 150px;
+  height: 200px;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.hoverRevealInner {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.hoverRevealImage {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+}
