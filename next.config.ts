@@ -7,8 +7,6 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  basePath: "/kumma-portfolio",
-  assetPrefix: "/kumma-portfolio",
 }
 
 module.exports = nextConfig
