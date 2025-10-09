@@ -1,13 +1,21 @@
 import { projects } from "@/data/projectData";
 import { notFound } from "next/navigation";
 import styles from "@/styles/projects.module.css";
+import { NextPage } from "next";
+
+export async function generateStaticParams() {
+  return projects.map((project) => ({
+    slug: project.slug,
+  }));
+}
 
 type Props = {
   params: { slug: string };
 };
 
-export default function ProjectPage({ params }: Props) {
-  const project = projects.find((p) => p.slug === params.slug);
+const ProjectPage: NextPage<Props> = async ({ params }) => {
+  const awaitedParams = await params;
+  const project = projects.find((p) => p.slug === awaitedParams.slug);
 
   if (!project) {
     notFound();
@@ -19,4 +27,6 @@ export default function ProjectPage({ params }: Props) {
       <p>{project.details}</p>
     </div>
   );
-}
+};
+
+export default ProjectPage;

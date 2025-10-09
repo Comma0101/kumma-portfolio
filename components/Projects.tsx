@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -10,11 +10,18 @@ import { projects } from "@/data/projectData";
 gsap.registerPlugin(ScrollTrigger);
 
 const Projects = () => {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   const containerRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
 
   useGSAP(
     () => {
+      if (!isClient) return;
       // Title animation
       gsap.fromTo(
         titleRef.current,
@@ -61,8 +68,12 @@ const Projects = () => {
         );
       });
     },
-    { scope: containerRef }
+    { scope: containerRef, dependencies: [isClient] }
   );
+
+  if (!isClient) {
+    return null; // Or a loading spinner
+  }
 
   return (
     <div

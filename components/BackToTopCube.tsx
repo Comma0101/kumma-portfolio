@@ -4,7 +4,7 @@ import gsap from "gsap";
 import styles from "../styles/BackToTopCube.module.css";
 
 const BackToTopCube = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLButtonElement>(null);
   const cuboidRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 

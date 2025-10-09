@@ -1,5 +1,5 @@
 import React from "react";
-import BlogSection from "@/components/BlogSection";
+import BlogSection from "../../components/BlogSection";
 
 export const metadata = {
   title: "Blog | KUMMA - Insights & Stories",

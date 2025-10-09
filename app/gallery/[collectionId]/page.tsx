@@ -1,11 +1,16 @@
 import GalleryPage from "@/components/GalleryPage";
 
-const GalleryCollectionPage = async ({
+export async function generateStaticParams() {
+  // In a real application, you would fetch this data from a CMS or database.
+  return [{ collectionId: "collection1" }, { collectionId: "collection2" }];
+}
+
+const GalleryCollectionPage = ({
   params,
 }: {
-  params: Promise<{ collectionId: string }>;
+  params: { collectionId: string };
 }) => {
-  const { collectionId } = await params;
+  const { collectionId } = params;
   return <GalleryPage collectionId={collectionId} />;
 };
 
