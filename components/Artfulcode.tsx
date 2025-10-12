@@ -29,7 +29,7 @@ const Artfulcode: FC = () => {
       >
         {projects.map((project, index) => (
           <div key={project.id} className={styles.projectItem}>
-            {index === currentIndex && <project.canvasComponent />}
+            {/* {index === currentIndex && <project.canvasComponent />} */}
             <div className={styles.projectTitle}>{project.title}</div>
           </div>
         ))}
