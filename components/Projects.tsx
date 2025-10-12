@@ -10,18 +10,11 @@ import { projects } from "@/data/projectData";
 gsap.registerPlugin(ScrollTrigger);
 
 const Projects = () => {
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
   const containerRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
 
   useGSAP(
     () => {
-      if (!isClient) return;
       // Title animation
       gsap.fromTo(
         titleRef.current,
@@ -68,17 +61,19 @@ const Projects = () => {
         );
       });
     },
-    { scope: containerRef, dependencies: [isClient] }
+    { scope: containerRef }
   );
-
-  if (!isClient) {
-    return null; // Or a loading spinner
-  }
 
   return (
     <div
       ref={containerRef}
       className={`${styles.projectsContainer} section-background`}
+      style={{ opacity: 0, transition: "opacity 1s" }}
+      onLoad={() => {
+        if (containerRef.current) {
+          containerRef.current.style.opacity = "1";
+        }
+      }}
     >
       <div className={styles.projectsWrapper}>
         <h2 ref={titleRef} className={styles.projectsTitle}>
