@@ -12,27 +12,33 @@ const Footer = () => {
 
   useGSAP(() => {
     if (footerRef.current) {
-      // Animate footer elements on scroll into view
+      // Optional: Animate footer elements on scroll into view
+      // Elements start visible (opacity: 1 in CSS), animation is just enhancement
       const footerElements = footerRef.current.querySelectorAll(`.${styles.footerColumn}, .${styles.footerBottom}`);
       
-      gsap.fromTo(footerElements, 
-        {
-          y: 30,
-          opacity: 0,
-        },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          stagger: 0.1,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: footerRef.current,
-            start: "top 90%",
-            toggleActions: "play none none reverse",
+      // Only animate if ScrollTrigger is available and working
+      try {
+        gsap.fromTo(footerElements, 
+          {
+            y: 20,
+            opacity: 1, // Start visible
           },
-        }
-      );
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.6,
+            stagger: 0.08,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: footerRef.current,
+              start: "top 95%",
+              once: true, // Only animate once
+            },
+          }
+        );
+      } catch (error) {
+        console.warn('ScrollTrigger animation failed, footer remains visible', error);
+      }
     }
   }, []);
 
