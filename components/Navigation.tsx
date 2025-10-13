@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -25,6 +26,7 @@ const navLinks: NavLink[] = [
 ];
 
 const Navigation = () => {
+  const router = useRouter();
   const navRef = useRef<HTMLElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const linksRef = useRef<HTMLDivElement>(null);
@@ -83,24 +85,20 @@ const Navigation = () => {
 
   // Smart scroll to section - handles both home page and other pages
   const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+
     // If it's a page route (starts with /), let the default behavior happen
     if (href.startsWith("/")) {
-      // Close mobile menu if open
-      if (isMenuOpen) {
-        setIsMenuOpen(false);
-      }
-      return; // Let the link navigate normally
+      if (isMenuOpen) setIsMenuOpen(false);
+      // Note: We let TransitionLink handle the navigation for page routes
+      return;
     }
-
-    e.preventDefault();
     
-    // Check if we're on the home page
     const isHomePage = window.location.pathname === "/";
-    
+    const targetId = href.substring(1);
+
     if (isHomePage) {
-      // On home page - smooth scroll to section
-      const element = document.querySelector(href);
-      
+      const element = document.getElementById(targetId);
       if (element) {
         const offsetTop = element.getBoundingClientRect().top + window.pageYOffset;
         window.scrollTo({
@@ -109,11 +107,20 @@ const Navigation = () => {
         });
       }
     } else {
-      // On other page - navigate to home with hash anchor
-      window.location.href = `/${href}`;
+      router.push("/");
+      // After navigating, wait for the next frame to scroll
+      requestAnimationFrame(() => {
+        const element = document.getElementById(targetId);
+        if (element) {
+          const offsetTop = element.getBoundingClientRect().top + window.pageYOffset;
+          window.scrollTo({
+            top: offsetTop - 80,
+            behavior: "smooth",
+          });
+        }
+      });
     }
     
-    // Close mobile menu if open
     if (isMenuOpen) {
       setIsMenuOpen(false);
     }
@@ -126,14 +133,19 @@ const Navigation = () => {
     const isHomePage = window.location.pathname === "/";
     
     if (isHomePage) {
-      // On home page - smooth scroll to top
       window.scrollTo({
         top: 0,
         behavior: "smooth",
       });
     } else {
-      // On other page - navigate to home
-      window.location.href = "/";
+      router.push("/");
+      // After navigating, wait for the next frame to scroll to top
+      requestAnimationFrame(() => {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      });
     }
   };
 
