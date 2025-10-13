@@ -15,17 +15,24 @@ const Footer = () => {
       // Animate footer elements on scroll into view
       const footerElements = footerRef.current.querySelectorAll(`.${styles.footerColumn}, .${styles.footerBottom}`);
       
-      gsap.from(footerElements, {
-        y: 50,
-        opacity: 0,
-        stagger: 0.15,
-        scrollTrigger: {
-          trigger: footerRef.current,
-          start: "top 85%",
-          end: "top 65%",
-          scrub: 1,
+      gsap.fromTo(footerElements, 
+        {
+          y: 30,
+          opacity: 0,
         },
-      });
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          stagger: 0.1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: footerRef.current,
+            start: "top 90%",
+            toggleActions: "play none none reverse",
+          },
+        }
+      );
     }
   }, []);
 

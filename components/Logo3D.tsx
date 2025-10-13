@@ -13,10 +13,16 @@ const Logo3D = () => {
   useEffect(() => {
     if (!containerRef.current || !cuboidRef.current) return;
 
-    // Initial animation on mount
-    gsap.from(cuboidRef.current, {
+    // Set initial state
+    gsap.set(cuboidRef.current, {
       rotateX: -90,
       opacity: 0,
+    });
+
+    // Animate to final state
+    gsap.to(cuboidRef.current, {
+      rotateX: 0,
+      opacity: 1,
       duration: 1,
       ease: "power4.out",
       delay: 0.3,
@@ -44,9 +50,9 @@ const Logo3D = () => {
       rotateX: -360,
       ease: "none",
       scrollTrigger: {
-        trigger: "body",
+        trigger: document.documentElement,
         start: "top top",
-        end: "bottom bottom",
+        end: "+=5000", // Rotate over 5000px of scrolling
         scrub: 2,
       },
     });

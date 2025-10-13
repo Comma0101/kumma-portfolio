@@ -18,9 +18,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <SmoothScrollProvider>
             <Navigation />
             {children}
-            <Footer />
-            <BackToTopCube />
           </SmoothScrollProvider>
+          <Footer />
+          <BackToTopCube />
         </PageTransitionProvider>
       </body>
     </html>

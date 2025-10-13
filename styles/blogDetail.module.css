@@ -5,7 +5,8 @@
 .blogDetailPage {
   background-color: #ffffff;
   color: #1a1a1a;
-  padding: 4rem 4%;
+  padding: 4rem 4% 4rem;
+  min-height: calc(100vh - 200px);
 }
 
 /* ============================================
@@ -235,6 +236,13 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
+  padding: 0;
+}
+
+.shareButton svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
 }
 
 .shareButton:hover {

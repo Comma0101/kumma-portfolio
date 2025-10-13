@@ -94,6 +94,7 @@
 .footerColumn {
   display: flex;
   flex-direction: column;
+  opacity: 1;
 }
 
 .footerTitle {
@@ -262,6 +263,7 @@
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding-top: 3rem;
   margin-top: 4rem;
+  opacity: 1;
 }
 
 .footerBottomContent {

@@ -2,6 +2,7 @@
 .galleryPage {
   position: relative;
   width: 100%;
+  min-height: calc(100vh - 200px);
   background-color: #000;
   overflow-x: hidden;
 }
@@ -48,7 +49,7 @@
 .webglContainer {
   position: relative;
   width: 100vw;
-  height: 100vh;
+  min-height: calc(100vh - 200px);
   z-index: 1;
   opacity: 1;
   pointer-events: auto;

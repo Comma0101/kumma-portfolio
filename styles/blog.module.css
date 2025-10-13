@@ -3,8 +3,8 @@
    ============================================ */
 
 .blogSection {
-  min-height: 100vh;
-  padding: 6rem 4%;
+  min-height: calc(100vh - 200px);
+  padding: 6rem 4% 4rem;
   background-color: #ffffff;
   color: #1a1a1a;
   position: relative;
