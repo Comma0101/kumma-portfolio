@@ -8,6 +8,7 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { menuItems } from "./menuItems";
 import styles from "../styles/GalleryPage.module.css";
+import SlicedText from "./SlicedTextEffect/SlicedText";
 
 // Simple Math Lerp function (if not available elsewhere)
 // Consider moving to a utils file if used in multiple places
@@ -486,9 +487,17 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
         </div>
       )}
       {title && <h1 ref={titleRef} className={styles.pageTitle}>{title}</h1>}
-      {/* Container for the Three.js Canvas */}
       <div ref={mountRef} className={styles.webglContainer}>
         {/* Canvas will be appended here by Three.js */}
+      </div>
+      <div style={{ position: 'relative', zIndex: 2 }}>
+        <div className={styles.spacer}></div>
+        <SlicedText text="Explore" effect="1" tag="h2" className={styles.slicedText} />
+        <div className={styles.spacer}></div>
+        <SlicedText text="The" effect="2" tag="h2" className={styles.slicedText} />
+        <div className={styles.spacer}></div>
+        <SlicedText text="Gallery" effect="3" tag="h2" className={styles.slicedText} />
+        <div className={styles.spacer}></div>
       </div>
     </div>
   );

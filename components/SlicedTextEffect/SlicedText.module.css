@@ -1,0 +1,30 @@
+.gtext {
+	line-height: 1;
+	margin: 0;
+	display: grid;
+	font-weight: 400;
+	justify-content: center;
+	white-space: nowrap;
+	--text-width: 100px;
+	--gsplits: 4;
+	--gcolor: #fff;
+	--gsize: 4rem;
+	font-size: var(--gsize);
+	color: var(--gcolor);
+	--offset: calc(var(--text-width) / var(--gsplits));
+	grid-template-columns: repeat(var(--gsplits),var(--offset));
+}
+
+.gtextBox {
+	overflow: hidden;
+	position: relative;
+	will-change: transform;
+	margin-right:-0.5px;
+}
+
+.gtextBoxInner {
+	width: max-content;
+	position: relative;
+	display: block;	
+	will-change: transform;
+}

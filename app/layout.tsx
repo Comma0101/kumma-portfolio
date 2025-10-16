@@ -1,4 +1,4 @@
-import { Roboto_Mono } from "next/font/google";
+import { Roboto_Mono, Bebas_Neue } from "next/font/google";
 import '../src/app/globals.css';
 import '../styles/index.css';
 import '../styles/app.css';
@@ -9,11 +9,12 @@ import SmoothScrollProvider from '../components/SmoothScrollProvider';
 import { PageTransitionProvider } from "@/components/PageTransition";
 
 const robotoMono = Roboto_Mono({ subsets: ["latin"] });
+const bebasNeue = Bebas_Neue({ subsets: ["latin"], weight: "400" });
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={robotoMono.className} suppressHydrationWarning>
+      <body className={`${robotoMono.className} ${bebasNeue.className}`} suppressHydrationWarning>
         <PageTransitionProvider>
           <SmoothScrollProvider>
             <Navigation />
