@@ -6,7 +6,11 @@ import styles from "../styles/logo3D.module.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const Logo3D = () => {
+interface Logo3DProps {
+  onReady?: () => void;
+}
+
+const Logo3D = ({ onReady }: Logo3DProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const cuboidRef = useRef<HTMLDivElement>(null);
 
@@ -25,7 +29,12 @@ const Logo3D = () => {
       opacity: 1,
       duration: 1,
       ease: "power4.out",
-      delay: 0.3,
+      delay: 0, // Removed delay
+      onComplete: () => {
+        if (onReady) {
+          onReady();
+        }
+      },
     });
 
     // Subtle continuous wobble
