@@ -16,6 +16,34 @@ import styles from "@/styles/blog.module.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Helper component to highlight search queries
+const Highlight = ({
+  text,
+  highlight,
+}: {
+  text: string;
+  highlight: string;
+}) => {
+  if (!highlight.trim()) {
+    return <span>{text}</span>;
+  }
+  const regex = new RegExp(`(${highlight})`, "gi");
+  const parts = text.split(regex);
+  return (
+    <span>
+      {parts.map((part, i) =>
+        regex.test(part) ? (
+          <mark key={i} className={styles.highlight}>
+            {part}
+          </mark>
+        ) : (
+          part
+        )
+      )}
+    </span>
+  );
+};
+
 const BlogSection = forwardRef<HTMLDivElement>((props, ref) => {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -28,75 +56,77 @@ const BlogSection = forwardRef<HTMLDivElement>((props, ref) => {
 
   // Handle filtering
   useEffect(() => {
-    let posts = blogPosts;
+    const handler = setTimeout(() => {
+      let posts = blogPosts;
 
-    // Apply category filter
-    if (selectedCategory !== "All") {
-      posts = getPostsByCategory(selectedCategory);
-    }
+      // Apply category filter first
+      if (selectedCategory !== "All") {
+        posts = getPostsByCategory(selectedCategory);
+      }
 
-    // Apply search filter
-    if (searchQuery.trim() !== "") {
-      posts = searchPosts(searchQuery);
-    }
+      // Then, apply search filter on the result of the category filter
+      if (searchQuery.trim() !== "") {
+        posts = searchPosts(searchQuery, posts);
+      }
 
-    setFilteredPosts(posts);
+      setFilteredPosts(posts);
+    }, 300); // 300ms debounce delay
+
+    return () => {
+      clearTimeout(handler);
+    };
   }, [selectedCategory, searchQuery]);
 
   // GSAP Animations for new layout
-  useGSAP(
-    () => {
-      if (!sectionRef.current) return;
+  useGSAP(() => {
+    if (!sectionRef.current) return;
 
-      // Entrance animation for title and subtitle
-      gsap.from([titleRef.current, `.${styles.blogSubtitle}`], {
-        y: 50,
+    // Entrance animation for title and subtitle
+    gsap.from([titleRef.current, `.${styles.blogSubtitle}`], {
+      y: 50,
+      opacity: 0,
+      duration: 1,
+      ease: "power3.out",
+      stagger: 0.2,
+    });
+
+    // Entrance for controls
+    if (controlsRef.current) {
+      gsap.from(controlsRef.current, {
+        y: 30,
         opacity: 0,
         duration: 1,
+        delay: 0.5,
         ease: "power3.out",
-        stagger: 0.2,
       });
+    }
 
-      // Entrance for controls
-      if (controlsRef.current) {
-        gsap.from(controlsRef.current, {
-          y: 30,
-          opacity: 0,
-          duration: 1,
-          delay: 0.5,
-          ease: "power3.out",
-        });
-      }
-
-      // Staggered entrance for article entries
-      if (listRef.current) {
-        const articles = listRef.current.querySelectorAll(
-          `.${styles.articleEntry}`
-        );
-        gsap.from(articles, {
-          y: 40,
-          opacity: 0,
-          duration: 0.8,
-          ease: "power3.out",
-          stagger: 0.1,
-          scrollTrigger: {
-            trigger: listRef.current,
-            start: "top 85%",
-            once: true,
-          },
-        });
-      }
-    },
-    [filteredPosts]
-  );
+    // Staggered entrance for article entries
+    if (listRef.current) {
+      const articles = listRef.current.querySelectorAll(
+        `.${styles.articleEntry}`
+      );
+      gsap.from(articles, {
+        y: 40,
+        opacity: 0,
+        duration: 0.8,
+        ease: "power3.out",
+        stagger: 0.1,
+        scrollTrigger: {
+          trigger: listRef.current,
+          start: "top 85%",
+          once: true,
+        },
+      });
+    }
+  }, [filteredPosts]);
 
   return (
     <div className={styles.blogSection} ref={ref || sectionRef}>
       <div className={styles.blogWrapper}>
         {/* Section Title */}
         <div className={styles.blogTitle} ref={titleRef}>
-          <span className={styles.titleLine1}>Insights</span>
-          <span className={styles.titleLine2}>& Stories</span>
+          <span className={styles.titleLine1}>Insights & Stories</span>
         </div>
 
         {/* Subtitle */}
@@ -139,6 +169,14 @@ const BlogSection = forwardRef<HTMLDivElement>((props, ref) => {
             </div>
           </div>
           <div className={styles.categoryFilters}>
+            <button
+              className={`${styles.filterButton} ${
+                selectedCategory === "All" ? styles.active : ""
+              }`}
+              onClick={() => setSelectedCategory("All")}
+            >
+              All
+            </button>
             {categories.map((category) => (
               <button
                 key={category}
@@ -163,8 +201,12 @@ const BlogSection = forwardRef<HTMLDivElement>((props, ref) => {
                 className={styles.articleEntry}
               >
                 <div className={styles.articleContent}>
-                  <h3 className={styles.articleTitle}>{post.title}</h3>
-                  <p className={styles.articleExcerpt}>{post.excerpt}</p>
+                  <h3 className={styles.articleTitle}>
+                    <Highlight text={post.title} highlight={searchQuery} />
+                  </h3>
+                  <p className={styles.articleExcerpt}>
+                    <Highlight text={post.excerpt} highlight={searchQuery} />
+                  </p>
                 </div>
                 <div className={styles.articleMeta}>
                   <span className={styles.articleCategory}>

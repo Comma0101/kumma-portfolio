@@ -21,7 +21,8 @@ export const blogPosts: BlogPost[] = [
     id: "9",
     slug: "camus-the-stranger-analysis",
     title: "The Outsider's Truth: An Analysis of Camus's The Stranger",
-    excerpt: "A deep dive into Albert Camus's The Stranger, exploring themes of authenticity, the absurd, and finding freedom in a world that demands conformity.",
+    excerpt:
+      "A deep dive into Albert Camus's The Stranger, exploring themes of authenticity, the absurd, and finding freedom in a world that demands conformity.",
     content: `# The Outsider's Truth: Finding Freedom in a Senseless World
 
 Albert Camus's The Stranger is not a comfortable read. It introduces us to a protagonist, Meursault, whose detachment in the face of life’s pivotal moments—be it his mother’s death or a proposal of marriage—is profoundly unsettling. Yet, as our discussion has revealed, the novel is far more than a portrait of an alienated man. It is a masterful phenomenological exploration of what it means to be authentic in a world that demands conformity. Through Meursault's journey from passive observer to a conscious rebel, Camus argues that true freedom is found not in discovering life's meaning, but in courageously embracing its absence.
@@ -36,7 +37,13 @@ This leads to the novel's breathtaking conclusion, where Meursault transforms fr
 
 In the end, The Stranger suggests that enlightenment comes not from looking up to the heavens for answers, but from looking around at the world and accepting its "gentle indifference." Meursault's final wish—to be greeted by cries of hate at his execution—is the ultimate acceptance of his outsider status. It is a final, triumphant confirmation that he has lived and will die by his own truth. The book teaches us that while society may demand reasons, authenticity lies in honoring our own raw experience, and that in the heart of a meaningless world, a passionate, conscious life is its own powerful, defiant meaning.`,
     category: "Insights",
-    tags: ["Albert Camus", "The Stranger", "Existentialism", "Philosophy", "Literature"],
+    tags: [
+      "Albert Camus",
+      "The Stranger",
+      "Existentialism",
+      "Philosophy",
+      "Literature",
+    ],
     author: { name: "KUMMA" },
     publishedDate: "2025-10-13",
     readingTime: 7,
@@ -46,7 +53,8 @@ In the end, The Stranger suggests that enlightenment comes not from looking up t
     id: "1",
     slug: "generative-art-with-code",
     title: "The Art of Generative Design",
-    excerpt: "Exploring the intersection of code and creativity to produce unique visual art through algorithms and mathematical beauty.",
+    excerpt:
+      "Exploring the intersection of code and creativity to produce unique visual art through algorithms and mathematical beauty.",
     content: `# The Art of Generative Design
 
 Generative art represents the perfect marriage between code and creativity. It's not just about writing algorithms—it's about teaching computers to be creative partners in the artistic process.
@@ -77,7 +85,8 @@ Generative art is more than just a technical exercise—it's a new form of artis
     id: "2",
     slug: "mastering-gsap-animations",
     title: "Mastering GSAP for Web Animations",
-    excerpt: "A comprehensive guide to creating buttery-smooth, performant animations using GreenSock Animation Platform.",
+    excerpt:
+      "A comprehensive guide to creating buttery-smooth, performant animations using GreenSock Animation Platform.",
     content: `# Mastering GSAP for Web Animations
 
 GSAP (GreenSock Animation Platform) is the gold standard for web animations. If you want silky-smooth, professional-grade animations, GSAP is your best friend.
@@ -111,7 +120,8 @@ GSAP's timeline feature allows you to orchestrate complex animation sequences wi
     id: "3",
     slug: "future-of-3d-web",
     title: "The Future of UI/UX: 3D on the Web",
-    excerpt: "How WebGL, Three.js, and WebGPU are revolutionizing user interfaces and creating immersive web experiences.",
+    excerpt:
+      "How WebGL, Three.js, and WebGPU are revolutionizing user interfaces and creating immersive web experiences.",
     content: `# The Future of UI/UX: 3D on the Web
 
 The web is evolving from flat, 2D interfaces to rich, immersive 3D experiences. Technologies like WebGL, Three.js, and the upcoming WebGPU are making this possible.
@@ -150,7 +160,8 @@ WebGPU promises even better performance and more control. It's not just about gr
     id: "4",
     slug: "react-19-new-features",
     title: "React 19: Game-Changing Features",
-    excerpt: "Exploring the latest features in React 19, including the new compiler, improved Server Components, and enhanced performance.",
+    excerpt:
+      "Exploring the latest features in React 19, including the new compiler, improved Server Components, and enhanced performance.",
     content: `# React 19: Game-Changing Features
 
 React 19 brings revolutionary changes that fundamentally improve how we build React applications. Let's dive into the most impactful features.
@@ -185,7 +196,8 @@ While React 19 is backward compatible, it's worth taking time to optimize your c
     id: "5",
     slug: "design-systems-2025",
     title: "Building Modern Design Systems",
-    excerpt: "Best practices for creating scalable, maintainable design systems that grow with your product and team.",
+    excerpt:
+      "Best practices for creating scalable, maintainable design systems that grow with your product and team.",
     content: `# Building Modern Design Systems
 
 A well-crafted design system is the foundation of consistent, scalable product development. It's more than just a style guide—it's a living language that evolves with your product.
@@ -231,7 +243,8 @@ A design system is never "done." It requires continuous maintenance, updates, an
     id: "6",
     slug: "typescript-advanced-patterns",
     title: "Advanced TypeScript Patterns",
-    excerpt: "Deep dive into advanced TypeScript patterns, generics, and type manipulation techniques for building robust applications.",
+    excerpt:
+      "Deep dive into advanced TypeScript patterns, generics, and type manipulation techniques for building robust applications.",
     content: `# Advanced TypeScript Patterns
 
 TypeScript's type system is incredibly powerful. Let's explore advanced patterns that will level up your TypeScript game.
@@ -293,7 +306,8 @@ function isUser(obj: any): obj is User {
     id: "7",
     slug: "performance-optimization-nextjs",
     title: "Next.js Performance Optimization",
-    excerpt: "Comprehensive guide to optimizing Next.js applications for lightning-fast load times and exceptional user experience.",
+    excerpt:
+      "Comprehensive guide to optimizing Next.js applications for lightning-fast load times and exceptional user experience.",
     content: `# Next.js Performance Optimization
 
 Next.js is fast out of the box, but there's always room for optimization. Let's explore techniques to make your Next.js app blazingly fast.
@@ -355,7 +369,8 @@ Performance optimization is an ongoing process. Regular audits and monitoring he
     id: "8",
     slug: "creative-coding-mathematics",
     title: "The Mathematics of Creative Coding",
-    excerpt: "Understanding the mathematical concepts that power stunning visual effects and generative art systems.",
+    excerpt:
+      "Understanding the mathematical concepts that power stunning visual effects and generative art systems.",
     content: `# The Mathematics of Creative Coding
 
 Behind every beautiful generative art piece lies elegant mathematics. Understanding these concepts unlocks infinite creative possibilities.
@@ -423,26 +438,27 @@ These concepts power:
   },
 ];
 
-export const categories = ["All", "Development", "Design", "Tutorial", "Insights"];
+export const categories = ["Development", "Design", "Tutorial", "Insights"];
 
 export function getBlogPostBySlug(slug: string): BlogPost | undefined {
-  return blogPosts.find(post => post.slug === slug);
+  return blogPosts.find((post) => post.slug === slug);
 }
 
 export function getFeaturedPosts(): BlogPost[] {
-  return blogPosts.filter(post => post.featured);
+  return blogPosts.filter((post) => post.featured);
 }
 
 export function getPostsByCategory(category: string): BlogPost[] {
   if (category === "All") return blogPosts;
-  return blogPosts.filter(post => post.category === category);
+  return blogPosts.filter((post) => post.category === category);
 }
 
-export function searchPosts(query: string): BlogPost[] {
+export function searchPosts(query: string, posts: BlogPost[]): BlogPost[] {
   const lowercaseQuery = query.toLowerCase();
-  return blogPosts.filter(post =>
-    post.title.toLowerCase().includes(lowercaseQuery) ||
-    post.excerpt.toLowerCase().includes(lowercaseQuery) ||
-    post.tags.some(tag => tag.toLowerCase().includes(lowercaseQuery))
+  return posts.filter(
+    (post) =>
+      post.title.toLowerCase().includes(lowercaseQuery) ||
+      post.excerpt.toLowerCase().includes(lowercaseQuery) ||
+      post.tags.some((tag) => tag.toLowerCase().includes(lowercaseQuery))
   );
 }

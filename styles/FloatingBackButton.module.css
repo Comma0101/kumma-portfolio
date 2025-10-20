@@ -1,0 +1,83 @@
+.backButton {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: rgba(10, 10, 10, 0.9);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50px;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.backButton:hover {
+  background: rgba(0, 191, 255, 0.2);
+  border-color: #00bfff;
+  transform: translateX(-5px);
+  box-shadow: 0 6px 20px rgba(0, 191, 255, 0.3);
+}
+
+.backButton:active {
+  transform: translateX(-3px) scale(0.98);
+}
+
+.backButton svg {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.3s ease;
+}
+
+.backButton:hover svg {
+  transform: translateX(-3px);
+}
+
+.backButton span {
+  display: inline-block;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .backButton {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
+
+  .backButton svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .backButton span {
+    display: none;
+  }
+
+  .backButton {
+    padding: 12px;
+    border-radius: 50%;
+  }
+}
+
+/* Accessibility */
+.backButton:focus {
+  outline: 2px solid #00bfff;
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .backButton,
+  .backButton svg {
+    transition: none;
+  }
+}

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 import gsap from "gsap";
 import MorphingLogo from "./MorphingLogo";
 import styles from "../styles/introAnimation.module.css";
@@ -8,9 +9,13 @@ import { useAnimation } from "../context/AnimationContext";
 const IntroAnimation = () => {
   const { isIntroPlayed, setIsIntroPlayed } = useAnimation();
   const containerRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
+
+  // Skip intro animation on stories page
+  const shouldShowIntro = pathname !== "/stories" && !isIntroPlayed;
 
   useEffect(() => {
-    if (isIntroPlayed) return;
+    if (!shouldShowIntro || isIntroPlayed) return;
 
     const tl = gsap.timeline({
       onComplete: () => {
@@ -25,9 +30,9 @@ const IntroAnimation = () => {
       ease: "power2.inOut",
       delay: 5, // Wait for the morph to finish
     });
-  }, [isIntroPlayed, setIsIntroPlayed]);
+  }, [shouldShowIntro, isIntroPlayed, setIsIntroPlayed]);
 
-  if (isIntroPlayed) {
+  if (!shouldShowIntro) {
     return null;
   }
 

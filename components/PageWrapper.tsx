@@ -9,7 +9,7 @@ const PageWrapper = ({ children }: { children: ReactNode }) => {
     return null;
   }
 
-  return <>{children}</>;
+  return <div style={{ position: "relative", zIndex: 1 }}>{children}</div>;
 };
 
 export default PageWrapper;

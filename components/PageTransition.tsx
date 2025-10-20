@@ -9,7 +9,11 @@ const PageTransitionContext = createContext({
   animatePageOut: (href: string) => {},
 });
 
-export const PageTransitionProvider = ({ children }: { children: React.ReactNode }) => {
+export const PageTransitionProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const router = useRouter();
   const pathname = usePathname();
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -18,11 +22,19 @@ export const PageTransitionProvider = ({ children }: { children: React.ReactNode
     const overlay = overlayRef.current;
     if (overlay) {
       gsap.to(overlay, {
-        clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+        clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
         duration: 0.75,
-        ease: 'power3.inOut',
+        ease: "power3.inOut",
         onComplete: () => {
-          router.push(href);
+          if (pathname === href) {
+            gsap.to(overlay, {
+              clipPath: "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)",
+              duration: 0.75,
+              ease: "power3.inOut",
+            });
+          } else {
+            router.push(href);
+          }
         },
       });
     }
@@ -31,12 +43,13 @@ export const PageTransitionProvider = ({ children }: { children: React.ReactNode
   useGSAP(() => {
     const overlay = overlayRef.current;
     if (overlay) {
-      gsap.fromTo(overlay, 
-        { clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)' },
+      gsap.fromTo(
+        overlay,
+        { clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)" },
         {
-          clipPath: 'polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)',
+          clipPath: "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)",
           duration: 0.75,
-          ease: 'power3.inOut',
+          ease: "power3.inOut",
         }
       );
     }
@@ -47,14 +60,14 @@ export const PageTransitionProvider = ({ children }: { children: React.ReactNode
       <div
         ref={overlayRef}
         style={{
-          position: 'fixed',
+          position: "fixed",
           top: 0,
           left: 0,
-          width: '100vw',
-          height: '100vh',
-          backgroundColor: '#000',
+          width: "100vw",
+          height: "100vh",
+          backgroundColor: "#000",
           zIndex: 100,
-          clipPath: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)',
+          clipPath: "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
         }}
       />
       {children}

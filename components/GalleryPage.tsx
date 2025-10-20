@@ -105,7 +105,7 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
     if (!pageRef.current) return;
 
     const tl = gsap.timeline({
-      defaults: { ease: "power3.out" }
+      defaults: { ease: "power3.out" },
     });
 
     // Title entrance
@@ -119,11 +119,15 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
 
     // Canvas container fade in
     if (mountRef.current) {
-      tl.from(mountRef.current, {
-        opacity: 0,
-        scale: 0.95,
-        duration: 1,
-      }, "-=0.8");
+      tl.from(
+        mountRef.current,
+        {
+          opacity: 0,
+          scale: 0.95,
+          duration: 1,
+        },
+        "-=0.8"
+      );
     }
   };
 
@@ -137,7 +141,7 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
 
     const mount = mountRef.current;
     const pageElement = mount.parentElement;
-    
+
     // Add 'loaded' class immediately to prevent black screen
     if (pageElement && !pageElement.classList.contains(styles.loaded)) {
       pageElement.classList.add(styles.loaded);
@@ -191,7 +195,9 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
     loadingManager.onProgress = (url, itemsLoaded, itemsTotal) => {
       const progress = itemsLoaded / itemsTotal;
       setLoadingProgress(progress);
-      console.log(`Loading file: ${url}. \nLoaded ${itemsLoaded} of ${itemsTotal} files.`);
+      console.log(
+        `Loading file: ${url}. \nLoaded ${itemsLoaded} of ${itemsTotal} files.`
+      );
     };
 
     loadingManager.onError = (url) => {
@@ -408,7 +414,7 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
 
       // Update media positions based on Lenis scroll
       const totalHeight = galleryHeight.current;
-      const currentScroll = scrollY.current * 0.5; // Adjust multiplier for scroll speed
+      const currentScroll = scrollY.current * 0.1; // Slower scroll speed
 
       mediasRef.current.forEach((media) => {
         if (!media) return; // Skip if media not fully loaded yet
@@ -443,7 +449,7 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
         cancelAnimationFrame(animationFrameId.current);
       }
       window.removeEventListener("resize", handleResize);
-      
+
       // Clean up Lenis scroll listener
       if (lenis) {
         lenis.off("scroll", handleScroll);
@@ -486,19 +492,39 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
           <p>Loading Gallery: {Math.round(loadingProgress * 100)}%</p>
         </div>
       )}
-      {title && <h1 ref={titleRef} className={styles.pageTitle}>{title}</h1>}
+      {title && (
+        <h1 ref={titleRef} className={styles.pageTitle}>
+          {title}
+        </h1>
+      )}
       <div ref={mountRef} className={styles.webglContainer}>
         {/* Canvas will be appended here by Three.js */}
       </div>
-      <div style={{ position: 'relative', zIndex: 2 }}>
+      <div style={{ position: "relative", zIndex: 2 }}>
         <div className={styles.spacer}></div>
-        <SlicedText text="Explore" effect="1" tag="h2" className={styles.slicedText} />
+        <SlicedText
+          text="Explore"
+          effect="1"
+          tag="h2"
+          className={styles.slicedText}
+        />
         <div className={styles.spacer}></div>
-        <SlicedText text="The" effect="2" tag="h2" className={styles.slicedText} />
+        <SlicedText
+          text="The"
+          effect="2"
+          tag="h2"
+          className={styles.slicedText}
+        />
         <div className={styles.spacer}></div>
-        <SlicedText text="Gallery" effect="3" tag="h2" className={styles.slicedText} />
+        <SlicedText
+          text="Gallery"
+          effect="3"
+          tag="h2"
+          className={styles.slicedText}
+        />
         <div className={styles.spacer}></div>
       </div>
+      <div style={{ height: "50vh" }}></div> {/* Spacer for footer */}
     </div>
   );
 };

@@ -2,12 +2,13 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { SplitText } from "gsap/SplitText";
 import styles from "../styles/home.module.css";
 import ThreeScene from "../components/ThreeScene";
 import Projects from "../components/Projects";
 import RotatingCuboids from "../components/RotatingCuboids";
 import { useGSAP } from "@gsap/react";
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, SplitText);
 
 const Home = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -22,9 +23,14 @@ const Home = () => {
 
   // Helper function to split the headline text into individual spans
   const splitTextToSpans = (text: string) => {
-    return text.split("").map((char, i) => (
-      <span key={i} className={styles.letter}>
-        {char === " " ? "\u00A0" : char}
+    const lines = text.split(".");
+    return lines.map((line, lineIndex) => (
+      <span key={lineIndex} className={styles.headlineLine}>
+        {line.split("").map((char, charIndex) => (
+          <span key={charIndex} className={styles.letter}>
+            {char === " " ? "\u00A0" : char}
+          </span>
+        ))}
       </span>
     ));
   };
@@ -32,14 +38,14 @@ const Home = () => {
   useEffect(() => {
     // Get global Lenis instance
     const lenis = (window as any).lenis;
-    
+
     if (lenis) {
       const handleScroll = (e: { scroll: number }) => {
         scrollY.current = e.scroll;
       };
-      
+
       lenis.on("scroll", handleScroll);
-      
+
       return () => {
         lenis.off("scroll", handleScroll);
       };
@@ -79,37 +85,33 @@ const Home = () => {
       // Variable font weight animation for about quote
       const aboutQuote = document.querySelector("#aboutQuote");
       if (aboutQuote) {
-        // Split text into words manually
-        const text = aboutQuote.textContent || "";
-        const words = text.split(" ");
-        aboutQuote.innerHTML = words
-          .map((word, i) => `<span class="${styles.word}" data-index="${i}">${word}</span>`)
-          .join(" ");
+        const split = new SplitText(aboutQuote, {
+          type: "words",
+          wordsClass: styles.aboutQuoteWord,
+        });
+        const words = split.words;
 
-        const wordElements = aboutQuote.querySelectorAll(`.${styles.word}`);
-        
-        // Animate words appearing and changing color on scroll
-        gsap.fromTo(wordElements, {
-          opacity: 0,
-          y: 20,
-        }, {
-          opacity: 1,
-          y: 0,
-          fontWeight: 900,
-          color: "#fafafa",
-          stagger: 0.15,
+        gsap.to(words, {
+          duration: 7,
+          "--weight": "300",
           ease: "power3.out",
+          color: "hsl(+=0, +=70%, +=20%)",
+          stagger: {
+            each: 0.1,
+          },
           scrollTrigger: {
-            trigger: aboutSection,
-            start: "top 60%",
-            end: "bottom 40%",
-            scrub: 2,
+            trigger: aboutQuote,
+            start: "top 80%",
+            end: "bottom 20%",
+            scrub: true,
           },
         });
       }
 
       // Animate manifesto blocks
-      const manifestoBlocks = gsap.utils.toArray<HTMLElement>(`.${styles.manifestoBlock}`);
+      const manifestoBlocks = gsap.utils.toArray<HTMLElement>(
+        `.${styles.manifestoBlock}`
+      );
       manifestoBlocks.forEach((block, index) => {
         gsap.from(block, {
           y: 100,
@@ -153,7 +155,9 @@ const Home = () => {
       }
 
       // Animate highlight words
-      const highlights = gsap.utils.toArray<HTMLElement>(`.${styles.highlight}`);
+      const highlights = gsap.utils.toArray<HTMLElement>(
+        `.${styles.highlight}`
+      );
       highlights.forEach((highlight, index) => {
         gsap.from(highlight, {
           backgroundPosition: "200% center",
@@ -175,56 +179,68 @@ const Home = () => {
 
       floatingElements.forEach((el, index) => {
         if (el) {
-          gsap.fromTo(el, {
-            y: 0,
-            x: 0,
-            rotation: 0,
-            scale: 1,
-          }, {
-            y: index % 2 === 0 ? -250 : -300,
-            x: index % 2 === 0 ? 150 : -150,
-            rotation: index % 2 === 0 ? 90 : -90,
-            scale: 1.3,
-            ease: "none",
-            scrollTrigger: {
-              trigger: aboutSection,
-              start: "top bottom",
-              end: "bottom top",
-              scrub: 2 + index * 0.5,
-              immediateRender: false,
-              invalidateOnRefresh: true,
+          gsap.fromTo(
+            el,
+            {
+              y: 0,
+              x: 0,
+              rotation: 0,
+              scale: 1,
             },
-          });
+            {
+              y: index % 2 === 0 ? -250 : -300,
+              x: index % 2 === 0 ? 150 : -150,
+              rotation: index % 2 === 0 ? 90 : -90,
+              scale: 1.3,
+              ease: "none",
+              scrollTrigger: {
+                trigger: aboutSection,
+                start: "top bottom",
+                end: "bottom top",
+                scrub: 2 + index * 0.5,
+                immediateRender: false,
+                invalidateOnRefresh: true,
+              },
+            }
+          );
         }
       });
 
       // ====== SKILLS SECTION ANIMATIONS ======
       const skillsSection = document.querySelector("#skills");
-      
+
       // Animate skills title
       const skillsTitle = document.querySelector(`.${styles.skillsTitle}`);
       if (skillsTitle) {
-        gsap.fromTo(skillsTitle, {
-          opacity: 0,
-          y: 100,
-        }, {
-          opacity: 1,
-          y: 0,
-          scrollTrigger: {
-            trigger: skillsSection,
-            start: "top 80%",
-            end: "top 50%",
-            scrub: 1,
+        gsap.fromTo(
+          skillsTitle,
+          {
+            opacity: 0,
+            y: 100,
           },
-        });
+          {
+            opacity: 1,
+            y: 0,
+            scrollTrigger: {
+              trigger: skillsSection,
+              start: "top 80%",
+              end: "top 50%",
+              scrub: 1,
+            },
+          }
+        );
       }
 
       // Scroll-based animation for skill groups
-      const skillGroups = gsap.utils.toArray<HTMLElement>(`.${styles.skillGroup}`);
-      
+      const skillGroups = gsap.utils.toArray<HTMLElement>(
+        `.${styles.skillGroup}`
+      );
+
       skillGroups.forEach((group) => {
         const titleElement = group.querySelector(`.${styles.skillGroupTitle}`);
-        const skillItems = gsap.utils.toArray<HTMLElement>(group.querySelectorAll(`.${styles.skillItem}`));
+        const skillItems = gsap.utils.toArray<HTMLElement>(
+          group.querySelectorAll(`.${styles.skillItem}`)
+        );
 
         const tl = gsap.timeline({
           scrollTrigger: {
@@ -243,57 +259,64 @@ const Home = () => {
           });
         }
 
-        tl.from(skillItems, {
-          opacity: 0,
-          y: 20,
-          stagger: 0.05,
-          ease: "power2.out",
-        }, "-=0.3");
+        tl.from(
+          skillItems,
+          {
+            opacity: 0,
+            y: 20,
+            stagger: 0.05,
+            ease: "power2.out",
+          },
+          "-=0.3"
+        );
       });
 
       // Scramble text function for hover
       const scrambleText = (element: HTMLElement) => {
-        const originalText = element.getAttribute('data-text') || element.textContent || '';
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*';
+        const originalText =
+          element.getAttribute("data-text") || element.textContent || "";
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*";
         const textLength = originalText.length;
         let iteration = 0;
-        
+
         const interval = setInterval(() => {
           element.textContent = originalText
-            .split('')
+            .split("")
             .map((char, index) => {
               if (index < iteration) {
                 return originalText[index];
               }
               return chars[Math.floor(Math.random() * chars.length)];
             })
-            .join('');
-          
+            .join("");
+
           iteration += 1 / 3;
-          
+
           if (iteration >= textLength) {
             clearInterval(interval);
             element.textContent = originalText;
           }
         }, 30);
       };
-      
+
       // Add hover scramble effect to all skill items
-      const allSkillItems = gsap.utils.toArray<HTMLElement>(`.${styles.skillItem}`);
+      const allSkillItems = gsap.utils.toArray<HTMLElement>(
+        `.${styles.skillItem}`
+      );
       allSkillItems.forEach((item) => {
-        item.addEventListener('mouseenter', () => {
+        item.addEventListener("mouseenter", () => {
           scrambleText(item);
         });
       });
 
       // ====== CONTACT SECTION ANIMATIONS ======
       const contactSection = document.querySelector("#contact");
-      
+
       // Animate contact title lines
       const contactTitleLines = gsap.utils.toArray<HTMLElement>(
         `.${styles.contactTitleGradient}, .${styles.contactTitleWhite}`
       );
-      
+
       contactTitleLines.forEach((line, index) => {
         gsap.from(line, {
           x: index % 2 === 0 ? -200 : 200,
@@ -338,7 +361,9 @@ const Home = () => {
         });
 
         // Animate form inputs
-        const formInputs = contactRight.querySelectorAll(`.${styles.formGroup}`);
+        const formInputs = contactRight.querySelectorAll(
+          `.${styles.formGroup}`
+        );
         formInputs.forEach((input, index) => {
           gsap.from(input, {
             y: 30,
@@ -354,7 +379,9 @@ const Home = () => {
       }
 
       // Animate contact info items
-      const contactInfoItems = gsap.utils.toArray<HTMLElement>(`.${styles.contactInfoItem}`);
+      const contactInfoItems = gsap.utils.toArray<HTMLElement>(
+        `.${styles.contactInfoItem}`
+      );
       contactInfoItems.forEach((item, index) => {
         gsap.from(item, {
           x: -50,
@@ -369,7 +396,9 @@ const Home = () => {
       });
 
       // Animate social links
-      const socialLinks = gsap.utils.toArray<HTMLElement>(`.${styles.socialLink}`);
+      const socialLinks = gsap.utils.toArray<HTMLElement>(
+        `.${styles.socialLink}`
+      );
       socialLinks.forEach((link, index) => {
         gsap.from(link, {
           y: 30,
@@ -411,7 +440,6 @@ const Home = () => {
       );
       if (projectsSection) {
         // gsap.set(projectsSection, { opacity: 0 });
-
         // const transitionTl = gsap.timeline({
         //   scrollTrigger: {
         //     trigger: transitionTriggerRef.current,
@@ -420,7 +448,6 @@ const Home = () => {
         //     scrub: 1,
         //   },
         // });
-
         // transitionTl
         //   .to(taoismIconRef.current, {
         //     top: "50%",
@@ -475,7 +502,7 @@ const Home = () => {
   );
 
   // Poster-style headline and subheadline texts
-  const headlineText = "CREATIVE CODER";
+  const headlineText = "Digital Philosopher.Creative Engineer. Human Architect";
   const subheadlineText = "Art | Code | Innovation";
 
   return (
@@ -491,15 +518,17 @@ const Home = () => {
           <h2 ref={subheadlineRef} className={styles.subheadline}>
             {subheadlineText}
           </h2>
-          <div ref={linksRef} className={styles.links}>
-          </div>
+          <div ref={linksRef} className={styles.links}></div>
         </div>
         <div className={styles.scrollIndicator}>Scroll ↓ to Begin</div>
       </div>
       <div id="about" className={`${styles.section} ${styles.aboutSection}`}>
         <div className={styles.aboutWrapper}>
           <h2 id="aboutQuote" className={styles.aboutQuote}>
-            Building tomorrow's digital experiences with passion, precision, and purpose. Where innovation meets artistry, and code becomes poetry.
+            I build systems that feel. Not just interfaces, but living frames
+            where code shapes light, motion finds meaning, and small choices
+            ripple into experience. Each project starts as a question—then
+            becomes a place you can walk through.
           </h2>
         </div>
       </div>
@@ -516,66 +545,127 @@ const Home = () => {
       <div id="skills" className={`${styles.section} ${styles.skillsSection}`}>
         <div className={styles.skillsWrapper}>
           <h2 className={styles.skillsTitle}>
-            <span className={styles.skillsTitleAccent}>{'<'}</span>
+            <span className={styles.skillsTitleAccent}>{"<"}</span>
             Tech Stack
-            <span className={styles.skillsTitleAccent}>{' />'}</span>
+            <span className={styles.skillsTitleAccent}>{" />"}</span>
           </h2>
-          
+
           <div className={styles.skillsGrid}>
             {/* Frontend */}
             <div className={styles.skillGroup}>
-              <h3 className={styles.skillGroupTitle}>
-                Frontend
-              </h3>
+              <h3 className={styles.skillGroupTitle}>Frontend</h3>
               <div className={styles.skillItems}>
-                <span className={`${styles.skillItem} ${styles.skillPrimary}`} data-text="React">React</span>
-                <span className={`${styles.skillItem} ${styles.skillPrimary}`} data-text="Next.js">Next.js</span>
-                <span className={`${styles.skillItem} ${styles.skillPrimary}`} data-text="TypeScript">TypeScript</span>
-                <span className={`${styles.skillItem}`} data-text="JavaScript">JavaScript</span>
-                <span className={`${styles.skillItem}`} data-text="HTML5">HTML5</span>
-                <span className={`${styles.skillItem}`} data-text="CSS3">CSS3</span>
+                <span
+                  className={`${styles.skillItem} ${styles.skillPrimary}`}
+                  data-text="React"
+                >
+                  React
+                </span>
+                <span
+                  className={`${styles.skillItem} ${styles.skillPrimary}`}
+                  data-text="Next.js"
+                >
+                  Next.js
+                </span>
+                <span
+                  className={`${styles.skillItem} ${styles.skillPrimary}`}
+                  data-text="TypeScript"
+                >
+                  TypeScript
+                </span>
+                <span className={`${styles.skillItem}`} data-text="JavaScript">
+                  JavaScript
+                </span>
+                <span className={`${styles.skillItem}`} data-text="HTML5">
+                  HTML5
+                </span>
+                <span className={`${styles.skillItem}`} data-text="CSS3">
+                  CSS3
+                </span>
               </div>
             </div>
 
             {/* Styling & Animation */}
             <div className={styles.skillGroup}>
-              <h3 className={styles.skillGroupTitle}>
-                Styling & Animation
-              </h3>
+              <h3 className={styles.skillGroupTitle}>Styling & Animation</h3>
               <div className={styles.skillItems}>
-                <span className={`${styles.skillItem} ${styles.skillPrimary}`} data-text="GSAP">GSAP</span>
-                <span className={`${styles.skillItem}`} data-text="Three.js">Three.js</span>
-                <span className={`${styles.skillItem}`} data-text="Tailwind">Tailwind CSS</span>
-                <span className={`${styles.skillItem}`} data-text="Framer Motion">Framer Motion</span>
-                <span className={`${styles.skillItem}`} data-text="SCSS">SCSS</span>
+                <span
+                  className={`${styles.skillItem} ${styles.skillPrimary}`}
+                  data-text="GSAP"
+                >
+                  GSAP
+                </span>
+                <span className={`${styles.skillItem}`} data-text="Three.js">
+                  Three.js
+                </span>
+                <span className={`${styles.skillItem}`} data-text="Tailwind">
+                  Tailwind CSS
+                </span>
+                <span
+                  className={`${styles.skillItem}`}
+                  data-text="Framer Motion"
+                >
+                  Framer Motion
+                </span>
+                <span className={`${styles.skillItem}`} data-text="SCSS">
+                  SCSS
+                </span>
               </div>
             </div>
 
             {/* Backend & Database */}
             <div className={styles.skillGroup}>
-              <h3 className={styles.skillGroupTitle}>
-                Backend & Database
-              </h3>
+              <h3 className={styles.skillGroupTitle}>Backend & Database</h3>
               <div className={styles.skillItems}>
-                <span className={`${styles.skillItem} ${styles.skillPrimary}`} data-text="Node.js">Node.js</span>
-                <span className={`${styles.skillItem}`} data-text="Express">Express</span>
-                <span className={`${styles.skillItem} ${styles.skillPrimary}`} data-text="PostgreSQL">PostgreSQL</span>
-                <span className={`${styles.skillItem}`} data-text="MongoDB">MongoDB</span>
-                <span className={`${styles.skillItem}`} data-text="REST API">REST API</span>
+                <span
+                  className={`${styles.skillItem} ${styles.skillPrimary}`}
+                  data-text="Node.js"
+                >
+                  Node.js
+                </span>
+                <span className={`${styles.skillItem}`} data-text="Express">
+                  Express
+                </span>
+                <span
+                  className={`${styles.skillItem} ${styles.skillPrimary}`}
+                  data-text="PostgreSQL"
+                >
+                  PostgreSQL
+                </span>
+                <span className={`${styles.skillItem}`} data-text="MongoDB">
+                  MongoDB
+                </span>
+                <span className={`${styles.skillItem}`} data-text="REST API">
+                  REST API
+                </span>
               </div>
             </div>
 
             {/* Tools & DevOps */}
             <div className={styles.skillGroup}>
-              <h3 className={styles.skillGroupTitle}>
-                Tools & DevOps
-              </h3>
+              <h3 className={styles.skillGroupTitle}>Tools & DevOps</h3>
               <div className={styles.skillItems}>
-                <span className={`${styles.skillItem} ${styles.skillPrimary}`} data-text="Git">Git</span>
-                <span className={`${styles.skillItem} ${styles.skillPrimary}`} data-text="Docker">Docker</span>
-                <span className={`${styles.skillItem}`} data-text="AWS">AWS</span>
-                <span className={`${styles.skillItem}`} data-text="Vercel">Vercel</span>
-                <span className={`${styles.skillItem}`} data-text="CI/CD">CI/CD</span>
+                <span
+                  className={`${styles.skillItem} ${styles.skillPrimary}`}
+                  data-text="Git"
+                >
+                  Git
+                </span>
+                <span
+                  className={`${styles.skillItem} ${styles.skillPrimary}`}
+                  data-text="Docker"
+                >
+                  Docker
+                </span>
+                <span className={`${styles.skillItem}`} data-text="AWS">
+                  AWS
+                </span>
+                <span className={`${styles.skillItem}`} data-text="Vercel">
+                  Vercel
+                </span>
+                <span className={`${styles.skillItem}`} data-text="CI/CD">
+                  CI/CD
+                </span>
               </div>
             </div>
           </div>
@@ -583,20 +673,25 @@ const Home = () => {
       </div>
 
       {/* Contact Section */}
-      <div id="contact" className={`${styles.section} ${styles.contactSection}`}>
+      <div
+        id="contact"
+        className={`${styles.section} ${styles.contactSection}`}
+      >
         <div className={styles.contactWrapper}>
           <div className={styles.contactContent}>
             <div className={styles.contactLeft}>
               <h2 className={styles.contactTitle}>
-                <span className={styles.contactTitleGradient}>LET'S CREATE</span>
+                <span className={styles.contactTitleGradient}>
+                  LET'S CREATE
+                </span>
                 <span className={styles.contactTitleWhite}>SOMETHING</span>
                 <span className={styles.contactTitleGradient}>AMAZING</span>
               </h2>
               <p className={styles.contactDescription}>
-                Have a project in mind? Let's bring your vision to life with cutting-edge 
-                technology and creative design.
+                Have a project in mind? Let's bring your vision to life with
+                cutting-edge technology and creative design.
               </p>
-              
+
               <div className={styles.contactInfo}>
                 <div className={styles.contactInfoItem}>
                   <span className={styles.contactIcon}>📧</span>
@@ -609,13 +704,28 @@ const Home = () => {
               </div>
 
               <div className={styles.socialLinks}>
-                <a href="https://github.com" className={styles.socialLink} target="_blank" rel="noopener noreferrer">
+                <a
+                  href="https://github.com"
+                  className={styles.socialLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <span className={styles.socialIcon}>GitHub</span>
                 </a>
-                <a href="https://linkedin.com" className={styles.socialLink} target="_blank" rel="noopener noreferrer">
+                <a
+                  href="https://linkedin.com"
+                  className={styles.socialLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <span className={styles.socialIcon}>LinkedIn</span>
                 </a>
-                <a href="https://twitter.com" className={styles.socialLink} target="_blank" rel="noopener noreferrer">
+                <a
+                  href="https://twitter.com"
+                  className={styles.socialLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <span className={styles.socialIcon}>Twitter</span>
                 </a>
               </div>

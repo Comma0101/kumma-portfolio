@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -20,6 +20,7 @@ const navLinks: NavLink[] = [
   { name: "About", href: "#about" },
   { name: "Projects", href: "#projects" },
   { name: "Gallery", href: "/gallery" },
+  { name: "Stories", href: "/stories" },
   { name: "Skills", href: "#skills" },
   { name: "Blog", href: "/blog" },
   { name: "Contact", href: "#contact" },
@@ -33,6 +34,7 @@ const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
   const [isScrolled, setIsScrolled] = useState(false);
+  const pathname = usePathname();
 
   // Initial nav animation on page load
   useGSAP(() => {
@@ -61,10 +63,12 @@ const Navigation = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const isHomePage = pathname === "/";
+
   // Active section detection with ScrollTrigger
   useEffect(() => {
     const sections = ["home", "about", "projects", "skills", "contact"];
-    
+
     sections.forEach((section) => {
       const element = document.querySelector(`#${section}`);
       if (element) {
@@ -84,7 +88,10 @@ const Navigation = () => {
   }, []);
 
   // Smart scroll to section - handles both home page and other pages
-  const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+  const scrollToSection = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string
+  ) => {
     e.preventDefault();
 
     // If it's a page route (starts with /), let the default behavior happen
@@ -93,14 +100,15 @@ const Navigation = () => {
       // Note: We let TransitionLink handle the navigation for page routes
       return;
     }
-    
+
     const isHomePage = window.location.pathname === "/";
     const targetId = href.substring(1);
 
     if (isHomePage) {
       const element = document.getElementById(targetId);
       if (element) {
-        const offsetTop = element.getBoundingClientRect().top + window.pageYOffset;
+        const offsetTop =
+          element.getBoundingClientRect().top + window.pageYOffset;
         window.scrollTo({
           top: offsetTop - 80, // Offset for fixed nav height
           behavior: "smooth",
@@ -112,7 +120,8 @@ const Navigation = () => {
       requestAnimationFrame(() => {
         const element = document.getElementById(targetId);
         if (element) {
-          const offsetTop = element.getBoundingClientRect().top + window.pageYOffset;
+          const offsetTop =
+            element.getBoundingClientRect().top + window.pageYOffset;
           window.scrollTo({
             top: offsetTop - 80,
             behavior: "smooth",
@@ -120,7 +129,7 @@ const Navigation = () => {
         }
       });
     }
-    
+
     if (isMenuOpen) {
       setIsMenuOpen(false);
     }
@@ -129,9 +138,9 @@ const Navigation = () => {
   // Smart scroll to top - handles both home page and other pages
   const scrollToTop = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    
+
     const isHomePage = window.location.pathname === "/";
-    
+
     if (isHomePage) {
       window.scrollTo({
         top: 0,
@@ -162,7 +171,9 @@ const Navigation = () => {
         });
 
         // Stagger links in
-        const links = linksRef.current.querySelectorAll(`.${styles.mobileLink}`);
+        const links = linksRef.current.querySelectorAll(
+          `.${styles.mobileLink}`
+        );
         gsap.from(links, {
           x: 100,
           opacity: 0,
@@ -206,7 +217,9 @@ const Navigation = () => {
   return (
     <nav
       ref={navRef}
-      className={`${styles.navigation} ${isScrolled ? styles.scrolled : ""}`}
+      className={`${styles.navigation} ${
+        isScrolled || !isHomePage ? styles.pageNav : ""
+      }`}
       aria-label="Main navigation"
     >
       <div className={styles.navContainer}>

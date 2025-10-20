@@ -3,9 +3,8 @@ import "../src/app/globals.css";
 import "../styles/index.css";
 import "../styles/app.css";
 import Navigation from "../components/Navigation";
-import Footer from "../components/Footer";
-import BackToTopCube from "../components/BackToTopCube";
 import SmoothScrollProvider from "../components/SmoothScrollProvider";
+import ConditionalFooter from "../components/ConditionalFooter";
 import { PageTransitionProvider } from "@/components/PageTransition";
 import IntroAnimation from "../components/IntroAnimation";
 import { AnimationProvider } from "../context/AnimationContext";
@@ -31,10 +30,11 @@ export default function RootLayout({
             <PageTransitionProvider>
               <SmoothScrollProvider>
                 <Navigation />
-                {children}
+                <main style={{ position: "relative", zIndex: 1 }}>
+                  {children}
+                </main>
               </SmoothScrollProvider>
-              <Footer />
-              <BackToTopCube />
+              <ConditionalFooter />
             </PageTransitionProvider>
           </PageWrapper>
         </AnimationProvider>
