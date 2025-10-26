@@ -174,11 +174,19 @@ const Navigation = () => {
         const links = linksRef.current.querySelectorAll(
           `.${styles.mobileLink}`
         );
-        gsap.from(links, {
+        
+        // Set initial state
+        gsap.set(links, {
           x: 100,
           opacity: 0,
-          stagger: 0.1,
-          duration: 0.5,
+        });
+        
+        // Animate to visible
+        gsap.to(links, {
+          x: 0,
+          opacity: 1,
+          stagger: 0.08,
+          duration: 0.4,
           ease: "power2.out",
         });
       } else {
