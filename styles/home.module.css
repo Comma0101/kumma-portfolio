@@ -661,7 +661,7 @@
 }
 
 .contactTitleGradient {
-  background: linear-gradient(135deg, #cccccc 0%, #888888 100%);
+  background: linear-gradient(135deg, #58a6ff 0%, #00ffff 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -733,7 +733,7 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 159, 28, 0.2),
+    rgba(88, 166, 255, 0.2),
     transparent
   );
   transition: left 0.5s ease;
@@ -744,9 +744,9 @@
 }
 
 .socialLink:hover {
-  border-color: rgba(255, 159, 28, 0.5);
+  border-color: rgba(88, 166, 255, 0.5);
   transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(255, 159, 28, 0.3);
+  box-shadow: 0 10px 30px rgba(88, 166, 255, 0.3);
 }
 
 .socialIcon {
@@ -789,9 +789,9 @@
 
 .formInput:focus {
   outline: none;
-  border-color: rgba(255, 159, 28, 0.5);
+  border-color: rgba(88, 166, 255, 0.5);
   background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 20px rgba(255, 159, 28, 0.2);
+  box-shadow: 0 0 20px rgba(88, 166, 255, 0.2);
 }
 
 .formInput::placeholder {
@@ -805,7 +805,7 @@
 }
 
 .formButton {
-  background: linear-gradient(135deg, #888888 0%, #666666 100%);
+  background: linear-gradient(135deg, #58a6ff 0%, #00ffff 100%);
   border: none;
   color: #fafafa;
   padding: 1.3rem 2.5rem;
@@ -846,7 +846,7 @@
 
 .formButton:hover {
   transform: translateY(-3px);
-  box-shadow: 0 15px 40px rgba(255, 159, 28, 0.4);
+  box-shadow: 0 15px 40px rgba(88, 166, 255, 0.4);
 }
 
 .formButton:active {
@@ -869,6 +869,27 @@
   transform: translateX(5px);
 }
 
+.successMessage,
+.errorMessage {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.successMessage {
+  background-color: rgba(63, 185, 80, 0.1);
+  color: #3fb950;
+  border: 1px solid rgba(63, 185, 80, 0.3);
+}
+
+.errorMessage {
+  background-color: rgba(255, 88, 88, 0.1);
+  color: #ff5858;
+  border: 1px solid rgba(255, 88, 88, 0.3);
+}
+
 /* Decorative glows */
 .contactGlow1,
 .contactGlow2 {
@@ -887,7 +908,7 @@
   height: 600px;
   background: radial-gradient(
     circle,
-    rgba(255, 159, 28, 0.3) 0%,
+    rgba(88, 166, 255, 0.3) 0%,
     transparent 70%
   );
   animation: pulse 8s ease-in-out infinite;
@@ -900,7 +921,7 @@
   height: 500px;
   background: radial-gradient(
     circle,
-    rgba(128, 0, 128, 0.3) 0%,
+    rgba(0, 255, 255, 0.3) 0%,
     transparent 70%
   );
   animation: pulse 10s ease-in-out infinite reverse;

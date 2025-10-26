@@ -56,7 +56,7 @@ const Footer = () => {
             </p>
             <div className={styles.socialLinks}>
               <a
-                href="https://github.com"
+                href="https://github.com/Comma0101"
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.socialLink}
@@ -67,7 +67,7 @@ const Footer = () => {
                 </svg>
               </a>
               <a
-                href="https://linkedin.com"
+                href="https://www.linkedin.com/in/yang-w-9233a3a8/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.socialLink}
@@ -78,7 +78,7 @@ const Footer = () => {
                 </svg>
               </a>
               <a
-                href="https://twitter.com"
+                href="https://x.com/Comma_9fie"
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.socialLink}
@@ -86,17 +86,6 @@ const Footer = () => {
               >
                 <svg viewBox="0 0 24 24" fill="currentColor">
                   <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
-                </svg>
-              </a>
-              <a
-                href="https://dribbble.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.socialLink}
-                aria-label="Dribbble"
-              >
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 0c-6.628 0-12 5.373-12 12s5.372 12 12 12 12-5.373 12-12-5.372-12-12-12zm9.885 11.441c-2.575-.422-4.943-.445-7.103-.073-.244-.563-.497-1.125-.767-1.68 2.31-1 4.165-2.358 5.548-4.082 1.35 1.594 2.197 3.619 2.322 5.835zm-3.842-7.282c-1.205 1.554-2.868 2.783-4.986 3.68-1.016-1.861-2.178-3.676-3.488-5.438.779-.197 1.591-.314 2.431-.314 2.275 0 4.368.779 6.043 2.072zm-10.516-.993c1.331 1.742 2.511 3.538 3.537 5.381-2.43.715-5.331 1.082-8.684 1.105.692-2.835 2.601-5.193 5.147-6.486zm-5.44 8.834l.013-.256c3.849-.005 7.169-.448 9.95-1.322.233.475.456.952.67 1.432-3.38 1.057-6.165 3.222-8.337 6.48-1.432-1.719-2.296-3.927-2.296-6.334zm3.829 7.81c1.969-3.088 4.482-5.098 7.598-6.027.928 2.42 1.609 4.91 2.043 7.46-3.349 1.291-7.21.707-9.641-1.433zm11.586.43c-.438-2.353-1.08-4.653-1.92-6.897 1.876-.265 3.94-.196 6.199.196-.437 2.786-2.028 5.192-4.279 6.701z"/>
                 </svg>
               </a>
             </div>
@@ -152,8 +141,8 @@ const Footer = () => {
             <ul className={styles.footerContact}>
               <li className={styles.contactItem}>
                 <span className={styles.contactIcon}>📧</span>
-                <a href="mailto:contact@kumma.dev" className={styles.contactLink}>
-                  contact@kumma.dev
+                <a href="mailto:dev@kumma.me" className={styles.contactLink}>
+                  dev@kumma.me
                 </a>
               </li>
               <li className={styles.contactItem}>

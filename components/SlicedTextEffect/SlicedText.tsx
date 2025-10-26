@@ -68,7 +68,7 @@ const SlicedText: React.FC<SlicedTextProps> = ({ text, effect = '1', tag = 'h2',
                 start: 'top bottom',
                 end: 'center center',
                 scrub: true,
-                markers: true
+                    markers: false
             }
         });
     };
@@ -82,7 +82,7 @@ const SlicedText: React.FC<SlicedTextProps> = ({ text, effect = '1', tag = 'h2',
                 start: 'top bottom',
                 end: 'center center',
                 scrub: true,
-                markers: true
+                    markers: false
             }
         })
         .fromTo(itemInner, {
@@ -110,7 +110,7 @@ const SlicedText: React.FC<SlicedTextProps> = ({ text, effect = '1', tag = 'h2',
                 start: 'top bottom',
                 end: 'center center',
                 scrub: true,
-                markers: true
+                    markers: false
             }
         })
         .fromTo(itemInner, {
@@ -146,7 +146,7 @@ const SlicedText: React.FC<SlicedTextProps> = ({ text, effect = '1', tag = 'h2',
                 start: 'top bottom',
                 end: 'center center',
                 scrub: true,
-                markers: true
+                    markers: false
             }
         })
         .fromTo(itemInner, {
@@ -187,7 +187,7 @@ const SlicedText: React.FC<SlicedTextProps> = ({ text, effect = '1', tag = 'h2',
                 start: 'top bottom',
                 end: 'center center',
                 scrub: true,
-                markers: true
+                    markers: false
             }
         })
         .fromTo(itemInner, {
@@ -207,7 +207,7 @@ const SlicedText: React.FC<SlicedTextProps> = ({ text, effect = '1', tag = 'h2',
                 start: 'top bottom',
                 end: 'center center',
                 scrub: true,
-                markers: true
+                    markers: false
             }
         })
         .fromTo(itemInner, {

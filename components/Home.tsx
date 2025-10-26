@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
@@ -20,6 +20,48 @@ const Home = () => {
   const scrollY = useRef(0);
   // const taoismIconRef = useRef<HTMLImageElement>(null);
   const transitionTriggerRef = useRef<HTMLDivElement>(null);
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+  const [status, setStatus] = useState("idle"); // 'idle' | 'loading' | 'success' | 'error'
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setStatus("loading");
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        setStatus("success");
+        setFormData({ name: "", email: "", subject: "", message: "" });
+        setTimeout(() => setStatus("idle"), 5000); // Reset after 5s
+      } else {
+        setStatus("error");
+        setTimeout(() => setStatus("idle"), 5000); // Reset after 5s
+      }
+    } catch (error) {
+      console.error("Form submission error:", error);
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 5000); // Reset after 5s
+    }
+  };
 
   // Helper function to split the headline text into individual spans
   const splitTextToSpans = (text: string) => {
@@ -695,7 +737,7 @@ const Home = () => {
               <div className={styles.contactInfo}>
                 <div className={styles.contactInfoItem}>
                   <span className={styles.contactIcon}>📧</span>
-                  <span className={styles.contactText}>contact@kumma.dev</span>
+                  <span className={styles.contactText}>dev@kumma.me</span>
                 </div>
                 <div className={styles.contactInfoItem}>
                   <span className={styles.contactIcon}>📍</span>
@@ -705,7 +747,7 @@ const Home = () => {
 
               <div className={styles.socialLinks}>
                 <a
-                  href="https://github.com"
+                  href="https://github.com/Comma0101"
                   className={styles.socialLink}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -713,7 +755,7 @@ const Home = () => {
                   <span className={styles.socialIcon}>GitHub</span>
                 </a>
                 <a
-                  href="https://linkedin.com"
+                  href="https://www.linkedin.com/in/yang-w-9233a3a8/"
                   className={styles.socialLink}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -721,7 +763,7 @@ const Home = () => {
                   <span className={styles.socialIcon}>LinkedIn</span>
                 </a>
                 <a
-                  href="https://twitter.com"
+                  href="https://x.com/Comma_9fie"
                   className={styles.socialLink}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -732,43 +774,77 @@ const Home = () => {
             </div>
 
             <div className={styles.contactRight}>
-              <form className={styles.contactForm}>
+              <form className={styles.contactForm} onSubmit={handleSubmit}>
                 <div className={styles.formGroup}>
                   <input
                     type="text"
+                    name="name"
                     className={styles.formInput}
                     placeholder="Your Name"
+                    value={formData.name}
+                    onChange={handleChange}
                     required
                   />
                 </div>
                 <div className={styles.formGroup}>
                   <input
                     type="email"
+                    name="email"
                     className={styles.formInput}
                     placeholder="Your Email"
+                    value={formData.email}
+                    onChange={handleChange}
                     required
                   />
                 </div>
                 <div className={styles.formGroup}>
                   <input
                     type="text"
+                    name="subject"
                     className={styles.formInput}
                     placeholder="Subject"
+                    value={formData.subject}
+                    onChange={handleChange}
                     required
                   />
                 </div>
                 <div className={styles.formGroup}>
                   <textarea
+                    name="message"
                     className={`${styles.formInput} ${styles.formTextarea}`}
                     placeholder="Your Message"
                     rows={6}
+                    value={formData.message}
+                    onChange={handleChange}
                     required
                   />
                 </div>
-                <button type="submit" className={styles.formButton}>
-                  <span className={styles.buttonText}>Send Message</span>
+                <button
+                  type="submit"
+                  className={styles.formButton}
+                  disabled={status === "loading"}
+                >
+                  <span className={styles.buttonText}>
+                    {status === "loading"
+                      ? "Sending..."
+                      : status === "success"
+                      ? "Message Sent!"
+                      : status === "error"
+                      ? "Try Again"
+                      : "Send Message"}
+                  </span>
                   <span className={styles.buttonArrow}>→</span>
                 </button>
+                {status === "success" && (
+                  <p className={styles.successMessage}>
+                    Thank you! Your message has been sent.
+                  </p>
+                )}
+                {status === "error" && (
+                  <p className={styles.errorMessage}>
+                    Something went wrong. Please try again later.
+                  </p>
+                )}
               </form>
             </div>
           </div>
