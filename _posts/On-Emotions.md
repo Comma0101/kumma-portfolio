@@ -18,7 +18,7 @@ emotion reminds us why we walk.
 
 ---
 
-Emotions Are Not Mistakes
+## Emotions Are Not Mistakes
 
 Emotions are signals.  
 They whisper:  
@@ -32,7 +32,7 @@ The noise stops, but the fire still burns.
 
 ---
 
-Presence · Reason · Emotion
+## Presence · Reason · Emotion
 
 Over time I began to see how these three work together:
 
@@ -47,7 +47,7 @@ Take one away, and everything tilts.
 
 ---
 
-Emotion Shapes Who We Are
+## Emotion Shapes Who We Are
 
 Everyone feels differently.  
 Some are calm, some are fiery, some are deeply sensitive.  
@@ -61,7 +61,7 @@ Just... aware.
 
 ---
 
-A Few Ways to Be with Emotion
+## A Few Ways to Be with Emotion
 
 - Pause first. Don’t rush to fix or analyze.  
 - Name it. “I’m frustrated.” “I’m scared.” “I feel left out.”  
@@ -75,7 +75,7 @@ but accept → then choose.
 
 ---
 
-Being on the Same Team with Yourself
+## Being on the Same Team with Yourself
 
 I no longer fight my emotions.  
 They’re not here to destroy me; they just want to be heard.  

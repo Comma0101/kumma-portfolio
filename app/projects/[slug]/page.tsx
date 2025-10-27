@@ -1,7 +1,6 @@
 import { projects } from "@/data/projectData";
 import { notFound } from "next/navigation";
-import styles from "@/styles/projects.module.css";
-import { NextPage } from "next";
+import ProjectDetail from "@/components/ProjectDetail";
 
 export async function generateStaticParams() {
   return projects.map((project) => ({
@@ -10,23 +9,16 @@ export async function generateStaticParams() {
 }
 
 type Props = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
-const ProjectPage: NextPage<Props> = async ({ params }) => {
-  const awaitedParams = await params;
-  const project = projects.find((p) => p.slug === awaitedParams.slug);
+export default async function ProjectPage({ params }: Props) {
+  const { slug } = await params;
+  const project = projects.find((p) => p.slug === slug);
 
   if (!project) {
     notFound();
   }
 
-  return (
-    <div className={styles.projectDetailContainer}>
-      <h1>{project.title}</h1>
-      <p>{project.details}</p>
-    </div>
-  );
-};
-
-export default ProjectPage;
+  return <ProjectDetail project={project} />;
+}
