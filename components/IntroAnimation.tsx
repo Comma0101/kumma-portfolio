@@ -17,8 +17,16 @@ const IntroAnimation = () => {
   useEffect(() => {
     if (!shouldShowIntro || isIntroPlayed) return;
 
+    // Safety timeout - ensure animation completes even if GSAP fails
+    const safetyTimeout = setTimeout(() => {
+      if (!isIntroPlayed) {
+        setIsIntroPlayed(true);
+      }
+    }, 6000); // 6 seconds max
+
     const tl = gsap.timeline({
       onComplete: () => {
+        clearTimeout(safetyTimeout);
         setIsIntroPlayed(true);
       },
     });
@@ -27,9 +35,15 @@ const IntroAnimation = () => {
       duration: 1,
       opacity: 0,
       pointerEvents: "none",
+      zIndex: -1, // Move behind everything after fade
       ease: "power2.inOut",
-      delay: 5, // Wait for the morph to finish
+      delay: 3, // Reduced from 5 to 3 seconds for faster reveal
     });
+
+    return () => {
+      clearTimeout(safetyTimeout);
+      tl.kill();
+    };
   }, [shouldShowIntro, isIntroPlayed, setIsIntroPlayed]);
 
   if (!shouldShowIntro) {

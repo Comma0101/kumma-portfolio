@@ -35,24 +35,7 @@ export default function SmoothScrollProvider({
     // Sync Lenis with GSAP ScrollTrigger
     lenis.on("scroll", ScrollTrigger.update);
 
-    // Set up ScrollTrigger scroller proxy for Lenis
-    ScrollTrigger.scrollerProxy(document.body, {
-      scrollTop(value?: number) {
-        if (value !== undefined) {
-          lenis.scrollTo(value, { immediate: true });
-        }
-        return lenis.scroll;
-      },
-      getBoundingClientRect() {
-        return {
-          top: 0,
-          left: 0,
-          width: window.innerWidth,
-          height: window.innerHeight,
-        };
-      },
-    });
-
+    // Add Lenis's requestAnimationFrame to GSAP's ticker
     gsap.ticker.add((time) => {
       lenis.raf(time * 1000);
     });

@@ -1,0 +1,59 @@
+.aboutSection {
+    min-height: 100vh;
+    padding: 8rem 5%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+}
+
+.aboutWrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+}
+
+.aboutQuote {
+    --weight: 10;
+    font-family: "Marvin Visions Variable";
+    font-size: 6.5rem;
+    font-weight: 170;
+    line-height: 0.8;
+    margin: 0;
+    text-align: left;
+}
+
+.aboutQuoteWord {
+    display: inline-block;
+    color: #c0c0c0;
+    /* Much lighter grey to be visible on black - will animate to red on scroll */
+    font-variation-settings: "wght" var(--weight);
+    margin-right: 0.2em;
+    /* Add some space between words */
+}
+
+@media (max-width: 1200px) {
+    /* .aboutMainText was unused, removed */
+}
+
+@media (max-width: 768px) {
+    .aboutSection {
+        padding: 5rem 3%;
+    }
+
+    .aboutQuote {
+        font-size: 3.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .aboutSection {
+        padding: 4rem 5%;
+    }
+
+    .aboutQuote {
+        font-size: 2.5rem;
+    }
+}

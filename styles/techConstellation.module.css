@@ -1,0 +1,194 @@
+.constellationContainer {
+    width: 100%;
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4rem 0;
+    overflow: hidden;
+}
+
+.constellationWrapper {
+    width: 100%;
+    max-width: 1400px;
+    height: 800px;
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    text-align: center;
+    color: #fafafa;
+    letter-spacing: -0.02em;
+    font-family: "Courier New", monospace;
+    z-index: 10;
+}
+
+.titleAccent {
+    color: #58a6ff;
+    font-weight: 400;
+}
+
+.graphArea {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    /* background: rgba(255, 255, 255, 0.02); */
+    border-radius: 20px;
+}
+
+.connectionsLayer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.connectionLine {
+    transition: stroke 0.3s ease, stroke-width 0.3s ease;
+}
+
+.node {
+    position: absolute;
+    /* Remove transform translate here, we'll handle it in children or make this 0x0 */
+    width: 0;
+    height: 0;
+    z-index: 5;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nodeDot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #1a1a1a;
+    border: 2px solid;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.nodeLabel {
+    position: absolute;
+    top: 20px;
+    /* Push label below the dot */
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: "Courier New", monospace;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #a0a0a0;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    backdrop-filter: blur(4px);
+    transition: all 0.3s ease;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.nodeGlow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: radial-gradient(circle, currentColor 0%, transparent 70%);
+    opacity: 0;
+    z-index: 1;
+    transition: opacity 0.3s ease;
+    filter: blur(10px);
+}
+
+/* Category Colors */
+.frontend {
+    color: #00d4ff;
+}
+
+.frontend .nodeDot {
+    border-color: #00d4ff;
+}
+
+.backend {
+    color: #1eff00;
+}
+
+.backend .nodeDot {
+    border-color: #1eff00;
+}
+
+.design {
+    color: #9d4edd;
+}
+
+.design .nodeDot {
+    border-color: #9d4edd;
+}
+
+.tools {
+    color: #ff9f1c;
+}
+
+.tools .nodeDot {
+    border-color: #ff9f1c;
+}
+
+/* Hover States */
+.node:hover {
+    z-index: 10;
+}
+
+.node:hover .nodeDot {
+    transform: scale(1.5);
+    background: currentColor;
+    box-shadow: 0 0 20px currentColor;
+    border-color: transparent;
+}
+
+.node:hover .nodeLabel {
+    color: #fafafa;
+    background: rgba(0, 0, 0, 0.8);
+    transform: translateY(5px);
+}
+
+.node:hover .nodeGlow {
+    opacity: 0.6;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .constellationWrapper {
+        height: 600px;
+    }
+
+    .title {
+        font-size: 2.5rem;
+    }
+
+    .nodeDot {
+        width: 12px;
+        height: 12px;
+    }
+
+    .nodeLabel {
+        font-size: 0.75rem;
+    }
+}

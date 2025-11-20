@@ -1,0 +1,21 @@
+.skillsSection {
+    min-height: 100vh;
+    padding: 4rem 2rem;
+    position: relative;
+    font-family: "Courier New", monospace;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+@media (max-width: 768px) {
+    .skillsSection {
+        padding: 5rem 3%;
+    }
+}
+
+@media (max-width: 480px) {
+    .skillsSection {
+        padding: 4rem 5%;
+    }
+}

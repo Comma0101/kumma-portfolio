@@ -20,21 +20,22 @@ export interface Project {
   philosophical?: string;
   demoUrl?: string;
   caseStudyUrl?: string;
+  websiteUrl?: string;
   featured?: boolean;
 }
 
 export const projects: Project[] = [
   {
     id: 1,
-    title: "Servio",
-    slug: "servio",
+    title: "Serviio",
+    slug: "serviio",
     description: "An AI-driven voice ordering system built for restaurants.",
-    subtitle: "The Voice That Takes Your Order",
+    subtitle: "The voice that understands your customers.",
     tagline: "Where speech becomes structure, and interaction becomes experience.",
-    details: "Servio is a real-time AI voice ordering system that transforms phone conversations into structured restaurant orders. Built with cutting-edge speech recognition and natural language processing.",
+    details: "Serviio is a real-time AI voice ordering system that transforms phone conversations into structured restaurant orders. Built with cutting-edge speech recognition and natural language processing.",
     overview: {
-      headline: "Built to Listen, Learn, and Serve.",
-      content: "Servio bridges real-world hospitality with real-time AI. Powered by Twilio, Deepgram, and OpenAI Realtime, it transforms every phone call into structured intent — turning human speech into live restaurant orders."
+      headline: "Technical Breakdown",
+      content: "Serviio connects real-time speech recognition, LLM reasoning, and live POS integration into one seamless voice agent — designed for restaurants that want to serve faster without losing the human touch."
     },
     techStack: [
       {
@@ -63,9 +64,10 @@ export const projects: Project[] = [
         icon: "cloud"
       }
     ],
-    philosophical: "Servio began as an idea: that code could listen. That conversation itself could become an interface. It's not automation — it's empathy, engineered.",
+    philosophical: "Serviio began as an idea: that code could listen. That conversation itself could become an interface. It's not automation — it's empathy, engineered.",
     demoUrl: "#",
     caseStudyUrl: "#",
+    websiteUrl: "https://www.serviio.ai/",
     featured: true
   },
   {

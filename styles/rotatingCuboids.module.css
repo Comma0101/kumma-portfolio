@@ -8,11 +8,6 @@
   justify-content: center;
   perspective: 900px;
   visibility: hidden;
-  background-color: black;
-  background-size: 50px 50px;
-  background-position: center;
-  background-image: linear-gradient(to right, #3f3f3f 1px, transparent 1px),
-    linear-gradient(to bottom, #3f3f3f 1px, transparent 1px);
   overflow: hidden;
 }
 

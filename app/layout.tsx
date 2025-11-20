@@ -9,6 +9,7 @@ import { PageTransitionProvider } from "@/components/PageTransition";
 import IntroAnimation from "../components/IntroAnimation";
 import { AnimationProvider } from "../context/AnimationContext";
 import PageWrapper from "../components/PageWrapper";
+import ThreeScene from "../components/ThreeScene";
 
 const robotoMono = Roboto_Mono({ subsets: ["latin"] });
 const bebasNeue = Bebas_Neue({ subsets: ["latin"], weight: "400" });
@@ -29,6 +30,7 @@ export default function RootLayout({
           <PageWrapper>
             <PageTransitionProvider>
               <SmoothScrollProvider>
+                <ThreeScene />
                 <Navigation />
                 <main style={{ position: "relative", zIndex: 1 }}>
                   {children}

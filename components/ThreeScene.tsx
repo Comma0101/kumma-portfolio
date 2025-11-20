@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import * as THREE from "three";
@@ -7,7 +8,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const ThreeScene = ({ scrollY }: { scrollY: React.MutableRefObject<number> }) => {
+const ThreeScene = () => {
   const pathname = usePathname();
   const [key, setKey] = useState(0);
   const mountRef = useRef<HTMLDivElement>(null);
@@ -22,6 +23,10 @@ const ThreeScene = ({ scrollY }: { scrollY: React.MutableRefObject<number> }) =>
   const frameCountRef = useRef<number>(0);
 
   useEffect(() => {
+    // Only reset if we navigate away from home and back, or if we want to re-init
+    // For now, let's keep it persistent across pages if possible, or re-mount
+    // If we want it persistent, we might not want to reset on pathname change unless necessary
+    // But the current logic resets it. Let's keep it for now to ensure clean state.
     setKey((prevKey) => prevKey + 1);
   }, [pathname]);
 
@@ -43,24 +48,30 @@ const ThreeScene = ({ scrollY }: { scrollY: React.MutableRefObject<number> }) =>
     cameraRef.current = camera;
     camera.position.z = 150;
     camera.position.y = 50;
-   
+
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     rendererRef.current = renderer;
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0x000000, 0);
-    // Ensure canvas is properly styled for transparency
-    if (renderer.domElement.style) {
-      renderer.domElement.style.position = 'absolute';
-      renderer.domElement.style.top = '0';
-      renderer.domElement.style.left = '0';
-      renderer.domElement.style.pointerEvents = 'none';
-    }
+
+    // Add fog for endless illusion
+    scene.fog = new THREE.Fog(0x000000, 150, 900);
+
+    // Style for fixed background
+    renderer.domElement.style.position = 'fixed';
+    renderer.domElement.style.top = '0';
+    renderer.domElement.style.left = '0';
+    renderer.domElement.style.width = '100%';
+    renderer.domElement.style.height = '100%';
+    renderer.domElement.style.zIndex = '-1'; // Behind everything
+    renderer.domElement.style.pointerEvents = 'none';
+
     mountRef.current.appendChild(renderer.domElement);
 
-    const cols = 50; // Reduced from 100 for better performance
-    const rows = 50; // Reduced from 100 for better performance
-    const terrainWidth = 400;
-    const terrainHeight = 400;
+    const cols = 80; // Increased for larger terrain
+    const rows = 80;
+    const terrainWidth = 1200; // Significantly larger
+    const terrainHeight = 1200;
 
     const geometry = new THREE.PlaneGeometry(
       terrainWidth,
@@ -74,7 +85,7 @@ const ThreeScene = ({ scrollY }: { scrollY: React.MutableRefObject<number> }) =>
       color: 0xfafafa,
       wireframe: true,
       transparent: true,
-      opacity: 0.7,
+      opacity: 0.3, // Lower opacity for background
       vertexColors: true,
     });
     materialRef.current = material;
@@ -120,13 +131,11 @@ const ThreeScene = ({ scrollY }: { scrollY: React.MutableRefObject<number> }) =>
     };
 
     const animate = () => {
-      // Update terrain every 2 frames for better performance
       if (frameCountRef.current % 2 === 0) {
         updateTerrain();
       }
       frameCountRef.current++;
 
-      // Update colors based on energy decay
       const colorAttribute = geometry.attributes.color as THREE.BufferAttribute;
       const energyAttribute = geometry.attributes.energy as THREE.BufferAttribute;
       const accentColor = new THREE.Color("#39FF14");
@@ -135,12 +144,10 @@ const ThreeScene = ({ scrollY }: { scrollY: React.MutableRefObject<number> }) =>
 
       for (let i = 0; i < energyAttribute.count; i++) {
         let energy = energyAttribute.getX(i);
-        if (energy > 0.001) { // Performance threshold
+        if (energy > 0.001) {
           const currentColor = new THREE.Color().lerpColors(baseColor, accentColor, energy);
           colorAttribute.setXYZ(i, currentColor.r, currentColor.g, currentColor.b);
-          
-          // Decay energy
-          energyAttribute.setX(i, energy * 0.96); // Adjust for desired fade speed
+          energyAttribute.setX(i, energy * 0.96);
           needsUpdate = true;
         }
       }
@@ -149,24 +156,39 @@ const ThreeScene = ({ scrollY }: { scrollY: React.MutableRefObject<number> }) =>
         colorAttribute.needsUpdate = true;
         energyAttribute.needsUpdate = true;
       }
-      
-      camera.position.y = 50 - scrollY.current * 0.2;
-      camera.rotation.z = -scrollY.current * 0.0001;
+
       renderer.render(scene, camera);
       animationFrameRef.current = requestAnimationFrame(animate);
     };
 
-    gsap.to(material.color, {
-      r: 0.5,
-      g: 0.0,
-      b: 0.5,
+    // Scroll Animations
+    const tl = gsap.timeline({
       scrollTrigger: {
-        trigger: "#about",
-        start: "top bottom",
-        end: "top center",
-        scrub: true,
+        trigger: "body", // Use body as the trigger for the whole page
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 1,
       },
     });
+
+    // Continuous forward flight effect
+    tl.to(camera.position, {
+      z: 50, // Move forward significantly (from 150 to 50)
+      y: 30, // Drop slightly lower for immersion
+      ease: "none", // Linear movement
+    }, 0)
+      .to(material, {
+        opacity: 0.15, // Fade out slightly as we get closer/lower
+        ease: "none",
+      }, 0);
+
+    // Color shift can remain but maybe subtler
+    tl.to(material.color, {
+      r: 0.1,
+      g: 0.5,
+      b: 1.0,
+      ease: "none",
+    }, 0);
 
     const handleResize = () => {
       if (!camera || !renderer) return;
@@ -193,12 +215,10 @@ const ThreeScene = ({ scrollY }: { scrollY: React.MutableRefObject<number> }) =>
 
         for (let i = 0; i < positionAttribute.count; i++) {
           const vertex = new THREE.Vector3().fromBufferAttribute(positionAttribute, i);
-          // Transform vertex to world space to compare with intersection point
           vertex.applyMatrix4(terrain.matrixWorld);
           const distance = vertex.distanceTo(intersectionPoint);
 
           if (distance < radius) {
-            // Set energy to max
             energyAttribute.setX(i, 1.0);
           }
         }
@@ -235,6 +255,7 @@ const ThreeScene = ({ scrollY }: { scrollY: React.MutableRefObject<number> }) =>
       if (rendererRef.current) {
         rendererRef.current.dispose();
       }
+      ScrollTrigger.getAll().forEach(t => t.kill());
     };
   }, [key]);
 
@@ -242,6 +263,15 @@ const ThreeScene = ({ scrollY }: { scrollY: React.MutableRefObject<number> }) =>
     <div
       key={key}
       ref={mountRef}
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: -1,
+        pointerEvents: 'none'
+      }}
     />
   );
 };

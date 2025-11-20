@@ -1,0 +1,95 @@
+.heroSection {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+
+.content {
+    z-index: 1;
+    position: relative;
+    overflow-x: hidden;
+}
+
+.headline {
+    font-size: 6rem;
+    font-weight: 900;
+    margin: 0;
+    letter-spacing: -0.02em;
+    overflow: hidden;
+    padding: 10px 0;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.headlineLine {
+    display: block;
+}
+
+.letter {
+    display: inline-block;
+}
+
+.subheadline {
+    font-size: 2.2rem;
+    font-weight: 500;
+    margin: 1rem 0 2rem;
+    color: #a0a0a0;
+    letter-spacing: 0.1em;
+    text-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+}
+
+.links {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+/* Interactive Link styles kept just in case, but currently unused in JSX */
+.interactiveLink {
+    color: #fafafa;
+    text-decoration: none;
+    font-size: 1.2rem;
+    position: relative;
+    transition: color 0.3s ease;
+    padding-bottom: 0.5rem;
+}
+
+.interactiveLink::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #888888;
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.3s ease;
+}
+
+.interactiveLink:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+.interactiveLink:hover {
+    color: #888888;
+}
+
+.interactiveLink.active {
+    color: #888888;
+}
+
+.scrollIndicator {
+    position: absolute;
+    bottom: 2vh;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1rem;
+    color: #58a6ff;
+    text-shadow: 0 0 10px rgba(88, 166, 255, 0.5);
+}

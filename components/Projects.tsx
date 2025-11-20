@@ -7,6 +7,7 @@ import { useGSAP } from "@gsap/react";
 import styles from "../styles/projects.module.css";
 import { projects } from "@/data/projectData";
 import Link from "next/link";
+import MiniConstellation from "./MiniConstellation";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -14,6 +15,8 @@ const Projects = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const bridgeRef = useRef<HTMLDivElement>(null);
+  const scrollLineRef = useRef<HTMLDivElement>(null);
+  const scrollLineProgressRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
     () => {
@@ -21,10 +24,10 @@ const Projects = () => {
       if (bridgeRef.current) {
         gsap.fromTo(
           bridgeRef.current,
-          { 
-            opacity: 0, 
+          {
+            opacity: 0,
             scale: 0.95,
-            filter: "blur(10px)" 
+            filter: "blur(10px)"
           },
           {
             opacity: 1,
@@ -68,6 +71,24 @@ const Projects = () => {
         }
       );
 
+      // Scroll Line Animation
+      if (scrollLineRef.current && scrollLineProgressRef.current) {
+        gsap.fromTo(
+          scrollLineProgressRef.current,
+          { height: "0%" },
+          {
+            height: "100%",
+            ease: "none",
+            scrollTrigger: {
+              trigger: containerRef.current,
+              start: "top center",
+              end: "bottom bottom",
+              scrub: 0.5,
+            },
+          }
+        );
+      }
+
       // Project panels with parallax and fade effects
       const panels = gsap.utils.toArray<HTMLElement>(`.${styles.projectPanel}`);
 
@@ -81,13 +102,27 @@ const Projects = () => {
           onUpdate: (self) => {
             const progress = self.progress;
             const opacity = 1 - Math.abs(progress - 0.5) * 2;
-            gsap.to(panel, { 
-              opacity: Math.max(0.3, opacity), 
+            gsap.to(panel, {
+              opacity: Math.max(0.3, opacity),
               duration: 0.5,
               ease: "cubic-bezier(0.25, 1, 0.5, 1)"
             });
           },
         });
+
+        // Connection Point Activation
+        const connectionPoint = panel.querySelector(`.${styles.connectionPoint}`);
+        if (connectionPoint) {
+          ScrollTrigger.create({
+            trigger: panel,
+            start: "top center",
+            end: "bottom center",
+            onEnter: () => connectionPoint.classList.add(styles.active),
+            onLeave: () => connectionPoint.classList.remove(styles.active),
+            onEnterBack: () => connectionPoint.classList.add(styles.active),
+            onLeaveBack: () => connectionPoint.classList.remove(styles.active),
+          });
+        }
 
         // Parallax effect for the visual
         const visual = panel.querySelector(`.${styles.projectVisual}`);
@@ -104,19 +139,9 @@ const Projects = () => {
           });
         }
 
-        // Background gradient transition
-        const bgColor = i % 2 === 0 ? "#0D1A26" : "#1C0F1C";
-        ScrollTrigger.create({
-          trigger: panel,
-          start: "top center",
-          end: "bottom center",
-          scrub: true,
-          onUpdate: (self) => {
-            if (containerRef.current && self.progress > 0.3 && self.progress < 0.7) {
-              containerRef.current.style.backgroundColor = bgColor;
-            }
-          },
-        });
+        // Background gradient transition - REMOVED to keep grid visible
+        // The grid background from the parent container will now show through
+        // We can add a subtle overlay if needed, but for now we prioritize the grid.
       });
     },
     { scope: containerRef }
@@ -126,9 +151,14 @@ const Projects = () => {
     <section
       ref={containerRef}
       className={styles.projectsContainer}
-      style={{ backgroundColor: "#0a0a0a", transition: "background-color 1.5s cubic-bezier(0.25, 1, 0.5, 1)" }}
+      style={{ transition: "background-color 1.5s cubic-bezier(0.25, 1, 0.5, 1)" }}
     >
       <div className={styles.projectsWrapper}>
+        {/* Scroll Line */}
+        <div ref={scrollLineRef} className={styles.scrollLineContainer}>
+          <div className={styles.scrollLineBase} />
+          <div ref={scrollLineProgressRef} className={styles.scrollLineProgress} />
+        </div>
         {/* Emotional Bridge Element */}
         <div ref={bridgeRef} className={styles.emotionalBridge}>
           <div className={styles.bridgeGradient} />
@@ -160,33 +190,42 @@ const Projects = () => {
 
         <div className={styles.projectsPanels}>
           {projects.map((project, index) => {
-            const isServio = project.slug === "servio";
+            const isServiio = project.slug === "serviio";
             const accentColor = index === 0 ? "cyan" : index === 1 ? "amber" : "violet";
-            
+
+            // Fallback tech stack if not provided
+            const techStackNames = project.techStack
+              ? project.techStack.map(t => t.name)
+              : ["React", "Next.js", "TypeScript", "GSAP", "Node.js"];
+
+            const accentHex = index === 0 ? "#e0e0e0" : index === 1 ? "#c8c8c8" : "#b0b0b0";
+
             return (
               <div
                 key={project.id}
                 className={`${styles.projectPanel}`}
                 data-accent={accentColor}
               >
+                {/* Connection Point */}
+                <div className={styles.connectionPoint} />
                 {/* Text Side */}
-                <motion.div 
+                <motion.div
                   className={styles.projectTextSide}
                   initial={{ opacity: 0, y: 50 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ 
-                    duration: 1.2, 
-                    ease: [0.25, 1, 0.5, 1] 
+                  transition={{
+                    duration: 1.2,
+                    ease: [0.25, 1, 0.5, 1]
                   }}
                   viewport={{ once: false, amount: 0.3 }}
                 >
                   <motion.h3
                     initial={{ y: 60, opacity: 0 }}
                     whileInView={{ y: 0, opacity: 1 }}
-                    transition={{ 
-                      duration: 1.0, 
+                    transition={{
+                      duration: 1.0,
                       delay: index * 0.15,
-                      ease: [0.25, 1, 0.5, 1] 
+                      ease: [0.25, 1, 0.5, 1]
                     }}
                     viewport={{ once: false, amount: 0.3 }}
                     className={styles.projectPanelTitle}
@@ -199,8 +238,8 @@ const Projects = () => {
                     <motion.p
                       initial={{ opacity: 0 }}
                       whileInView={{ opacity: 1 }}
-                      transition={{ 
-                        delay: 0.3 + (index * 0.15), 
+                      transition={{
+                        delay: 0.3 + (index * 0.15),
                         duration: 1.2,
                         ease: [0.25, 1, 0.5, 1]
                       }}
@@ -214,8 +253,8 @@ const Projects = () => {
                   <motion.p
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
-                    transition={{ 
-                      delay: 0.5 + (index * 0.15), 
+                    transition={{
+                      delay: 0.5 + (index * 0.15),
                       duration: 1.2,
                       ease: [0.25, 1, 0.5, 1]
                     }}
@@ -228,15 +267,16 @@ const Projects = () => {
                   <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ 
-                      delay: 0.7 + (index * 0.15), 
+                    transition={{
+                      delay: 0.7 + (index * 0.15),
                       duration: 1.0,
                       ease: [0.25, 1, 0.5, 1]
                     }}
                     viewport={{ once: false, amount: 0.3 }}
+                    className={styles.projectLinks}
                   >
-                    <Link 
-                      href={`/projects/${project.slug}`} 
+                    <Link
+                      href={`/projects/${project.slug}`}
                       className={styles.projectPanelLink}
                       data-accent={accentColor}
                     >
@@ -247,39 +287,88 @@ const Projects = () => {
                         View Project →
                       </motion.span>
                     </Link>
+
+                    {/* Live Site Button for projects with websiteUrl */}
+                    {project.websiteUrl && (
+                      <motion.a
+                        href={project.websiteUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.liveSiteButton}
+                        data-accent={accentColor}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        transition={{ type: "spring", stiffness: 300 }}
+                      >
+                        <motion.span
+                          className={styles.liveSiteIcon}
+                          animate={{
+                            scale: [1, 1.2, 1],
+                            opacity: [0.7, 1, 0.7]
+                          }}
+                          transition={{
+                            duration: 2,
+                            repeat: Infinity,
+                            ease: "easeInOut"
+                          }}
+                        >
+                          ●
+                        </motion.span>
+                        <span className={styles.liveSiteText}>Visit Live Site</span>
+                        <motion.svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          className={styles.externalIcon}
+                        >
+                          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                          <polyline points="15 3 21 3 21 9" />
+                          <line x1="10" y1="14" x2="21" y2="3" />
+                        </motion.svg>
+                      </motion.a>
+                    )}
                   </motion.div>
                 </motion.div>
 
                 {/* Visual Side */}
-                <motion.div 
+                <motion.div
                   className={styles.projectVisualSide}
                   initial={{ opacity: 0, y: 50 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ 
-                    duration: 1.2, 
-                    ease: [0.25, 1, 0.5, 1] 
+                  transition={{
+                    duration: 1.2,
+                    ease: [0.25, 1, 0.5, 1]
                   }}
                   viewport={{ once: false, amount: 0.3 }}
                 >
-                  <motion.div 
+                  {/* Mini Constellation Overlay */}
+                  <div className={styles.miniConstellationWrapper}>
+                    <MiniConstellation technologies={techStackNames} accentColor={accentHex} />
+                  </div>
+
+                  <motion.div
                     className={styles.projectVisual}
-                    whileHover={{ 
-                      scale: 1.02, 
-                      boxShadow: "0px 0px 40px rgba(255,255,255,0.08)" 
+                    data-accent={accentColor}
+                    whileHover={{
+                      scale: 1.02,
+                      boxShadow: `0px 0px 40px ${accentHex}40`
                     }}
-                    transition={{ 
-                      duration: 0.8, 
-                      ease: [0.25, 1, 0.5, 1] 
+                    transition={{
+                      duration: 0.8,
+                      ease: [0.25, 1, 0.5, 1]
                     }}
                   >
                     <motion.div
                       className={styles.projectVisualImage}
                       initial={{ scale: 1.1, opacity: 0 }}
                       whileInView={{ scale: 1, opacity: 1 }}
-                      transition={{ 
-                        duration: 1.5, 
+                      transition={{
+                        duration: 1.5,
                         delay: index * 0.1,
-                        ease: [0.25, 1, 0.5, 1] 
+                        ease: [0.25, 1, 0.5, 1]
                       }}
                       viewport={{ once: false, amount: 0.3 }}
                       style={{
@@ -301,8 +390,8 @@ const Projects = () => {
                       }}
                     />
 
-                    {/* Enhanced voice ripple for Servio */}
-                    {isServio && (
+                    {/* Enhanced voice ripple for Serviio */}
+                    {isServiio && (
                       <>
                         <motion.div
                           className={styles.voiceRipple}

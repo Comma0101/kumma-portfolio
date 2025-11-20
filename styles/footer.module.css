@@ -1,8 +1,8 @@
 /* Footer Styles */
 
 .footer {
-  background: linear-gradient(180deg, #0a0a0a 0%, #050a15 50%, #0a0a0a 100%);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  border-top: none;
   padding: 8rem 5% 3rem;
   position: relative;
   overflow: hidden;
@@ -298,12 +298,16 @@
 }
 
 @keyframes heartbeat {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(1);
   }
+
   25% {
     transform: scale(1.1);
   }
+
   50% {
     transform: scale(1);
   }
@@ -315,13 +319,11 @@
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 80%;
-  height: 300px;
-  background: radial-gradient(circle, rgba(88, 166, 255, 0.1) 0%, transparent 70%);
-  filter: blur(80px);
+  width: 100%;
+  height: 400px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
   pointer-events: none;
   z-index: 0;
-  opacity: 0.5;
 }
 
 /* Responsive Design */
@@ -365,7 +367,7 @@
   .backToTopText {
     font-size: 0.7rem;
   }
-  
+
   .backToTop:hover {
     transform: translateY(-6px) scale(1.08);
   }
@@ -428,7 +430,7 @@
   .backToTopText {
     font-size: 0.6rem;
   }
-  
+
   .backToTop:hover {
     transform: translateY(-5px) scale(1.06);
   }
@@ -456,6 +458,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .socialLink,
   .footerLink,
   .backToTop,
