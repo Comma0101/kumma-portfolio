@@ -1,5 +1,5 @@
 import { Roboto_Mono, Bebas_Neue } from "next/font/google";
-import "../src/app/globals.css";
+import "./globals.css";
 import "../styles/index.css";
 import "../styles/app.css";
 import Navigation from "../components/Navigation";

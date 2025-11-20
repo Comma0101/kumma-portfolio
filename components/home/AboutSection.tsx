@@ -27,7 +27,7 @@ const AboutSection = () => {
 
             gsap.set(wordNodes, { "--weight": 80, color: "#c0c0c0" });
 
-            gsap.utils.toArray(wordNodes).forEach((word, index) => {
+            wordNodes.forEach((word, index) => {
                 gsap.to(word, {
                     "--weight": 320,
                     color: "#ff4d4d",
