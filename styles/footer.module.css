@@ -8,6 +8,23 @@
   overflow: hidden;
 }
 
+.blogFooter {
+  background: #050505;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 6rem;
+}
+
+.blogFooter::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 0%, rgba(88, 166, 255, 0.12), transparent 55%),
+    radial-gradient(circle at 80% 0%, rgba(236, 72, 153, 0.08), transparent 50%);
+  opacity: 0.7;
+  pointer-events: none;
+  z-index: 0;
+}
+
 .footerContent {
   max-width: 1400px;
   margin: 0 auto;
@@ -15,11 +32,46 @@
   z-index: 2;
 }
 
+.blogFooterIntro {
+  text-align: center;
+  margin-bottom: 4rem;
+  max-width: 760px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.blogFooterEyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 1rem;
+}
+
+.blogFooterHeading {
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  margin: 0 0 1rem;
+  color: #f5f5f5;
+  font-weight: 700;
+}
+
+.blogFooterCopy {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 1.1rem;
+  line-height: 1.8;
+}
+
 .footerGrid {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1.5fr;
   gap: 4rem;
   margin-bottom: 6rem;
+}
+
+.blogFooter .footerGrid {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 3rem;
 }
 
 /* Brand Column */
@@ -97,6 +149,14 @@
   opacity: 1;
 }
 
+.blogFooter .footerColumn {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 18px;
+  padding: 1.8rem;
+  backdrop-filter: blur(6px);
+}
+
 .footerTitle {
   font-size: 1.2rem;
   font-weight: 700;
@@ -118,6 +178,10 @@
   height: 3px;
   background: linear-gradient(90deg, #58a6ff, #00ffff);
   border-radius: 2px;
+}
+
+.blogFooter .footerTitle::after {
+  background: linear-gradient(90deg, #58a6ff, #ec4899);
 }
 
 .footerLinks {

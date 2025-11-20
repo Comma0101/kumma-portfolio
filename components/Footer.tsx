@@ -7,8 +7,15 @@ import styles from "../styles/footer.module.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const Footer = () => {
+type FooterVariant = "default" | "blog";
+
+interface FooterProps {
+  variant?: FooterVariant;
+}
+
+const Footer = ({ variant = "default" }: FooterProps) => {
   const footerRef = useRef<HTMLElement>(null);
+  const isBlog = variant === "blog";
 
   useGSAP(() => {
     if (footerRef.current) {
@@ -45,8 +52,23 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer ref={footerRef} className={styles.footer}>
+    <footer
+      ref={footerRef}
+      className={`${styles.footer} ${isBlog ? styles.blogFooter : ""}`}
+    >
       <div className={styles.footerContent}>
+        {isBlog && (
+          <div className={styles.blogFooterIntro}>
+            <p className={styles.blogFooterEyebrow}>Between Logic & Light</p>
+            <h3 className={styles.blogFooterHeading}>
+              Essays that linger long after the screen fades.
+            </h3>
+            <p className={styles.blogFooterCopy}>
+              Follow the threads of code, craft, and feeling—new writing lands
+              here first.
+            </p>
+          </div>
+        )}
         <div className={styles.footerGrid}>
           {/* Brand Column */}
           <div className={styles.footerColumn}>

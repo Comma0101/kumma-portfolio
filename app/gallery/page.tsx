@@ -56,7 +56,7 @@ export default function GalleryLanding() {
   return (
     <div
       ref={containerRef}
-      className={`${styles.galleryLanding} section-background`}
+      className={styles.galleryLanding}
     >
       <h1 ref={titleRef} className={styles.galleryTitle}>
         Gallery Collections
