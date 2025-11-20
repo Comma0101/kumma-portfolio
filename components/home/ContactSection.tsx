@@ -210,13 +210,13 @@ const ContactSection = () => {
                     <div className={styles.contactLeft}>
                         <h2 className={styles.contactTitle}>
                             <span className={styles.contactTitleGradient}>
-                                LET'S CREATE
+                                LET&rsquo;S CREATE
                             </span>
                             <span className={styles.contactTitleWhite}>SOMETHING</span>
                             <span className={styles.contactTitleGradient}>AMAZING</span>
                         </h2>
                         <p className={styles.contactDescription}>
-                            Have a project in mind? Let's bring your vision to life with
+                            Have a project in mind? Let&rsquo;s bring your vision to life with
                             cutting-edge technology and creative design.
                         </p>
 
