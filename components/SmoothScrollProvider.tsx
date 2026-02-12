@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -14,7 +14,7 @@ export default function SmoothScrollProvider({
 }) {
   const lenisRef = useRef<Lenis | null>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     // Initialize Lenis
     const lenis = new Lenis({
       duration: 1.2,
@@ -32,21 +32,56 @@ export default function SmoothScrollProvider({
     // Expose lenis globally for components to access
     (window as any).lenis = lenis;
 
+    const scrollElement = document.documentElement;
+    const scrollPositionRef = { current: scrollElement.scrollTop || 0 };
+
+    // Wire Lenis to ScrollTrigger so refreshes occur with the virtual scroller
+    ScrollTrigger.scrollerProxy(scrollElement, {
+      scrollTop(value) {
+        if (value !== undefined) {
+          const numericValue = value as number;
+          lenis.scrollTo(numericValue, { immediate: true });
+          scrollPositionRef.current = numericValue;
+          return;
+        }
+        return scrollPositionRef.current;
+      },
+      getBoundingClientRect() {
+        return {
+          top: 0,
+          left: 0,
+          width: window.innerWidth,
+          height: window.innerHeight,
+        };
+      },
+      fixedMarkers: true,
+      pinType: document.body.style.transform ? "transform" : "fixed",
+    });
+    ScrollTrigger.defaults({ scroller: scrollElement });
+
     // Sync Lenis with GSAP ScrollTrigger
-    lenis.on("scroll", ScrollTrigger.update);
+    const handleLenisScroll = ({ scroll }: { scroll: number }) => {
+      scrollPositionRef.current = scroll;
+      ScrollTrigger.update();
+    };
+    lenis.on("scroll", handleLenisScroll);
 
     // Add Lenis's requestAnimationFrame to GSAP's ticker
-    gsap.ticker.add((time) => {
+    const tickerProxy = (time: number) => {
       lenis.raf(time * 1000);
-    });
+    };
+    gsap.ticker.add(tickerProxy);
 
     gsap.ticker.lagSmoothing(0);
 
+    // Sync Lenis target with restored scroll position before first refresh
+    lenis.scrollTo(scrollPositionRef.current, { immediate: true });
+    requestAnimationFrame(() => ScrollTrigger.refresh());
+
     return () => {
       lenis.destroy();
-      gsap.ticker.remove((time) => {
-        lenis.raf(time * 1000);
-      });
+      lenis.off("scroll", handleLenisScroll);
+      gsap.ticker.remove(tickerProxy);
       (window as any).lenis = null;
     };
   }, []);

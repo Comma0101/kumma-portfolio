@@ -3,7 +3,6 @@ import { useEffect, useRef } from "react";
 import styles from "../styles/home.module.css";
 import HeroSection from "./home/HeroSection";
 import AboutSection from "./home/AboutSection";
-import CuboidsSection from "./home/CuboidsSection";
 import ProjectsSection from "./home/ProjectsSection";
 import SkillsSection from "./home/SkillsSection";
 import ContactSection from "./home/ContactSection";
@@ -30,7 +29,6 @@ const Home = () => {
     <div ref={containerRef} className={styles.homeContainer}>
       <HeroSection />
       <AboutSection />
-      <CuboidsSection />
       <ProjectsSection />
       <SkillsSection />
       <ContactSection />

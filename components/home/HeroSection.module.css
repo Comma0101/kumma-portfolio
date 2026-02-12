@@ -1,95 +1,152 @@
 .heroSection {
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    position: relative;
-    z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  padding: 0 5%;
+  background:
+    radial-gradient(circle at 82% 16%, rgba(255, 110, 110, 0.08), transparent 44%),
+    radial-gradient(circle at 16% 84%, rgba(255, 255, 255, 0.03), transparent 38%);
 }
 
 .content {
-    z-index: 1;
-    position: relative;
-    overflow-x: hidden;
+  width: min(1480px, 100%);
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.kicker {
+  margin: 0;
+  color: rgba(255, 122, 122, 0.82);
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  font-size: 0.76rem;
+  font-weight: 600;
 }
 
 .headline {
-    font-size: 6rem;
-    font-weight: 900;
-    margin: 0;
-    letter-spacing: -0.02em;
-    overflow: hidden;
-    padding: 10px 0;
-    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  text-align: left;
+  line-height: 0.87;
 }
 
-.headlineLine {
-    display: block;
+.headlineRow {
+  display: grid;
+  grid-template-columns: minmax(36px, auto) minmax(0, 1fr);
+  align-items: baseline;
+  column-gap: 1rem;
 }
 
-.letter {
-    display: inline-block;
+.lineIndex {
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.13em;
+  transform: translateY(-0.28em);
+}
+
+.lineText {
+  display: block;
+  font-size: clamp(3.05rem, 9.2vw, 9.8rem);
+  letter-spacing: -0.017em;
+  text-wrap: balance;
+}
+
+.editorialTone {
+  color: #f2eeee;
+  font-style: italic;
+  font-weight: 600;
+}
+
+.displayTone {
+  color: #f6f6f6;
+  text-transform: uppercase;
+  font-weight: 400;
 }
 
 .subheadline {
-    font-size: 2.2rem;
-    font-weight: 500;
-    margin: 1rem 0 2rem;
-    color: #a0a0a0;
-    letter-spacing: 0.1em;
-    text-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
-}
-
-.links {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    margin-top: 2rem;
-}
-
-/* Interactive Link styles kept just in case, but currently unused in JSX */
-.interactiveLink {
-    color: #fafafa;
-    text-decoration: none;
-    font-size: 1.2rem;
-    position: relative;
-    transition: color 0.3s ease;
-    padding-bottom: 0.5rem;
-}
-
-.interactiveLink::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background-color: #888888;
-    transform: scaleX(0);
-    transform-origin: bottom right;
-    transition: transform 0.3s ease;
-}
-
-.interactiveLink:hover::after {
-    transform: scaleX(1);
-    transform-origin: bottom left;
-}
-
-.interactiveLink:hover {
-    color: #888888;
-}
-
-.interactiveLink.active {
-    color: #888888;
+  margin: 0.7rem 0 0;
+  max-width: 68ch;
+  color: rgba(220, 220, 220, 0.75);
+  font-size: clamp(0.98rem, 1.26vw, 1.25rem);
+  line-height: 1.9;
+  letter-spacing: 0.01em;
 }
 
 .scrollIndicator {
-    position: absolute;
-    bottom: 2vh;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 1rem;
-    color: #58a6ff;
-    text-shadow: 0 0 10px rgba(88, 166, 255, 0.5);
+  position: absolute;
+  bottom: 2vh;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.76rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.52);
+  font-family: "Roboto Mono", "Space Mono", monospace;
+}
+
+@media (max-width: 1100px) {
+  .heroSection {
+    padding: 0 6%;
+  }
+
+  .headline {
+    gap: 0.22rem;
+  }
+
+  .lineText {
+    font-size: clamp(2.6rem, 8.8vw, 7.1rem);
+  }
+
+  .subheadline {
+    max-width: 56ch;
+  }
+}
+
+@media (max-width: 700px) {
+  .heroSection {
+    align-items: flex-end;
+    padding-bottom: 18vh;
+  }
+
+  .kicker {
+    font-size: 0.66rem;
+    letter-spacing: 0.2em;
+  }
+
+  .headlineRow {
+    grid-template-columns: 1fr;
+    column-gap: 0;
+  }
+
+  .lineIndex {
+    font-size: 0.64rem;
+    margin-bottom: 0.3rem;
+    transform: none;
+    color: rgba(255, 122, 122, 0.74);
+  }
+
+  .lineText {
+    font-size: clamp(2.3rem, 10vw, 4.2rem);
+    line-height: 0.92;
+  }
+
+  .subheadline {
+    font-size: 0.95rem;
+    line-height: 1.75;
+    margin-top: 0.95rem;
+  }
+
+  .scrollIndicator {
+    font-size: 0.62rem;
+    bottom: 1.8vh;
+  }
 }

@@ -1,59 +1,151 @@
 .aboutSection {
-    min-height: 100vh;
-    padding: 8rem 5%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    position: relative;
+  min-height: 100vh;
+  padding: 7rem 5% 8rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  background:
+    radial-gradient(circle at 16% 14%, rgba(255, 122, 122, 0.07), transparent 38%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.012), rgba(255, 255, 255, 0));
+}
+
+.aboutSection::before {
+  content: "Manifesto";
+  position: absolute;
+  top: 12%;
+  right: 5%;
+  font-size: clamp(3.8rem, 11vw, 13rem);
+  line-height: 0.8;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  color: rgba(255, 255, 255, 0.025);
+  pointer-events: none;
+  font-family: "Bebas Neue", "Oswald", sans-serif;
+}
+
+.aboutHeader {
+  max-width: 1380px;
+  width: 100%;
+  margin: 0 auto 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  position: relative;
+  z-index: 2;
+}
+
+.aboutEyebrow {
+  margin: 0;
+  color: rgba(255, 122, 122, 0.8);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.aboutMeta {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.52);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.68rem;
+  font-weight: 500;
 }
 
 .aboutWrapper {
-    max-width: 1400px;
-    margin: 0 auto;
-    position: relative;
-    z-index: 2;
+  max-width: 1380px;
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
 }
 
 .aboutQuote {
-    --weight: 10;
-    font-family: "Marvin Visions Variable";
-    font-size: 6.5rem;
-    font-weight: 170;
-    line-height: 0.8;
-    margin: 0;
-    text-align: left;
+  font-size: clamp(2.55rem, 6.2vw, 7.35rem);
+  line-height: 0.9;
+  letter-spacing: -0.012em;
+  margin: 0;
+  text-align: left;
+  text-wrap: balance;
+  color: #d8d8d8;
 }
 
 .aboutQuoteWord {
-    display: inline-block;
-    color: #c0c0c0;
-    /* Much lighter grey to be visible on black - will animate to red on scroll */
-    font-variation-settings: "wght" var(--weight);
-    margin-right: 0.2em;
-    /* Add some space between words */
+  --weight: 95;
+  display: inline-block;
+  margin-right: 0.2em;
+  color: rgba(232, 232, 232, 0.5);
+  opacity: 0.54;
+  transform: translateY(0.28em);
+  font-variation-settings: "wght" var(--weight);
+  font-weight: 500;
+  transition:
+    color 0.78s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.78s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.78s cubic-bezier(0.22, 1, 0.36, 1),
+    text-shadow 0.78s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: calc(var(--word-index, 0) * 24ms);
 }
 
-@media (max-width: 1200px) {
-    /* .aboutMainText was unused, removed */
+.aboutActive .aboutQuoteWord {
+  color: rgba(235, 235, 235, 0.92);
+  opacity: 0.96;
+  transform: translateY(0);
+  text-shadow: 0 0 8px rgba(255, 122, 122, 0.08);
 }
 
-@media (max-width: 768px) {
-    .aboutSection {
-        padding: 5rem 3%;
-    }
-
-    .aboutQuote {
-        font-size: 3.5rem;
-    }
+.aboutActive .aboutAccentWord {
+  color: #ff8a8a;
+  opacity: 1;
+  font-style: italic;
+  text-shadow: 0 0 12px rgba(255, 138, 138, 0.24);
 }
 
-@media (max-width: 480px) {
-    .aboutSection {
-        padding: 4rem 5%;
-    }
+@media (max-width: 960px) {
+  .aboutSection {
+    padding: 5.5rem 6% 6rem;
+  }
 
-    .aboutQuote {
-        font-size: 2.5rem;
-    }
+  .aboutSection::before {
+    top: 8%;
+    right: 6%;
+  }
+
+  .aboutHeader {
+    margin-bottom: 1rem;
+  }
+
+  .aboutQuote {
+    font-size: clamp(2.2rem, 8vw, 5.6rem);
+    line-height: 0.95;
+  }
+}
+
+@media (max-width: 620px) {
+  .aboutSection {
+    padding: 4.6rem 6% 5rem;
+  }
+
+  .aboutHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+  }
+
+  .aboutEyebrow {
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+  }
+
+  .aboutMeta {
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+  }
+
+  .aboutQuote {
+    font-size: clamp(1.9rem, 11vw, 3.3rem);
+    line-height: 0.99;
+  }
 }

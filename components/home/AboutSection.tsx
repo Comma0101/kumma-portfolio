@@ -1,75 +1,89 @@
 "use client";
-import { useRef, useEffect } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
+import { CSSProperties, useEffect, useRef, useState } from "react";
+import { Cormorant_Garamond, Space_Grotesk } from "next/font/google";
 import styles from "./AboutSection.module.css";
 
-gsap.registerPlugin(ScrollTrigger);
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  style: ["normal", "italic"],
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+});
 
 const AboutSection = () => {
-    const containerRef = useRef<HTMLDivElement>(null);
-    const quoteRef = useRef<HTMLHeadingElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [hasActivated, setHasActivated] = useState(false);
 
-    useEffect(() => {
-        console.log("[AboutSection] mounted", quoteRef.current);
-    }, []);
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
 
-    useGSAP(
-        () => {
-            const quoteElement = quoteRef.current;
-            if (!quoteElement) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.28) {
+          setHasActivated(true);
+        }
+      },
+      {
+        threshold: [0.2, 0.28, 0.4],
+      }
+    );
 
-            const wordNodes = quoteElement.querySelectorAll<HTMLElement>(
-                `.${styles.aboutQuoteWord}`
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, []);
+
+  const quoteText =
+    "I build systems that feel. Not just interfaces, but living frames where code shapes light, motion finds meaning, and small choices ripple into experience. Each project starts as a question—then becomes a place you can walk through.";
+  const words = quoteText.split(" ");
+  const accentWords = new Set([
+    "feel",
+    "light",
+    "motion",
+    "question",
+    "place",
+    "systems",
+    "experience",
+  ]);
+
+  return (
+    <section
+      id="about"
+      ref={containerRef}
+      className={`${styles.aboutSection} ${hasActivated ? styles.aboutActive : ""}`}
+    >
+      <div className={styles.aboutHeader}>
+        <p className={`${styles.aboutEyebrow} ${spaceGrotesk.className}`}>Manifesto</p>
+        <p className={`${styles.aboutMeta} ${spaceGrotesk.className}`}>
+          chapter / 02
+        </p>
+      </div>
+
+      <div className={styles.aboutWrapper}>
+        <h2 className={`${styles.aboutQuote} ${cormorant.className}`}>
+          {words.map((word, i) => {
+            const normalized = word.toLowerCase().replace(/[^a-z]/g, "");
+            const isAccent = accentWords.has(normalized);
+            return (
+              <span
+                key={`${word}-${i}`}
+                className={`${styles.aboutQuoteWord} ${
+                  isAccent ? styles.aboutAccentWord : ""
+                }`}
+                style={{ "--word-index": i } as CSSProperties}
+              >
+                {word}
+              </span>
             );
-            if (!wordNodes.length) return;
-
-            gsap.set(wordNodes, { "--weight": 80, color: "#c0c0c0" });
-
-            wordNodes.forEach((word, index) => {
-                gsap.to(word, {
-                    "--weight": 320,
-                    color: "#ff4d4d",
-                    duration: 0.6,
-                    ease: "power2.out",
-                    scrollTrigger: {
-                        trigger: word,
-                        start: "top 85%",
-                        end: "top 45%",
-                        scrub: true,
-                        markers: false,
-                    },
-                });
-            });
-        },
-        { scope: containerRef }
-    );
-
-    const quoteText =
-        "I build systems that feel. Not just interfaces, but living frames where code shapes light, motion finds meaning, and small choices ripple into experience. Each project starts as a question—then becomes a place you can walk through.";
-
-    return (
-        <div
-            id="about"
-            ref={containerRef}
-            className={styles.aboutSection}
-        >
-            <div className={styles.aboutWrapper}>
-                <h2 ref={quoteRef} className={styles.aboutQuote}>
-                    {quoteText.split(" ").map((word, i) => (
-                        <span
-                            key={i}
-                            className={styles.aboutQuoteWord}
-                            style={{ display: "inline-block", marginRight: "0.2em" }}
-                        >
-                            {word}
-                        </span>
-                    ))}
-                </h2>
-            </div>
-        </div>
-    );
+          })}
+        </h2>
+      </div>
+    </section>
+  );
 };
 
 export default AboutSection;

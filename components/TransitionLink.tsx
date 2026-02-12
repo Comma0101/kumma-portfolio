@@ -7,13 +7,20 @@ interface TransitionLinkProps {
   href: string;
   children: React.ReactNode;
   className?: string;
+  onNavigate?: () => void;
 }
 
-const TransitionLink: React.FC<TransitionLinkProps> = ({ href, children, className }) => {
+const TransitionLink: React.FC<TransitionLinkProps> = ({
+  href,
+  children,
+  className,
+  onNavigate,
+}) => {
   const { animatePageOut } = usePageTransition();
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
+    onNavigate?.();
     animatePageOut(href);
   };
 

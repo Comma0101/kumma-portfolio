@@ -1,21 +1,102 @@
 .skillsSection {
-    min-height: 100vh;
-    padding: 4rem 2rem;
-    position: relative;
-    font-family: "Courier New", monospace;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+  --skills-accent: rgba(255, 134, 134, 0.82);
+  position: relative;
+  min-height: 100vh;
+  padding: clamp(5rem, 8vw, 8rem) 5%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(2rem, 4vw, 3.6rem);
+  background:
+    radial-gradient(circle at 82% 14%, rgba(255, 128, 128, 0.08), transparent 42%),
+    radial-gradient(circle at 18% 88%, rgba(255, 255, 255, 0.03), transparent 38%);
+  overflow: hidden;
 }
 
-@media (max-width: 768px) {
-    .skillsSection {
-        padding: 5rem 3%;
-    }
+.skillsSection::before {
+  content: "Knowledge";
+  position: absolute;
+  top: 8%;
+  left: 5%;
+  font-size: clamp(3.2rem, 10vw, 12rem);
+  line-height: 0.8;
+  letter-spacing: -0.035em;
+  color: rgba(255, 255, 255, 0.026);
+  text-transform: uppercase;
+  pointer-events: none;
+  font-family: "Bebas Neue", "Oswald", sans-serif;
 }
 
-@media (max-width: 480px) {
-    .skillsSection {
-        padding: 4rem 5%;
-    }
+.skillsHeader {
+  width: min(1380px, 100%);
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: 1rem;
+}
+
+.skillsEyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--skills-accent);
+}
+
+.skillsTitle {
+  margin: 0;
+  font-size: clamp(2.35rem, 6.5vw, 6.7rem);
+  line-height: 0.92;
+  letter-spacing: -0.016em;
+  color: #f2eeee;
+  max-width: 13ch;
+}
+
+.skillsIntro {
+  margin: 0;
+  max-width: 63ch;
+  font-size: clamp(0.96rem, 1.35vw, 1.18rem);
+  line-height: 1.85;
+  letter-spacing: 0.01em;
+  color: rgba(220, 220, 220, 0.78);
+}
+
+@media (max-width: 980px) {
+  .skillsSection {
+    padding: 5.5rem 6%;
+  }
+
+  .skillsSection::before {
+    top: 10%;
+    left: 6%;
+  }
+
+  .skillsTitle {
+    max-width: 16ch;
+    line-height: 0.95;
+  }
+}
+
+@media (max-width: 620px) {
+  .skillsSection {
+    padding: 4.6rem 6%;
+    gap: 1.8rem;
+  }
+
+  .skillsSection::before {
+    top: 7%;
+    font-size: clamp(2.7rem, 18vw, 5.8rem);
+  }
+
+  .skillsEyebrow {
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+  }
+
+  .skillsIntro {
+    font-size: 0.93rem;
+    line-height: 1.72;
+  }
 }

@@ -9,6 +9,39 @@
   position: relative;
 }
 
+.cuboidsIntro {
+  position: relative;
+  z-index: 3;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3.25rem 5% 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.cuboidsEyebrow {
+  margin: 0;
+  font-size: 0.8rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 123, 123, 0.78);
+}
+
+.cuboidsLead {
+  margin: 0;
+  max-width: 34ch;
+  font-size: clamp(1rem, 1.4vw, 1.2rem);
+  letter-spacing: 0.01em;
+  color: rgba(220, 220, 220, 0.85);
+}
+
 .projectsSection {
   width: 100%;
+}
+
+@media (max-width: 768px) {
+  .cuboidsIntro {
+    padding: 2.2rem 6% 0;
+  }
 }

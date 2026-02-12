@@ -21,6 +21,7 @@ const ThreeScene = () => {
   const animationFrameRef = useRef<number | null>(null);
   const flyingRef = useRef<number>(0);
   const frameCountRef = useRef<number>(0);
+  const cameraTimelineRef = useRef<gsap.core.Timeline | null>(null);
 
   useEffect(() => {
     // Only reset if we navigate away from home and back, or if we want to re-init
@@ -170,6 +171,7 @@ const ThreeScene = () => {
         scrub: 1,
       },
     });
+    cameraTimelineRef.current = tl;
 
     // Continuous forward flight effect
     tl.to(camera.position, {
@@ -255,7 +257,11 @@ const ThreeScene = () => {
       if (rendererRef.current) {
         rendererRef.current.dispose();
       }
-      ScrollTrigger.getAll().forEach(t => t.kill());
+      if (cameraTimelineRef.current) {
+        cameraTimelineRef.current.scrollTrigger?.kill();
+        cameraTimelineRef.current.kill();
+        cameraTimelineRef.current = null;
+      }
     };
   }, [key]);
 

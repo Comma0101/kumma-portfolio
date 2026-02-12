@@ -46,6 +46,7 @@ interface ProjectDetailProps {
 export default function ProjectDetail({ project }: ProjectDetailProps) {
   const heroRef = useRef<HTMLDivElement>(null);
   const overviewRef = useRef<HTMLDivElement>(null);
+  const storyArcRef = useRef<HTMLDivElement>(null);
   const techStackRef = useRef<HTMLDivElement>(null);
   const philosophicalRef = useRef<HTMLDivElement>(null);
 
@@ -101,6 +102,31 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
         );
       }
 
+      // Story arc animation
+      if (storyArcRef.current) {
+        const narrativeCards = storyArcRef.current.querySelectorAll(
+          `.${styles.storyArcCard}`
+        );
+
+        gsap.fromTo(
+          narrativeCards,
+          { opacity: 0, y: 40 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            stagger: 0.12,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: storyArcRef.current,
+              start: "top 78%",
+              end: "top 48%",
+              scrub: 1,
+            },
+          }
+        );
+      }
+
       // Philosophical section animation
       if (philosophicalRef.current) {
         gsap.fromTo(
@@ -137,18 +163,30 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
             {project.tagline && (
               <p className={styles.heroTagline}>{project.tagline}</p>
             )}
-            <div className={styles.heroCTA}>
-              {project.demoUrl && (
-                <a href={project.demoUrl} className={styles.ctaButton}>
-                  View Live Demo
-                </a>
-              )}
-              {project.caseStudyUrl && (
-                <a href={project.caseStudyUrl} className={`${styles.ctaButton} ${styles.ctaSecondary}`}>
-                  Read Case Study
-                </a>
-              )}
-            </div>
+            {(project.websiteUrl || project.demoUrl || project.caseStudyUrl) && (
+              <div className={styles.heroCTA}>
+                {project.websiteUrl && (
+                  <a
+                    href={project.websiteUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.ctaButton}
+                  >
+                    Visit Live Site
+                  </a>
+                )}
+                {project.demoUrl && (
+                  <a href={project.demoUrl} className={`${styles.ctaButton} ${styles.ctaSecondary}`}>
+                    View Demo
+                  </a>
+                )}
+                {project.caseStudyUrl && (
+                  <a href={project.caseStudyUrl} className={`${styles.ctaButton} ${styles.ctaSecondary}`}>
+                    Read Case Study
+                  </a>
+                )}
+              </div>
+            )}
           </div>
           <div className={styles.heroVisual}>
             <div className={styles.waveform}>
@@ -164,19 +202,32 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
       {project.overview && (
         <div ref={overviewRef} className={styles.overview}>
           <h3 className={styles.overviewHeadline}>{project.overview.headline}</h3>
-          <p className={styles.overviewContent}>
-            {project.overview.content.split(/\b(Twilio|Deepgram|OpenAI)\b/).map((part, index) => {
-              if (["Twilio", "Deepgram", "OpenAI"].includes(part)) {
-                return (
-                  <span key={index} className={styles.highlightKeyword}>
-                    {part}
-                  </span>
-                );
-              }
-              return part;
-            })}
-          </p>
+          <p className={styles.overviewContent}>{project.overview.content}</p>
         </div>
+      )}
+
+      {/* Story Arc Section */}
+      {project.narrative && (
+        <section ref={storyArcRef} className={styles.storyArc}>
+          <h3 className={styles.sectionTitle}>Narrative Arc</h3>
+          <div className={styles.storyArcGrid}>
+            <article className={styles.storyArcCard}>
+              <p className={styles.storyArcLabel}>Context</p>
+              <p className={styles.storyArcText}>{project.narrative.context}</p>
+            </article>
+            <article className={styles.storyArcCard}>
+              <p className={styles.storyArcLabel}>Decision</p>
+              <p className={styles.storyArcText}>{project.narrative.decision}</p>
+            </article>
+            <article className={styles.storyArcCard}>
+              <p className={styles.storyArcLabel}>Outcome</p>
+              <p className={styles.storyArcText}>{project.narrative.outcome}</p>
+            </article>
+          </div>
+          {project.narrative.impact && (
+            <p className={styles.storyArcImpact}>{project.narrative.impact}</p>
+          )}
+        </section>
       )}
 
       {/* Tech Stack Section */}
@@ -204,7 +255,7 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
             {project.philosophical}
           </blockquote>
           <p className={styles.philosophicalTag}>
-            — Building systems that feel.
+            — Notes from the build.
           </p>
         </div>
       )}

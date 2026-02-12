@@ -1,21 +1,16 @@
 "use client";
 
-import React, { useState, useEffect, useRef, forwardRef } from "react";
+import React, { forwardRef, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Cormorant_Garamond, Space_Grotesk } from "next/font/google";
 import styles from "@/styles/blog.module.css";
 
-gsap.registerPlugin(ScrollTrigger);
-
-// Define the BlogPost type, matching the structure from Markdown frontmatter
 export interface BlogPost {
   id: string;
   slug: string;
   title: string;
   excerpt: string;
-  content?: string; // Content is optional on the listing page
+  content?: string;
   category: string;
   tags: string[];
   author: {
@@ -23,27 +18,24 @@ export interface BlogPost {
     avatar?: string;
   };
   publishedDate: string;
-  readingTime?: number; // Make optional as it might not be in frontmatter
+  readingTime?: number;
   featured?: boolean;
 }
 
-// Helper functions for filtering, now local to this component
-const getPostsByCategory = (posts: BlogPost[], category: string): BlogPost[] => {
-  if (category === "All") return posts;
-  return posts.filter((post) => post.category === category);
-};
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  style: ["normal", "italic"],
+});
 
-const searchPosts = (query: string, posts: BlogPost[]): BlogPost[] => {
-  const lowercaseQuery = query.toLowerCase();
-  return posts.filter(
-    (post) =>
-      post.title.toLowerCase().includes(lowercaseQuery) ||
-      post.excerpt.toLowerCase().includes(lowercaseQuery) ||
-      post.tags.some((tag) => tag.toLowerCase().includes(lowercaseQuery))
-  );
-};
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+});
 
-// Helper component to highlight search queries
+const escapeRegExp = (value: string) =>
+  value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
 const Highlight = ({
   text,
   highlight,
@@ -51,20 +43,25 @@ const Highlight = ({
   text: string;
   highlight: string;
 }) => {
-  if (!highlight.trim()) {
+  const trimmed = highlight.trim();
+  if (!trimmed) {
     return <span>{text}</span>;
   }
-  const regex = new RegExp(`(${highlight})`, "gi");
+
+  const safePattern = escapeRegExp(trimmed);
+  const regex = new RegExp(`(${safePattern})`, "gi");
   const parts = text.split(regex);
+  const normalizedHighlight = trimmed.toLowerCase();
+
   return (
     <span>
       {parts.map((part, i) =>
-        regex.test(part) ? (
-          <mark key={i} className={styles.highlight}>
+        part.toLowerCase() === normalizedHighlight ? (
+          <mark key={`${part}-${i}`} className={styles.highlight}>
             {part}
           </mark>
         ) : (
-          part
+          <React.Fragment key={`${part}-${i}`}>{part}</React.Fragment>
         )
       )}
     </span>
@@ -73,244 +70,185 @@ const Highlight = ({
 
 interface BlogSectionProps {
   posts: BlogPost[];
-  locale?: string; // Add locale prop, defaults to 'en'
+  locale?: string;
 }
 
-const BlogSection = forwardRef<HTMLDivElement, BlogSectionProps>(({ posts, locale = 'en' }, ref) => {
-  const [selectedCategory, setSelectedCategory] = useState<string>("All");
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const [filteredPosts, setFilteredPosts] = useState<BlogPost[]>(posts);
+const BlogSection = forwardRef<HTMLDivElement, BlogSectionProps>(
+  ({ posts, locale = "en" }, ref) => {
+    const allCategoryLabel = locale === "zh" ? "全部" : "All";
+    const [selectedCategory, setSelectedCategory] = useState<string>(allCategoryLabel);
+    const [searchQuery, setSearchQuery] = useState<string>("");
 
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLDivElement>(null);
-  const controlsRef = useRef<HTMLDivElement>(null);
-  const listRef = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+      setSelectedCategory(allCategoryLabel);
+    }, [allCategoryLabel]);
 
-  // Derive categories from the posts prop
-  const categories = [...new Set(posts.map(post => post.category))];
+    const categories = useMemo(() => {
+      return [allCategoryLabel, ...new Set(posts.map((post) => post.category))];
+    }, [posts, allCategoryLabel]);
 
-  // Handle filtering
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      let initialPosts = posts;
+    const filteredPosts = useMemo(() => {
+      const query = searchQuery.trim().toLowerCase();
 
-      // Apply category filter first
-      if (selectedCategory !== "All") {
-        initialPosts = getPostsByCategory(initialPosts, selectedCategory);
-      }
+      return posts.filter((post) => {
+        const categoryMatches =
+          selectedCategory === allCategoryLabel || post.category === selectedCategory;
 
-      // Then, apply search filter on the result of the category filter
-      if (searchQuery.trim() !== "") {
-        initialPosts = searchPosts(searchQuery, initialPosts);
-      }
+        if (!categoryMatches) return false;
+        if (!query) return true;
 
-      setFilteredPosts(initialPosts);
-    }, 300); // 300ms debounce delay
-
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [selectedCategory, searchQuery, posts]);
-
-  // GSAP Animations for new layout
-  useGSAP(() => {
-    if (!sectionRef.current) return;
-
-    // Entrance animation for title and subtitle (only on initial mount)
-    if (titleRef.current && !titleRef.current.dataset.animated) {
-      gsap.from([titleRef.current, `.${styles.manifestoSection}`], {
-        y: 50,
-        opacity: 0,
-        duration: 1,
-        ease: "power3.out",
-        stagger: 0.2,
+        return (
+          post.title.toLowerCase().includes(query) ||
+          post.excerpt.toLowerCase().includes(query) ||
+          post.tags.some((tag) => tag.toLowerCase().includes(query))
+        );
       });
-      titleRef.current.dataset.animated = "true";
-    }
+    }, [posts, selectedCategory, searchQuery, allCategoryLabel]);
 
-    // Entrance for controls (only on initial mount)
-    if (controlsRef.current && !controlsRef.current.dataset.animated) {
-      gsap.from(controlsRef.current, {
-        y: 30,
-        opacity: 0,
-        duration: 1,
-        delay: 0.5,
-        ease: "power3.out",
-      });
-      controlsRef.current.dataset.animated = "true";
-    }
+    const dateLocale = locale === "zh" ? "zh-CN" : "en-US";
 
-    // Animate articles with each filter change
-    if (listRef.current) {
-      const articles = listRef.current.querySelectorAll(
-        `.${styles.articleEntry}`
-      );
-      
-      // Reset and animate
-      gsap.fromTo(articles, 
-        {
-          y: 20,
-          opacity: 0,
-        },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.5,
-          ease: "power2.out",
-          stagger: 0.08,
-          clearProps: "all", // Clear inline styles after animation
-        }
-      );
-    }
-  }, [filteredPosts]);
+    return (
+      <section className={styles.blogSection} ref={ref}>
+        <div className={styles.blogWrapper}>
+          <header className={styles.blogHeader}>
+            <p className={`${styles.blogEyebrow} ${spaceGrotesk.className}`}>
+              Essays / Journal
+            </p>
+            <h1 className={`${styles.blogTitle} ${cormorant.className}`}>
+              Between Logic And Light
+            </h1>
+            <p className={`${styles.blogIntro} ${spaceGrotesk.className}`}>
+              Writing to understand what it means to make, feel, and be.
+              Fragments on craft, systems, and the philosophy behind digital work.
+            </p>
+          </header>
 
-  return (
-    <div className={styles.blogSection} ref={ref || sectionRef}>
-      {/* Atmospheric Background */}
-      <div className={styles.atmosphericBg}>
-        <div className={styles.floatingParticle} style={{ '--delay': '0s', '--duration': '20s', '--x': '20%', '--y': '30%' } as React.CSSProperties}></div>
-        <div className={styles.floatingParticle} style={{ '--delay': '2s', '--duration': '25s', '--x': '70%', '--y': '60%' } as React.CSSProperties}></div>
-        <div className={styles.floatingParticle} style={{ '--delay': '4s', '--duration': '30s', '--x': '40%', '--y': '80%' } as React.CSSProperties}></div>
-        <div className={styles.floatingParticle} style={{ '--delay': '6s', '--duration': '22s', '--x': '85%', '--y': '25%' } as React.CSSProperties}></div>
-        <div className={styles.gradientMesh}></div>
-      </div>
-
-      <div className={styles.blogWrapper}>
-        {/* Poetic Header */}
-        <div className={styles.poeticHeader} ref={titleRef}>
-          <span className={styles.poeticLine}>Between Logic </span>
-          {/* <span className={styles.poeticDivider}>/</span> */}
-          <span className={`${styles.poeticLine} ${styles.lightEmphasis}`}>
-            And Light
-          </span>
-        </div>
-
-        {/* Manifesto Section */}
-        <div className={styles.manifestoSection}>
-          <p className={styles.manifestoText}>
-            Writing to understand what it means to make, feel, and be.
-          </p>
-        </div>
-
-        {/* Search and Filters */}
-        <div className={styles.controlsWrapper} ref={controlsRef}>
-          <div className={styles.searchBarWrapper}>
+          <div className={styles.controlsWrapper}>
             <div className={styles.searchBar}>
-              <svg
-                className={styles.searchIcon}
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <circle cx="11" cy="11" r="8" />
-                <path d="m21 21-4.35-4.35" />
-              </svg>
+              <label htmlFor="blog-search" className={styles.searchLabel}>
+                Search
+              </label>
               <input
+                id="blog-search"
                 type="text"
-                placeholder="Search articles..."
+                placeholder={locale === "zh" ? "搜索文章..." : "Search essays..."}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className={styles.searchInput}
+                className={`${styles.searchInput} ${spaceGrotesk.className}`}
               />
-              {searchQuery && (
+              {searchQuery ? (
                 <button
-                  className={styles.clearButton}
+                  type="button"
+                  className={`${styles.clearButton} ${spaceGrotesk.className}`}
                   onClick={() => setSearchQuery("")}
-                  aria-label="Clear search"
                 >
-                  ✕
+                  {locale === "zh" ? "清除" : "Clear"}
                 </button>
-              )}
+              ) : null}
             </div>
-          </div>
-          <div className={styles.categoryFilters}>
-            <button
-              className={`${styles.filterButton} ${
-                selectedCategory === "All" ? styles.active : ""
-              }`}
-              onClick={() => setSelectedCategory("All")}
-            >
-              All
-            </button>
-            {categories.map((category) => (
-              <button
-                key={category}
-                className={`${styles.filterButton} ${
-                  selectedCategory === category ? styles.active : ""
-                }`}
-                onClick={() => setSelectedCategory(category)}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-        </div>
 
-        {/* Articles List */}
-        <div className={styles.articlesList} ref={listRef}>
-          {filteredPosts.length > 0 ? (
-            filteredPosts.map((post) => (
-              <Link
-                key={post.id}
-                href={`/blog/${locale}/${post.slug}`}
-                className={styles.articleEntry}
-              >
-                <div className={styles.articleContent}>
-                  <h3 className={styles.articleTitle}>
-                    <Highlight text={post.title} highlight={searchQuery} />
-                  </h3>
-                  <p className={styles.articleExcerpt}>
-                    <Highlight text={post.excerpt} highlight={searchQuery} />
-                  </p>
-                </div>
-                <div className={styles.articleMeta}>
-                  <span className={styles.articleCategory}>
-                    {post.category}
-                  </span>
-                  <span className={styles.articleDate}>
-                    {new Date(post.publishedDate).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </span>
-                  <span className={styles.articleReadingTime}>
-                    {post.readingTime} min read
-                  </span>
-                </div>
-                <div className={styles.articleTags}>
-                  {post.tags.slice(0, 4).map((tag) => (
-                    <span key={tag} className={styles.tag}>
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </Link>
-            ))
-          ) : (
-            <div className={styles.noResults}>
-              <p className={styles.noResultsText}>
-                No articles found matching your criteria.
-              </p>
-              <button
-                className={styles.resetButton}
-                onClick={() => {
-                  setSelectedCategory("All");
-                  setSearchQuery("");
-                }}
-              >
-                Reset Filters
-              </button>
+            <div className={styles.categoryFilters}>
+              {categories.map((category) => {
+                const isActive = category === selectedCategory;
+
+                return (
+                  <button
+                    key={category}
+                    type="button"
+                    className={`${styles.filterButton} ${
+                      isActive ? styles.active : ""
+                    } ${spaceGrotesk.className}`}
+                    onClick={() => setSelectedCategory(category)}
+                  >
+                    {category}
+                  </button>
+                );
+              })}
             </div>
-          )}
+          </div>
+
+          <p className={`${styles.resultsMeta} ${spaceGrotesk.className}`}>
+            {filteredPosts.length} {locale === "zh" ? "篇文章" : "essays"}
+          </p>
+
+          <div className={styles.articlesList}>
+            {filteredPosts.length > 0 ? (
+              filteredPosts.map((post, index) => {
+                const chapter = String(index + 1).padStart(2, "0");
+
+                return (
+                  <Link
+                    key={post.id}
+                    href={`/blog/${locale}/${post.slug}`}
+                    className={styles.articleEntry}
+                  >
+                    <p className={`${styles.articleChapter} ${spaceGrotesk.className}`}>
+                      Essay {chapter}
+                    </p>
+
+                    <div className={styles.articleMain}>
+                      <h2 className={`${styles.articleTitle} ${cormorant.className}`}>
+                        <Highlight text={post.title} highlight={searchQuery} />
+                      </h2>
+                      <p className={`${styles.articleExcerpt} ${spaceGrotesk.className}`}>
+                        <Highlight text={post.excerpt} highlight={searchQuery} />
+                      </p>
+                      <div className={styles.articleTags}>
+                        {post.tags.slice(0, 4).map((tag) => (
+                          <span
+                            key={tag}
+                            className={`${styles.tag} ${spaceGrotesk.className}`}
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className={`${styles.articleAside} ${spaceGrotesk.className}`}>
+                      <span className={styles.articleCategory}>{post.category}</span>
+                      <span className={styles.articleDate}>
+                        {new Date(post.publishedDate).toLocaleDateString(dateLocale, {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                      </span>
+                      <span className={styles.articleReadingTime}>
+                        {(post.readingTime ?? 5).toString()} {locale === "zh" ? "分钟阅读" : "min read"}
+                      </span>
+                      <span className={styles.articleArrow} aria-hidden="true">
+                        -&gt;
+                      </span>
+                    </div>
+                  </Link>
+                );
+              })
+            ) : (
+              <div className={styles.noResults}>
+                <p className={`${styles.noResultsText} ${spaceGrotesk.className}`}>
+                  {locale === "zh"
+                    ? "没有找到符合筛选条件的文章。"
+                    : "No essays matched your current filters."}
+                </p>
+                <button
+                  type="button"
+                  className={`${styles.resetButton} ${spaceGrotesk.className}`}
+                  onClick={() => {
+                    setSelectedCategory(allCategoryLabel);
+                    setSearchQuery("");
+                  }}
+                >
+                  {locale === "zh" ? "重置筛选" : "Reset Filters"}
+                </button>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-    </div>
-  );
-});
+      </section>
+    );
+  }
+);
 
 BlogSection.displayName = "BlogSection";
 

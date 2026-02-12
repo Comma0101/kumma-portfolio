@@ -8,6 +8,7 @@ export default function ConditionalFooter() {
   const pathname = usePathname();
   const hideFooter = pathname === "/stories";
   const isBlog = pathname?.startsWith("/blog");
+  const showBackToTopCube = pathname === "/";
 
   if (hideFooter) {
     return null;
@@ -16,7 +17,7 @@ export default function ConditionalFooter() {
   return (
     <>
       <Footer variant={isBlog ? "blog" : "default"} />
-      <BackToTopCube />
+      {showBackToTopCube ? <BackToTopCube /> : null}
     </>
   );
 }
