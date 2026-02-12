@@ -1,26 +1,30 @@
 "use client";
 
 import { FC, useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import * as THREE from "three";
-import { PlaneGeometry, ShaderMaterial, Uniform } from "three"; // Import necessary types
-import { useGSAP } from "@gsap/react";
+import { PlaneGeometry, ShaderMaterial, Uniform } from "three";
+import { Cormorant_Garamond, Space_Grotesk } from "next/font/google";
 import gsap from "gsap";
 import { menuItems } from "./menuItems";
 import styles from "../styles/GalleryPage.module.css";
-import SlicedText from "./SlicedTextEffect/SlicedText";
 
-// Simple Math Lerp function (if not available elsewhere)
-// Consider moving to a utils file if used in multiple places
-const lerp = (start: number, end: number, t: number): number => {
-  return start * (1 - t) + end * t;
-};
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  style: ["normal", "italic"],
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+});
 
 interface GalleryPageProps {
   collectionId?: string;
 }
 
-// --- Basic Vertex Shader (No Effects) ---
 const imageVertexShader = `
   varying vec2 vUv;
 
@@ -30,56 +34,51 @@ const imageVertexShader = `
   }
 `;
 
-// --- Fragment Shader (Unchanged) ---
 const imageFragmentShader = `
   uniform sampler2D uTexture;
   varying vec2 vUv;
 
-
   void main() {
-    // Simple texture mapping - distortion is now in vertex shader
     vec4 color = texture2D(uTexture, vUv);
     gl_FragColor = color;
-    // Optional: Add aspect ratio correction here if needed, like in the reference fragment shader
   }
 `;
-// --- End Shaders ---
 
 interface Media {
-  mesh: THREE.Mesh<PlaneGeometry, ShaderMaterial>; // Use ShaderMaterial
-  bounds: DOMRect; // Store original DOM bounds if needed for layout, or calculate based on image aspect
-  initialY: number; // Initial Y position in world units
-  height: number; // Height in world units
-  width: number; // Width in world units
+  mesh: THREE.Mesh<PlaneGeometry, ShaderMaterial>;
+  bounds: DOMRect;
+  initialY: number;
+  height: number;
+  width: number;
 }
 
 const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
+  const [chapterLabel, setChapterLabel] = useState("");
   const [title, setTitle] = useState("");
+  const [subtitle, setSubtitle] = useState("");
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadingProgress, setLoadingProgress] = useState(0);
+
   const mountRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
+  const headerRef = useRef<HTMLElement>(null);
   const pageRef = useRef<HTMLDivElement>(null);
+
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const clockRef = useRef<THREE.Clock | null>(null);
   const mediasRef = useRef<Media[]>([]);
   const animationFrameId = useRef<number | null>(null);
+
   const router = useRouter();
 
-  // --- State for Scrolling ---
   const scrollY = useRef(0);
-  const lastScrollY = useRef(0);
-
-  // --- State for Layout ---
   const viewport = useRef({ width: 0, height: 0 });
-  const galleryHeight = useRef(0); // Total height of the scrollable content in world units
-  const planeSize = useRef({ width: 5, height: 1 }); // Smaller fixed width for grid layout
-  const gap = useRef(3.0); // INCREASED gap further for more vertical spacing
+  const galleryHeight = useRef(0);
+  const planeSize = useRef({ width: 5, height: 1 });
+  const gap = useRef(3.0);
 
-  // --- Fetch Image URLs ---
   useEffect(() => {
     if (collectionId) {
       const index = parseInt(collectionId, 10);
@@ -87,20 +86,16 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
       if (collection && collection.galleryImages) {
         setImageUrls(collection.galleryImages);
         setTitle(collection.title);
-        // Don't set isLoading to false here anymore
+        setSubtitle(collection.subtitle);
+        setChapterLabel(`Chapter ${String(index + 1).padStart(2, "0")}`);
       } else {
-        console.error("Collection not found or has no images, redirecting.");
-        router.push("/");
+        router.push("/gallery");
       }
     } else {
-      console.error("No collectionId provided, redirecting.");
-      router.push("/");
+      router.push("/gallery");
     }
-  }, [collectionId]);
+  }, [collectionId, router]);
 
-  // --- Page Entrance Animations ---
-  // --- Page Entrance Animations ---
-  // This will now be triggered from the onLoad callback
   const runEntranceAnimation = () => {
     if (!pageRef.current) return;
 
@@ -108,46 +103,41 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
       defaults: { ease: "power3.out" },
     });
 
-    // Title entrance
-    if (titleRef.current) {
-      tl.from(titleRef.current, {
-        y: 100,
+    if (headerRef.current) {
+      tl.from(Array.from(headerRef.current.children), {
+        y: 24,
         opacity: 0,
-        duration: 1.2,
+        duration: 0.72,
+        stagger: 0.08,
       });
     }
 
-    // Canvas container fade in
     if (mountRef.current) {
-      tl.from(
+      tl.fromTo(
         mountRef.current,
+        { opacity: 0.2 },
         {
-          opacity: 0,
-          scale: 0.95,
-          duration: 1,
+          opacity: 1,
+          duration: 0.92,
         },
-        "-=0.8"
+        "-=0.38"
       );
     }
   };
 
-  // --- Initialize Three.js and Medias ---
   useEffect(() => {
     if (!mountRef.current || !imageUrls.length) return;
 
-    // Reset loading state when effect runs for a new collection
     setIsLoading(true);
     setLoadingProgress(0);
 
     const mount = mountRef.current;
     const pageElement = mount.parentElement;
 
-    // Add 'loaded' class immediately to prevent black screen
     if (pageElement && !pageElement.classList.contains(styles.loaded)) {
       pageElement.classList.add(styles.loaded);
     }
 
-    // --- Basic Three.js Setup ---
     const scene = new THREE.Scene();
     sceneRef.current = scene;
 
@@ -157,15 +147,11 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
       0.1,
       100
     );
-    // Adjust camera Z based on desired plane size and FOV
-    // Formula: distance = height / (2 * tan(fov / 2))
-    // Example: If desired plane height is ~4 units, and fov is 75:
-    // distance = 4 / (2 * tan(75 * PI / 360)) => ~2.68
-    camera.position.z = 7; // Move camera back to see the grid
+    camera.position.z = 7;
     cameraRef.current = camera;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true }); // Removed alpha: true
-    renderer.setClearColor(0x111111, 1); // Set clear color to match CSS background (#111)
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setClearColor(0x111111, 1);
     renderer.setSize(mount.clientWidth, mount.clientHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     mount.appendChild(renderer.domElement);
@@ -173,101 +159,63 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
 
     clockRef.current = new THREE.Clock();
 
-    // --- Loading Manager ---
     const loadingManager = new THREE.LoadingManager();
 
-    loadingManager.onStart = () => {
-      console.log("Loading started...");
-      setIsLoading(true);
-    };
-
     loadingManager.onLoad = () => {
-      console.log("All textures loaded!");
       setIsLoading(false);
-      // Add 'loaded' class when textures are ready
       if (pageElement && !pageElement.classList.contains(styles.loaded)) {
         pageElement.classList.add(styles.loaded);
       }
-      animate(); // Start the animation loop here
-      runEntranceAnimation(); // Run the entrance animation here
+      animate();
+      runEntranceAnimation();
     };
 
-    loadingManager.onProgress = (url, itemsLoaded, itemsTotal) => {
-      const progress = itemsLoaded / itemsTotal;
-      setLoadingProgress(progress);
-      console.log(
-        `Loading file: ${url}. \nLoaded ${itemsLoaded} of ${itemsTotal} files.`
-      );
+    loadingManager.onProgress = (_url, itemsLoaded, itemsTotal) => {
+      setLoadingProgress(itemsLoaded / itemsTotal);
     };
 
-    loadingManager.onError = (url) => {
-      console.error(`There was an error loading ${url}`);
-    };
-
-    // --- Texture Loader ---
     const textureLoader = new THREE.TextureLoader(loadingManager);
-    const loadedMeshes: THREE.Mesh[] = [];
-    let yOffset = 0; // Track Y position for layout
+    let yOffset = 0;
 
-    // --- Calculate Viewport ---
     const calculateViewport = () => {
       const fovInRadians = (camera.fov * Math.PI) / 180;
       const height = 2 * Math.tan(fovInRadians / 2) * camera.position.z;
       const width = height * camera.aspect;
       viewport.current = { width, height };
-
-      // Adjust plane size based on viewport. Use the full calculated width.
-      // planeSize.current.width = viewport.current.width; // Reverted: Using fixed size now
-      // Height will be set based on aspect ratio later
     };
 
-    // --- Create Media Objects ---
     const createMedias = () => {
-      mediasRef.current = []; // Clear existing medias if re-creating
+      mediasRef.current = [];
       galleryHeight.current = 0;
-      yOffset = 0; // Start layout from top
+      yOffset = 0;
 
       imageUrls.forEach((url, index) => {
-        const texture = textureLoader.load(url, (loadedTexture) => {
-          // Once texture loads, calculate aspect ratio and set plane height
+        textureLoader.load(url, (loadedTexture) => {
           const aspectRatio =
-            loadedTexture.image.naturalWidth /
-            loadedTexture.image.naturalHeight;
+            loadedTexture.image.naturalWidth / loadedTexture.image.naturalHeight;
           const planeHeight = planeSize.current.width / aspectRatio;
-          // Add segments for vertex shader distortion
           const geometry = new THREE.PlaneGeometry(
             planeSize.current.width,
             planeHeight,
-            10, // Width segments
-            10 // Height segments
+            10,
+            10
           );
-          // Use ShaderMaterial - Remove unused uniforms
+
           const material = new THREE.ShaderMaterial({
             uniforms: {
               uTexture: new Uniform(loadedTexture),
-              // uStrength: new Uniform(0.0), // REMOVED
-              // uViewportSizes: new Uniform( // REMOVED - Not used by basic shader
-              //   new THREE.Vector2(
-              //     viewport.current.width,
-              //     viewport.current.height
-              //   )
-              // ),
             },
-            vertexShader: imageVertexShader, // Using the basic shader now
+            vertexShader: imageVertexShader,
             fragmentShader: imageFragmentShader,
             transparent: true,
           });
-          const mesh = new THREE.Mesh(geometry, material);
 
+          const mesh = new THREE.Mesh(geometry, material);
           const initialY = yOffset - planeHeight / 2;
 
-          // --- Attempt at non-overlapping random X placement ---
           const halfViewportWidth = viewport.current.width / 2;
           const halfPlaneWidth = planeSize.current.width / 2;
-          let randomX = 0;
-
-          // Define possible ranges, leaving some space from center/edges
-          const buffer = 0.1; // Small buffer from edge/center
+          const buffer = 0.1;
           const leftRange = [
             -halfViewportWidth + halfPlaneWidth + buffer,
             -halfPlaneWidth - buffer,
@@ -277,130 +225,86 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
             halfViewportWidth - halfPlaneWidth - buffer,
           ];
 
-          // Randomly choose left or right side, ensuring ranges are valid
+          let randomX = 0;
+
           if (rightRange[1] > rightRange[0] && leftRange[1] > leftRange[0]) {
-            // Check if ranges are valid
             if (Math.random() > 0.5) {
-              // Right side
               randomX =
                 Math.random() * (rightRange[1] - rightRange[0]) + rightRange[0];
             } else {
-              // Left side
               randomX =
                 Math.random() * (leftRange[1] - leftRange[0]) + leftRange[0];
             }
           } else {
-            // Fallback if ranges are too small (e.g., very narrow viewport) - place near center
             randomX = (Math.random() - 0.5) * halfPlaneWidth;
           }
 
-          mesh.position.set(randomX, initialY, 0); // Set calculated X
-
+          mesh.position.set(randomX, initialY, 0);
           scene.add(mesh);
 
           const media: Media = {
             mesh,
-            bounds: new DOMRect(), // Placeholder, not strictly needed if layout is programmatic
-            initialY: initialY,
+            bounds: new DOMRect(),
+            initialY,
             height: planeHeight,
             width: planeSize.current.width,
           };
-          mediasRef.current[index] = media; // Place in correct index
+          mediasRef.current[index] = media;
 
-          // Update total gallery height and next offset
           galleryHeight.current += planeHeight + gap.current;
-          yOffset -= planeHeight + gap.current; // Move down for next image
+          yOffset -= planeHeight + gap.current;
 
-          // Check if all textures are potentially loaded to finalize gallery height
           if (mediasRef.current.filter(Boolean).length === imageUrls.length) {
-            // Adjust gallery height (remove last gap)
             if (galleryHeight.current > 0) {
               galleryHeight.current -= gap.current;
             }
-            console.log("Gallery Height (World Units):", galleryHeight.current);
           }
         });
       });
     };
 
-    // --- Resize Handler ---
     const handleResize = () => {
-      if (!rendererRef.current || !cameraRef.current || !mountRef.current)
-        return;
+      if (!rendererRef.current || !cameraRef.current || !mountRef.current) return;
+
       const width = mountRef.current.clientWidth;
       const height = mountRef.current.clientHeight;
-      console.log(`Resizing - Mount dimensions: ${width}x${height}`); // Log mount dimensions
 
       rendererRef.current.setSize(width, height);
       rendererRef.current.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
       cameraRef.current.aspect = width / height;
-      console.log(`Resizing - Camera aspect: ${cameraRef.current.aspect}`); // Log aspect ratio
       cameraRef.current.updateProjectionMatrix();
 
-      calculateViewport(); // Recalculate viewport
-      console.log(`Resizing - Calculated viewport:`, viewport.current); // Log calculated viewport
+      calculateViewport();
 
-      // Update viewport uniform on resize
-      const newViewportSize = new THREE.Vector2(
-        viewport.current.width,
-        viewport.current.height
-      );
-
-      // Recalculate layout based on new viewport
       galleryHeight.current = 0;
       yOffset = 0;
       mediasRef.current.forEach((media) => {
-        if (!media) return; // Skip if media not ready
+        if (!media) return;
 
-        // Update viewport uniform for each material - REMOVED as uniform is removed
-        // media.mesh.material.uniforms.uViewportSizes.value = newViewportSize;
-        // Access texture via uniforms for ShaderMaterial
         const texture = media.mesh.material.uniforms.uTexture.value;
-        if (!texture || !texture.image) return; // Skip if texture/image not ready
-
-        const aspectRatio =
-          texture.image.naturalWidth / texture.image.naturalHeight;
-
-        // Update the plane size uniform as well... -> REMOVED uniform
-
-        // Update media dimensions based on the newly calculated planeSize - Not needed if size is fixed
-        // media.width = planeSize.current.width;
-        // media.height = media.width / aspectRatio;
-
-        // Get the original dimensions the geometry was created with - Not needed if size is fixed and scale isn't changing
-        // const originalGeomWidth = media.mesh.geometry.parameters.width;
-        // const originalGeomHeight = media.mesh.geometry.parameters.height;
-
-        // Calculate the required scale factor to match the new dimensions - Not needed if size is fixed
-        // const scaleX = media.width / originalGeomWidth;
-        // const scaleY = media.height / originalGeomHeight;
-
-        // Apply the scale to the mesh - Not needed if size is fixed
-        // media.mesh.scale.set(scaleX, scaleY, 1);
+        if (!texture || !texture.image) return;
 
         media.initialY = yOffset - media.height / 2;
-        // Don't update mesh.position.y here, let the update loop handle it based on scroll
 
         galleryHeight.current += media.height + gap.current;
         yOffset -= media.height + gap.current;
       });
-      // Adjust gallery height (remove last gap)
+
       if (galleryHeight.current > 0) {
         galleryHeight.current -= gap.current;
       }
     };
 
-    // --- Get global Lenis scroll ---
     const lenis = (window as any).lenis;
     const handleScroll = (e: { scroll: number }) => {
       scrollY.current = e.scroll;
     };
+
     if (lenis) {
       lenis.on("scroll", handleScroll);
     }
 
-    // --- Animation Loop ---
     const animate = () => {
       if (
         !rendererRef.current ||
@@ -412,127 +316,118 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
         return;
       }
 
-      // Update media positions based on Lenis scroll
       const totalHeight = galleryHeight.current;
-      const currentScroll = scrollY.current * 0.1; // Slower scroll speed
+      const currentScroll = scrollY.current * 0.1;
 
       mediasRef.current.forEach((media) => {
-        if (!media) return; // Skip if media not fully loaded yet
+        if (!media) return;
 
-        // Calculate target Y based on scroll and initial position
         const centeredInitialY = media.initialY + totalHeight / 2;
         let currentY = centeredInitialY - currentScroll;
 
-        // Wrap using modulo
         currentY = ((currentY % totalHeight) + totalHeight) % totalHeight;
-        currentY -= totalHeight / 2; // Re-center
+        currentY -= totalHeight / 2;
 
         media.mesh.position.y = currentY;
       });
 
       rendererRef.current.render(sceneRef.current, cameraRef.current);
-      lastScrollY.current = scrollY.current;
       animationFrameId.current = requestAnimationFrame(animate);
     };
 
-    // --- Initial Setup Calls ---
     calculateViewport();
     createMedias();
-    // animate(); // Don't start the loop here, it's started in onLoad
 
-    // --- Add Event Listeners ---
     window.addEventListener("resize", handleResize);
 
-    // --- Cleanup ---
     return () => {
       if (animationFrameId.current) {
         cancelAnimationFrame(animationFrameId.current);
       }
+
       window.removeEventListener("resize", handleResize);
 
-      // Clean up Lenis scroll listener
       if (lenis) {
         lenis.off("scroll", handleScroll);
       }
 
-      // Dispose Three.js objects
       mediasRef.current.forEach((media) => {
         if (media) {
           media.mesh.geometry.dispose();
-          // Dispose texture via uniforms
           media.mesh.material.uniforms.uTexture.value?.dispose();
-          // REMOVED uStrength uniform disposal logic comment
           media.mesh.material.dispose();
           scene.remove(media.mesh);
         }
       });
       mediasRef.current = [];
+
       rendererRef.current?.dispose();
-      if (mountRef.current && rendererRef.current) {
-        // Check if child exists before removing
-        if (mountRef.current.contains(rendererRef.current.domElement)) {
-          mountRef.current.removeChild(rendererRef.current.domElement);
+      if (mount && rendererRef.current) {
+        if (mount.contains(rendererRef.current.domElement)) {
+          mount.removeChild(rendererRef.current.domElement);
         }
       }
+
       rendererRef.current = null;
       sceneRef.current = null;
       cameraRef.current = null;
       clockRef.current = null;
-      console.log("Three.js cleanup complete.");
-      // Cleanup: Remove 'loaded' class
+
       pageElement?.classList.remove(styles.loaded);
     };
-  }, [imageUrls, collectionId]); // Re-run effect if imageUrls or collectionId change
+  }, [imageUrls, collectionId]);
 
   return (
     <div ref={pageRef} className={styles.galleryPage}>
       {isLoading && (
         <div className={styles.loadingOverlay}>
           <div className={styles.loadingSpinner}></div>
-          <p>Loading Gallery: {Math.round(loadingProgress * 100)}%</p>
+          <p className={`${styles.loadingText} ${spaceGrotesk.className}`}>
+            Loading Collection: {Math.round(loadingProgress * 100)}%
+          </p>
         </div>
       )}
-      {title && (
-        <h1 ref={titleRef} className={styles.pageTitle}>
-          {title}
-        </h1>
-      )}
-      <div ref={mountRef} className={styles.webglContainer}>
-        {/* Canvas will be appended here by Three.js */}
-      </div>
-      <div style={{ position: "relative", zIndex: 2 }}>
-        <div className={styles.spacer}></div>
-        <SlicedText
-          text="Explore"
-          effect="1"
-          tag="h2"
-          className={styles.slicedText}
-        />
-        <div className={styles.spacer}></div>
-        <SlicedText
-          text="The"
-          effect="2"
-          tag="h2"
-          className={styles.slicedText}
-        />
-        <div className={styles.spacer}></div>
-        <SlicedText
-          text="Gallery"
-          effect="3"
-          tag="h2"
-          className={styles.slicedText}
-        />
-        <div className={styles.spacer}></div>
-      </div>
-      <div style={{ height: "50vh" }}></div> {/* Spacer for footer */}
+
+      <header ref={headerRef} className={styles.galleryHeader}>
+        <div className={styles.headerTop}>
+          <Link href="/gallery" className={`${styles.backLink} ${spaceGrotesk.className}`}>
+            <span aria-hidden="true">←</span>
+            Back to Collections
+          </Link>
+          {chapterLabel && (
+            <p className={`${styles.chapterLabel} ${spaceGrotesk.className}`}>
+              {chapterLabel}
+            </p>
+          )}
+        </div>
+
+        <div className={styles.headerMain}>
+          <p className={`${styles.galleryEyebrow} ${spaceGrotesk.className}`}>
+            Gallery Chapter
+          </p>
+          {title && <h1 className={`${styles.pageTitle} ${cormorant.className}`}>{title}</h1>}
+          {subtitle && (
+            <p className={`${styles.gallerySubtitle} ${spaceGrotesk.className}`}>
+              {subtitle}
+            </p>
+          )}
+        </div>
+
+        <div className={styles.headerMeta}>
+          <p className={`${styles.galleryMeta} ${spaceGrotesk.className}`}>
+            {imageUrls.length} frames / scroll to explore the full loop
+          </p>
+          <p className={`${styles.galleryGuide} ${spaceGrotesk.className}`}>
+            Designed as a continuous visual sentence. Stay with the cadence.
+          </p>
+        </div>
+      </header>
+
+      <div ref={mountRef} className={styles.webglContainer}></div>
+      <div className={styles.readingScrim} aria-hidden="true"></div>
+      <div className={styles.scrollSpacer} aria-hidden="true"></div>
     </div>
   );
 };
 
 export default GalleryPage;
-
-// Helper function for lerp (linear interpolation) - place in utils/math.ts ideally
-// export const lerp = (v0: number, v1: number, t: number): number => {
-//   return v0 * (1 - t) + v1 * t;
-// };
-// Removed duplicate export, using the one defined within the component scope now.

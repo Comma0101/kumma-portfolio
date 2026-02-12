@@ -1,108 +1,230 @@
-/* GalleryPage.module.css */
 .galleryPage {
   position: relative;
   width: 100%;
-  min-height: calc(100vh - 200px);
-  background-color: #000;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 14% 10%, rgba(255, 128, 128, 0.06), transparent 38%),
+    radial-gradient(circle at 86% 82%, rgba(152, 183, 255, 0.06), transparent 44%),
+    #080808;
   overflow-x: hidden;
 }
 
-/* Grain effect */
+.galleryPage::before {
+  content: "Collection";
+  position: fixed;
+  top: 6%;
+  right: 4%;
+  font-size: clamp(2.8rem, 9vw, 10rem);
+  line-height: 0.8;
+  letter-spacing: -0.03em;
+  color: rgba(255, 255, 255, 0.022);
+  text-transform: uppercase;
+  font-family: "Bebas Neue", "Oswald", sans-serif;
+  pointer-events: none;
+  z-index: 2;
+}
+
 .galleryPage::after {
-  animation: grain 6s steps(10) infinite;
-  background-image: url("/images/grain.png"); /* Placeholder path */
+  animation: grain 7s steps(10) infinite;
+  background-image: url("/images/grain.png");
   background-repeat: repeat;
   content: "";
   height: 300%;
   left: -100%;
-  opacity: 0; /* Start hidden */
+  opacity: 0;
   pointer-events: none;
-  position: absolute; /* Use absolute to contain within the parent */
+  position: fixed;
   top: -100%;
   transition: opacity 0.4s ease;
   width: 300%;
   will-change: transform;
-  z-index: 2; /* Above background, below title/content */
+  z-index: 3;
 }
 
-/* Fade in grain when loaded */
 .galleryPage.loaded::after {
-  opacity: 0.06;
+  opacity: 0.05;
+}
+
+.galleryHeader {
+  position: fixed;
+  top: 86px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(1040px, 92vw);
+  z-index: 12;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.headerTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.backLink {
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-decoration: none;
+  color: rgba(232, 232, 232, 0.74);
+  font-size: 0.66rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  transition: color 0.22s ease;
+}
+
+.backLink:hover {
+  color: rgba(255, 171, 171, 0.95);
+}
+
+.chapterLabel {
+  margin: 0;
+  color: rgba(214, 214, 214, 0.58);
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.headerMain {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.galleryEyebrow {
+  margin: 0;
+  color: rgba(255, 146, 146, 0.83);
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
 }
 
 .pageTitle {
-  /* Renamed from h1 to avoid conflict if needed */
-  font-size: 2.5rem;
-  margin-bottom: 20px;
-  padding-top: 100px;
-  text-align: center;
-  color: #eee; /* Light text color for dark background */
-  position: fixed; /* Fixed positioning above canvas */
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 10;
-  opacity: 1;
+  margin: 0;
+  color: #f2eded;
+  font-size: clamp(2.2rem, 6vw, 6rem);
+  line-height: 0.9;
+  letter-spacing: -0.015em;
+  max-width: 11ch;
 }
 
-/* Container for the WebGL Canvas */
+.gallerySubtitle {
+  margin: 0;
+  max-width: 42ch;
+  color: rgba(222, 222, 222, 0.78);
+  font-size: clamp(0.9rem, 1.15vw, 1.02rem);
+  line-height: 1.72;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.headerMeta {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.8fr);
+  gap: 0.8rem;
+  align-items: end;
+}
+
+.galleryMeta {
+  margin: 0;
+  color: rgba(208, 208, 208, 0.58);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.galleryGuide {
+  margin: 0;
+  color: rgba(210, 210, 210, 0.66);
+  font-size: 0.68rem;
+  letter-spacing: 0.09em;
+  line-height: 1.5;
+  text-transform: uppercase;
+  text-align: right;
+}
+
+.readingScrim {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(8, 8, 8, 0.82) 0%,
+      rgba(8, 8, 8, 0.58) 18%,
+      rgba(8, 8, 8, 0.34) 50%,
+      rgba(8, 8, 8, 0.58) 82%,
+      rgba(8, 8, 8, 0.82) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(8, 8, 8, 0.04) 0%,
+      rgba(8, 8, 8, 0.46) 100%
+    );
+  backdrop-filter: grayscale(1) contrast(1.06);
+  -webkit-backdrop-filter: grayscale(1) contrast(1.06);
+}
+
 .webglContainer {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
+  inset: 0;
   z-index: 1;
   opacity: 1;
   pointer-events: none;
-  background-color: #111;
+  background-color: #101010;
+  filter: grayscale(0.9) contrast(1.06) brightness(0.88);
 }
 
-/* Style the canvas itself if needed, though Three.js usually handles it */
 .webglContainer canvas {
-  display: block; /* Remove extra space below canvas */
+  display: block;
   width: 100%;
   height: 100%;
 }
 
-/* Remove old grid styles */
-/*
-.galleryGrid { ... }
-.galleryImage { ... }
-*/
+.scrollSpacer {
+  position: relative;
+  z-index: 0;
+  height: 360vh;
+}
 
-/* --- Loading Overlay Styles --- */
 .loadingOverlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: #111;
+  inset: 0;
+  background: rgba(10, 10, 10, 0.96);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  z-index: 100;
-  color: #eee;
-  font-size: 1.2rem;
-  transition: opacity 0.5s ease-out;
+  z-index: 30;
+  gap: 0.8rem;
 }
 
 .loadingSpinner {
-  border: 4px solid rgba(255, 255, 255, 0.3);
+  border: 3px solid rgba(255, 255, 255, 0.2);
   border-radius: 50%;
-  border-top: 4px solid #eee;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
-  margin-bottom: 20px;
+  border-top: 3px solid rgba(255, 168, 168, 0.95);
+  width: 34px;
+  height: 34px;
+  animation: spin 0.95s linear infinite;
+}
+
+.loadingText {
+  margin: 0;
+  color: rgba(230, 230, 230, 0.78);
+  font-size: 0.76rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
 @keyframes spin {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -144,17 +266,53 @@
   }
 }
 
-.spacer {
-  height: 100vh;
+@media (max-width: 900px) {
+  .galleryHeader {
+    top: 78px;
+    width: min(92vw, 800px);
+  }
+
+  .headerMeta {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+  }
+
+  .galleryGuide {
+    text-align: left;
+  }
+
+  .scrollSpacer {
+    height: 320vh;
+  }
 }
 
-.slicedText {
-  font-size: clamp(5rem, 25vw, 22rem);
-  text-transform: uppercase;
-  font-family: "Bebas Neue", sans-serif;
-  display: grid;
-  place-items: center;
-  height: 100vh;
-  position: relative;
-  z-index: 2;
+@media (max-width: 620px) {
+  .galleryHeader {
+    top: 72px;
+    gap: 0.46rem;
+  }
+
+  .chapterLabel {
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+  }
+
+  .galleryEyebrow {
+    font-size: 0.64rem;
+    letter-spacing: 0.18em;
+  }
+
+  .galleryMeta {
+    font-size: 0.58rem;
+    letter-spacing: 0.14em;
+  }
+
+  .galleryGuide {
+    font-size: 0.62rem;
+    letter-spacing: 0.07em;
+  }
+
+  .scrollSpacer {
+    height: 290vh;
+  }
 }
