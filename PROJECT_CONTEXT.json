@@ -1,0 +1,535 @@
+{
+  "generated_at": "2026-02-12",
+  "generator": "Codex GPT-5",
+  "purpose": "Detailed handoff context for future agents to understand the project without opening every file.",
+  "repository": {
+    "name": "kumma-portfolio",
+    "package_name": "p-website-next",
+    "branch": "master",
+    "remote": "origin",
+    "remote_url": "https://github.com/Comma0101/kumma-portfolio.git",
+    "custom_domain": "kumma.me",
+    "working_tree_state": "clean at generation time"
+  },
+  "high_level_product": {
+    "type": "Personal portfolio + editorial blog + projects + visual gallery + interactive stories",
+    "core_experience": [
+      "Typography-led homepage storytelling",
+      "Persistent Three.js terrain background across most routes",
+      "GSAP/Lenis-based motion and scroll pacing",
+      "Editorial visual system on home/blog/gallery",
+      "Bilingual blog detail pages (EN/ZH) from Markdown"
+    ],
+    "current_design_direction": {
+      "theme": "Editorial cyber-noir / narrative portfolio",
+      "priority_signals": [
+        "Typography and storytelling first",
+        "Motion should support reading, not overpower it",
+        "Coherent visual language between home/blog/gallery",
+        "Keep terrain scene (explicit stakeholder preference)",
+        "Opening animation rewritten to feel intentional and cinematic"
+      ]
+    }
+  },
+  "tech_stack": {
+    "framework": "Next.js 14 App Router",
+    "language": "TypeScript (strict)",
+    "ui": "React 18",
+    "animation": [
+      "GSAP + ScrollTrigger + @gsap/react",
+      "Framer Motion (used in selected components)"
+    ],
+    "3d_graphics": [
+      "three",
+      "simplex-noise"
+    ],
+    "scrolling": "Lenis (with ScrollTrigger scroller proxy)",
+    "content_pipeline": [
+      "gray-matter",
+      "remark + remark-html"
+    ],
+    "email": "Resend (contact form route handler)",
+    "styling": "CSS Modules + global CSS (includes some legacy Vite-style globals)"
+  },
+  "scripts_and_commands": {
+    "dev": "npm run dev",
+    "dev_port_override_example": "npm run dev -- -p 3001",
+    "lint": "npm run lint",
+    "typecheck": "npx tsc --noEmit",
+    "build": "npm run build",
+    "start": "npm run start"
+  },
+  "app_router_structure": {
+    "root_layout": "app/layout.tsx",
+    "layout_pipeline_order": [
+      "AnimationProvider",
+      "IntroAnimation (full-screen opening; gating)",
+      "PageWrapper (hides entire app until intro complete)",
+      "PageTransitionProvider (route transition overlay)",
+      "SmoothScrollProvider (Lenis + ScrollTrigger proxy)",
+      "ThreeScene (global terrain background)",
+      "Navigation",
+      "main content",
+      "ConditionalFooter"
+    ],
+    "routes": [
+      {
+        "path": "/",
+        "file": "app/page.tsx",
+        "render_chain": [
+          "components/Home.tsx",
+          "components/home/HeroSection.tsx",
+          "components/home/AboutSection.tsx",
+          "components/home/ProjectsSection.tsx",
+          "components/home/SkillsSection.tsx",
+          "components/home/ContactSection.tsx"
+        ],
+        "anchor_ids_for_nav": [
+          "home",
+          "about",
+          "projects",
+          "skills",
+          "contact"
+        ]
+      },
+      {
+        "path": "/projects",
+        "file": "app/projects/page.tsx",
+        "render_chain": [
+          "components/Projects.tsx"
+        ]
+      },
+      {
+        "path": "/projects/[slug]",
+        "file": "app/projects/[slug]/page.tsx",
+        "data_source": "data/projectData.ts",
+        "render_chain": [
+          "components/ProjectDetail.tsx"
+        ],
+        "static_params": true
+      },
+      {
+        "path": "/gallery",
+        "file": "app/gallery/page.tsx",
+        "render_chain": [
+          "components/MenuItem.tsx",
+          "components/menuItems.ts",
+          "styles/PhotoGallery.module.css"
+        ],
+        "notes": [
+          "Editorial landing layout with chapter cards",
+          "Card image reveal appears on hover"
+        ]
+      },
+      {
+        "path": "/gallery/[collectionId]",
+        "file": "app/gallery/[collectionId]/page.tsx",
+        "render_chain": [
+          "components/GalleryPage.tsx"
+        ],
+        "static_params": true,
+        "notes": [
+          "Three.js image planes loop on scroll",
+          "Monochrome overlay treatment via CSS filters",
+          "Header overlays include chapter/title/meta"
+        ]
+      },
+      {
+        "path": "/blog",
+        "file": "app/blog/page.tsx",
+        "render_chain": [
+          "components/BlogSection.tsx"
+        ],
+        "data_source": "lib/posts.ts (locale=en)"
+      },
+      {
+        "path": "/blog/[locale]/[slug]",
+        "file": "app/blog/[locale]/[slug]/page.tsx",
+        "data_source": "lib/posts.ts (bilingual markdown)",
+        "render_chain": [
+          "LanguageSwitcher",
+          "blog detail template",
+          "related posts by category"
+        ],
+        "static_params": true
+      },
+      {
+        "path": "/stories",
+        "file": "app/stories/page.tsx",
+        "render_chain": [
+          "components/InfiniteLayersGrid.tsx",
+          "components/LiquidPortalTransition.tsx"
+        ],
+        "notes": [
+          "Footer hidden on this route",
+          "Intro animation skipped on this route"
+        ]
+      },
+      {
+        "path": "/artfulcode",
+        "file": "app/artfulcode/page.tsx",
+        "render_chain": [
+          "components/Artfulcode.tsx"
+        ],
+        "notes": [
+          "Legacy experimental page",
+          "Canvas animation render line is commented out"
+        ]
+      }
+    ]
+  },
+  "navigation_and_footer": {
+    "navigation_file": "components/Navigation.tsx",
+    "route_links": [
+      "/gallery",
+      "/stories",
+      "/blog"
+    ],
+    "home_anchor_links": [
+      "#home",
+      "#about",
+      "#projects",
+      "#skills",
+      "#contact"
+    ],
+    "active_section_logic": "Scroll-based on home section IDs; route-based on non-home routes",
+    "mobile_nav": "Slide-in overlay menu with staggered link reveal",
+    "footer_logic": {
+      "file": "components/ConditionalFooter.tsx",
+      "hidden_on": [
+        "/stories"
+      ],
+      "blog_variant_on": "pathname startsWith /blog",
+      "back_to_top_cube_on": "/"
+    }
+  },
+  "scroll_and_motion_systems": {
+    "smooth_scroll_provider": {
+      "file": "components/SmoothScrollProvider.tsx",
+      "implementation": "Lenis instance attached to window.lenis + ScrollTrigger scrollerProxy on documentElement",
+      "important_behavior": [
+        "ScrollTrigger defaults set to proxied scroller",
+        "GSAP ticker drives Lenis RAF",
+        "Many components rely on window.lenis existing"
+      ]
+    },
+    "page_transition_overlay": {
+      "file": "components/PageTransition.tsx",
+      "mechanism": "Fixed black overlay clip-path animation before route push",
+      "link_helper": "components/TransitionLink.tsx"
+    },
+    "intro_gate": {
+      "files": [
+        "components/IntroAnimation.tsx",
+        "components/MorphingLogo.tsx",
+        "styles/introAnimation.module.css",
+        "context/AnimationContext.tsx",
+        "components/PageWrapper.tsx"
+      ],
+      "flow": [
+        "Intro renders unless route is /stories or intro already played",
+        "Main app hidden via PageWrapper until intro sets isIntroPlayed=true",
+        "Skip button supported",
+        "Reduced-motion fast-fade fallback supported"
+      ],
+      "responsive_tuning": [
+        "Compact-screen intro timing adjustments",
+        "Particle profile scaling by viewport width",
+        "Pixel ratio cap scaling for performance",
+        "Safe-area padding and mobile typography breakpoints"
+      ]
+    },
+    "persistent_background_scene": {
+      "file": "components/ThreeScene.tsx",
+      "summary": "Animated wireframe terrain with simplex noise, scroll-driven camera/material changes, and mouse-reactive energy highlights",
+      "stakeholder_note": "Keep this terrain scene (explicitly requested)."
+    }
+  },
+  "feature_modules": {
+    "home": {
+      "hero": {
+        "file": "components/home/HeroSection.tsx",
+        "summary": "GSAP intro timeline + subtle scroll fade/parallax"
+      },
+      "about": {
+        "file": "components/home/AboutSection.tsx",
+        "summary": "Word-by-word manifesto reveal using IntersectionObserver-triggered class activation"
+      },
+      "projects": {
+        "file": "components/Projects.tsx",
+        "summary": "Chapter-based project cards from structured narrative data"
+      },
+      "skills": {
+        "files": [
+          "components/home/SkillsSection.tsx",
+          "components/TechConstellation.tsx"
+        ],
+        "summary": "Interactive capability graph with nodes/connections/categories"
+      },
+      "contact": {
+        "file": "components/home/ContactSection.tsx",
+        "summary": "Client form posts to /api/contact with status states"
+      }
+    },
+    "blog": {
+      "list_page": {
+        "file": "components/BlogSection.tsx",
+        "features": [
+          "Search title/excerpt/tags",
+          "Category filters",
+          "Locale-aware labels and date formatting"
+        ]
+      },
+      "detail_page": {
+        "file": "app/blog/[locale]/[slug]/page.tsx",
+        "features": [
+          "Language switcher between available locales",
+          "Related posts by category",
+          "Render HTML from markdown"
+        ]
+      }
+    },
+    "projects": {
+      "data_file": "data/projectData.ts",
+      "schema": [
+        "id/title/slug",
+        "subtitle/tagline/overview",
+        "narrative: context/decision/outcome/impact",
+        "techStack[]",
+        "philosophical"
+      ],
+      "detail_component": "components/ProjectDetail.tsx"
+    },
+    "gallery": {
+      "landing": {
+        "files": [
+          "app/gallery/page.tsx",
+          "components/MenuItem.tsx",
+          "components/menuItems.ts",
+          "styles/PhotoGallery.module.css",
+          "styles/MenuItem.module.css"
+        ],
+        "current_behavior": [
+          "Editorial header + note block",
+          "Chapter cards with hover image reveal panel",
+          "Collection metadata count"
+        ]
+      },
+      "collection_detail": {
+        "files": [
+          "components/GalleryPage.tsx",
+          "styles/GalleryPage.module.css"
+        ],
+        "current_behavior": [
+          "WebGL plane loop with texture-loaded images",
+          "Fixed editorial header over scene",
+          "Monochrome/scrim treatment over imagery"
+        ]
+      }
+    },
+    "stories": {
+      "files": [
+        "components/InfiniteLayersGrid.tsx",
+        "components/LiquidPortalTransition.tsx"
+      ],
+      "summary": "Infinite draggable/scrollable image grid with liquid portal transition to full overlay narrative card"
+    }
+  },
+  "content_and_data_sources": {
+    "blog_posts": {
+      "paths": [
+        "_posts/*.md",
+        "_posts/zh/*.md"
+      ],
+      "loader": "lib/posts.ts",
+      "locale_model": "Locale = en | zh",
+      "bilingual_linking_rule": "same slug filename across locales enables language switcher"
+    },
+    "gallery_collections": {
+      "file": "components/menuItems.ts",
+      "image_roots": [
+        "public/images/collection1/*",
+        "public/images/collection2/*"
+      ]
+    },
+    "project_content": {
+      "file": "data/projectData.ts",
+      "source_type": "in-repo typed object data"
+    }
+  },
+  "api_and_integrations": {
+    "contact_form": {
+      "route_file": "app/api/contact/route.ts",
+      "method": "POST",
+      "provider": "Resend",
+      "required_env_vars": [
+        "RESEND_API_KEY"
+      ],
+      "current_to_address": "wuyang1010@gmail.com",
+      "notes": [
+        "Route validates name/email/subject/message",
+        "Uses onboarding@resend.dev as sender"
+      ]
+    },
+    "pocket_integration": {
+      "client_file": "app/api/PocketApi.ts",
+      "status": "incomplete/legacy",
+      "notes": [
+        "References /api/pocket/* endpoints that are not present in this repo",
+        "No active route usage found"
+      ]
+    }
+  },
+  "deployment_and_hosting": {
+    "next_config_file": "next.config.mjs",
+    "important_next_config": {
+      "output": "export",
+      "images_unoptimized": true,
+      "eslint_ignore_during_builds": true,
+      "page_extensions": [
+        "js",
+        "jsx",
+        "mdx",
+        "ts",
+        "tsx"
+      ]
+    },
+    "github_actions": {
+      "workflow_file": ".github/workflows/deploy.yml",
+      "trigger": "push to master",
+      "build_artifact": "out/",
+      "deployment_target": "GitHub Pages"
+    },
+    "important_constraints": [
+      "Static export hosting means server route handlers are not available at runtime on GitHub Pages.",
+      "Contact form API route may require non-static hosting (or external serverless endpoint) to work in production."
+    ]
+  },
+  "quality_snapshot": {
+    "lint": {
+      "status": "passes with warnings",
+      "latest_warnings": [
+        {
+          "file": "components/AboutGallery.tsx",
+          "issue": "next/no-img-element"
+        },
+        {
+          "file": "components/Animations/AnimationTwo.tsx",
+          "issue": "react-hooks/exhaustive-deps (cleanup ref warning)"
+        },
+        {
+          "file": "components/LiquidPortalTransition.tsx",
+          "issue": "react-hooks/exhaustive-deps (missing dependency) + next/no-img-element"
+        },
+        {
+          "file": "components/Logo3D.tsx",
+          "issue": "react-hooks/exhaustive-deps (missing dependency)"
+        },
+        {
+          "file": "components/ThreeScene.tsx",
+          "issue": "react-hooks/exhaustive-deps (cleanup ref warning)"
+        }
+      ]
+    },
+    "typecheck": {
+      "status": "passes",
+      "command": "npx tsc --noEmit"
+    },
+    "build": {
+      "status": "failing locally in current environment",
+      "command": "npm run build",
+      "observed_output": "Build failed because of webpack errors",
+      "notes": [
+        "Detailed webpack error messages were not surfaced in this shell output.",
+        "Requires deeper logging/inspection before release confidence."
+      ]
+    }
+  },
+  "recent_commits_context": [
+    {
+      "hash": "a851543",
+      "message": "Make intro animation responsive across devices",
+      "impact": "Intro flow + particle profile + responsive typography/controls"
+    },
+    {
+      "hash": "702b4c5",
+      "message": "Refactor gallery to match editorial theme and interactions",
+      "impact": "Gallery landing/cards/detail visual and interaction overhaul"
+    },
+    {
+      "hash": "df0bbb6",
+      "message": "Create CNAME",
+      "impact": "Custom domain setup for GitHub Pages"
+    },
+    {
+      "hash": "a1e844b",
+      "message": "Refactor portfolio visual system and improve blog readability",
+      "impact": "Broader editorial visual alignment"
+    }
+  ],
+  "known_tech_debt_and_risks": [
+    {
+      "area": "Legacy global CSS",
+      "details": [
+        "styles/index.css and styles/app.css contain Vite starter defaults.",
+        "Potential style leakage conflicts with editorial system."
+      ]
+    },
+    {
+      "area": "Stories performance/memory",
+      "details": [
+        "components/InfiniteLayersGrid.tsx performs heavy DOM creation/manipulation.",
+        "Uses requestAnimationFrame loop and manual listeners; review cleanup rigor before large changes."
+      ]
+    },
+    {
+      "area": "Static export vs API routes",
+      "details": [
+        "output: export is enabled while app/api/contact/route.ts exists.",
+        "Runtime API behavior on GitHub Pages is constrained."
+      ]
+    },
+    {
+      "area": "Incomplete Pocket integration",
+      "details": [
+        "app/api/PocketApi.ts references missing endpoints."
+      ]
+    },
+    {
+      "area": "Mixed code generations",
+      "details": [
+        "Repo has older exploratory components alongside current production routes (Artfulcode, older animation experiments, SlicedTextEffect bundle).",
+        "Future refactors should separate production-critical paths from experimental assets."
+      ]
+    }
+  ],
+  "operational_notes_for_next_agent": {
+    "first_steps": [
+      "Read this file first.",
+      "Run `npm run lint` and `npx tsc --noEmit`.",
+      "If touching deployment, validate `npm run build` and inspect webpack failure source.",
+      "Use `app/layout.tsx` as entry for global behavior interactions."
+    ],
+    "if_editing_intro": [
+      "Touch only IntroAnimation/MorphingLogo/styles/AnimationContext unless intentionally changing gate behavior.",
+      "Remember PageWrapper blocks entire app until intro completion flag is set."
+    ],
+    "if_editing_gallery": [
+      "Landing and detail routes are separately styled and both rely on `menuItems.ts` content.",
+      "Hover image reveal behavior is defined in `styles/MenuItem.module.css`."
+    ],
+    "if_editing_navigation": [
+      "Anchor active state only applies on home route.",
+      "Route active state logic uses pathname prefix checks for route links."
+    ],
+    "if_editing_blog_content": [
+      "Update markdown in `_posts` and `_posts/zh`.",
+      "Use identical slug filenames across locales to activate language switching."
+    ],
+    "stakeholder_preferences": [
+      "Keep terrain scene.",
+      "Prioritize typography + storytelling coherence.",
+      "Award-style visual quality is a standing goal."
+    ]
+  }
+}

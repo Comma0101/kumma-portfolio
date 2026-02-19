@@ -86,7 +86,7 @@ const ThreeScene = () => {
       color: 0xfafafa,
       wireframe: true,
       transparent: true,
-      opacity: 0.3, // Lower opacity for background
+      opacity: 0.08, // Significantly lowered for better text legibility
       vertexColors: true,
     });
     materialRef.current = material;
@@ -180,7 +180,7 @@ const ThreeScene = () => {
       ease: "none", // Linear movement
     }, 0)
       .to(material, {
-        opacity: 0.15, // Fade out slightly as we get closer/lower
+        opacity: 0.03, // Fade out heavily as we get closer/lower to keep focus on content
         ease: "none",
       }, 0);
 

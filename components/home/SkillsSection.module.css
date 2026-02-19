@@ -1,39 +1,49 @@
+/* ── Skills / Disciplines Section ── */
+
 .skillsSection {
-  --skills-accent: rgba(255, 134, 134, 0.82);
+  --skills-accent: rgba(255, 122, 122, 0.82);
   position: relative;
   min-height: 100vh;
   padding: clamp(5rem, 8vw, 8rem) 5%;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: clamp(2rem, 4vw, 3.6rem);
+  gap: clamp(2.4rem, 4vw, 3.6rem);
   background:
-    radial-gradient(circle at 82% 14%, rgba(255, 128, 128, 0.08), transparent 42%),
+    radial-gradient(circle at 82% 14%, rgba(255, 122, 122, 0.07), transparent 42%),
     radial-gradient(circle at 18% 88%, rgba(255, 255, 255, 0.03), transparent 38%);
   overflow: hidden;
 }
 
 .skillsSection::before {
-  content: "Knowledge";
+  content: "Disciplines";
   position: absolute;
   top: 8%;
   left: 5%;
   font-size: clamp(3.2rem, 10vw, 12rem);
   line-height: 0.8;
   letter-spacing: -0.035em;
-  color: rgba(255, 255, 255, 0.026);
+  color: rgba(255, 255, 255, 0.025);
   text-transform: uppercase;
   pointer-events: none;
   font-family: "Bebas Neue", "Oswald", sans-serif;
 }
+
+/* ── Header ── */
 
 .skillsHeader {
   width: min(1380px, 100%);
   margin: 0 auto;
   position: relative;
   z-index: 2;
-  display: grid;
+}
+
+.skillsHeaderTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
   gap: 1rem;
+  margin-bottom: 1.2rem;
 }
 
 .skillsEyebrow {
@@ -45,23 +55,174 @@
   color: var(--skills-accent);
 }
 
-.skillsTitle {
+.skillsMeta {
   margin: 0;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.52);
+  font-weight: 500;
+}
+
+.skillsTitle {
+  margin: 0 0 1rem;
   font-size: clamp(2.35rem, 6.5vw, 6.7rem);
   line-height: 0.92;
   letter-spacing: -0.016em;
   color: #f2eeee;
-  max-width: 13ch;
+  max-width: 16ch;
 }
 
 .skillsIntro {
   margin: 0;
-  max-width: 63ch;
+  max-width: 58ch;
   font-size: clamp(0.96rem, 1.35vw, 1.18rem);
   line-height: 1.85;
   letter-spacing: 0.01em;
-  color: rgba(220, 220, 220, 0.78);
+  color: rgba(220, 220, 220, 0.72);
 }
+
+/* ── Roster ── */
+
+.roster {
+  width: min(1380px, 100%);
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.rosterRow {
+  display: grid;
+  grid-template-columns: 3.6rem 1fr;
+  align-items: baseline;
+  gap: 1.4rem;
+  padding: clamp(1.2rem, 2.2vw, 2.2rem) 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  position: relative;
+  transition: opacity 0.35s ease;
+}
+
+.rosterRow::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--skills-accent);
+  transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.rosterRow:hover::after {
+  width: 100%;
+}
+
+/* Scroll entrance */
+.rosterRow {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--row-delay, 0ms);
+}
+
+.rosterRowVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Dim non-hovered rows when any row is active */
+.rosterRowMuted {
+  opacity: 0.2 !important;
+}
+
+.rowIndex {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  color: rgba(255, 255, 255, 0.44);
+  padding-top: 0.35em;
+  transition: color 0.3s ease;
+}
+
+.rosterRow:hover .rowIndex {
+  color: var(--skills-accent);
+}
+
+.rowContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.rowLabel {
+  font-size: clamp(2rem, 4.5vw, 4.2rem);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: #e8e4e4;
+  transition:
+    font-style 0s,
+    color 0.3s ease;
+}
+
+.rowLabelActive {
+  font-style: italic;
+  color: #f5f5f5;
+}
+
+.rowDescription {
+  font-size: clamp(0.82rem, 1vw, 0.92rem);
+  line-height: 1.65;
+  color: rgba(220, 220, 220, 0.58);
+  letter-spacing: 0.01em;
+  max-width: 52ch;
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
+  pointer-events: none;
+}
+
+.rowDescriptionVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Floating Image ── */
+
+.floatingImage {
+  position: fixed;
+  width: 240px;
+  aspect-ratio: 3 / 4;
+  border-radius: 6px;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.92);
+  transition:
+    opacity 0.32s ease,
+    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+  filter: grayscale(0.3) contrast(1.05);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+
+.floatingImageVisible {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.floatingImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ── Responsive ── */
 
 @media (max-width: 980px) {
   .skillsSection {
@@ -74,8 +235,28 @@
   }
 
   .skillsTitle {
-    max-width: 16ch;
     line-height: 0.95;
+  }
+}
+
+@media (max-width: 820px) {
+  .floatingImage {
+    display: none;
+  }
+
+  .rosterRow {
+    grid-template-columns: 2.8rem 1fr;
+    gap: 1rem;
+  }
+
+  .rowLabel {
+    font-size: clamp(1.6rem, 5vw, 2.4rem);
+  }
+
+  /* Always show descriptions on touch devices */
+  .rowDescription {
+    opacity: 0.7;
+    transform: translateY(0);
   }
 }
 
@@ -98,5 +279,19 @@
   .skillsIntro {
     font-size: 0.93rem;
     line-height: 1.72;
+  }
+
+  .rosterRow {
+    grid-template-columns: 2.2rem 1fr;
+    gap: 0.8rem;
+    padding: 1rem 0;
+  }
+
+  .rowIndex {
+    font-size: 0.65rem;
+  }
+
+  .rowDescription {
+    font-size: 0.82rem;
   }
 }

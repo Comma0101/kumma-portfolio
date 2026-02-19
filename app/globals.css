@@ -3,6 +3,8 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  /* Global shadow variable for text legibility against 3D terrain */
+  --text-halo: 0px 4px 16px rgba(0, 0, 0, 0.8), 0px 0px 8px rgba(0, 0, 0, 0.5);
 }
 
 @theme inline {
@@ -35,6 +37,16 @@ body {
   background: transparent;
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Subtle dark halo to guarantee legibility against white terrain lines */
+h1, h2, h3, h4, h5, h6, p, li, a, span, button {
+  text-shadow: var(--text-halo);
+}
+
+/* Opt-out utility class for elements where the text shadow is unwanted (like solid dark buttons) */
+.no-halo {
+  text-shadow: none !important;
 }
 
 .section-background {
