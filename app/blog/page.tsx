@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     siteName: "KUMMA",
     images: [
       {
-        url: "https://kumma.co/og-blog-image.png", // Update with your actual OG image URL for the blog
+        url: "https://kumma.me/og-blog-image.png",
         width: 1200,
         height: 630,
       },
@@ -26,8 +26,8 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Between Logic and Light — Essays by KUMMA",
     description: "Writing to understand what it means to make, feel, and be.",
-    creator: "@yourtwitterhandle", // Update with your Twitter handle
-    images: ["https://kumma.co/twitter-blog-image.png"], // Update with your actual Twitter image URL for the blog
+    creator: "@kumma",
+    images: ["https://kumma.me/twitter-blog-image.png"],
   },
 };
 
