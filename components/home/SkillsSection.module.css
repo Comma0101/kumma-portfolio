@@ -93,15 +93,20 @@
 }
 
 .rosterRow {
-  display: grid;
-  grid-template-columns: 3.6rem 1fr;
-  align-items: baseline;
-  gap: 1.4rem;
+  display: flex;
+  flex-direction: column;
   padding: clamp(1.2rem, 2.2vw, 2.2rem) 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   cursor: pointer;
   position: relative;
   transition: opacity 0.35s ease;
+}
+
+.rowHeader {
+  display: grid;
+  grid-template-columns: 3.6rem 1fr;
+  align-items: baseline;
+  gap: 1.4rem;
 }
 
 .rosterRow::after {
@@ -191,35 +196,105 @@
   transform: translateY(0);
 }
 
-/* ── Floating Image ── */
+/* ── Expanded Capabilities ── */
 
-.floatingImage {
-  position: fixed;
-  width: 240px;
-  aspect-ratio: 3 / 4;
-  border-radius: 6px;
+.expandedContent {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  padding-left: calc(3.6rem + 1.4rem);
+  /* Align with row content */
+}
+
+.expandedContentVisible {
+  grid-template-rows: 1fr;
+}
+
+.capabilitiesWrapper {
   overflow: hidden;
-  pointer-events: none;
-  z-index: 10;
+}
+
+.capabilitiesList {
+  list-style: none;
+  padding: 1.5rem 0 1rem;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 0.6rem;
+  column-gap: 1.5rem;
   opacity: 0;
-  transform: translate(-50%, -50%) scale(0.92);
-  transition:
-    opacity 0.32s ease,
-    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
-  filter: grayscale(0.3) contrast(1.05);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  transform: translateY(10px);
+  transition: opacity 0.3s ease 0.1s, transform 0.3s ease 0.1s;
 }
 
-.floatingImageVisible {
+.expandedContentVisible .capabilitiesList {
   opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
+  transform: translateY(0);
 }
 
-.floatingImage img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+.capabilitiesList li {
+  font-size: 0.82rem;
+  color: rgba(220, 220, 220, 0.85);
+  letter-spacing: 0.02em;
+  position: relative;
+  padding-left: 1rem;
+}
+
+.capabilitiesList li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: var(--skills-accent);
+}
+
+.toolsStack {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.45);
+  margin-top: 0.8rem;
+  padding-bottom: 0.5rem;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.3s ease 0.2s, transform 0.3s ease 0.2s;
+}
+
+.expandedContentVisible .toolsStack {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toolsLabel {
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+}
+
+.manifestoLink {
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 1.2rem 0 0.5rem;
+  color: var(--skills-accent);
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.3s ease 0.3s,
+    transform 0.3s ease 0.3s,
+    color 0.2s ease;
+  display: inline-block;
+  text-align: left;
+}
+
+.manifestoLink:hover {
+  color: #fff;
+}
+
+.expandedContentVisible .manifestoLink {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* ── Responsive ── */
@@ -240,13 +315,13 @@
 }
 
 @media (max-width: 820px) {
-  .floatingImage {
-    display: none;
-  }
-
-  .rosterRow {
+  .rowHeader {
     grid-template-columns: 2.8rem 1fr;
     gap: 1rem;
+  }
+
+  .expandedContent {
+    padding-left: calc(2.8rem + 1rem);
   }
 
   .rowLabel {
@@ -282,9 +357,16 @@
   }
 
   .rosterRow {
+    padding: 1rem 0;
+  }
+
+  .rowHeader {
     grid-template-columns: 2.2rem 1fr;
     gap: 0.8rem;
-    padding: 1rem 0;
+  }
+
+  .expandedContent {
+    padding-left: calc(2.2rem + 0.8rem);
   }
 
   .rowIndex {

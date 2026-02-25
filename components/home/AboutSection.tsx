@@ -1,6 +1,7 @@
 "use client";
 import { CSSProperties, useEffect, useMemo, useRef, useState } from "react";
 import { Cormorant_Garamond, Space_Grotesk } from "next/font/google";
+import { useTransition } from "../../context/TransitionContext";
 import styles from "./AboutSection.module.css";
 
 const cormorant = Cormorant_Garamond({
@@ -49,7 +50,9 @@ const normalizeWord = (word: string) =>
   word.toLowerCase().replace(/[^a-z]/g, "");
 
 const AboutSection = () => {
+  const { isComplete } = useTransition();
   const containerRef = useRef<HTMLDivElement>(null);
+  const [hasScrolledIntoView, setHasScrolledIntoView] = useState(false);
   const [hasActivated, setHasActivated] = useState(false);
 
   useEffect(() => {
@@ -58,18 +61,26 @@ const AboutSection = () => {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && entry.intersectionRatio >= 0.28) {
-          setHasActivated(true);
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.15) {
+          setHasScrolledIntoView(true);
         }
       },
       {
-        threshold: [0.2, 0.28, 0.4],
+        threshold: [0.1, 0.15, 0.25],
+        rootMargin: "0px 0px -10% 0px"
       }
     );
 
     observer.observe(container);
     return () => observer.disconnect();
   }, []);
+
+  // The animation triggers if the user scrolls to it normally OR if they arrive via the transition tunnel
+  useEffect(() => {
+    if (hasScrolledIntoView || isComplete) {
+      setHasActivated(true);
+    }
+  }, [hasScrolledIntoView, isComplete]);
 
   const quoteWords = useMemo<QuoteWord[]>(() => {
     const words = quoteText.split(" ");
@@ -159,9 +170,8 @@ const AboutSection = () => {
             return (
               <span
                 key={`${word.text}-${i}`}
-                className={`${styles.aboutQuoteWord} ${
-                  word.isAccent ? styles.aboutAccentWord : ""
-                } ${motionClass}`}
+                className={`${styles.aboutQuoteWord} ${word.isAccent ? styles.aboutAccentWord : ""
+                  } ${motionClass}`}
                 style={wordStyle}
               >
                 {word.text}

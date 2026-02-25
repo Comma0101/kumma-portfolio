@@ -2,7 +2,6 @@
 import { useEffect, useRef } from "react";
 import styles from "../styles/home.module.css";
 import HeroSection from "./home/HeroSection";
-import AboutSection from "./home/AboutSection";
 import ProjectsSection from "./home/ProjectsSection";
 import SkillsSection from "./home/SkillsSection";
 import ContactSection from "./home/ContactSection";
@@ -28,9 +27,8 @@ const Home = () => {
   return (
     <div ref={containerRef} className={styles.homeContainer}>
       <HeroSection />
-      <AboutSection />
-      <ProjectsSection />
       <SkillsSection />
+      <ProjectsSection />
       <ContactSection />
     </div>
   );

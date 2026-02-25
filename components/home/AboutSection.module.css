@@ -6,8 +6,7 @@
   justify-content: center;
   position: relative;
   background:
-    radial-gradient(circle at 16% 14%, rgba(255, 122, 122, 0.07), transparent 38%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.012), rgba(255, 255, 255, 0));
+    radial-gradient(circle at center, rgba(5, 5, 5, 0.85) 0%, rgba(5, 5, 5, 0.2) 100%);
 }
 
 .aboutSection::before {
@@ -98,11 +97,14 @@
   --weight: 95;
   display: inline-block;
   margin-right: 0.2em;
-  color: rgba(232, 232, 232, 0.5);
-  opacity: 0.54;
+  color: rgba(255, 255, 255, 0.7);
+  /* Brighter base color */
+  opacity: 0.8;
+  /* Higher base opacity so it never vanishes */
   transform: translateY(0.28em);
   font-variation-settings: "wght" var(--weight);
-  font-weight: 500;
+  font-weight: 700;
+  /* Increased to bold to command the screen */
   transition:
     color 0.78s cubic-bezier(0.22, 1, 0.36, 1),
     opacity 0.78s cubic-bezier(0.22, 1, 0.36, 1),
@@ -113,17 +115,22 @@
 }
 
 .aboutActive .aboutQuoteWord {
-  color: rgba(235, 235, 235, 0.92);
-  opacity: 0.96;
+  color: #ffffff;
+  /* Pure white for max contrast against tunnel */
+  opacity: 1;
+  /* Solid opacity */
   transform: translateY(0);
-  text-shadow: 0 0 8px rgba(255, 122, 122, 0.08);
+  text-shadow: 0 0 20px rgba(0, 0, 0, 0.95);
+  /* Thicker drop shadow for bolder text */
 }
 
 .aboutActive .aboutAccentWord {
   color: #ff8a8a;
+  /* Keep the brand accent */
   opacity: 1;
   font-style: italic;
-  text-shadow: 0 0 12px rgba(255, 138, 138, 0.24);
+  text-shadow: 0 0 16px rgba(0, 0, 0, 0.8), 0 0 12px rgba(255, 138, 138, 0.4);
+  /* Black shadow + colored glow */
 }
 
 .aboutActive .aboutIntentWord {
@@ -155,10 +162,12 @@
   0% {
     transform: translateY(0);
   }
+
   38% {
     transform: translateY(-0.065em);
     text-shadow: 0 0 12px rgba(255, 255, 255, 0.12);
   }
+
   100% {
     transform: translateY(0);
   }
@@ -168,11 +177,13 @@
   0% {
     text-shadow: 0 0 10px rgba(255, 138, 138, 0.22);
   }
+
   45% {
     text-shadow:
       0 0 20px rgba(255, 138, 138, 0.38),
       0 0 34px rgba(255, 138, 138, 0.16);
   }
+
   100% {
     text-shadow: 0 0 12px rgba(255, 138, 138, 0.24);
   }
@@ -182,10 +193,12 @@
   0% {
     transform: translate3d(0, 0, 0);
   }
+
   42% {
     transform: translate3d(0.12em, -0.025em, 0);
     text-shadow: 0 0 16px rgba(255, 170, 170, 0.24);
   }
+
   100% {
     transform: translate3d(0, 0, 0);
   }
@@ -197,11 +210,13 @@
     letter-spacing: 0;
     opacity: 1;
   }
+
   45% {
     transform: translateY(0.05em) scaleX(0.92);
     letter-spacing: -0.013em;
     opacity: 0.76;
   }
+
   100% {
     transform: translateY(0) scaleX(1);
     letter-spacing: 0;
@@ -214,11 +229,13 @@
     transform: translateY(0.11em) scale(0.97);
     filter: blur(2px);
   }
+
   44% {
     transform: translateY(-0.05em) scale(1.04);
     filter: blur(0);
     text-shadow: 0 0 20px rgba(255, 160, 160, 0.28);
   }
+
   100% {
     transform: translateY(0) scale(1);
     filter: blur(0);
@@ -273,6 +290,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .aboutHeader,
   .aboutQuote,
   .aboutQuoteWord {

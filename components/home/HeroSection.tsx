@@ -48,6 +48,11 @@ const HeroSection = () => {
         () => {
             const tl = gsap.timeline({
                 defaults: { ease: "power3.out" },
+                onComplete: () => {
+                    if (containerRef.current) {
+                        containerRef.current.classList.add(styles.interactionsReady);
+                    }
+                }
             });
 
             tl.from(kickerRef.current, {
@@ -64,6 +69,7 @@ const HeroSection = () => {
                     filter: "blur(7px)",
                     duration: 1.18,
                     stagger: 0.17,
+                    clearProps: "all",
                 },
                 "-=0.12"
             );
@@ -75,6 +81,7 @@ const HeroSection = () => {
                     opacity: 0,
                     duration: 0.7,
                     stagger: 0.15,
+                    clearProps: "all",
                 },
                 "-=1.0"
             );
@@ -124,11 +131,10 @@ const HeroSection = () => {
                                 {line.index}
                             </span>
                             <span
-                                className={`${styles.lineText} ${
-                                    line.tone === "editorial"
+                                className={`${styles.lineText} ${line.tone === "editorial"
                                         ? `${styles.editorialTone} ${cormorant.className}`
                                         : styles.displayTone
-                                }`}
+                                    }`}
                             >
                                 {line.text}
                             </span>

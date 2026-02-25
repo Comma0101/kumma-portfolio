@@ -65,8 +65,11 @@ export const PageTransitionProvider = ({
           left: 0,
           width: "100vw",
           height: "100vh",
-          backgroundColor: "#000",
+          backgroundColor: "rgba(0, 0, 0, 0.4)",
+          backdropFilter: "blur(24px)",
+          WebkitBackdropFilter: "blur(24px)",
           zIndex: 100,
+          pointerEvents: "none",
           clipPath: "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
         }}
       />

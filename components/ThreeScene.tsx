@@ -23,14 +23,43 @@ const ThreeScene = () => {
   const frameCountRef = useRef<number>(0);
   const cameraTimelineRef = useRef<gsap.core.Timeline | null>(null);
 
+  // We NO LONGER update the key to trigger unmounts.
+  // The WebGL canvas will persist across route changes.
   useEffect(() => {
-    // Only reset if we navigate away from home and back, or if we want to re-init
-    // For now, let's keep it persistent across pages if possible, or re-mount
-    // If we want it persistent, we might not want to reset on pathname change unless necessary
-    // But the current logic resets it. Let's keep it for now to ensure clean state.
-    setKey((prevKey) => prevKey + 1);
+    // We only trigger route-based animations if the scene exists
+    if (!cameraRef.current || !materialRef.current) return;
+    
+    // Default home state
+    let targetY = 50;
+    let targetZ = 150;
+    let targetOpacity = 0.08;
+
+    if (pathname.includes("/gallery")) {
+      targetY = 100;
+      targetZ = 60;
+      targetOpacity = 0.03;
+    } else if (pathname.includes("/blog") || pathname.includes("/stories")) {
+      targetY = 20;
+      targetZ = 120;
+      targetOpacity = 0.02;
+    }
+
+    gsap.to(cameraRef.current.position, {
+      y: targetY,
+      z: targetZ,
+      duration: 1.5,
+      ease: "power2.inOut"
+    });
+
+    gsap.to(materialRef.current, {
+      opacity: targetOpacity,
+      duration: 1.5,
+      ease: "power2.inOut"
+    });
+
   }, [pathname]);
 
+  // We change this from depending on `[key]` to `[]` so it only runs ONCE on initial load.
   useEffect(() => {
     flyingRef.current = 0;
     if (!mountRef.current) return;
@@ -263,11 +292,10 @@ const ThreeScene = () => {
         cameraTimelineRef.current = null;
       }
     };
-  }, [key]);
+  }, []); // Run ONCE globally. Do not reset on `key` change.
 
   return (
     <div
-      key={key}
       ref={mountRef}
       style={{
         position: 'fixed',
