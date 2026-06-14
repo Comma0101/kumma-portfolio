@@ -1,313 +1,159 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+
+import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import * as THREE from "three";
 import { createNoise2D } from "simplex-noise";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-gsap.registerPlugin(ScrollTrigger);
+interface LenisInstance {
+  scroll: number;
+  on: (event: "scroll", callback: (data: { scroll: number }) => void) => void;
+  off: (event: "scroll", callback: (data: { scroll: number }) => void) => void;
+}
 
-const ThreeScene = () => {
+export default function ThreeScene() {
   const pathname = usePathname();
-  const [key, setKey] = useState(0);
   const mountRef = useRef<HTMLDivElement>(null);
-  const sceneRef = useRef<THREE.Scene | null>(null);
-  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
-  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
-  const terrainRef = useRef<THREE.Mesh | null>(null);
-  const geometryRef = useRef<THREE.PlaneGeometry | null>(null);
-  const materialRef = useRef<THREE.MeshBasicMaterial | null>(null);
-  const animationFrameRef = useRef<number | null>(null);
-  const flyingRef = useRef<number>(0);
-  const frameCountRef = useRef<number>(0);
-  const cameraTimelineRef = useRef<gsap.core.Timeline | null>(null);
 
-  // We NO LONGER update the key to trigger unmounts.
-  // The WebGL canvas will persist across route changes.
   useEffect(() => {
-    // We only trigger route-based animations if the scene exists
-    if (!cameraRef.current || !materialRef.current) return;
-    
-    // Default home state
-    let targetY = 50;
-    let targetZ = 150;
-    let targetOpacity = 0.08;
+    const mount = mountRef.current;
+    if (!mount || pathname !== "/") return;
 
-    if (pathname.includes("/gallery")) {
-      targetY = 100;
-      targetZ = 60;
-      targetOpacity = 0.03;
-    } else if (pathname.includes("/blog") || pathname.includes("/stories")) {
-      targetY = 20;
-      targetZ = 120;
-      targetOpacity = 0.02;
-    }
-
-    gsap.to(cameraRef.current.position, {
-      y: targetY,
-      z: targetZ,
-      duration: 1.5,
-      ease: "power2.inOut"
-    });
-
-    gsap.to(materialRef.current, {
-      opacity: targetOpacity,
-      duration: 1.5,
-      ease: "power2.inOut"
-    });
-
-  }, [pathname]);
-
-  // We change this from depending on `[key]` to `[]` so it only runs ONCE on initial load.
-  useEffect(() => {
-    flyingRef.current = 0;
-    if (!mountRef.current) return;
-
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
     const noise2D = createNoise2D();
-
     const scene = new THREE.Scene();
-    sceneRef.current = scene;
-
     const camera = new THREE.PerspectiveCamera(
-      75,
+      68,
       window.innerWidth / window.innerHeight,
       0.1,
-      1000
+      900,
     );
-    cameraRef.current = camera;
-    camera.position.z = 150;
-    camera.position.y = 50;
+    camera.position.set(0, 46, 145);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    rendererRef.current = renderer;
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        antialias: !reducedMotion,
+        alpha: true,
+        powerPreference: "low-power",
+      });
+    } catch (error) {
+      console.warn("WebGL background unavailable.", error);
+      return;
+    }
+
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(0x000000, 0);
+    renderer.setClearColor(0x0b0b0d, 0);
+    renderer.domElement.style.width = "100%";
+    renderer.domElement.style.height = "100%";
+    mount.appendChild(renderer.domElement);
 
-    // Add fog for endless illusion
-    scene.fog = new THREE.Fog(0x000000, 150, 900);
+    scene.fog = new THREE.Fog(0x0b0b0d, 145, 720);
 
-    // Style for fixed background
-    renderer.domElement.style.position = 'fixed';
-    renderer.domElement.style.top = '0';
-    renderer.domElement.style.left = '0';
-    renderer.domElement.style.width = '100%';
-    renderer.domElement.style.height = '100%';
-    renderer.domElement.style.zIndex = '-1'; // Behind everything
-    renderer.domElement.style.pointerEvents = 'none';
-
-    mountRef.current.appendChild(renderer.domElement);
-
-    const cols = 80; // Increased for larger terrain
-    const rows = 80;
-    const terrainWidth = 1200; // Significantly larger
-    const terrainHeight = 1200;
-
+    const columns = 58;
+    const rows = 58;
     const geometry = new THREE.PlaneGeometry(
-      terrainWidth,
-      terrainHeight,
-      cols - 1,
-      rows - 1
+      1050,
+      1050,
+      columns - 1,
+      rows - 1,
     );
-    geometryRef.current = geometry;
-
     const material = new THREE.MeshBasicMaterial({
-      color: 0xfafafa,
+      color: 0xc9b8a0,
       wireframe: true,
       transparent: true,
-      opacity: 0.08, // Significantly lowered for better text legibility
-      vertexColors: true,
+      opacity: 0.075,
     });
-    materialRef.current = material;
-
     const terrain = new THREE.Mesh(geometry, material);
-    terrainRef.current = terrain;
     terrain.rotation.x = -Math.PI / 2;
-    terrain.position.y = -50;
+    terrain.position.y = -52;
     scene.add(terrain);
     camera.lookAt(terrain.position);
 
-    const initialColors = new Float32Array(cols * rows * 3);
-    const energies = new Float32Array(cols * rows);
-    for (let i = 0; i < initialColors.length; i += 3) {
-      initialColors[i] = 1;
-      initialColors[i + 1] = 1;
-      initialColors[i + 2] = 1;
-    }
-    for (let i = 0; i < energies.length; i++) {
-      energies[i] = 0;
-    }
-    geometry.setAttribute('color', new THREE.BufferAttribute(initialColors, 3));
-    geometry.setAttribute('energy', new THREE.BufferAttribute(energies, 1));
+    let flight = 0;
+    let frame = 0;
+    let animationFrame = 0;
 
     const updateTerrain = () => {
-      flyingRef.current -= 0.01;
-      let yoff = flyingRef.current;
-
+      flight -= 0.008;
+      let yOffset = flight;
       const positions = geometry.attributes.position.array;
 
-      for (let y = 0; y < rows; y++) {
-        let xoff = 0;
-        for (let x = 0; x < cols; x++) {
-          const i = (y * cols + x) * 3 + 2;
-          const noiseValue = noise2D(xoff, yoff);
-          positions[i] = noiseValue * 10;
-          xoff += 0.1;
+      for (let y = 0; y < rows; y += 1) {
+        let xOffset = 0;
+        for (let x = 0; x < columns; x += 1) {
+          positions[(y * columns + x) * 3 + 2] =
+            noise2D(xOffset, yOffset) * 5;
+          xOffset += 0.11;
         }
-        yoff += 0.1;
+        yOffset += 0.11;
       }
 
       geometry.attributes.position.needsUpdate = true;
     };
 
-    const animate = () => {
-      if (frameCountRef.current % 2 === 0) {
-        updateTerrain();
-      }
-      frameCountRef.current++;
-
-      const colorAttribute = geometry.attributes.color as THREE.BufferAttribute;
-      const energyAttribute = geometry.attributes.energy as THREE.BufferAttribute;
-      const accentColor = new THREE.Color("#39FF14");
-      const baseColor = new THREE.Color(0xffffff);
-      let needsUpdate = false;
-
-      for (let i = 0; i < energyAttribute.count; i++) {
-        let energy = energyAttribute.getX(i);
-        if (energy > 0.001) {
-          const currentColor = new THREE.Color().lerpColors(baseColor, accentColor, energy);
-          colorAttribute.setXYZ(i, currentColor.r, currentColor.g, currentColor.b);
-          energyAttribute.setX(i, energy * 0.96);
-          needsUpdate = true;
-        }
-      }
-
-      if (needsUpdate) {
-        colorAttribute.needsUpdate = true;
-        energyAttribute.needsUpdate = true;
-      }
-
+    const render = () => {
+      if (!document.hidden && frame % 2 === 0) updateTerrain();
+      frame += 1;
       renderer.render(scene, camera);
-      animationFrameRef.current = requestAnimationFrame(animate);
+      animationFrame = window.requestAnimationFrame(render);
     };
 
-    // Scroll Animations
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: "body", // Use body as the trigger for the whole page
-        start: "top top",
-        end: "bottom bottom",
-        scrub: 1,
-      },
-    });
-    cameraTimelineRef.current = tl;
+    updateTerrain();
+    renderer.render(scene, camera);
+    if (!reducedMotion) render();
 
-    // Continuous forward flight effect
-    tl.to(camera.position, {
-      z: 50, // Move forward significantly (from 150 to 50)
-      y: 30, // Drop slightly lower for immersion
-      ease: "none", // Linear movement
-    }, 0)
-      .to(material, {
-        opacity: 0.03, // Fade out heavily as we get closer/lower to keep focus on content
-        ease: "none",
-      }, 0);
+    const lenis = (window as Window & { lenis?: LenisInstance }).lenis;
+    const handleScroll = ({ scroll }: { scroll: number }) => {
+      const progress = Math.min(1, Math.max(0, scroll / window.innerHeight));
+      if (!reducedMotion) {
+        camera.position.y = 46 - progress * 18;
+        camera.position.z = 145 - progress * 57;
+      }
+      renderer.domElement.style.opacity = String(1 - progress);
+    };
 
-    // Color shift can remain but maybe subtler
-    tl.to(material.color, {
-      r: 0.1,
-      g: 0.5,
-      b: 1.0,
-      ease: "none",
-    }, 0);
+    handleScroll({ scroll: lenis?.scroll ?? window.scrollY });
+    lenis?.on("scroll", handleScroll);
 
     const handleResize = () => {
-      if (!camera || !renderer) return;
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
       renderer.setSize(window.innerWidth, window.innerHeight);
-    };
-
-    const mouse = new THREE.Vector2();
-    const raycaster = new THREE.Raycaster();
-
-    const handleMouseMove = (event: MouseEvent) => {
-      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-      raycaster.setFromCamera(mouse, camera);
-      const intersects = raycaster.intersectObject(terrain);
-
-      if (intersects.length > 0) {
-        const intersectionPoint = intersects[0].point;
-        const energyAttribute = geometry.attributes.energy as THREE.BufferAttribute;
-        const positionAttribute = geometry.attributes.position as THREE.BufferAttribute;
-        const radius = 40;
-
-        for (let i = 0; i < positionAttribute.count; i++) {
-          const vertex = new THREE.Vector3().fromBufferAttribute(positionAttribute, i);
-          vertex.applyMatrix4(terrain.matrixWorld);
-          const distance = vertex.distanceTo(intersectionPoint);
-
-          if (distance < radius) {
-            energyAttribute.setX(i, 1.0);
-          }
-        }
-        energyAttribute.needsUpdate = true;
-      }
+      if (reducedMotion) renderer.render(scene, camera);
     };
 
     window.addEventListener("resize", handleResize);
-    window.addEventListener("mousemove", handleMouseMove);
-    animate();
 
     return () => {
       window.removeEventListener("resize", handleResize);
-      window.removeEventListener("mousemove", handleMouseMove);
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-      if (
-        mountRef.current &&
-        rendererRef.current &&
-        mountRef.current.contains(rendererRef.current.domElement)
-      ) {
-        mountRef.current.removeChild(rendererRef.current.domElement);
-      }
-      if (sceneRef.current && terrainRef.current) {
-        sceneRef.current.remove(terrainRef.current);
-      }
-      if (geometryRef.current) {
-        geometryRef.current.dispose();
-      }
-      if (materialRef.current) {
-        materialRef.current.dispose();
-      }
-      if (rendererRef.current) {
-        rendererRef.current.dispose();
-      }
-      if (cameraTimelineRef.current) {
-        cameraTimelineRef.current.scrollTrigger?.kill();
-        cameraTimelineRef.current.kill();
-        cameraTimelineRef.current = null;
+      lenis?.off("scroll", handleScroll);
+      window.cancelAnimationFrame(animationFrame);
+      scene.remove(terrain);
+      geometry.dispose();
+      material.dispose();
+      renderer.dispose();
+      renderer.forceContextLoss();
+      if (mount.contains(renderer.domElement)) {
+        mount.removeChild(renderer.domElement);
       }
     };
-  }, []); // Run ONCE globally. Do not reset on `key` change.
+  }, [pathname]);
 
   return (
     <div
       ref={mountRef}
+      aria-hidden="true"
       style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        zIndex: -1,
-        pointerEvents: 'none'
+        position: "fixed",
+        inset: 0,
+        zIndex: 0,
+        pointerEvents: "none",
       }}
     />
   );
-};
-
-export default ThreeScene;
+}

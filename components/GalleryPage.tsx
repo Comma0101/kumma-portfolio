@@ -2,6 +2,7 @@
 
 import { FC, useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import * as THREE from "three";
 import { PlaneGeometry, ShaderMaterial, Uniform } from "three";
@@ -53,12 +54,13 @@ interface Media {
 }
 
 const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
-  const [chapterLabel, setChapterLabel] = useState("");
+  const [studyLabel, setStudyLabel] = useState("");
   const [title, setTitle] = useState("");
   const [subtitle, setSubtitle] = useState("");
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadingProgress, setLoadingProgress] = useState(0);
+  const [useStaticGallery, setUseStaticGallery] = useState(false);
 
   const mountRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLElement>(null);
@@ -87,7 +89,7 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
         setImageUrls(collection.galleryImages);
         setTitle(collection.title);
         setSubtitle(collection.subtitle);
-        setChapterLabel(`Chapter ${String(index + 1).padStart(2, "0")}`);
+        setStudyLabel(`Study ${String(index + 1).padStart(2, "0")}`);
       } else {
         router.push("/gallery");
       }
@@ -130,9 +132,20 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
 
     setIsLoading(true);
     setLoadingProgress(0);
+    setUseStaticGallery(false);
 
     const mount = mountRef.current;
     const pageElement = mount.parentElement;
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    if (reducedMotion) {
+      setUseStaticGallery(true);
+      setIsLoading(false);
+      requestAnimationFrame(runEntranceAnimation);
+      return;
+    }
 
     if (pageElement && !pageElement.classList.contains(styles.loaded)) {
       pageElement.classList.add(styles.loaded);
@@ -150,7 +163,16 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
     camera.position.z = 7;
     cameraRef.current = camera;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+    } catch (error) {
+      console.warn("WebGL gallery unavailable.", error);
+      setUseStaticGallery(true);
+      setIsLoading(false);
+      requestAnimationFrame(runEntranceAnimation);
+      return;
+    }
     renderer.setClearColor(0x111111, 1);
     renderer.setSize(mount.clientWidth, mount.clientHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -394,16 +416,16 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
             <span aria-hidden="true">←</span>
             Back to Collections
           </Link>
-          {chapterLabel && (
+          {studyLabel && (
             <p className={`${styles.chapterLabel} ${spaceGrotesk.className}`}>
-              {chapterLabel}
+              {studyLabel}
             </p>
           )}
         </div>
 
         <div className={styles.headerMain}>
           <p className={`${styles.galleryEyebrow} ${spaceGrotesk.className}`}>
-            Gallery Chapter
+            Visual Study
           </p>
           {title && <h1 className={`${styles.pageTitle} ${cormorant.className}`}>{title}</h1>}
           {subtitle && (
@@ -415,7 +437,7 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
 
         <div className={styles.headerMeta}>
           <p className={`${styles.galleryMeta} ${spaceGrotesk.className}`}>
-            {imageUrls.length} frames / scroll to explore the full loop
+            {imageUrls.length} frames / continuous visual sequence
           </p>
           <p className={`${styles.galleryGuide} ${spaceGrotesk.className}`}>
             Designed as a continuous visual sentence. Stay with the cadence.
@@ -424,8 +446,26 @@ const GalleryPage: FC<GalleryPageProps> = ({ collectionId }) => {
       </header>
 
       <div ref={mountRef} className={styles.webglContainer}></div>
-      <div className={styles.readingScrim} aria-hidden="true"></div>
-      <div className={styles.scrollSpacer} aria-hidden="true"></div>
+      {useStaticGallery && (
+        <div className={styles.staticGallery}>
+          {imageUrls.map((url, index) => (
+            <figure key={url}>
+              <Image
+                src={url}
+                alt={`${title} visual study frame ${index + 1}`}
+                fill
+                sizes="(max-width: 760px) 92vw, 68vw"
+              />
+            </figure>
+          ))}
+        </div>
+      )}
+      {!useStaticGallery && (
+        <>
+          <div className={styles.readingScrim} aria-hidden="true"></div>
+          <div className={styles.scrollSpacer} aria-hidden="true"></div>
+        </>
+      )}
     </div>
   );
 };

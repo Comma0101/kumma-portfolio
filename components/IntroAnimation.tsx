@@ -157,14 +157,14 @@ const IntroAnimation = () => {
 
       <div ref={copyRef} className={styles.introCopy}>
         <p className={`${styles.introEyebrow} ${spaceGrotesk.className}`}>
-          KUMMA / Digital Atelier
+          KUMMA / AI Systems
         </p>
         <h1 className={`${styles.introTitle} ${cormorant.className}`}>
-          Between Logic And Light
+          Between Systems And Sensation
         </h1>
         <p className={`${styles.introLead} ${spaceGrotesk.className}`}>
-          Interfaces built as living essays, where code, motion, and meaning
-          move as one sequence.
+          Building at the intersection of AI engineering, interface craft, and
+          visual storytelling.
         </p>
       </div>
 

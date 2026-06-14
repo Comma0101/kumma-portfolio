@@ -20,7 +20,7 @@ const positions = [
 
 const MiniConstellation: React.FC<MiniConstellationProps> = ({
     technologies,
-    accentColor = "#00d4ff"
+    accentColor = "#c9b8a0"
 }) => {
     // Limit to 6 techs for the visual
     const displayTechs = technologies.slice(0, 6);

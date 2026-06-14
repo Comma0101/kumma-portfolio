@@ -173,19 +173,13 @@ const BlogSection = forwardRef<HTMLDivElement, BlogSectionProps>(
 
           <div className={styles.articlesList}>
             {filteredPosts.length > 0 ? (
-              filteredPosts.map((post, index) => {
-                const chapter = String(index + 1).padStart(2, "0");
-
+              filteredPosts.map((post) => {
                 return (
                   <Link
                     key={post.id}
                     href={`/blog/${locale}/${post.slug}`}
                     className={styles.articleEntry}
                   >
-                    <p className={`${styles.articleChapter} ${spaceGrotesk.className}`}>
-                      Essay {chapter}
-                    </p>
-
                     <div className={styles.articleMain}>
                       <h2 className={`${styles.articleTitle} ${cormorant.className}`}>
                         <Highlight text={post.title} highlight={searchQuery} />

@@ -28,7 +28,7 @@
 }
 
 .menuItem:hover {
-  border-color: rgba(255, 174, 174, 0.72);
+  border-color: rgba(201, 184, 160, 0.72);
   background: rgba(255, 255, 255, 0.05);
   transform: translateY(-2px);
 }
@@ -87,7 +87,7 @@
 }
 
 .chapter {
-  color: rgba(255, 146, 146, 0.8);
+  color: rgba(201, 184, 160, 0.8);
 }
 
 .count {
@@ -167,8 +167,8 @@
   background:
     linear-gradient(
       135deg,
-      rgba(255, 123, 123, 0.12) 0%,
-      rgba(255, 123, 123, 0) 44%
+      rgba(201, 184, 160, 0.12) 0%,
+      rgba(201, 184, 160, 0) 44%
     ),
     linear-gradient(
       0deg,
@@ -179,7 +179,7 @@
 }
 
 .menuItem:hover .chapterIndex {
-  color: rgba(255, 176, 176, 0.82);
+  color: rgba(201, 184, 160, 0.82);
 }
 
 .menuItem:hover .menuCopy {
@@ -194,7 +194,7 @@
 .menuItem:hover .visualPane {
   opacity: 1;
   transform: translateY(-50%) translateX(0) scale(1);
-  border-color: rgba(255, 182, 182, 0.64);
+  border-color: rgba(201, 184, 160, 0.64);
 }
 
 .menuItem:hover .menuItemSub {
@@ -202,7 +202,7 @@
 }
 
 .menuItem:hover .cta {
-  color: rgba(255, 176, 176, 0.95);
+  color: rgba(201, 184, 160, 0.95);
 }
 
 @media (max-width: 980px) {

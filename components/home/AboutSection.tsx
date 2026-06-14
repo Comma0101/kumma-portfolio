@@ -16,21 +16,21 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 const quoteText =
-  "I build systems that feel. Not just interfaces, but living frames where code shapes light, motion finds meaning, and small choices ripple into experience. Each project starts as a question—then becomes a place you can walk through.";
+  "I build systems that operate. Not just models, but living architectures where agents reason, orchestration finds reliability, and small decisions compound into trust. Each system starts as a constraint, then becomes infrastructure you can depend on.";
 
 const accentWords = new Set([
-  "feel",
-  "light",
-  "motion",
-  "question",
-  "place",
+  "operate",
+  "agents",
+  "orchestration",
+  "constraint",
+  "infrastructure",
   "systems",
-  "experience",
+  "trust",
 ]);
 
-const intentWords = new Set(["i", "build", "systems", "that", "feel"]);
-const rippleWords = new Set(["small", "choices", "ripple", "into", "experience"]);
-const placeWords = new Set(["becomes", "a", "place", "you", "can", "walk", "through"]);
+const intentWords = new Set(["i", "build", "systems", "that", "operate"]);
+const rippleWords = new Set(["small", "decisions", "compound", "into", "trust"]);
+const placeWords = new Set(["becomes", "infrastructure", "you", "can", "depend", "on"]);
 
 type MotionRole = "intent" | "pulse" | "ripple" | "question" | "place" | null;
 
@@ -137,9 +137,9 @@ const AboutSection = () => {
       className={`${styles.aboutSection} ${hasActivated ? styles.aboutActive : ""}`}
     >
       <div className={styles.aboutHeader}>
-        <p className={`${styles.aboutEyebrow} ${spaceGrotesk.className}`}>Manifesto</p>
+        <p className={`${styles.aboutEyebrow} ${spaceGrotesk.className}`}>Thesis</p>
         <p className={`${styles.aboutMeta} ${spaceGrotesk.className}`}>
-          chapter / 02
+          Systems practice
         </p>
       </div>
 

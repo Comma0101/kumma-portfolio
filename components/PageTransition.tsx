@@ -19,6 +19,11 @@ export const PageTransitionProvider = ({
   const overlayRef = useRef<HTMLDivElement>(null);
 
   const animatePageOut = (href: string) => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      router.push(href);
+      return;
+    }
+
     const overlay = overlayRef.current;
     if (overlay) {
       gsap.to(overlay, {
@@ -43,6 +48,13 @@ export const PageTransitionProvider = ({
   useGSAP(() => {
     const overlay = overlayRef.current;
     if (overlay) {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        gsap.set(overlay, {
+          clipPath: "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)",
+        });
+        return;
+      }
+
       gsap.fromTo(
         overlay,
         { clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)" },
@@ -64,8 +76,8 @@ export const PageTransitionProvider = ({
           top: 0,
           left: 0,
           width: "100vw",
-          height: "100vh",
-          backgroundColor: "rgba(0, 0, 0, 0.4)",
+          height: "100dvh",
+          backgroundColor: "rgba(11, 11, 13, 0.72)",
           backdropFilter: "blur(24px)",
           WebkitBackdropFilter: "blur(24px)",
           zIndex: 100,

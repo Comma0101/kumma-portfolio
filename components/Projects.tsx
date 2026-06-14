@@ -1,34 +1,78 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { CSSProperties, useEffect, useRef } from "react";
 import Link from "next/link";
-import styles from "../styles/projects.module.css";
 import { projects } from "@/data/projectData";
+import styles from "./ProjectsShowcase.module.css";
 
-const truncate = (text: string, maxLength: number) => {
-  if (text.length <= maxLength) return text;
-  return `${text.slice(0, maxLength).trimEnd()}...`;
-};
+function KotaVisual() {
+  return (
+    <div className={`${styles.projectVisual} ${styles.kotaVisual}`}>
+      <div className={styles.visualToolbar}>
+        <span>KOTA / Active call</span>
+        <b>Voice to action</b>
+      </div>
+      <div className={styles.kotaFlow}>
+        {["Listen", "Resolve", "Execute"].map((item) => (
+          <div key={item}>
+            <i aria-hidden="true" />
+            <span>{item}</span>
+          </div>
+        ))}
+      </div>
+      <div className={styles.kotaTicket}>
+        <span>Structured ticket</span>
+        <p>Orange chicken <b>x2</b></p>
+        <p>Chow mein <b>x1</b></p>
+      </div>
+    </div>
+  );
+}
 
-const buildNarrative = (project: (typeof projects)[number]) => {
-  const arcText = project.narrative
-    ? `${project.narrative.context} ${project.narrative.decision} ${project.narrative.outcome}`
-    : undefined;
-  const baseText =
-    arcText || project.overview?.content || project.details || project.description;
+function ArchonVisual() {
+  return (
+    <div className={`${styles.projectVisual} ${styles.archonVisual}`}>
+      <div className={styles.agentGrid}>
+        {["Tools", "Memory", "Evaluator", "Context"].map((item) => (
+          <span key={item}>{item}</span>
+        ))}
+      </div>
+      <div className={styles.archonCore}>
+        <i aria-hidden="true" />
+        <strong>Coordinator</strong>
+        <small>Route / trace / recover</small>
+      </div>
+    </div>
+  );
+}
 
-  return {
-    title: project.title,
-    subtitle: project.subtitle || project.tagline || project.description,
-    body: truncate(baseText, 270),
-    reflection: project.philosophical || project.narrative?.impact || "",
-    stack:
-      project.techStack?.map((tech) => tech.name).slice(0, 4).join(" · ") ||
-      "React · Next.js · TypeScript · Motion Design",
-    slug: project.slug,
-    websiteUrl: project.websiteUrl,
-  };
-};
+function DecisionVisual() {
+  const rows = [
+    ["Setup quality", "Consistent"],
+    ["Risk discipline", "Controlled"],
+    ["Execution review", "In focus"],
+  ];
+
+  return (
+    <div className={`${styles.projectVisual} ${styles.decisionVisual}`}>
+      <div className={styles.visualToolbar}>
+        <span>Decision journal</span>
+        <b>Process over outcome</b>
+      </div>
+      <div className={styles.decisionRows}>
+        {rows.map(([label, status], index) => (
+          <div key={label}>
+            <span>{label}</span>
+            <i style={{ "--bar-width": `${84 - index * 13}%` } as CSSProperties} />
+            <b>{status}</b>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+const visuals = [KotaVisual, ArchonVisual, DecisionVisual];
 
 export default function Projects() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -37,24 +81,26 @@ export default function Projects() {
     const section = sectionRef.current;
     if (!section) return;
 
-    const cards = Array.from(
-      section.querySelectorAll<HTMLElement>("[data-story-card]")
-    );
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const cards = section.querySelectorAll<HTMLElement>("[data-project-card]");
+
+    if (reducedMotion) {
+      cards.forEach((card) => card.classList.add(styles.projectCardVisible));
+      return;
+    }
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add(styles.storyCardVisible);
-          } else {
-            entry.target.classList.remove(styles.storyCardVisible);
+            entry.target.classList.add(styles.projectCardVisible);
+            observer.unobserve(entry.target);
           }
         });
       },
-      {
-        threshold: 0.24,
-        rootMargin: "0px 0px -12% 0px",
-      }
+      { threshold: 0.16, rootMargin: "0px 0px -8% 0px" },
     );
 
     cards.forEach((card) => observer.observe(card));
@@ -62,80 +108,61 @@ export default function Projects() {
   }, []);
 
   return (
-    <section ref={sectionRef} className={styles.storyProjectsSection}>
-      <header className={styles.storyProjectsHeader}>
-        <p className={styles.storyProjectsEyebrow}>Selected Work</p>
-        <h2 className={styles.storyProjectsTitle}>Projects Told In Chapters</h2>
-        <p className={styles.storyProjectsIntro}>
-          Not a gallery of thumbnails, but a sequence of intentions. Each
-          project is framed as context, decision, and outcome.
+    <section id="projects" ref={sectionRef} className={styles.projectsSection}>
+      <header className={styles.projectsHeader}>
+        <p className={styles.eyebrow}>Selected Work</p>
+        <h2>Systems built for real operations.</h2>
+        <p>
+          Three products that turn ambiguous inputs into observable, useful
+          decisions.
         </p>
       </header>
 
-      <div className={styles.storyProjectsList}>
+      <div className={styles.projectsGrid}>
         {projects.map((project, index) => {
-          const narrative = buildNarrative(project);
-          const chapter = String(index + 1).padStart(2, "0");
-          const imageUrl = `/images/collection${Math.floor(index / 3) + 1}/img${
-            (index % 3) + 1
-          }.jpg`;
+          const Visual = visuals[index] ?? DecisionVisual;
+          const stack = project.techStack?.slice(0, 3).map((tech) => tech.name);
 
           return (
             <article
               key={project.id}
-              className={styles.storyCard}
-              data-story-card="true"
+              data-project-card
+              className={`${styles.projectCard} ${
+                index === 0 ? styles.featuredCard : styles.supportingCard
+              }`}
+              style={{ "--card-delay": `${index * 100}ms` } as CSSProperties}
             >
-              <div className={styles.storyCardRail} aria-hidden="true">
-                <span className={styles.storyCardChapter}>Chapter {chapter}</span>
-                <span className={styles.storyCardDivider} />
-              </div>
-
-              <div className={styles.storyCardMain}>
-                <p className={styles.storyCardKicker}>Case Study</p>
-                <h3 className={styles.storyCardTitle}>{narrative.title}</h3>
-                <p className={styles.storyCardSubtitle}>{narrative.subtitle}</p>
-                <p className={styles.storyCardBody}>{narrative.body}</p>
-
-                {narrative.reflection && (
-                  <p className={styles.storyCardReflection}>
-                    “{narrative.reflection}”
+              <div className={styles.projectCopy}>
+                <div>
+                  <p className={styles.projectType}>
+                    {index === 0 ? "Flagship system" : "Case study"}
                   </p>
-                )}
+                  <h3>{project.title}</h3>
+                  <p className={styles.projectSubtitle}>
+                    {project.subtitle || project.description}
+                  </p>
+                  <p className={styles.projectDescription}>
+                    {project.description}
+                  </p>
+                </div>
 
-                <p className={styles.storyCardStack}>
-                  <span>Stack</span>
-                  {narrative.stack}
-                </p>
-
-                <div className={styles.storyCardActions}>
-                  <Link
-                    href={`/projects/${narrative.slug}`}
-                    className={styles.storyCardLink}
-                  >
-                    Read Chapter
-                  </Link>
-                  {narrative.websiteUrl && (
-                    <a
-                      href={narrative.websiteUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={styles.storyCardLinkGhost}
-                    >
-                      Visit Live
-                    </a>
+                <div>
+                  {stack && (
+                    <ul className={styles.stackList} aria-label="Core capabilities">
+                      {stack.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
                   )}
+                  <Link
+                    href={`/projects/${project.slug}`}
+                    className={styles.projectLink}
+                  >
+                    View Case Study <span aria-hidden="true">-&gt;</span>
+                  </Link>
                 </div>
               </div>
-
-              <div className={styles.storyCardVisualWrap}>
-                <div
-                  className={styles.storyCardVisual}
-                  style={{ backgroundImage: `url(${imageUrl})` }}
-                  role="img"
-                  aria-label={`${narrative.title} visual preview`}
-                />
-              </div>
+              <Visual />
             </article>
           );
         })}

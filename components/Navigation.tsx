@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { Cormorant_Garamond, Space_Grotesk } from "next/font/google";
 import styles from "../styles/navigation.module.css";
 import TransitionLink from "./TransitionLink";
 
@@ -11,29 +10,23 @@ interface NavLink {
   href: string;
 }
 
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  style: ["normal", "italic"],
-});
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-});
-
 const navLinks: NavLink[] = [
   { name: "Home", href: "#home" },
-  { name: "About", href: "#about" },
   { name: "Projects", href: "#projects" },
   { name: "Skills", href: "#skills" },
   { name: "Contact", href: "#contact" },
-  { name: "Gallery", href: "/gallery" },
-  { name: "Stories", href: "/stories" },
+  { name: "Studies", href: "/gallery" },
   { name: "Blog", href: "/blog" },
 ];
 
-const homeSectionIds = ["home", "about", "projects", "skills", "contact"];
+const homeSectionIds = ["home", "projects", "skills", "about", "contact"];
+
+interface LenisInstance {
+  scroll: number;
+  on: (event: "scroll", callback: (data: { scroll: number }) => void) => void;
+  off: (event: "scroll", callback: (data: { scroll: number }) => void) => void;
+  scrollTo: (target: number | HTMLElement, options?: { offset?: number }) => void;
+}
 
 const Navigation = () => {
   const router = useRouter();
@@ -46,22 +39,14 @@ const Navigation = () => {
   const isHomePage = pathname === "/";
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 48);
-    };
-
-    handleScroll();
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  useEffect(() => {
     if (!isHomePage) {
       setActiveSection("");
+      setIsScrolled(true);
       return;
     }
 
-    const updateActiveSection = () => {
+    const updateNavigation = (scroll: number) => {
+      setIsScrolled(scroll > 48);
       const offset = 120;
       let current = homeSectionIds[0];
 
@@ -78,13 +63,25 @@ const Navigation = () => {
       setActiveSection(current);
     };
 
-    updateActiveSection();
-    window.addEventListener("scroll", updateActiveSection, { passive: true });
-    window.addEventListener("resize", updateActiveSection);
+    let lenis: LenisInstance | undefined;
+    let frame = 0;
+
+    const handleLenisScroll = ({ scroll }: { scroll: number }) => {
+      updateNavigation(scroll);
+    };
+    const handleResize = () => updateNavigation(lenis?.scroll ?? window.scrollY);
+
+    frame = window.requestAnimationFrame(() => {
+      lenis = (window as Window & { lenis?: LenisInstance }).lenis;
+      updateNavigation(lenis?.scroll ?? window.scrollY);
+      lenis?.on("scroll", handleLenisScroll);
+    });
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener("scroll", updateActiveSection);
-      window.removeEventListener("resize", updateActiveSection);
+      window.cancelAnimationFrame(frame);
+      lenis?.off("scroll", handleLenisScroll);
+      window.removeEventListener("resize", handleResize);
     };
   }, [isHomePage]);
 
@@ -131,12 +128,14 @@ const Navigation = () => {
       const element = document.getElementById(targetId);
       if (element) {
         setActiveSection(targetId);
-        const offsetTop =
-          element.getBoundingClientRect().top + window.scrollY - 82;
-        window.scrollTo({
-          top: Math.max(0, offsetTop),
-          behavior: "smooth",
-        });
+        const lenis = (window as Window & { lenis?: LenisInstance }).lenis;
+        if (lenis) {
+          lenis.scrollTo(element, { offset: -82 });
+        } else {
+          const offsetTop =
+            element.getBoundingClientRect().top + window.scrollY - 82;
+          window.scrollTo({ top: Math.max(0, offsetTop), behavior: "smooth" });
+        }
       }
     } else {
       router.push(`/${href}`);
@@ -149,7 +148,12 @@ const Navigation = () => {
     e.preventDefault();
 
     if (isHomePage) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      const lenis = (window as Window & { lenis?: LenisInstance }).lenis;
+      if (lenis) {
+        lenis.scrollTo(0);
+      } else {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
       closeMenu();
       return;
     }
@@ -182,15 +186,11 @@ const Navigation = () => {
           onClick={scrollToTop}
           aria-label="KUMMA - Scroll to top"
         >
-          <span className={`${styles.logoWordmark} ${cormorant.className}`}>
-            KUMMA
-          </span>
-          <span className={`${styles.logoMeta} ${spaceGrotesk.className}`}>
-            Portfolio / 2026
-          </span>
+          <span className={styles.logoWordmark}>KUMMA</span>
+          <span className={styles.logoMeta}>AI Systems / Product</span>
         </a>
 
-        <div className={`${styles.navLinks} ${spaceGrotesk.className}`}>
+        <div className={styles.navLinks}>
           {navLinks.map((link) => {
             const isActive = link.href.startsWith("/")
               ? isRouteLinkActive(link.href)
@@ -242,10 +242,7 @@ const Navigation = () => {
         }`}
         onClick={closeMenu}
       >
-        <div
-          className={`${styles.mobileLinksContainer} ${spaceGrotesk.className}`}
-          onClick={(e) => e.stopPropagation()}
-        >
+        <div className={styles.mobileLinksContainer} onClick={(e) => e.stopPropagation()}>
           <p className={styles.mobileKicker}>Navigation</p>
           {navLinks.map((link) => {
             const isActive = link.href.startsWith("/")

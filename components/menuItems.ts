@@ -7,8 +7,8 @@ export interface MenuItemData {
 
 export const menuItems: MenuItemData[] = [
   {
-    title: "Berlin Reset",
-    subtitle: "Style Study / Sequence 66",
+    title: "Natural Systems",
+    subtitle: "Pattern / Scale / Quiet Structure",
     imageUrl: "/images/collection1.jpg",
     galleryImages: [
       "/images/collection1/img1.jpg",
@@ -17,9 +17,9 @@ export const menuItems: MenuItemData[] = [
     ],
   },
   {
-    title: "Urban Echoes",
-    subtitle: "Street Motion / Night Fragments",
-    imageUrl: "/images/collection2.jpg",
+    title: "Light & Structure",
+    subtitle: "Motion / Framing / Atmosphere",
+    imageUrl: "/images/collection2/img3.jpg",
     galleryImages: [
       "/images/collection2/img1.jpg",
       "/images/collection2/img2.jpg",

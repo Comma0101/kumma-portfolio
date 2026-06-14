@@ -12,7 +12,7 @@ interface MenuItemProps {
 
 const MenuItem: FC<MenuItemProps> = ({ item, index }) => {
   const router = useRouter();
-  const chapter = String(index + 1).padStart(2, "0");
+  const study = String(index + 1).padStart(2, "0");
 
   const handleClick = () => {
     router.push(`/gallery/${index}`);
@@ -27,17 +27,17 @@ const MenuItem: FC<MenuItemProps> = ({ item, index }) => {
         aria-label={`Open ${item.title}`}
       >
         <span className={styles.chapterIndex} aria-hidden="true">
-          {chapter}
+          {study}
         </span>
 
         <span className={styles.menuCopy}>
           <span className={styles.metaRow}>
-            <span className={styles.chapter}>Chapter {chapter}</span>
+            <span className={styles.chapter}>Study {study}</span>
             <span className={styles.count}>{item.galleryImages.length} Frames</span>
           </span>
           <span className={styles.menuItemText}>{item.title}</span>
           <span className={styles.menuItemSub}>{item.subtitle}</span>
-          <span className={styles.cta}>Enter Chapter</span>
+          <span className={styles.cta}>View Study</span>
         </span>
 
         <span className={styles.visualPane} aria-hidden="true">

@@ -1,153 +1,111 @@
 "use client";
+
 import { useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import { Cormorant_Garamond, Space_Grotesk } from "next/font/google";
+import gsap from "gsap";
 import styles from "./HeroSection.module.css";
 
-gsap.registerPlugin(ScrollTrigger);
+export default function HeroSection() {
+  const sectionRef = useRef<HTMLElement>(null);
 
-const cormorant = Cormorant_Garamond({
-    subsets: ["latin"],
-    weight: ["500", "600", "700"],
-    style: ["normal", "italic"],
-});
+  useGSAP(
+    () => {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-const spaceGrotesk = Space_Grotesk({
-    subsets: ["latin"],
-    weight: ["400", "500", "700"],
-});
-
-const heroLines = [
-    {
-        index: "01",
-        text: "Digital Philosopher",
-        tone: "editorial",
+      gsap
+        .timeline({ defaults: { ease: "power3.out" } })
+        .from("[data-hero-copy]", {
+          y: 28,
+          opacity: 0,
+          duration: 0.8,
+          stagger: 0.09,
+        })
+        .from(
+          "[data-hero-preview]",
+          { y: 24, opacity: 0, scale: 0.98, duration: 0.9 },
+          0.18,
+        )
+        .from(
+          "[data-pipeline-stage]",
+          { x: -12, opacity: 0, duration: 0.45, stagger: 0.08 },
+          0.55,
+        );
     },
-    {
-        index: "02",
-        text: "Creative Engineer",
-        tone: "display",
-    },
-    {
-        index: "03",
-        text: "Human Architect",
-        tone: "editorial",
-    },
-];
+    { scope: sectionRef },
+  );
 
-const HeroSection = () => {
-    const containerRef = useRef<HTMLDivElement>(null);
-    const contentRef = useRef<HTMLDivElement>(null);
-    const kickerRef = useRef<HTMLParagraphElement>(null);
-    const headlineRef = useRef<HTMLHeadingElement>(null);
-    const subheadlineRef = useRef<HTMLParagraphElement>(null);
-
-    useGSAP(
-        () => {
-            const tl = gsap.timeline({
-                defaults: { ease: "power3.out" },
-                onComplete: () => {
-                    if (containerRef.current) {
-                        containerRef.current.classList.add(styles.interactionsReady);
-                    }
-                }
-            });
-
-            tl.from(kickerRef.current, {
-                y: 20,
-                opacity: 0,
-                duration: 0.85,
-            });
-
-            tl.from(
-                headlineRef.current?.querySelectorAll(`.${styles.headlineRow}`) || [],
-                {
-                    y: 92,
-                    opacity: 0,
-                    filter: "blur(7px)",
-                    duration: 1.18,
-                    stagger: 0.17,
-                    clearProps: "all",
-                },
-                "-=0.12"
-            );
-
-            tl.from(
-                headlineRef.current?.querySelectorAll(`.${styles.lineIndex}`) || [],
-                {
-                    x: -18,
-                    opacity: 0,
-                    duration: 0.7,
-                    stagger: 0.15,
-                    clearProps: "all",
-                },
-                "-=1.0"
-            );
-
-            tl.from(
-                subheadlineRef.current,
-                {
-                    y: 26,
-                    opacity: 0,
-                    duration: 1,
-                },
-                "-=0.86"
-            );
-
-            if (contentRef.current && containerRef.current) {
-                gsap.to(contentRef.current, {
-                    opacity: 0.2,
-                    yPercent: -10,
-                    scrollTrigger: {
-                        trigger: containerRef.current,
-                        start: "62% center",
-                        end: "bottom top",
-                        scrub: 0.85,
-                    },
-                });
-            }
-        },
-        { scope: containerRef }
-    );
-
-    const subheadlineText =
-        "I shape interfaces where narrative, type, and interaction speak as one system.";
-
-    return (
-        <div id="home" ref={containerRef} className={styles.heroSection}>
-            <div ref={contentRef} className={styles.content}>
-                <p ref={kickerRef} className={`${styles.kicker} ${spaceGrotesk.className}`}>
-                    KUMMA / Portfolio / 2026
-                </p>
-                <h1 ref={headlineRef} className={styles.headline}>
-                    {heroLines.map((line) => (
-                        <span key={line.index} className={styles.headlineRow}>
-                            <span
-                                className={`${styles.lineIndex} ${spaceGrotesk.className}`}
-                                aria-hidden="true"
-                            >
-                                {line.index}
-                            </span>
-                            <span
-                                className={`${styles.lineText} ${line.tone === "editorial"
-                                        ? `${styles.editorialTone} ${cormorant.className}`
-                                        : styles.displayTone
-                                    }`}
-                            >
-                                {line.text}
-                            </span>
-                        </span>
-                    ))}
-                </h1>
-                <p ref={subheadlineRef} className={`${styles.subheadline} ${spaceGrotesk.className}`}>
-                    {subheadlineText}
-                </p>
-            </div>
-            <div className={styles.scrollIndicator}>Scroll ↓ to Begin</div>
+  return (
+    <section ref={sectionRef} id="home" className={styles.hero}>
+      <div className={styles.heroShell}>
+        <div className={styles.heroCopy}>
+          <p data-hero-copy className={styles.eyebrow}>
+            KUMMA / AI Systems
+          </p>
+          <h1 data-hero-copy className={styles.heroTitle}>
+            AI systems,
+            <span>made operational.</span>
+          </h1>
+          <p data-hero-copy className={styles.heroDescription}>
+            Real-time agents, product interfaces, and reliable infrastructure
+            for complex operational work.
+          </p>
+          <div data-hero-copy className={styles.heroActions}>
+            <a href="#projects" className={styles.primaryAction}>
+              View Work
+            </a>
+            <a href="#contact" className={styles.secondaryAction}>
+              Contact
+            </a>
+          </div>
         </div>
-    );
-};
 
-export default HeroSection;
+        <div
+          data-hero-preview
+          className={styles.systemPreview}
+          aria-label="KOTA voice ordering workflow preview"
+        >
+          <div className={styles.previewHeader}>
+            <div>
+              <span className={styles.previewKicker}>KOTA</span>
+              <p>Voice workflow</p>
+            </div>
+            <span className={styles.liveStatus}>Live system</span>
+          </div>
+
+          <div className={styles.transcript}>
+            <span>Customer transcript</span>
+            <p>&ldquo;Two orange chicken, one chow mein.&rdquo;</p>
+          </div>
+
+          <div className={styles.pipeline}>
+            {["Speech", "Intent", "Order"].map((stage, index) => (
+              <div data-pipeline-stage className={styles.pipelineStage} key={stage}>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <strong>{stage}</strong>
+              </div>
+            ))}
+          </div>
+
+          <div className={styles.orderData}>
+            <div>
+              <span>Item</span>
+              <strong>Orange chicken</strong>
+              <b>x2</b>
+            </div>
+            <div>
+              <span>Side</span>
+              <strong>Chow mein</strong>
+              <b>x1</b>
+            </div>
+          </div>
+
+          <div className={styles.previewFooter}>
+            <span>Customer call</span>
+            <div aria-hidden="true" />
+            <span>Kitchen action</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

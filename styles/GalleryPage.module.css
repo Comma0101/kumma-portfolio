@@ -3,25 +3,9 @@
   width: 100%;
   min-height: 100vh;
   background:
-    radial-gradient(circle at 14% 10%, rgba(255, 128, 128, 0.06), transparent 38%),
-    radial-gradient(circle at 86% 82%, rgba(152, 183, 255, 0.06), transparent 44%),
-    #080808;
+    radial-gradient(circle at 14% 10%, rgba(201, 184, 160, 0.06), transparent 38%),
+    var(--canvas);
   overflow-x: hidden;
-}
-
-.galleryPage::before {
-  content: "Collection";
-  position: fixed;
-  top: 6%;
-  right: 4%;
-  font-size: clamp(2.8rem, 9vw, 10rem);
-  line-height: 0.8;
-  letter-spacing: -0.03em;
-  color: rgba(255, 255, 255, 0.022);
-  text-transform: uppercase;
-  font-family: "Bebas Neue", "Oswald", sans-serif;
-  pointer-events: none;
-  z-index: 2;
 }
 
 .galleryPage::after {
@@ -78,7 +62,7 @@
 }
 
 .backLink:hover {
-  color: rgba(255, 171, 171, 0.95);
+  color: rgba(201, 184, 160, 0.95);
 }
 
 .chapterLabel {
@@ -96,7 +80,7 @@
 
 .galleryEyebrow {
   margin: 0;
-  color: rgba(255, 146, 146, 0.83);
+  color: rgba(201, 184, 160, 0.83);
   font-size: 0.7rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -185,6 +169,34 @@
   height: 100%;
 }
 
+.staticGallery {
+  position: relative;
+  z-index: 5;
+  width: min(100% - (var(--page-gutter) * 2), 1100px);
+  display: grid;
+  gap: clamp(1rem, 3vw, 2rem);
+  margin: 0 auto;
+  padding: clamp(24rem, 42vw, 34rem) 0 6rem;
+}
+
+.staticGallery figure {
+  position: relative;
+  width: min(82%, 840px);
+  min-height: min(72vw, 820px);
+  margin: 0;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.staticGallery figure:nth-child(even) {
+  margin-left: auto;
+}
+
+.staticGallery img {
+  object-fit: cover;
+}
+
 .scrollSpacer {
   position: relative;
   z-index: 0;
@@ -206,7 +218,7 @@
 .loadingSpinner {
   border: 3px solid rgba(255, 255, 255, 0.2);
   border-radius: 50%;
-  border-top: 3px solid rgba(255, 168, 168, 0.95);
+  border-top: 3px solid rgba(201, 184, 160, 0.95);
   width: 34px;
   height: 34px;
   animation: spin 0.95s linear infinite;
@@ -314,5 +326,22 @@
 
   .scrollSpacer {
     height: 290vh;
+  }
+
+  .staticGallery {
+    width: calc(100% - 2.5rem);
+    padding-top: 23rem;
+  }
+
+  .staticGallery figure {
+    width: 100%;
+    min-height: 120vw;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .galleryPage::after,
+  .loadingSpinner {
+    animation: none;
   }
 }

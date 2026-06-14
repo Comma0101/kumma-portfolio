@@ -35,162 +35,152 @@ export interface Project {
 export const projects: Project[] = [
   {
     id: 1,
-    title: "Serviio",
-    slug: "serviio",
-    description: "A voice ordering system that turns live calls into structured restaurant orders.",
+    title: "KOTA",
+    slug: "kota",
+    description: "A voice-first AI system that captures real-time calls, resolves intent into structured actions, and integrates directly into kitchen workflows.",
     subtitle: "Conversation as infrastructure.",
     tagline:
-      "Where speech becomes structure, and every call moves from noise to clarity.",
+      "Restaurants don't need more apps. They need fewer missed orders.",
     details:
-      "Serviio is a real-time voice interface for restaurants: it listens, reasons, and commits orders to the POS without forcing teams to stay glued to the phone.",
+      "KOTA replaces manual phone handling with a real-time voice agent that listens, structures, and executes orders directly into kitchen workflows without requiring a POS dependency.",
     overview: {
       headline: "System Overview",
       content:
-        "Serviio unifies telephony streaming, speech-to-text, intent extraction, and POS sync into one production flow designed for peak-hour reliability."
+        "KOTA unifies telephony streaming, real-time speech recognition, LLM-driven intent resolution, and menu grounding into one production flow designed for peak-hour reliability."
     },
     narrative: {
       context:
-        "Independent restaurants were losing orders whenever phone lines spiked and staff had to choose between in-person service and incoming calls.",
+        "Independent restaurants lose orders when phone volume exceeds staff capacity. Existing solutions force POS lock-in or require workflow rewrites.",
       decision:
-        "We designed a voice-first pipeline that captures raw speech, resolves intent in structured JSON, and validates menu logic before writing to the POS.",
+        "We designed a voice-first pipeline that captures raw speech, resolves intent through menu-grounded LLM orchestration, and executes structured orders directly into kitchen workflows.",
       outcome:
-        "Call handling became consistent: the system can guide customers, confirm modifiers, and hand off complete tickets in seconds rather than minutes.",
+        "Call handling became autonomous: the system guides customers, confirms modifiers, and commits complete order tickets in seconds with no staff intervention required.",
       impact:
-        "The team spends less effort on repetitive calls and more attention on hospitality where it matters most."
+        "Restaurants reclaim service bandwidth without adopting new hardware or changing how their kitchen operates."
     },
     techStack: [
       {
-        name: "Realtime Voice Engine",
-        description: "Twilio streaming + Deepgram Nova-2 STT",
+        name: "Voice Agent Infrastructure",
+        description: "Real-time telephony streaming with speech capture",
         icon: "microphone"
       },
       {
-        name: "LLM Integration",
-        description: "Structured JSON intent extraction via GPT-4 Realtime",
+        name: "Real-time Speech",
+        description: "Deepgram Nova-2 for low-latency transcription",
         icon: "brain"
       },
       {
-        name: "Multilingual Support",
-        description: "English ↔ Mandarin auto detection",
-        icon: "globe"
+        name: "LLM Orchestration",
+        description: "Structured intent extraction with menu grounding",
+        icon: "brain"
       },
       {
-        name: "Order Sync",
-        description: "Square API for live POS orders",
+        name: "Menu Grounding System",
+        description: "Dynamic menu intelligence for accurate order resolution",
         icon: "receipt"
       },
       {
-        name: "Deployment",
-        description: "GKE + Cloud SQL + S3 logging pipeline",
+        name: "Order Execution Layer",
+        description: "Direct kitchen workflow integration without POS dependency",
         icon: "cloud"
       }
     ],
     philosophical:
-      "Serviio began with one belief: if software can listen well, it can serve with more care.",
-    websiteUrl: "https://www.serviio.ai/",
+      "If software can listen in real time, it can operate in real time.",
     featured: true
   },
   {
     id: 2,
-    title: "Pulseboard",
-    slug: "project-two",
-    subtitle: "Metrics that read like a story.",
+    title: "ARCHON",
+    slug: "archon",
+    description: "A modular agent system designed to coordinate reasoning, memory, and execution across tasks.",
+    subtitle: "System intelligence layer.",
     tagline:
-      "A decision surface for creative teams that need signal, not noise.",
-    description:
-      "A narrative analytics workspace that reframes dashboards as sequences of decisions.",
+      "Most AI products fail not because of models, but because of orchestration.",
     details:
-      "Pulseboard helps product and creative teams move from fragmented charts to clear weekly narratives about what changed, why it changed, and what to ship next.",
+      "Archon is a modular agent system designed to coordinate reasoning, memory, and execution across tasks, enabling reliable production AI behavior.",
     overview: {
-      headline: "Product Intent",
+      headline: "Architecture Intent",
       content:
-        "Instead of presenting every metric equally, Pulseboard prioritizes trend context and recommended actions through a concise editorial layer."
+        "Archon provides the coordination layer that sits between raw LLM capability and production reliability: structured tool routing, persistent memory, and feedback-driven execution."
     },
     narrative: {
       context:
-        "Teams were drowning in analytics panels yet still debating the same questions every week because no shared narrative existed.",
+        "AI products built on single-prompt chains break under real-world complexity. Reliability requires orchestration, not just better models.",
       decision:
-        "We introduced chapter-based reporting: every data view is tied to an interpretation prompt and a required decision owner.",
+        "We designed a multi-agent framework with explicit tool routing, execution graphs, and memory persistence, treating coordination as the core product.",
       outcome:
-        "Review meetings shifted from status recaps to directional calls, with less time spent hunting for relevance across disconnected charts.",
+        "Agent workflows became composable and debuggable: each task flows through a defined execution graph with clear reasoning traces and feedback loops.",
       impact:
-        "The product cadence improved because teams could align faster on what to continue, revise, or sunset."
+        "Production AI systems built on Archon ship faster and fail less because the orchestration layer absorbs complexity that would otherwise leak into application code."
     },
     techStack: [
       {
-        name: "Narrative Layer",
-        description: "Prompted synthesis for weekly insight summaries",
+        name: "Multi-Agent System",
+        description: "Composable agent coordination with role-based dispatch",
         icon: "brain"
       },
       {
-        name: "Cross-Team Views",
-        description: "Shared project rooms with role-scoped perspectives",
-        icon: "globe"
+        name: "Memory Layer",
+        description: "Persistent context and state across agent interactions",
+        icon: "brain"
       },
       {
-        name: "Decision Ledger",
-        description: "Structured decision logs with owner and due date",
+        name: "Tool Routing",
+        description: "Structured tool selection and execution management",
         icon: "receipt"
       },
       {
-        name: "Data Infrastructure",
-        description: "Streaming events into cloud-first reporting tables",
+        name: "Execution Graph",
+        description: "Directed task flows with reasoning traces",
         icon: "cloud"
+      },
+      {
+        name: "Feedback Loop",
+        description: "Self-correction and output validation pipeline",
+        icon: "microphone"
       }
     ],
     philosophical:
-      "Good analytics should reduce anxiety, not increase it. Pulseboard turns numbers into shared direction.",
+      "Intelligence is not the model. It is the system around it.",
     featured: true
   },
   {
     id: 3,
-    title: "Quiet Atlas",
-    slug: "project-three",
-    subtitle: "An archive designed for contemplation.",
-    tagline:
-      "A reading experience where essays, visuals, and navigation move at human pace.",
-    description:
-      "An experimental publishing platform for long-form essays and visual fragments.",
-    details:
-      "Quiet Atlas is a reflective reading environment where content is organized as thematic paths instead of blog feeds, allowing slower and deeper exploration.",
+    title: "Robinhood Performance Dashboard",
+    slug: "robinhood-performance",
+    subtitle: "Execution Log / Performance System",
+    tagline: "Turning messy behavioral outcomes into structured feedback loops.",
+    description: "A decision-quality system designed to measure execution quality under uncertainty.",
+    details: "This system aggregates trading logs, behavioral data, and execution outcomes to create a disciplined performance feedback infrastructure. It frames chaotic financial data as a structured behavioral dashboard.",
     overview: {
-      headline: "Experience Design",
-      content:
-        "The interface uses restrained motion, strong typography, and guided pathways so readers can stay immersed across text, image, and ambient interaction."
+      headline: "System Intent",
+      content: "Instead of simply displaying PnL, this dashboard quantifies decision quality, risk exposure, and behavioral patterns to enforce disciplined systems thinking in a stochastic environment."
     },
     narrative: {
-      context:
-        "Traditional content feeds optimize for volume and recency, which made nuanced essays feel disposable after publication.",
-      decision:
-        "We structured the platform as an atlas of themes, with intentional pacing cues and progressive disclosure rather than infinite scroll.",
-      outcome:
-        "Readers spend longer with each piece, navigate by curiosity instead of chronology, and revisit essays as connected chapters.",
-      impact:
-        "The archive functions as a living body of thought instead of a timeline of forgotten posts."
+      context: "Financial outcomes are noisy. Without a structured way to separate good decisions from lucky outcomes, performance plateaus.",
+      decision: "I built a tracking infrastructure that transforms raw execution logs into visual behavioral insights, categorizing trades by setup, conviction, and error rate.",
+      outcome: "It shifted the focus from absolute returns to execution discipline, creating a tight feedback loop that penalizes process deviations and rewards systematic thinking.",
+      impact: "Proves that robust interfaces can bring clarity to high-stress, probabilistic environments."
     },
     techStack: [
       {
-        name: "Editorial Engine",
-        description: "Theme-based content graph for non-linear reading paths",
+        name: "Data Aggregation",
+        description: "Automated ingestion of execution logs and portfolio metrics",
+        icon: "cloud"
+      },
+      {
+        name: "Behavioral Analytics",
+        description: "Categorization engine for conviction and error tracking",
         icon: "brain"
       },
       {
-        name: "Multilingual Publishing",
-        description: "Parallel language routes with synchronized slugs",
+        name: "Performance Interface",
+        description: "Visualization layer prioritizing decision quality over noise",
         icon: "globe"
-      },
-      {
-        name: "Reading Telemetry",
-        description: "Session depth, revisit rate, and chapter completion signals",
-        icon: "receipt"
-      },
-      {
-        name: "Delivery Stack",
-        description: "Static-first deploy strategy with edge-friendly assets",
-        icon: "cloud"
       }
     ],
-    philosophical:
-      "Quiet Atlas treats reading as an encounter, not a transaction."
-  },
+    philosophical: "A system is only as good as the feedback loop it generates.",
+    featured: true
+  }
 ];

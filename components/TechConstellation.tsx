@@ -167,7 +167,7 @@ const TechConstellation = () => {
         <div className={styles.constellationContainer} ref={containerRef}>
             <div className={`${styles.constellationFrame} ${hasEntered ? styles.frameActive : ""}`}>
                 <div className={styles.graphHeader}>
-                    <p className={styles.graphCaption}>Capability Map / Chapter 04</p>
+                    <p className={styles.graphCaption}>Capability Map</p>
                     <p className={styles.graphHint}>
                         {activeNode
                             ? `${activeNode.label} connects to ${activeConnectionCount} adjacent capabilities.`

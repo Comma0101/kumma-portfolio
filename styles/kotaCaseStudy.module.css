@@ -1,0 +1,588 @@
+/* ── KOTA Case Study ── */
+
+.page {
+  min-height: 100vh;
+  color: #f2eeee;
+  padding: clamp(7rem, 10vw, 10rem) 5% clamp(4rem, 6vw, 6rem);
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* ── Hero ── */
+
+.hero {
+  margin-bottom: clamp(4rem, 7vw, 6rem);
+  padding-bottom: clamp(3rem, 5vw, 4.5rem);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.eyebrow {
+  margin: 0 0 1.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: rgba(201, 184, 160, 0.82);
+}
+
+.title {
+  margin: 0 0 0.4rem;
+  font-size: clamp(3.4rem, 8vw, 7rem);
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  color: #f2eeee;
+  font-weight: 600;
+}
+
+.subtitle {
+  margin: 0 0 1.8rem;
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  line-height: 1.2;
+  color: rgba(220, 220, 220, 0.55);
+  font-style: italic;
+  font-weight: 500;
+}
+
+.heroDesc {
+  margin: 0 0 0.8rem;
+  font-size: clamp(0.98rem, 1.35vw, 1.18rem);
+  line-height: 1.8;
+  color: rgba(220, 220, 220, 0.7);
+  max-width: 60ch;
+}
+
+.heroContext {
+  margin: 0 0 1.8rem;
+  font-size: clamp(0.88rem, 1.1vw, 0.96rem);
+  line-height: 1.7;
+  color: rgba(220, 220, 220, 0.45);
+  max-width: 60ch;
+}
+
+.stackLine {
+  margin: 0 0 1.6rem;
+  font-size: 0.74rem;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.35);
+  text-transform: uppercase;
+}
+
+.actions {
+  display: flex;
+  gap: 2rem;
+}
+
+.actionLink {
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: rgba(201, 184, 160, 0.82);
+  transition: color 0.3s ease;
+}
+
+.actionLink:hover {
+  color: #fff;
+}
+
+/* ── Shared Section ── */
+
+.section {
+  margin-bottom: clamp(4rem, 7vw, 6rem);
+}
+
+.sectionLabel {
+  margin: 0 0 1.6rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(201, 184, 160, 0.7);
+}
+
+.sectionLabelSub {
+  margin-top: 2.4rem;
+}
+
+/* ── Reality Block ── */
+
+.realityBlock {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(8, 8, 8, 0.6);
+}
+
+.realityInput,
+.realityOutput {
+  padding: clamp(1.4rem, 2.5vw, 2.2rem);
+}
+
+.realityInput {
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.realityArrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 1.4rem;
+  gap: 0.5rem;
+}
+
+.arrowLine {
+  width: 1px;
+  height: 40px;
+  background: rgba(201, 184, 160, 0.3);
+}
+
+.arrowLabel {
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(201, 184, 160, 0.5);
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+
+.realityTag {
+  margin: 0 0 0.8rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.realityQuote {
+  margin: 0 0 1.2rem;
+  font-size: clamp(1.1rem, 1.6vw, 1.4rem);
+  line-height: 1.6;
+  color: rgba(220, 220, 220, 0.75);
+  font-style: italic;
+}
+
+.realitySignals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.signal {
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  padding: 0.25rem 0.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(220, 220, 220, 0.5);
+}
+
+/* Output block */
+.outputBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.outputRow {
+  display: grid;
+  grid-template-columns: 7rem 1fr;
+  gap: 0.6rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.outputRow:last-child {
+  border-bottom: none;
+}
+
+.outputKey {
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.outputVal {
+  color: rgba(220, 220, 220, 0.8);
+}
+
+.outputNote {
+  color: rgba(201, 184, 160, 0.6);
+  font-size: 0.74rem;
+}
+
+.outputConfidence {
+  color: rgba(201, 184, 160, 0.9);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.74rem;
+}
+
+/* ── Problem ── */
+
+.problemGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.problemItem {
+  padding: clamp(1.2rem, 2vw, 1.8rem);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.problemItem:last-child {
+  border-bottom: none;
+}
+
+.problemLine {
+  margin: 0;
+  font-size: clamp(0.92rem, 1.15vw, 1.02rem);
+  line-height: 1.5;
+  color: rgba(220, 220, 220, 0.85);
+  font-weight: 500;
+}
+
+.problemResult {
+  margin: 0;
+  font-size: clamp(0.82rem, 1vw, 0.9rem);
+  line-height: 1.65;
+  color: rgba(220, 220, 220, 0.42);
+}
+
+/* ── System Flow / Pipeline ── */
+
+.pipeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.pipelineStep {
+  display: grid;
+  grid-template-columns: 10rem 1fr;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.pipelineStep:last-child {
+  border-bottom: none;
+}
+
+.pipelineHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 0.8rem;
+  padding: clamp(1rem, 1.8vw, 1.5rem);
+  border-right: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.pipelineIndex {
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.pipelineLabel {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #e8e4e4;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.pipelineBody {
+  padding: clamp(1rem, 1.8vw, 1.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.pipelineRow {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr;
+  gap: 0.6rem;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: rgba(220, 220, 220, 0.62);
+}
+
+.pipelineKey {
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.28);
+  padding-top: 0.1em;
+}
+
+/* ── Failure Handling ── */
+
+.failureGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.failureItem {
+  background: rgba(8, 8, 8, 0.7);
+  padding: clamp(1.2rem, 2vw, 1.6rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.failureType {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #e8e4e4;
+}
+
+.failureExample {
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: rgba(220, 220, 220, 0.45);
+  font-style: italic;
+}
+
+.handlingGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.handlingItem {
+  background: rgba(8, 8, 8, 0.7);
+  padding: clamp(1.2rem, 2vw, 1.6rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.handlingMech {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: rgba(201, 184, 160, 0.8);
+}
+
+.handlingDesc {
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: rgba(220, 220, 220, 0.55);
+}
+
+/* ── Interface Principles ── */
+
+.principlesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.principleItem {
+  background: rgba(8, 8, 8, 0.7);
+  padding: clamp(1.4rem, 2.5vw, 2rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.principleTitle {
+  margin: 0;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #e8e4e4;
+  letter-spacing: 0.01em;
+}
+
+.principleDesc {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.7;
+  color: rgba(220, 220, 220, 0.55);
+}
+
+/* ── System Impact ── */
+
+.impactGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.impactItem {
+  background: rgba(8, 8, 8, 0.7);
+  padding: clamp(1.4rem, 2.5vw, 2rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.impactMetric {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #e8e4e4;
+}
+
+.impactDirection {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(201, 184, 160, 0.8);
+}
+
+.impactDetail {
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: rgba(220, 220, 220, 0.48);
+  margin-top: 0.2rem;
+}
+
+/* ── Stack ── */
+
+.stackGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.stackGroup {
+  background: rgba(8, 8, 8, 0.7);
+  padding: clamp(1.2rem, 2vw, 1.6rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.stackGroupLabel {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(201, 184, 160, 0.65);
+}
+
+.stackGroupItems {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.65;
+  color: rgba(220, 220, 220, 0.55);
+}
+
+/* ── Philosophical ── */
+
+.philosophical {
+  padding: clamp(3rem, 5vw, 5rem) 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  max-width: 680px;
+}
+
+.quote {
+  margin: 0 0 1.2rem;
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  line-height: 1.5;
+  color: rgba(220, 220, 220, 0.8);
+  font-style: italic;
+  font-weight: 500;
+}
+
+.quoteAttrib {
+  margin: 0;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(201, 184, 160, 0.6);
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 860px) {
+  .realityBlock {
+    grid-template-columns: 1fr;
+  }
+
+  .realityInput {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .realityArrow {
+    writing-mode: horizontal-tb;
+    flex-direction: row;
+    padding: 0.8rem 1.4rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  }
+
+  .arrowLine {
+    width: 40px;
+    height: 1px;
+  }
+
+  .arrowLabel {
+    writing-mode: horizontal-tb;
+  }
+
+  .pipelineStep {
+    grid-template-columns: 1fr;
+  }
+
+  .pipelineHeader {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    padding-bottom: 0.6rem;
+  }
+
+  .failureGrid,
+  .handlingGrid,
+  .impactGrid,
+  .stackGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .principlesGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .page {
+    padding: 6rem 6% 3rem;
+  }
+
+  .title {
+    font-size: clamp(2.4rem, 10vw, 3.6rem);
+  }
+
+  .subtitle {
+    font-size: clamp(1.2rem, 4vw, 1.6rem);
+  }
+
+  .outputRow {
+    grid-template-columns: 5.5rem 1fr;
+  }
+
+  .pipelineRow {
+    grid-template-columns: 4rem 1fr;
+  }
+}

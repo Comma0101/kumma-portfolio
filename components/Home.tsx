@@ -1,34 +1,20 @@
-"use client";
-import { useEffect, useRef } from "react";
 import styles from "../styles/home.module.css";
 import HeroSection from "./home/HeroSection";
 import ProjectsSection from "./home/ProjectsSection";
 import SkillsSection from "./home/SkillsSection";
 import ContactSection from "./home/ContactSection";
+import HomeEditorialSections from "./home/HomeEditorialSections";
+import { getSortedPostsData } from "@/lib/posts";
 
 const Home = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const scrollY = useRef(0);
-
-  useEffect(() => {
-    // Get global Lenis instance
-    const lenis = (window as any).lenis;
-    if (lenis) {
-      const handleScroll = (e: { scroll: number }) => {
-        scrollY.current = e.scroll;
-      };
-      lenis.on("scroll", handleScroll);
-      return () => {
-        lenis.off("scroll", handleScroll);
-      };
-    }
-  }, []);
+  const latestPosts = getSortedPostsData("en").slice(0, 2);
 
   return (
-    <div ref={containerRef} className={styles.homeContainer}>
+    <div className={styles.homeContainer}>
       <HeroSection />
-      <SkillsSection />
       <ProjectsSection />
+      <SkillsSection />
+      <HomeEditorialSections posts={latestPosts} />
       <ContactSection />
     </div>
   );

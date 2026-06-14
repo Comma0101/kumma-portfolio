@@ -62,14 +62,13 @@ export default function GalleryLanding() {
               className={`${styles.galleryEyebrow} ${spaceGrotesk.className}`}
               data-reveal
             >
-              Gallery / Curated Chapters
+              Visual Studies
             </p>
             <h1 className={`${styles.galleryTitle} ${cormorant.className}`} data-reveal>
-              Visual Collections
+              Interface & Atmosphere
             </h1>
             <p className={`${styles.galleryIntro} ${spaceGrotesk.className}`} data-reveal>
-              A set of visual studies arranged as narrative sequences. Each
-              collection carries a mood, a place, and a rhythm.
+              Visual research that supports interface identity. Exploring atmosphere, spatial pacing, and rhythm as evidence of systems thinking.
             </p>
           </div>
 
@@ -78,14 +77,13 @@ export default function GalleryLanding() {
               Editorial Note
             </p>
             <p className={`${styles.noteText} ${spaceGrotesk.className}`}>
-              Think of every chapter as a moving contact sheet: one city, one
-              atmosphere, one evolving visual thought.
+              These studies inform the typographic, spatial, and motion choices used across production systems.
             </p>
           </aside>
         </header>
 
         <p className={`${styles.collectionsMeta} ${spaceGrotesk.className}`}>
-          {menuItems.length} chapters / {totalFrames} frames in total
+          {menuItems.length} studies / {totalFrames} frames in total
         </p>
 
         <div ref={menuRef} className={styles.menuContainer}>
