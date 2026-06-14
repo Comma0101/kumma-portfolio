@@ -43,3 +43,6 @@ next-env.d.ts
 
 # Brainstorming visual companion
 .superpowers/
+
+# Generated OG cards (rebuilt by prebuild)
+public/og/
