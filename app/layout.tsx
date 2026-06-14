@@ -11,6 +11,7 @@ import ConditionalFooter from "../components/ConditionalFooter";
 import { PageTransitionProvider } from "@/components/PageTransition";
 import ThreeScene from "../components/ThreeScene";
 import IntroOverlay from "../components/IntroOverlay";
+import Analytics from "../components/Analytics";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -47,7 +48,18 @@ export const metadata: Metadata = {
     url: "https://kumma.me",
     siteName: "Kumma",
     type: "website",
+    images: ["/og/home.png"],
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Kumma | Independent systems builder",
+    description:
+      "Intelligent systems for the real world: real-time AI, agent infrastructure, and operational products.",
+    images: ["/og/home.png"],
+  },
+  ...(process.env.NEXT_PUBLIC_GSC_TOKEN
+    ? { verification: { google: process.env.NEXT_PUBLIC_GSC_TOKEN } }
+    : {}),
 };
 
 export default function RootLayout({
@@ -70,6 +82,7 @@ export default function RootLayout({
           </SmoothScrollProvider>
           <ConditionalFooter />
         </PageTransitionProvider>
+        <Analytics />
       </body>
     </html>
   );
