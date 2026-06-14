@@ -1,4 +1,5 @@
 import React from "react";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Cormorant_Garamond, Space_Grotesk } from "next/font/google";
@@ -12,6 +13,7 @@ import {
 import styles from "@/styles/blogDetail.module.css";
 import { FaLinkedin, FaXTwitter } from "react-icons/fa6";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { JsonLd } from "@/components/seo/JsonLd";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -36,12 +38,34 @@ export async function generateMetadata({
   params,
 }: {
   params: { locale: string; slug: string };
-}) {
+}): Promise<Metadata> {
   try {
     const post = await getPostData(params.slug, params.locale as Locale);
+    const title = `${post.title} | Kumma`;
+    const og = `/og/blog-${params.slug}.png`;
     return {
-      title: `${post.title} | KUMMA Blog`,
+      title: post.title,
       description: post.excerpt || "",
+      alternates: {
+        languages: {
+          en: `/blog/en/${params.slug}`,
+          zh: `/blog/zh/${params.slug}`,
+          "x-default": `/blog/en/${params.slug}`,
+        },
+      },
+      openGraph: {
+        title,
+        description: post.excerpt || "",
+        type: "article",
+        url: `https://kumma.me/blog/${params.locale}/${params.slug}`,
+        images: [og],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title,
+        description: post.excerpt || "",
+        images: [og],
+      },
     };
   } catch {
     return {
@@ -68,6 +92,18 @@ export default async function BlogDetailPage({
 
     return (
       <div className={styles.blogDetailPage}>
+        <JsonLd
+          data={{
+            "@context": "https://schema.org",
+            "@type": "Article",
+            headline: post.title,
+            description: post.excerpt,
+            datePublished: post.publishedDate,
+            inLanguage: locale,
+            author: { "@type": "Person", name: "Kumma" },
+            url: `https://kumma.me/blog/${locale}/${params.slug}`,
+          }}
+        />
         <header className={styles.articleHeader}>
           <div className={styles.articleTopBar}>
             <Link
