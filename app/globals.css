@@ -3,7 +3,7 @@
 :root {
   color-scheme: dark;
 
-  /* Atlas (warmed) — canonical tokens */
+  /* Atlas (warmed) - canonical tokens */
   --canvas: #0a0a0b;
   --surface: #131316;
   --raised: #1a1a1e;
@@ -16,7 +16,7 @@
   --line: rgba(240, 237, 232, 0.12);
   --line-strong: rgba(240, 237, 232, 0.22);
 
-  /* Legacy aliases — used by gallery/blog/project pages until their phase */
+  /* Legacy aliases - used by gallery/blog/project pages until their phase */
   --surface-raised: var(--raised);
   --muted: var(--steel);
   --accent: var(--sand);
