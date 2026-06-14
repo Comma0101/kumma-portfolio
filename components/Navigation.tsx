@@ -11,15 +11,14 @@ interface NavLink {
 }
 
 const navLinks: NavLink[] = [
-  { name: "Home", href: "#home" },
-  { name: "Projects", href: "#projects" },
-  { name: "Skills", href: "#skills" },
-  { name: "Contact", href: "#contact" },
+  { name: "Work", href: "#work" },
+  { name: "ARCHON", href: "/systems/archon" },
+  { name: "Markets", href: "/markets" },
   { name: "Studies", href: "/gallery" },
-  { name: "Blog", href: "/blog" },
+  { name: "Contact", href: "#contact" },
 ];
 
-const homeSectionIds = ["home", "projects", "skills", "about", "contact"];
+const homeSectionIds = ["home", "work", "philosophy", "contact"];
 
 interface LenisInstance {
   scroll: number;
@@ -184,10 +183,10 @@ const Navigation = () => {
           href="#home"
           className={styles.logoWrapper}
           onClick={scrollToTop}
-          aria-label="KUMMA - Scroll to top"
+          aria-label="Kumma - Scroll to top"
         >
-          <span className={styles.logoWordmark}>KUMMA</span>
-          <span className={styles.logoMeta}>AI Systems / Product</span>
+          <span className={styles.logoWordmark}>Kumma</span>
+          <span className={styles.logoMeta}>Independent systems builder</span>
         </a>
 
         <div className={styles.navLinks}>
@@ -201,7 +200,9 @@ const Navigation = () => {
                 <TransitionLink
                   key={link.name}
                   href={link.href}
-                  className={`${styles.navLink} ${isActive ? styles.active : ""}`}
+                  className={`${styles.navLink} ${isActive ? styles.active : ""} ${
+                  link.name === "Contact" ? styles.contactLink : ""
+                }`}
                 >
                   {link.name}
                   <span className={styles.underline}></span>
@@ -213,7 +214,9 @@ const Navigation = () => {
               <a
                 key={link.name}
                 href={link.href}
-                className={`${styles.navLink} ${isActive ? styles.active : ""}`}
+                className={`${styles.navLink} ${isActive ? styles.active : ""} ${
+                  link.name === "Contact" ? styles.contactLink : ""
+                }`}
                 onClick={(e) => scrollToSection(e, link.href)}
                 aria-current={isActive ? "page" : undefined}
               >

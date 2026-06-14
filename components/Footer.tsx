@@ -8,9 +8,9 @@ interface FooterProps {
 }
 
 const quickLinks = [
-  { label: "Home", href: "/#home" },
-  { label: "Projects", href: "/#projects" },
-  { label: "Skills", href: "/#skills" },
+  { label: "Work", href: "/#work" },
+  { label: "ARCHON", href: "/systems/archon" },
+  { label: "Markets", href: "/markets" },
   { label: "Studies", href: "/gallery" },
   { label: "Blog", href: "/blog" },
 ];
@@ -33,7 +33,7 @@ export default function Footer({ variant = "default" }: FooterProps) {
       <div className={styles.footerShell}>
         <div className={styles.footerBrand}>
           <Link href="/" className={styles.wordmark}>
-            KUMMA
+            Kumma
           </Link>
           <p>AI systems made operational.</p>
         </div>

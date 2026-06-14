@@ -3,7 +3,7 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 78px;
+  height: 72px;
   padding: 0 var(--page-gutter);
   z-index: 1001;
   background: rgba(11, 11, 13, 0);
@@ -76,7 +76,7 @@
   position: relative;
   display: inline-flex;
   align-items: center;
-  height: 78px;
+  height: 72px;
   font-size: 0.67rem;
   font-weight: 600;
   letter-spacing: 0.16em;
@@ -97,7 +97,7 @@
   bottom: 1.35rem;
   width: 100%;
   height: 1px;
-  background: var(--accent);
+  background: var(--signal);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.24s ease;
@@ -109,7 +109,11 @@
 }
 
 .navLink.active {
-  color: var(--accent);
+  color: var(--signal);
+}
+
+.contactLink {
+  color: var(--signal);
 }
 
 .menuButton {
@@ -239,14 +243,14 @@
 
 .mobileLink:hover,
 .mobileLink.active {
-  color: rgba(201, 184, 160, 0.95);
+  color: var(--signal);
 }
 
 .logoWrapper:focus-visible,
 .navLink:focus-visible,
 .mobileLink:focus-visible,
 .menuButton:focus-visible {
-  outline: 2px solid rgba(201, 184, 160, 0.86);
+  outline: 2px solid var(--signal);
   outline-offset: 3px;
 }
 
