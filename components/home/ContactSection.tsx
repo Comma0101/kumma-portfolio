@@ -74,10 +74,10 @@ export default function ContactSection() {
     >
       <div className={styles.contactWrapper}>
         <div className={styles.contactIntro}>
-          <h2>Tell me what you are building.</h2>
+          <h2>Building something difficult? Let&apos;s examine the system.</h2>
           <p className={styles.contactDescription}>
-            Share the operating context, the hard constraint, and what a useful
-            outcome looks like.
+            For founders, technical leaders, and collaborators. Tell me the
+            problem and the constraint.
           </p>
 
           <a href="mailto:dev@kumma.me" className={styles.emailLink}>
@@ -91,21 +91,21 @@ export default function ContactSection() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              GitHub <span aria-hidden="true">-&gt;</span>
+              GitHub <span aria-hidden="true">→</span>
             </a>
             <a
               href="https://www.linkedin.com/in/yang-w-9233a3a8/"
               target="_blank"
               rel="noopener noreferrer"
             >
-              LinkedIn <span aria-hidden="true">-&gt;</span>
+              LinkedIn <span aria-hidden="true">→</span>
             </a>
             <a
               href="https://x.com/Comma_9fie"
               target="_blank"
               rel="noopener noreferrer"
             >
-              X <span aria-hidden="true">-&gt;</span>
+              X <span aria-hidden="true">→</span>
             </a>
           </div>
         </div>
@@ -162,7 +162,7 @@ export default function ContactSection() {
             </label>
 
             <button type="submit">
-              Open Email <span aria-hidden="true">-&gt;</span>
+              Open Email <span aria-hidden="true">→</span>
             </button>
 
             {emailOpened && (
