@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import SectionHeader from "@/components/system/SectionHeader";
 import SystemViz from "@/components/system/SystemViz";
@@ -82,8 +83,16 @@ export default function ChapterIndex() {
               </SystemViz>
             ) : (
               <div className={styles.strip} aria-hidden="true">
-                {[0, 1, 2, 3].map((i) => (
-                  <div key={i} className={styles.thumb} />
+                {(c.images ?? []).map((src, i) => (
+                  <div key={i} className={styles.thumb}>
+                    <Image
+                      src={src}
+                      alt=""
+                      fill
+                      sizes="(max-width: 860px) 45vw, 22vw"
+                      className={styles.thumbImg}
+                    />
+                  </div>
                 ))}
               </div>
             )}

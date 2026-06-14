@@ -50,6 +50,12 @@ export default function ProjectDetail({ project }: { project: Project }) {
         </section>
       )}
 
+      {project.details && (
+        <section className={styles.block} data-reveal>
+          <p className={styles.lead}>{project.details}</p>
+        </section>
+      )}
+
       {project.overview && (
         <section className={styles.block} data-reveal>
           <h2 className={styles.h2}>{project.overview.headline}</h2>

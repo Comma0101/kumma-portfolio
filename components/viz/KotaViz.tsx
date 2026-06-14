@@ -3,6 +3,9 @@ import { motion, useReducedMotion } from "framer-motion";
 import type { VizProps } from "./types";
 import styles from "./primitives.module.css";
 
+const D = 5;
+const BARS = [0, 1, 2, 3, 4, 5, 6, 7];
+
 export default function KotaViz({ size = "detail" }: VizProps) {
   const reduce = useReducedMotion();
 
@@ -10,109 +13,93 @@ export default function KotaViz({ size = "detail" }: VizProps) {
     <div className={`${styles.frame} ${size === "detail" ? styles.detail : ""}`}>
       <svg
         className={styles.svg}
-        viewBox="0 0 320 140"
+        viewBox="0 0 500 240"
         preserveAspectRatio="xMidYMid meet"
         role="img"
         aria-label="KOTA turns a restaurant phone call into a structured order"
       >
-        {/* incoming call */}
-        <circle cx="22" cy="70" r="6" className={styles.nodeActive}>
+        {/* baseline connector */}
+        <line x1="44" y1="120" x2="318" y2="120" stroke="var(--line)" strokeWidth="1" />
+        {!reduce && (
+          <motion.circle
+            r="3"
+            fill="var(--signal)"
+            cy="120"
+            initial={false}
+            animate={{ cx: [44, 318], opacity: [0, 1, 1, 0] }}
+            transition={{ repeat: Infinity, duration: D, times: [0, 0.08, 0.5, 0.56], ease: "easeInOut" }}
+          />
+        )}
+
+        {/* call */}
+        <circle cx="44" cy="120" r="9" className={styles.nodeActive}>
           {!reduce && (
-            <animate
-              attributeName="opacity"
-              values="1;0.4;1"
-              dur="2s"
-              repeatCount="indefinite"
-            />
+            <animate attributeName="r" values="9;11;9" dur="1.8s" repeatCount="indefinite" />
           )}
         </circle>
-        <text x="22" y="92" textAnchor="middle" className={styles.label}>
-          call
-        </text>
+        <text x="44" y="150" textAnchor="middle" className={styles.label}>call</text>
 
-        {/* waveform */}
-        <motion.path
-          className={styles.wave}
-          d="M44 70 q6 -16 12 0 t12 0 t12 0 t12 0"
-          initial={false}
-          animate={
-            reduce
-              ? {}
-              : {
-                  d: [
-                    "M44 70 q6 -16 12 0 t12 0 t12 0 t12 0",
-                    "M44 70 q6 16 12 0 t12 0 t12 0 t12 0",
-                    "M44 70 q6 -16 12 0 t12 0 t12 0 t12 0",
-                  ],
-                }
-          }
-          transition={reduce ? {} : { repeat: Infinity, duration: 4, ease: "easeInOut" }}
-        />
-        <text x="68" y="92" textAnchor="middle" className={styles.label}>
-          audio
-        </text>
-
-        {/* streaming tokens */}
-        {[0, 1, 2].map((i) => (
-          <motion.circle
-            key={i}
-            cx={104 + i * 10}
-            cy="70"
-            r="2.5"
+        {/* audio bars */}
+        {BARS.map((b, i) => (
+          <motion.rect
+            key={b}
+            x={92 + i * 7}
+            width="3"
+            rx="1.5"
             fill="var(--sand)"
             initial={false}
-            animate={reduce ? { opacity: 1 } : { opacity: [0, 1, 0] }}
-            transition={
-              reduce
-                ? {}
-                : { repeat: Infinity, duration: 4, delay: i * 0.25, times: [0, 0.3, 0.6] }
-            }
+            animate={reduce ? { height: 10, y: 115 } : { height: [4, 18, 7, 15, 4], y: [118, 111, 116.5, 112.5, 118] }}
+            transition={reduce ? {} : { repeat: Infinity, duration: 1.2, delay: i * 0.07, ease: "easeInOut" }}
           />
         ))}
-        <text x="114" y="92" textAnchor="middle" className={styles.label}>
-          tokens
-        </text>
+        <text x="116" y="150" textAnchor="middle" className={styles.label}>audio</text>
 
-        {/* intent node (active) */}
+        {/* tokens */}
+        {[0, 1, 2, 3].map((i) => (
+          <motion.circle
+            key={i}
+            cx={178 + i * 11}
+            cy="120"
+            r="2.4"
+            fill="var(--steel)"
+            initial={false}
+            animate={reduce ? { opacity: 1 } : { opacity: [0, 1, 0] }}
+            transition={reduce ? {} : { repeat: Infinity, duration: D, delay: i * 0.22, times: [0.12, 0.28, 0.5] }}
+          />
+        ))}
+        <text x="200" y="150" textAnchor="middle" className={styles.label}>tokens</text>
+
+        {/* intent */}
         <motion.circle
-          cx="168"
-          cy="70"
-          r="9"
+          cx="290"
+          cy="120"
+          r="11"
           className={styles.nodeActive}
           initial={false}
-          animate={reduce ? { scale: 1 } : { scale: [1, 1.18, 1] }}
-          transition={reduce ? {} : { repeat: Infinity, duration: 4, times: [0.5, 0.62, 0.74] }}
-          style={{ transformOrigin: "168px 70px" }}
+          animate={reduce ? { scale: 1 } : { scale: [1, 1.22, 1] }}
+          transition={reduce ? {} : { repeat: Infinity, duration: D, times: [0.5, 0.6, 0.7] }}
+          style={{ transformOrigin: "290px 120px" }}
         />
-        <text x="168" y="92" textAnchor="middle" className={styles.label}>
-          intent
-        </text>
+        <text x="290" y="150" textAnchor="middle" className={styles.label}>intent · menu</text>
 
-        {/* connector */}
-        <path d="M180 70 H214" className={styles.pathActive} />
+        <line x1="301" y1="120" x2="345" y2="120" stroke="var(--line-strong)" strokeWidth="1" />
 
         {/* order ticket */}
         <motion.g
           initial={false}
           animate={reduce ? { opacity: 1 } : { opacity: [0, 0, 1, 1] }}
-          transition={reduce ? {} : { repeat: Infinity, duration: 4, times: [0, 0.7, 0.85, 1] }}
+          transition={reduce ? {} : { repeat: Infinity, duration: D, times: [0, 0.62, 0.8, 1] }}
         >
-          <rect x="216" y="44" width="92" height="52" rx="6" fill="var(--surface)" stroke="var(--line-strong)" />
-          <text x="224" y="60" className={styles.label}>
-            order
-          </text>
-          <text x="224" y="76" className={styles.value}>
-            Orange chicken
-          </text>
-          <text x="300" y="76" textAnchor="end" className={styles.value} fill="var(--signal)">
-            x2
-          </text>
-          <text x="224" y="90" className={styles.value}>
-            Chow mein
-          </text>
-          <text x="300" y="90" textAnchor="end" className={styles.value} fill="var(--signal)">
-            x1
-          </text>
+          <rect x="346" y="56" width="150" height="128" rx="8" fill="var(--surface)" stroke="var(--line-strong)" />
+          <text x="362" y="78" className={styles.label}>order ticket</text>
+          <line x1="346" y1="90" x2="496" y2="90" stroke="var(--line)" />
+          <text x="362" y="111" className={styles.value} fontSize="12.5">Orange chicken</text>
+          <text x="480" y="111" textAnchor="end" className={styles.value} fontSize="12.5" fill="var(--signal)">x2</text>
+          <text x="362" y="133" className={styles.value} fontSize="12.5">Chow mein</text>
+          <text x="480" y="133" textAnchor="end" className={styles.value} fontSize="12.5" fill="var(--signal)">x1</text>
+          <line x1="346" y1="148" x2="496" y2="148" stroke="var(--line)" />
+          <text x="362" y="170" className={styles.label}>confidence</text>
+          <text x="480" y="170" textAnchor="end" className={styles.label} fill="var(--sand)">high</text>
         </motion.g>
       </svg>
     </div>

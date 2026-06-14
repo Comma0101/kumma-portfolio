@@ -153,7 +153,7 @@ export const projects: Project[] = [
     subtitle: "Decision architecture under uncertainty.",
     tagline: "Insight is not enough. A system is only real when it stays executable under pressure.",
     description: "A decision-quality system that treats markets as a real-time system of risk, latency, and feedback.",
-    details: "This system aggregates trading logs, behavioral data, and execution outcomes to create a disciplined performance feedback infrastructure. It frames chaotic financial data as a structured behavioral dashboard.",
+    details: "Market Systems treats trading as a real-time decision problem: noisy, adversarial, and latency-bound. It spans market-structure research (liquidity, ICT and Smart Money Concepts, regime classification on MNQ and MES futures), Pine Script tooling, a decision journal, and risk rules enforced by the system, with a dashboard that scores execution quality over raw PnL.",
     overview: {
       headline: "System Intent",
       content: "Instead of simply displaying PnL, this dashboard quantifies decision quality, risk exposure, and behavioral patterns to enforce disciplined systems thinking in a stochastic environment."
@@ -166,18 +166,33 @@ export const projects: Project[] = [
     },
     techStack: [
       {
-        name: "Data Aggregation",
-        description: "Automated ingestion of execution logs and portfolio metrics",
-        icon: "cloud"
+        name: "Market structure research",
+        description: "Liquidity, ICT and Smart Money Concepts, regime classification across MNQ and MES futures",
+        icon: "globe"
       },
       {
-        name: "Behavioral Analytics",
-        description: "Categorization engine for conviction and error tracking",
+        name: "Execution analytics",
+        description: "Trades categorized by setup, conviction, and error rate, not just PnL",
         icon: "brain"
       },
       {
-        name: "Performance Interface",
-        description: "Visualization layer prioritizing decision quality over noise",
+        name: "Risk architecture",
+        description: "Position and risk constraints enforced as system rules, not willpower",
+        icon: "receipt"
+      },
+      {
+        name: "Pine Script systems",
+        description: "Indicators and alerts for setup detection and process tracking",
+        icon: "cloud"
+      },
+      {
+        name: "Decision journal",
+        description: "Structured logging of context, thesis, and outcome for every trade",
+        icon: "brain"
+      },
+      {
+        name: "Performance interface",
+        description: "Dashboards that prioritize decision quality and feedback over raw PnL",
         icon: "globe"
       }
     ],

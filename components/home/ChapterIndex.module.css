@@ -171,10 +171,17 @@
 }
 
 .thumb {
+  position: relative;
   aspect-ratio: 1;
   border-radius: 8px;
   background: var(--raised);
   border: 1px solid var(--line);
+  overflow: hidden;
+}
+
+.thumbImg {
+  object-fit: cover;
+  filter: saturate(0.72) contrast(1.05);
 }
 
 @media (max-width: 860px) {
