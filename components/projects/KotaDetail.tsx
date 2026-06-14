@@ -4,6 +4,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Cormorant_Garamond, Space_Grotesk } from "next/font/google";
 import styles from "@/styles/kotaCaseStudy.module.css";
+import KotaViz from "@/components/viz/KotaViz";
 import type { Project } from "@/data/projectData";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -70,7 +71,7 @@ export default function KotaDetail({ project }: { project: Project }) {
       {/* ── Hero ── */}
       <header ref={heroRef} className={styles.hero}>
         <p className={`${styles.eyebrow} ${grotesk.className}`}>
-          Case Study / Flagship Product
+          Flagship system
         </p>
         <h1 className={`${styles.title} ${cormorant.className}`}>KOTA</h1>
         <p className={`${styles.subtitle} ${cormorant.className}`}>
@@ -101,6 +102,10 @@ export default function KotaDetail({ project }: { project: Project }) {
           </div>
         )}
       </header>
+
+      <section className={styles.vizSection} aria-hidden="true">
+        <KotaViz size="detail" />
+      </section>
 
       <div ref={sectionsRef}>
         {/* ── Reality Block ── */}

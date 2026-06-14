@@ -2,7 +2,7 @@
 
 .page {
   min-height: 100vh;
-  color: #f2eeee;
+  color: var(--paper);
   padding: clamp(7rem, 10vw, 10rem) 5% clamp(4rem, 6vw, 6rem);
   max-width: 1100px;
   margin: 0 auto;
@@ -30,7 +30,7 @@
   font-size: clamp(3.4rem, 8vw, 7rem);
   line-height: 0.92;
   letter-spacing: -0.02em;
-  color: #f2eeee;
+  color: var(--paper);
   font-weight: 600;
 }
 
@@ -78,12 +78,20 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   text-decoration: none;
-  color: rgba(201, 184, 160, 0.82);
+  color: var(--signal);
   transition: color 0.3s ease;
 }
 
 .actionLink:hover {
-  color: #fff;
+  color: var(--signal-strong);
+}
+
+.vizSection {
+  margin-bottom: clamp(4rem, 7vw, 6rem);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--raised);
+  overflow: hidden;
 }
 
 /* ── Shared Section ── */
