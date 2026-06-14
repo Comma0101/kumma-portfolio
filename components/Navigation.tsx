@@ -12,8 +12,8 @@ interface NavLink {
 
 const navLinks: NavLink[] = [
   { name: "Work", href: "#work" },
-  { name: "ARCHON", href: "/systems/archon" },
-  { name: "Markets", href: "/markets" },
+  { name: "ARCHON", href: "/projects/archon" },
+  { name: "Markets", href: "/projects/market-systems" },
   { name: "Studies", href: "/gallery" },
   { name: "Contact", href: "#contact" },
 ];

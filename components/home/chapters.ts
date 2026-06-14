@@ -21,7 +21,7 @@ export const chapters: Chapter[] = [
   {
     no: "02",
     title: "ARCHON",
-    href: "/systems/archon",
+    href: "/projects/archon",
     layout: "flip",
     blurb:
       "A personal AI orchestration layer. Agents, tools, memory, and model routing coordinated into one inspectable system.",
@@ -30,7 +30,7 @@ export const chapters: Chapter[] = [
   {
     no: "03",
     title: "Market Systems",
-    href: "/markets",
+    href: "/projects/market-systems",
     layout: "band",
     blurb:
       "Decision architecture under uncertainty. Treating markets as a real-time system of risk, latency, and feedback.",

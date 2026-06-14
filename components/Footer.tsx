@@ -9,8 +9,8 @@ interface FooterProps {
 
 const quickLinks = [
   { label: "Work", href: "/#work" },
-  { label: "ARCHON", href: "/systems/archon" },
-  { label: "Markets", href: "/markets" },
+  { label: "ARCHON", href: "/projects/archon" },
+  { label: "Markets", href: "/projects/market-systems" },
   { label: "Studies", href: "/gallery" },
   { label: "Blog", href: "/blog" },
 ];

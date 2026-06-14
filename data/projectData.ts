@@ -93,52 +93,53 @@ export const projects: Project[] = [
     id: 2,
     title: "ARCHON",
     slug: "archon",
-    description: "A modular agent system designed to coordinate reasoning, memory, and execution across tasks.",
-    subtitle: "System intelligence layer.",
+    description:
+      "A personal AI orchestration layer that coordinates models, tools, memory, and context into one inspectable system.",
+    subtitle: "A personal operating intelligence.",
     tagline:
-      "Most AI products fail not because of models, but because of orchestration.",
+      "Most AI products fail not on the model, but on orchestration.",
     details:
-      "Archon is a modular agent system designed to coordinate reasoning, memory, and execution across tasks, enabling reliable production AI behavior.",
+      "Archon is an evolving personal orchestration layer: it routes between local and cloud models, executes tools, keeps persistent memory and context, and stays inspectable under human supervision.",
     overview: {
-      headline: "Architecture Intent",
+      headline: "What Archon is",
       content:
-        "Archon provides the coordination layer that sits between raw LLM capability and production reliability: structured tool routing, persistent memory, and feedback-driven execution."
+        "Archon is active research into a persistent intelligence layer that connects projects, data, tasks, and decisions. It coordinates model routing, tool execution, memory, and personal context rather than wrapping a single chat call."
     },
     narrative: {
       context:
-        "AI products built on single-prompt chains break under real-world complexity. Reliability requires orchestration, not just better models.",
+        "Single-prompt chains break under real work. Reliability comes from orchestration, memory, and the ability to inspect what the system did, not from a bigger model.",
       decision:
-        "We designed a multi-agent framework with explicit tool routing, execution graphs, and memory persistence, treating coordination as the core product.",
+        "Build a coordination layer: route between local models (Ollama, GGUF) and cloud models (OpenAI, Claude, Gemini) via LiteLLM, execute tools, persist memory and context, and keep every run traceable.",
       outcome:
-        "Agent workflows became composable and debuggable: each task flows through a defined execution graph with clear reasoning traces and feedback loops.",
+        "Workflows became composable and debuggable. Tasks flow through defined steps with reasoning traces, cost and token awareness, and human checkpoints.",
       impact:
-        "Production AI systems built on Archon ship faster and fail less because the orchestration layer absorbs complexity that would otherwise leak into application code."
+        "A foundation for autonomous but inspectable personal systems, where the orchestration absorbs complexity instead of leaking it into every app."
     },
     techStack: [
       {
-        name: "Multi-Agent System",
-        description: "Composable agent coordination with role-based dispatch",
+        name: "Model routing",
+        description: "LiteLLM across local (Ollama, GGUF) and cloud (OpenAI, Claude, Gemini)",
         icon: "brain"
       },
       {
-        name: "Memory Layer",
-        description: "Persistent context and state across agent interactions",
+        name: "Memory and context",
+        description: "Persistent state and personal context across runs, with context compression",
         icon: "brain"
       },
       {
-        name: "Tool Routing",
-        description: "Structured tool selection and execution management",
+        name: "Tool execution",
+        description: "Structured tool calls and Google service integrations",
         icon: "receipt"
       },
       {
-        name: "Execution Graph",
-        description: "Directed task flows with reasoning traces",
+        name: "Inspectable execution",
+        description: "Reasoning traces, cost and token accounting, human checkpoints",
         icon: "cloud"
       },
       {
-        name: "Feedback Loop",
-        description: "Self-correction and output validation pipeline",
-        icon: "microphone"
+        name: "Local and cloud",
+        description: "Runs open models locally and falls up to cloud when needed",
+        icon: "globe"
       }
     ],
     philosophical:
@@ -147,11 +148,11 @@ export const projects: Project[] = [
   },
   {
     id: 3,
-    title: "Robinhood Performance Dashboard",
-    slug: "robinhood-performance",
-    subtitle: "Execution Log / Performance System",
-    tagline: "Turning messy behavioral outcomes into structured feedback loops.",
-    description: "A decision-quality system designed to measure execution quality under uncertainty.",
+    title: "Market Systems",
+    slug: "market-systems",
+    subtitle: "Decision architecture under uncertainty.",
+    tagline: "Insight is not enough. A system is only real when it stays executable under pressure.",
+    description: "A decision-quality system that treats markets as a real-time system of risk, latency, and feedback.",
     details: "This system aggregates trading logs, behavioral data, and execution outcomes to create a disciplined performance feedback infrastructure. It frames chaotic financial data as a structured behavioral dashboard.",
     overview: {
       headline: "System Intent",
