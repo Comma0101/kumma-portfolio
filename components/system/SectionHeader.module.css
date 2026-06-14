@@ -1,0 +1,24 @@
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  max-width: 32ch;
+}
+
+.title {
+  margin: 0;
+  color: var(--paper);
+  font-family: var(--font-sans);
+  font-size: clamp(2.4rem, 5.5vw, 5rem);
+  font-weight: 600;
+  line-height: 0.96;
+  letter-spacing: -0.04em;
+}
+
+.intro {
+  margin: 0;
+  max-width: 52ch;
+  color: var(--steel);
+  font-size: clamp(1rem, 1.3vw, 1.12rem);
+  line-height: 1.65;
+}

@@ -1,0 +1,38 @@
+.frame {
+  position: relative;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--raised);
+  overflow: hidden;
+  background-image:
+    linear-gradient(rgba(240, 237, 232, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(240, 237, 232, 0.025) 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1.1rem;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--signal);
+  box-shadow: 0 0 0 4px rgba(192, 106, 92, 0.16);
+}
+
+.body {
+  padding: clamp(1.2rem, 3vw, 2.4rem);
+  height: 100%;
+}
