@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import SectionHeader from "@/components/system/SectionHeader";
 import SystemViz from "@/components/system/SystemViz";
+import { vizBySlug } from "@/components/viz/registry";
 import { chapters } from "./chapters";
 import styles from "./ChapterIndex.module.css";
 
@@ -37,7 +38,10 @@ export default function ChapterIndex() {
     <section ref={ref} id="work" className={styles.section}>
       <SectionHeader eyebrow="Selected work" title="The systems I am building." />
       <div className={styles.rows}>
-        {chapters.map((c) => (
+        {chapters.map((c) => {
+          const slug = c.href.split("/").pop() ?? "";
+          const Viz = vizBySlug[slug];
+          return (
           <article
             key={c.no}
             data-reveal
@@ -70,7 +74,11 @@ export default function ChapterIndex() {
                 live={c.no === "01"}
                 className={styles.viz}
               >
-                <div className={styles.vizField} aria-hidden="true" />
+                {Viz ? (
+                  <Viz size="teaser" />
+                ) : (
+                  <div className={styles.vizField} aria-hidden="true" />
+                )}
               </SystemViz>
             ) : (
               <div className={styles.strip} aria-hidden="true">
@@ -80,7 +88,8 @@ export default function ChapterIndex() {
               </div>
             )}
           </article>
-        ))}
+          );
+        })}
       </div>
     </section>
   );

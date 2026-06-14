@@ -2,266 +2,104 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Cormorant_Garamond, Space_Grotesk } from "next/font/google";
-import styles from "@/styles/projectDetail.module.css";
 import type { Project } from "@/data/projectData";
+import { vizBySlug } from "@/components/viz/registry";
+import styles from "@/styles/projectDetail.module.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  style: ["normal", "italic"],
-});
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-});
-
-interface ProjectDetailProps {
-  project: Project;
-}
-
-export default function ProjectDetail({ project }: ProjectDetailProps) {
-  const heroRef = useRef<HTMLDivElement>(null);
-  const overviewRef = useRef<HTMLDivElement>(null);
-  const storyArcRef = useRef<HTMLDivElement>(null);
-  const techStackRef = useRef<HTMLDivElement>(null);
-  const philosophicalRef = useRef<HTMLDivElement>(null);
+export default function ProjectDetail({ project }: { project: Project }) {
+  const root = useRef<HTMLDivElement>(null);
+  const Viz = vizBySlug[project.slug];
 
   useEffect(() => {
-    const rafId = requestAnimationFrame(() => {
-      ScrollTrigger.refresh();
-    });
-
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const ctx = gsap.context(() => {
-      gsap.fromTo(
-        heroRef.current,
-        { opacity: 0, y: 24 },
-        { opacity: 1, y: 0, duration: 1, ease: "power3.out" }
-      );
-
-      if (overviewRef.current) {
+      gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach((el) => {
         gsap.fromTo(
-          overviewRef.current,
-          { opacity: 0, y: 40 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.9,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: overviewRef.current,
-              start: "top 88%",
-              toggleActions: "play none none none",
-            },
-          }
-        );
-      }
-
-      if (storyArcRef.current) {
-        const cards = storyArcRef.current.querySelectorAll(
-          `.${styles.arcCard}`
-        );
-        gsap.fromTo(
-          cards,
-          { opacity: 0, y: 32 },
+          el,
+          { opacity: 0, y: 28 },
           {
             opacity: 1,
             y: 0,
             duration: 0.8,
-            stagger: 0.1,
             ease: "power3.out",
             scrollTrigger: {
-              trigger: storyArcRef.current,
-              start: "top 88%",
+              trigger: el,
+              start: "top 86%",
               toggleActions: "play none none none",
             },
-          }
+          },
         );
-      }
-
-      if (techStackRef.current) {
-        const items = techStackRef.current.querySelectorAll(
-          `.${styles.stackItem}`
-        );
-        gsap.fromTo(
-          items,
-          { opacity: 0, y: 24 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.7,
-            stagger: 0.08,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: techStackRef.current,
-              start: "top 88%",
-              toggleActions: "play none none none",
-            },
-          }
-        );
-      }
-
-      if (philosophicalRef.current) {
-        gsap.fromTo(
-          philosophicalRef.current,
-          { opacity: 0 },
-          {
-            opacity: 1,
-            duration: 1.2,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: philosophicalRef.current,
-              start: "top 88%",
-              toggleActions: "play none none none",
-            },
-          }
-        );
-      }
-    });
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      ctx.revert();
-    };
+      });
+    }, root);
+    return () => ctx.revert();
   }, []);
 
-  const stackSummary =
-    project.techStack?.map((t) => t.name).join(" · ") || "";
-
   return (
-    <div className={styles.container}>
-      {/* Hero */}
-      <header ref={heroRef} className={styles.hero}>
-        <p className={`${styles.eyebrow} ${spaceGrotesk.className}`}>
-          Case Study
-        </p>
-        <h1 className={`${styles.title} ${cormorant.className}`}>
-          {project.title}
-        </h1>
-        {project.subtitle && (
-          <p className={`${styles.subtitle} ${cormorant.className}`}>
-            {project.subtitle}
-          </p>
-        )}
-        {project.tagline && (
-          <p className={`${styles.tagline} ${spaceGrotesk.className}`}>
-            {project.tagline}
-          </p>
-        )}
-        {stackSummary && (
-          <p className={`${styles.stackLine} ${spaceGrotesk.className}`}>
-            {stackSummary}
-          </p>
-        )}
-        {(project.websiteUrl || project.demoUrl) && (
-          <div className={styles.actions}>
-            {project.websiteUrl && (
-              <a
-                href={project.websiteUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`${styles.actionLink} ${spaceGrotesk.className}`}
-              >
-                Visit Live Site &rarr;
-              </a>
-            )}
-            {project.demoUrl && (
-              <a
-                href={project.demoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`${styles.actionLink} ${spaceGrotesk.className}`}
-              >
-                View Demo &rarr;
-              </a>
-            )}
-          </div>
-        )}
+    <div ref={root} className={styles.container}>
+      <header className={styles.hero} data-reveal>
+        {project.subtitle && <p className={styles.eyebrow}>{project.subtitle}</p>}
+        <h1 className={styles.title}>{project.title}</h1>
+        {project.tagline && <p className={styles.tagline}>{project.tagline}</p>}
       </header>
 
-      {/* Overview */}
-      {project.overview && (
-        <section ref={overviewRef} className={styles.overview}>
-          <h2 className={`${styles.sectionLabel} ${spaceGrotesk.className}`}>
-            {project.overview.headline}
-          </h2>
-          <p className={`${styles.overviewBody} ${spaceGrotesk.className}`}>
-            {project.overview.content}
-          </p>
+      {Viz && (
+        <section className={styles.vizSection} data-reveal aria-hidden="true">
+          <Viz size="detail" />
         </section>
       )}
 
-      {/* Narrative Arc */}
+      {project.overview && (
+        <section className={styles.block} data-reveal>
+          <h2 className={styles.h2}>{project.overview.headline}</h2>
+          <p className={styles.body}>{project.overview.content}</p>
+        </section>
+      )}
+
       {project.narrative && (
-        <section ref={storyArcRef} className={styles.arc}>
-          <h2 className={`${styles.sectionLabel} ${spaceGrotesk.className}`}>
-            Narrative Arc
-          </h2>
-          <div className={styles.arcGrid}>
-            <article className={styles.arcCard}>
-              <p className={`${styles.arcIndex} ${spaceGrotesk.className}`}>01</p>
-              <p className={`${styles.arcLabel} ${spaceGrotesk.className}`}>Context</p>
-              <p className={`${styles.arcText} ${spaceGrotesk.className}`}>
-                {project.narrative.context}
-              </p>
-            </article>
-            <article className={styles.arcCard}>
-              <p className={`${styles.arcIndex} ${spaceGrotesk.className}`}>02</p>
-              <p className={`${styles.arcLabel} ${spaceGrotesk.className}`}>Decision</p>
-              <p className={`${styles.arcText} ${spaceGrotesk.className}`}>
-                {project.narrative.decision}
-              </p>
-            </article>
-            <article className={styles.arcCard}>
-              <p className={`${styles.arcIndex} ${spaceGrotesk.className}`}>03</p>
-              <p className={`${styles.arcLabel} ${spaceGrotesk.className}`}>Outcome</p>
-              <p className={`${styles.arcText} ${spaceGrotesk.className}`}>
-                {project.narrative.outcome}
-              </p>
-            </article>
+        <section className={styles.block} data-reveal>
+          <div className={styles.arc}>
+            <div>
+              <span className={styles.arcNo}>01</span>
+              <h3 className={styles.arcLabel}>Context</h3>
+              <p className={styles.body}>{project.narrative.context}</p>
+            </div>
+            <div>
+              <span className={styles.arcNo}>02</span>
+              <h3 className={styles.arcLabel}>Decision</h3>
+              <p className={styles.body}>{project.narrative.decision}</p>
+            </div>
+            <div>
+              <span className={styles.arcNo}>03</span>
+              <h3 className={styles.arcLabel}>Outcome</h3>
+              <p className={styles.body}>{project.narrative.outcome}</p>
+            </div>
           </div>
           {project.narrative.impact && (
-            <p className={`${styles.arcImpact} ${spaceGrotesk.className}`}>
-              {project.narrative.impact}
-            </p>
+            <p className={styles.impact}>{project.narrative.impact}</p>
           )}
         </section>
       )}
 
-      {/* Tech Stack */}
       {project.techStack && project.techStack.length > 0 && (
-        <section ref={techStackRef} className={styles.stack}>
-          <h2 className={`${styles.sectionLabel} ${spaceGrotesk.className}`}>
-            Technical Breakdown
-          </h2>
-          <div className={styles.stackGrid}>
-            {project.techStack.map((tech, i) => (
-              <div key={i} className={styles.stackItem}>
-                <h3 className={`${styles.stackName} ${spaceGrotesk.className}`}>
-                  {tech.name}
-                </h3>
-                <p className={`${styles.stackDesc} ${spaceGrotesk.className}`}>
-                  {tech.description}
-                </p>
-              </div>
+        <section className={styles.block} data-reveal>
+          <h2 className={styles.h2}>How it is built</h2>
+          <ul className={styles.stack}>
+            {project.techStack.map((t) => (
+              <li key={t.name}>
+                <strong>{t.name}</strong>
+                <span>{t.description}</span>
+              </li>
             ))}
-          </div>
+          </ul>
         </section>
       )}
 
-      {/* Philosophical */}
       {project.philosophical && (
-        <footer ref={philosophicalRef} className={styles.philosophical}>
-          <blockquote className={`${styles.quote} ${cormorant.className}`}>
-            &ldquo;{project.philosophical}&rdquo;
-          </blockquote>
-          <p className={`${styles.quoteAttrib} ${spaceGrotesk.className}`}>
-            Notes from the build.
-          </p>
-        </footer>
+        <section className={styles.quoteWrap} data-reveal>
+          <blockquote className={styles.quote}>{project.philosophical}</blockquote>
+        </section>
       )}
     </div>
   );
