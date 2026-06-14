@@ -82,7 +82,7 @@ export default function ChapterIndex() {
                 )}
               </SystemViz>
             ) : (
-              <div className={styles.strip} aria-hidden="true">
+              <div className={styles.gallery} aria-hidden="true">
                 {(c.images ?? []).map((src, i) => (
                   <div key={i} className={styles.thumb}>
                     <Image
