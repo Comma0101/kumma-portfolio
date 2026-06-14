@@ -94,51 +94,61 @@ export const projects: Project[] = [
     title: "ARCHON",
     slug: "archon",
     description:
-      "A personal AI orchestration layer that coordinates models, tools, memory, and context into one inspectable system.",
-    subtitle: "A personal operating intelligence.",
+      "A lightweight, self-aware AI agent that orchestrates models, tools, memory, and other coding agents through one inspectable control plane.",
+    subtitle: "A self-aware personal agent.",
     tagline:
       "Most AI products fail not on the model, but on orchestration.",
     details:
-      "Archon is an evolving personal orchestration layer: it routes between local and cloud models, executes tools, keeps persistent memory and context, and stays inspectable under human supervision.",
+      "Archon is a personal AI agent (Python, CLI-first) that coordinates Claude, GPT, and Gemini, runs a deep tool layer over the filesystem, web, and MCP servers, keeps compressed long-term memory, and delegates real work to coding-agent workers like Claude Code, Codex, and OpenCode through a router. It reaches the operator through the terminal, Telegram with human approvals, voice, and phone calls.",
     overview: {
       headline: "What Archon is",
       content:
-        "Archon is active research into a persistent intelligence layer that connects projects, data, tasks, and decisions. It coordinates model routing, tool execution, memory, and personal context rather than wrapping a single chat call."
+        "Archon is an evolving, self-aware personal agent: a control plane that plans, routes, executes, and recovers across providers and tools, with persistent memory, context compression, usage accounting, and human approval built in, rather than a single chat wrapper."
     },
     narrative: {
       context:
-        "Single-prompt chains break under real work. Reliability comes from orchestration, memory, and the ability to inspect what the system did, not from a bigger model.",
+        "Single-prompt chat wrappers break on real, multi-step work. Reliability comes from orchestration, memory, and the ability to inspect and approve what the agent did, not from a bigger model.",
       decision:
-        "Build a coordination layer: route between local models (Ollama, GGUF) and cloud models (OpenAI, Claude, Gemini) via LiteLLM, execute tools, persist memory and context, and keep every run traceable.",
+        "Build a lightweight control plane in Python: route across Claude, GPT, and Gemini, expose tools over the filesystem, web, and MCP, persist compressed memory, and delegate heavy tasks to coding-agent workers (Claude Code, Codex, OpenCode) through a worker router, with policy and human approval as first-class.",
       outcome:
-        "Workflows became composable and debuggable. Tasks flow through defined steps with reasoning traces, cost and token awareness, and human checkpoints.",
+        "Work flows through sessions, jobs, and turns with reasoning traces, redaction, and usage tracking. Archon reaches the operator on the terminal, Telegram, voice, and live phone calls, and runs its own news and deep-research pipelines.",
       impact:
-        "A foundation for autonomous but inspectable personal systems, where the orchestration absorbs complexity instead of leaking it into every app."
+        "A foundation for autonomous but inspectable personal systems, where orchestration, memory, and recovery absorb the complexity that would otherwise leak into every task."
     },
     techStack: [
       {
-        name: "Model routing",
-        description: "LiteLLM across local (Ollama, GGUF) and cloud (OpenAI, Claude, Gemini)",
+        name: "Model layer",
+        description: "Anthropic Claude, OpenAI, and Google Gemini behind one agent",
         icon: "brain"
       },
       {
-        name: "Memory and context",
-        description: "Persistent state and personal context across runs, with context compression",
-        icon: "brain"
-      },
-      {
-        name: "Tool execution",
-        description: "Structured tool calls and Google service integrations",
-        icon: "receipt"
-      },
-      {
-        name: "Inspectable execution",
-        description: "Reasoning traces, cost and token accounting, human checkpoints",
+        name: "Control plane",
+        description: "Orchestrator, policy, sessions, and jobs over execution turns",
         icon: "cloud"
       },
       {
-        name: "Local and cloud",
-        description: "Runs open models locally and falls up to cloud when needed",
+        name: "Worker delegation",
+        description: "Routes heavy tasks to coding agents: Claude Code, Codex, OpenCode",
+        icon: "cloud"
+      },
+      {
+        name: "Tools and MCP",
+        description: "Filesystem, web read and search, content, and Model Context Protocol tools",
+        icon: "receipt"
+      },
+      {
+        name: "Memory and context",
+        description: "Persistent memory with context compression, distillation, and usage accounting",
+        icon: "brain"
+      },
+      {
+        name: "Channels",
+        description: "Terminal REPL, Telegram with approvals, voice (STT and TTS), and Twilio calls",
+        icon: "microphone"
+      },
+      {
+        name: "Safety",
+        description: "Redaction, policy guardrails, and human approval gates",
         icon: "globe"
       }
     ],

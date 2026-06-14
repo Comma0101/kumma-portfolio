@@ -25,8 +25,8 @@ export const chapters: Chapter[] = [
     href: "/projects/archon",
     layout: "flip",
     blurb:
-      "A personal AI orchestration layer. Agents, tools, memory, and model routing coordinated into one inspectable system.",
-    tags: ["agents", "orchestration", "active R&D"],
+      "A self-aware personal AI agent that orchestrates models, tools, memory, and coding-agent workers through one inspectable control plane.",
+    tags: ["orchestration", "coding workers", "active R&D"],
   },
   {
     no: "03",

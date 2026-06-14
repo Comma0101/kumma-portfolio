@@ -8,12 +8,12 @@ const CY = 150;
 const R = 110;
 
 const NODES = [
-  { label: "tools", a: -90 },
-  { label: "memory", a: -34 },
-  { label: "context", a: 34 },
-  { label: "router", a: 90 },
-  { label: "evaluator", a: 146 },
-  { label: "recover", a: 214 },
+  { label: "workers", a: -90 },
+  { label: "tools", a: -34 },
+  { label: "memory", a: 34 },
+  { label: "models", a: 90 },
+  { label: "channels", a: 146 },
+  { label: "safety", a: 214 },
 ];
 
 const DATA = NODES.map((n, i) => {
