@@ -52,9 +52,16 @@ export default function ChapterIndex() {
                   <li key={t}>{t}</li>
                 ))}
               </ul>
-              <Link href={c.href} className={styles.link}>
-                {c.layout === "strip" ? "View studies →" : "Enter chapter →"}
-              </Link>
+              <div className={styles.links}>
+                <Link href={c.href} className={styles.link}>
+                  {c.layout === "strip" ? "View studies →" : "Enter chapter →"}
+                </Link>
+                {c.secondary && (
+                  <Link href={c.secondary.href} className={styles.linkSecondary}>
+                    {c.secondary.label}
+                  </Link>
+                )}
+              </div>
             </div>
 
             {c.layout !== "strip" ? (

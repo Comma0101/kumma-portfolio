@@ -10,6 +10,7 @@ import SmoothScrollProvider from "../components/SmoothScrollProvider";
 import ConditionalFooter from "../components/ConditionalFooter";
 import { PageTransitionProvider } from "@/components/PageTransition";
 import ThreeScene from "../components/ThreeScene";
+import IntroOverlay from "../components/IntroOverlay";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -60,6 +61,7 @@ export default function RootLayout({
         className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} ${cormorant.variable}`}
         suppressHydrationWarning
       >
+        <IntroOverlay />
         <PageTransitionProvider>
           <SmoothScrollProvider>
             <ThreeScene />

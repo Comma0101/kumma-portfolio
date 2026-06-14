@@ -7,24 +7,6 @@
   overflow: clip;
 }
 
-.scene {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-}
-
-.poster {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    130% 100% at 78% 22%,
-    rgba(201, 184, 160, 0.1),
-    transparent 52%
-  ),
-  var(--canvas);
-}
-
 .inner {
   position: relative;
   z-index: 1;

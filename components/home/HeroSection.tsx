@@ -1,20 +1,13 @@
 "use client";
 
 import { useRef } from "react";
-import dynamic from "next/dynamic";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import Button from "@/components/system/Button";
-import { useQualityTier } from "@/components/three/useQualityTier";
 import styles from "./HeroSection.module.css";
-
-const HeroScene = dynamic(() => import("@/components/three/HeroScene"), {
-  ssr: false,
-});
 
 export default function HeroSection() {
   const ref = useRef<HTMLElement>(null);
-  const tier = useQualityTier();
 
   useGSAP(
     () => {
@@ -32,10 +25,6 @@ export default function HeroSection() {
 
   return (
     <section ref={ref} id="home" className={styles.hero}>
-      <div className={styles.scene} aria-hidden="true">
-        {tier === "off" ? <div className={styles.poster} /> : <HeroScene tier={tier} />}
-      </div>
-
       <div className={styles.inner}>
         <p data-hero-rise className={styles.eyebrow}>
           Independent systems builder · Los Angeles

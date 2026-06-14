@@ -84,9 +84,16 @@
   padding: 4px 8px;
 }
 
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.3rem;
+  margin-top: 0.4rem;
+}
+
 .link {
   width: fit-content;
-  margin-top: 0.4rem;
   font-family: var(--font-mono);
   font-size: 0.7rem;
   letter-spacing: 0.08em;
@@ -97,6 +104,19 @@
 
 .link:hover {
   color: var(--signal-strong);
+}
+
+.linkSecondary {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sand);
+  text-decoration: none;
+}
+
+.linkSecondary:hover {
+  color: var(--signal);
 }
 
 .viz {

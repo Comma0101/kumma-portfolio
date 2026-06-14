@@ -5,6 +5,7 @@ export interface Chapter {
   blurb: string;
   tags: string[];
   layout: "feature" | "flip" | "band" | "strip";
+  secondary?: { label: string; href: string };
 }
 
 export const chapters: Chapter[] = [
@@ -41,7 +42,8 @@ export const chapters: Chapter[] = [
     href: "/gallery",
     layout: "strip",
     blurb:
-      "Interactive web, 3D, and photography. Visual research that feeds how I design systems and interfaces.",
-    tags: ["3D", "photography", "interface"],
+      "Interactive web, 3D, photography, and writing. Visual and written research that feeds how I design systems.",
+    tags: ["3D", "photography", "essays", "interface"],
+    secondary: { label: "Read essays →", href: "/blog" },
   },
 ];
