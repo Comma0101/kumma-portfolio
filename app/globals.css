@@ -2,22 +2,33 @@
 
 :root {
   color-scheme: dark;
-  --canvas: #0b0b0d;
-  --surface: #121214;
-  --surface-raised: #18181b;
-  --paper: #f2efe9;
-  --muted: #aaa59d;
-  --faint: #716d68;
-  --accent: #c9b8a0;
+
+  /* Atlas (warmed) — canonical tokens */
+  --canvas: #0a0a0b;
+  --surface: #131316;
+  --raised: #1a1a1e;
+  --paper: #f0ede8;
+  --steel: #a4a09a;
+  --faint: #6f6b65;
+  --signal: #c06a5c;          /* interactive / live ONLY */
+  --signal-strong: #cf7a6c;
+  --sand: #c9b8a0;            /* atmosphere ONLY, never interactive */
+  --line: rgba(240, 237, 232, 0.12);
+  --line-strong: rgba(240, 237, 232, 0.22);
+
+  /* Legacy aliases — used by gallery/blog/project pages until their phase */
+  --surface-raised: var(--raised);
+  --muted: var(--steel);
+  --accent: var(--sand);
   --accent-strong: #ddcdb7;
-  --line: rgba(242, 239, 233, 0.14);
-  --line-strong: rgba(242, 239, 233, 0.24);
+
   --background: var(--canvas);
   --foreground: var(--paper);
   --radius-card: 14px;
   --radius-control: 8px;
   --page-gutter: clamp(1.25rem, 5vw, 4.5rem);
   --page-width: 1380px;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @theme inline {

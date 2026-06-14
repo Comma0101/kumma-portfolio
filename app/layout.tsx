@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import {
   Cormorant_Garamond,
-  Roboto_Mono,
+  JetBrains_Mono,
   Space_Grotesk,
 } from "next/font/google";
 import "./globals.css";
@@ -17,7 +17,7 @@ const spaceGrotesk = Space_Grotesk({
   display: "swap",
 });
 
-const robotoMono = Roboto_Mono({
+const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
   display: "swap",
@@ -34,17 +34,17 @@ const cormorant = Cormorant_Garamond({
 export const metadata: Metadata = {
   metadataBase: new URL("https://kumma.me"),
   title: {
-    default: "KUMMA | AI Systems and Product Engineering",
-    template: "%s | KUMMA",
+    default: "Kumma | Independent systems builder",
+    template: "%s | Kumma",
   },
   description:
-    "KUMMA builds reliable AI systems, product interfaces, and real-time workflows.",
+    "Kumma builds intelligent systems for the real world: real-time AI, agent infrastructure, and operational products.",
   openGraph: {
-    title: "KUMMA | AI Systems and Product Engineering",
+    title: "Kumma | Independent systems builder",
     description:
-      "Reliable AI systems, product interfaces, and real-time workflows by KUMMA.",
+      "Intelligent systems for the real world: real-time AI, agent infrastructure, and operational products.",
     url: "https://kumma.me",
-    siteName: "KUMMA",
+    siteName: "Kumma",
     type: "website",
   },
 };
@@ -57,7 +57,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${spaceGrotesk.variable} ${robotoMono.variable} ${cormorant.variable}`}
+        className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} ${cormorant.variable}`}
         suppressHydrationWarning
       >
         <PageTransitionProvider>
