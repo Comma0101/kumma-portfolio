@@ -13,9 +13,7 @@ export default function PositioningBand() {
   return (
     <section className={styles.band}>
       <p className={styles.statement}>
-        Not one label. Across AI systems, real-time voice, product engineering,
-        markets, and visual design, the through-line is the same: building
-        structure for complex systems.
+        I build systems where intelligence becomes action, not just output.
       </p>
       <ul className={styles.tags}>
         {disciplines.map((d) => (

@@ -180,12 +180,28 @@ export default async function BlogDetailPage({
               {locale === "zh" ? "分享文章" : "Share Article"}
             </h3>
             <div className={styles.shareButtons}>
-              <button className={styles.shareButton} aria-label="Share on X">
+              <a
+                className={styles.shareButton}
+                href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(
+                  `https://kumma.me/blog/${locale}/${params.slug}`,
+                )}&text=${encodeURIComponent(post.title)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Share on X"
+              >
                 <FaXTwitter />
-              </button>
-              <button className={styles.shareButton} aria-label="Share on LinkedIn">
+              </a>
+              <a
+                className={styles.shareButton}
+                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+                  `https://kumma.me/blog/${locale}/${params.slug}`,
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Share on LinkedIn"
+              >
                 <FaLinkedin />
-              </button>
+              </a>
             </div>
           </div>
 

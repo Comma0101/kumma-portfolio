@@ -36,13 +36,13 @@ const cormorant = Cormorant_Garamond({
 export const metadata: Metadata = {
   metadataBase: new URL("https://kumma.me"),
   title: {
-    default: "Kumma | Independent systems builder",
+    default: "Kumma | AI systems engineer: real-time voice and agents",
     template: "%s | Kumma",
   },
   description:
     "Kumma builds intelligent systems for the real world: real-time AI, agent infrastructure, and operational products.",
   openGraph: {
-    title: "Kumma | Independent systems builder",
+    title: "Kumma | AI systems engineer: real-time voice and agents",
     description:
       "Intelligent systems for the real world: real-time AI, agent infrastructure, and operational products.",
     url: "https://kumma.me",
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Kumma | Independent systems builder",
+    title: "Kumma | AI systems engineer: real-time voice and agents",
     description:
       "Intelligent systems for the real world: real-time AI, agent infrastructure, and operational products.",
     images: ["/og/home.png"],

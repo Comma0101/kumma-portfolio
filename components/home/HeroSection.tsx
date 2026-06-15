@@ -33,8 +33,8 @@ export default function HeroSection() {
           I build intelligent systems <em>for the real world.</em>
         </h1>
         <p data-hero-rise className={styles.subtext}>
-          Real-time AI, agent infrastructure, and operational products. Built to
-          run past the prototype.
+          Real-time AI in production: KOTA, a voice agent for restaurant
+          operations, and ARCHON, multi-model agent orchestration.
         </p>
         <div data-hero-rise className={styles.actions}>
           <Button href="#work" variant="primary">

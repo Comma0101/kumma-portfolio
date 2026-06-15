@@ -61,6 +61,7 @@ export default function Footer({ variant = "default" }: FooterProps) {
                 {link.label}
               </a>
             ))}
+            <a href="/feed.xml">RSS</a>
           </div>
         </div>
 

@@ -17,7 +17,7 @@ function el(type, style, children) {
   };
 }
 
-async function card(key, title, kicker) {
+async function card(key, title, kicker, sub) {
   const node = el(
     "div",
     {
@@ -37,8 +37,15 @@ async function card(key, title, kicker) {
         { color: "#3f9d7f", fontSize: 28, letterSpacing: 4, textTransform: "uppercase" },
         kicker,
       ),
-      el("div", { fontSize: 76, lineHeight: 1.05, maxWidth: 1040 }, title),
-      el("div", { color: "#a4a09a", fontSize: 30 }, "kumma.me"),
+      el("div", { fontSize: 72, lineHeight: 1.05, maxWidth: 1040 }, title),
+      el("div", { display: "flex", flexDirection: "column" }, [
+        el(
+          "div",
+          { color: "#a3b5a8", fontSize: 34, maxWidth: 1040, marginBottom: 14 },
+          sub || "",
+        ),
+        el("div", { color: "#a4a09a", fontSize: 28 }, "kumma.me"),
+      ]),
     ],
   );
   const svg = await satori(node, {
@@ -51,16 +58,16 @@ async function card(key, title, kicker) {
 }
 
 const projects = [
-  { slug: "kota", title: "KOTA" },
-  { slug: "archon", title: "ARCHON" },
-  { slug: "market-systems", title: "Market Systems" },
+  { slug: "kota", title: "KOTA", sub: "Voice agent for restaurant operations" },
+  { slug: "archon", title: "ARCHON", sub: "Orchestrates Claude, GPT, and Gemini" },
+  { slug: "market-systems", title: "Market Systems", sub: "Decision architecture under uncertainty" },
 ];
 
 async function run() {
-  await card("default", "Intelligent systems for the real world.", "Kumma");
-  await card("home", "I build intelligent systems for the real world.", "Kumma");
+  await card("default", "Intelligent systems for the real world.", "Kumma", "Real-time AI, voice agents, agent orchestration");
+  await card("home", "I build intelligent systems for the real world.", "Kumma", "KOTA, ARCHON, and real-time AI systems");
   for (const p of projects) {
-    await card(`projects-${p.slug}`, p.title, "Selected work");
+    await card(`projects-${p.slug}`, p.title, "Selected work", p.sub);
   }
 
   const seen = new Set();
