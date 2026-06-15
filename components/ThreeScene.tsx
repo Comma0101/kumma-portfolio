@@ -28,25 +28,30 @@ export default function ThreeScene() {
       (nav.deviceMemory ?? 8) <= 4 ||
       (navigator.hardwareConcurrency ?? 8) <= 4;
 
-    const ROWS = lowPerf ? 24 : 38;
-    const COLS = lowPerf ? 50 : 92;
-    const SPREAD = 1000;
-    const Z_NEAR = 60;
-    const Z_FAR = -660;
-    const AMP = 15;
+    // ridgelines (rows) of an ink-wash mountain range, receding into mist
+    const ROWS = lowPerf ? 26 : 40;
+    const COLS = lowPerf ? 56 : 104;
+    const SPREAD = 1100;
+    const Z_NEAR = 80;
+    const Z_FAR = -720;
+    const AMP = 22;
 
     const noise2D = createNoise2D();
     const scene = new THREE.Scene();
-    scene.fog = new THREE.Fog(0x0a0a0b, 130, 640);
+    const CANVAS = new THREE.Color(0x0a0b0c);
+    const CELADON = new THREE.Color(0xa3b5a8);
+    scene.fog = new THREE.Fog(0x0a0b0c, 180, 760);
 
     const camera = new THREE.PerspectiveCamera(
-      60,
+      58,
       window.innerWidth / window.innerHeight,
       0.1,
-      1400,
+      1600,
     );
-    camera.position.set(0, 38, 150);
-    camera.lookAt(0, -4, -200);
+    const camBase = new THREE.Vector3(0, 30, 165);
+    camera.position.copy(camBase);
+    const lookTarget = new THREE.Vector3(0, 4, -260);
+    camera.lookAt(lookTarget);
 
     let renderer: THREE.WebGLRenderer;
     try {
@@ -62,37 +67,49 @@ export default function ThreeScene() {
 
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowPerf ? 1 : 1.5));
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(0x0a0a0b, 0);
+    renderer.setClearColor(0x0a0b0c, 0);
     renderer.domElement.style.width = "100%";
     renderer.domElement.style.height = "100%";
     mount.appendChild(renderer.domElement);
 
-    // topographic line field: one contour line per row, receding into fog
-    const group = new THREE.Group();
-    const lineMat = new THREE.LineBasicMaterial({
-      color: 0xa3b5a8,
-      transparent: true,
-      opacity: 0.5,
-    });
-    const rowZ: number[] = [];
-    const lines: { geo: THREE.BufferGeometry; pos: Float32Array }[] = [];
+    // Each ridgeline bakes its color: atmospheric depth (far rows dissolve to
+    // mist) x brush taper (ends feather out). Heights animate; colors stay.
+    const lines: {
+      geo: THREE.BufferGeometry;
+      pos: Float32Array;
+      mat: THREE.LineBasicMaterial;
+    }[] = [];
+    const tmp = new THREE.Color();
     for (let r = 0; r < ROWS; r += 1) {
       const z = Z_NEAR + (Z_FAR - Z_NEAR) * (r / (ROWS - 1));
-      rowZ.push(z);
+      const depthT = r / (ROWS - 1);
+      const depthFall = THREE.MathUtils.lerp(1, 0.1, Math.pow(depthT, 0.8));
       const pos = new Float32Array(COLS * 3);
+      const col = new Float32Array(COLS * 3);
       for (let c = 0; c < COLS; c += 1) {
         pos[c * 3] = (c / (COLS - 1) - 0.5) * SPREAD;
         pos[c * 3 + 1] = 0;
         pos[c * 3 + 2] = z;
+        const edge = Math.pow(Math.sin(Math.PI * (c / (COLS - 1))), 0.55);
+        const intensity = depthFall * (0.3 + 0.7 * edge);
+        tmp.copy(CANVAS).lerp(CELADON, intensity);
+        col[c * 3] = tmp.r;
+        col[c * 3 + 1] = tmp.g;
+        col[c * 3 + 2] = tmp.b;
       }
       const geo = new THREE.BufferGeometry();
       geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
-      group.add(new THREE.Line(geo, lineMat));
-      lines.push({ geo, pos });
+      geo.setAttribute("color", new THREE.BufferAttribute(col, 3));
+      const mat = new THREE.LineBasicMaterial({
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.92,
+      });
+      scene.add(new THREE.Line(geo, mat));
+      lines.push({ geo, pos, mat });
     }
-    scene.add(group);
 
-    // single muted-red signal that traces across the field occasionally
+    // the lone jade traveler crossing a near ridge
     const signalMat = new THREE.MeshBasicMaterial({
       color: 0x3f9d7f,
       transparent: true,
@@ -100,7 +117,7 @@ export default function ThreeScene() {
     const haloMat = new THREE.MeshBasicMaterial({
       color: 0x3f9d7f,
       transparent: true,
-      opacity: 0.22,
+      opacity: 0.2,
     });
     const signal = new THREE.Mesh(new THREE.SphereGeometry(2.4, 12, 12), signalMat);
     const halo = new THREE.Mesh(new THREE.SphereGeometry(6, 12, 12), haloMat);
@@ -108,37 +125,49 @@ export default function ThreeScene() {
     halo.visible = false;
     scene.add(signal);
     scene.add(halo);
-    const SIGNAL_ROW = Math.min(4, ROWS - 1);
+    const SIGNAL_ROW = Math.min(5, ROWS - 1);
+    const rowZ = (r: number) => Z_NEAR + (Z_FAR - Z_NEAR) * (r / (ROWS - 1));
+
+    let mx = 0;
+    let my = 0;
+    let tx = 0;
+    let ty = 0;
+    const onPointer = (e: PointerEvent) => {
+      mx = e.clientX / window.innerWidth - 0.5;
+      my = e.clientY / window.innerHeight - 0.5;
+    };
+    window.addEventListener("pointermove", onPointer);
 
     const updateField = (flight: number, resolve: number) => {
       for (let r = 0; r < ROWS; r += 1) {
         const { geo, pos } = lines[r];
-        const nz = r * 0.16 + flight;
+        const nz = r * 0.17 + flight;
         for (let c = 0; c < COLS; c += 1) {
-          pos[c * 3 + 1] = noise2D(c * 0.08, nz) * AMP * resolve;
+          pos[c * 3 + 1] = noise2D(c * 0.085, nz) * AMP * resolve;
         }
         geo.attributes.position.needsUpdate = true;
       }
     };
 
     const placeSignal = (sec: number, flight: number, resolve: number) => {
-      const cycle = 15;
+      const cycle = 18;
       const phase = sec % cycle;
-      if (phase > 5) {
+      if (phase > 5.5) {
         signal.visible = false;
         halo.visible = false;
         return;
       }
-      const p = phase / 5;
-      const x = (p - 0.5) * SPREAD * 0.92;
-      const colCoord = p * (COLS - 1) * 0.08;
-      const y = noise2D(colCoord, SIGNAL_ROW * 0.16 + flight) * AMP * resolve + 2;
-      const z = rowZ[SIGNAL_ROW];
+      const p = phase / 5.5;
+      const x = (p - 0.5) * SPREAD * 0.9;
+      const colCoord = p * (COLS - 1) * 0.085;
+      const y =
+        noise2D(colCoord, SIGNAL_ROW * 0.17 + flight) * AMP * resolve + 2.5;
+      const z = rowZ(SIGNAL_ROW);
       const fade = Math.sin(p * Math.PI);
       signal.position.set(x, y, z);
       halo.position.set(x, y, z);
       signalMat.opacity = fade;
-      haloMat.opacity = 0.22 * fade;
+      haloMat.opacity = 0.2 * fade;
       signal.visible = true;
       halo.visible = true;
     };
@@ -148,16 +177,25 @@ export default function ThreeScene() {
     let animationFrame = 0;
 
     const renderStatic = () => {
-      updateField(0, 0.6);
+      updateField(0, 0.7);
       renderer.render(scene, camera);
     };
 
     const loop = () => {
       if (!document.hidden) {
         const sec = (performance.now() - start) / 1000;
-        const flight = sec * 0.16;
-        const resolve = 0.62 + 0.38 * Math.sin(sec * 0.13);
+        const flight = sec * 0.14;
+        const resolve = 0.7 + 0.3 * Math.sin(sec * 0.11);
         if (frame % 2 === 0) updateField(flight, resolve);
+
+        // gentle parallax: pointer drift + slow autonomous sway
+        tx += (mx - tx) * 0.04;
+        ty += (my - ty) * 0.04;
+        const sway = Math.sin(sec * 0.08) * 0.35;
+        camera.position.x = camBase.x + (tx + sway) * 24;
+        camera.position.y = camBase.y + -ty * 10;
+        camera.lookAt(lookTarget);
+
         placeSignal(sec, flight, resolve);
         renderer.render(scene, camera);
       }
@@ -189,10 +227,13 @@ export default function ThreeScene() {
 
     return () => {
       window.removeEventListener("resize", handleResize);
+      window.removeEventListener("pointermove", onPointer);
       lenis?.off("scroll", handleScroll);
       window.cancelAnimationFrame(animationFrame);
-      lines.forEach((l) => l.geo.dispose());
-      lineMat.dispose();
+      lines.forEach((l) => {
+        l.geo.dispose();
+        l.mat.dispose();
+      });
       signal.geometry.dispose();
       signalMat.dispose();
       halo.geometry.dispose();
