@@ -10,21 +10,7 @@ interface LenisInstance {
   off: (event: "scroll", callback: (data: { scroll: number }) => void) => void;
 }
 
-const VERT = /* glsl */ `
-  varying vec2 vUv;
-  void main() {
-    vUv = uv;
-    gl_Position = vec4(position.xy, 0.0, 1.0);
-  }
-`;
-
-const FRAG = (layers: number, oct: number) => /* glsl */ `
-  precision highp float;
-  varying vec2 vUv;
-  uniform float uTime;
-  uniform float uAspect;
-  uniform vec2 uMouse;
-
+const SNOISE = /* glsl */ `
   vec3 mod289(vec3 x){return x - floor(x*(1.0/289.0))*289.0;}
   vec2 mod289(vec2 x){return x - floor(x*(1.0/289.0))*289.0;}
   vec3 permute(vec3 x){return mod289(((x*34.0)+1.0)*x);}
@@ -48,41 +34,55 @@ const FRAG = (layers: number, oct: number) => /* glsl */ `
     g.yz = a0.yz * x12.xz + h.yz * x12.yw;
     return 130.0 * dot(m, g);
   }
+`;
+
+const VERT = (oct: number) => /* glsl */ `
+  precision highp float;
+  uniform float uTime;
+  varying float vH;
+  varying vec3 vN;
+  varying float vFog;
+  ${SNOISE}
   float fbm(vec2 p){
     float s = 0.0, a = 0.5;
     for (int o = 0; o < ${oct}; o++){ s += a * snoise(p); p *= 2.0; a *= 0.5; }
     return s;
   }
-
+  const float FREQ = 0.0019;
+  const float AMP = 80.0;
+  const float E = 11.0;
+  const float FOG_NEAR = 280.0;
+  const float FOG_FAR = 1600.0;
+  float terrain(vec2 p){ return fbm(p * FREQ + vec2(0.0, uTime * 0.04)); }
   void main(){
-    vec2 uv = vUv;
-    float t = uTime;
+    vec2 p = position.xy;
+    float h = terrain(p);
+    float hx = terrain(p + vec2(E, 0.0));
+    float hz = terrain(p + vec2(0.0, E));
+    vH = h;
+    vec3 disp = vec3(p.x, h * AMP, p.y);
+    vN = normalize(vec3((h - hx) * AMP, E, (h - hz) * AMP));
+    vec4 mv = modelViewMatrix * vec4(disp, 1.0);
+    vFog = clamp((-mv.z - FOG_NEAR) / (FOG_FAR - FOG_NEAR), 0.0, 1.0);
+    gl_Position = projectionMatrix * mv;
+  }
+`;
 
-    // ink sky: dark ground up top, a faint celadon haze toward the horizon
-    vec3 skyTop = vec3(0.035, 0.039, 0.043);
-    vec3 skyLow = vec3(0.060, 0.075, 0.070);
-    vec3 col = mix(skyLow, skyTop, smoothstep(0.18, 1.0, uv.y));
-
-    vec3 celadon = vec3(0.20, 0.26, 0.23);
-
-    for (int i = 0; i < ${layers}; i++){
-      float near = float(i) / float(${layers} - 1);     // 0 far .. 1 near
-      float base = mix(0.64, 0.14, near);               // far ranges sit high, near fill the bottom
-      float amp  = mix(0.05, 0.27, near);
-      float freq = mix(1.2, 2.7, near);
-      float drift = 0.008 + 0.022 * near;
-      float px = uv.x * uAspect + uMouse.x * (0.03 * (near + 0.3)) + float(i) * 7.1;
-      float h = fbm(vec2(px * freq + t * drift, float(i) * 3.3)) * 0.5 + 0.5;
-      float ridge = base + amp * h + uMouse.y * 0.02 * near;
-      float edge = 0.006 + 0.012 * (1.0 - near);        // distant ridges softer
-      float inside = smoothstep(ridge + edge, ridge - edge, uv.y);
-      vec3 lc = mix(skyLow, celadon, near);             // atmospheric perspective
-      lc *= mix(0.72, 1.12, smoothstep(0.0, ridge, uv.y)); // light catches the crest
-      col = mix(col, lc, inside);
-    }
-
-    // faint paper grain
-    col += snoise(uv * 920.0) * 0.012;
+const FRAG = /* glsl */ `
+  precision highp float;
+  varying float vH;
+  varying vec3 vN;
+  varying float vFog;
+  void main(){
+    float t = smoothstep(-0.2, 0.65, vH);
+    vec3 valley = vec3(0.050, 0.062, 0.058);
+    vec3 peak = vec3(0.32, 0.40, 0.36);
+    vec3 base = mix(valley, peak, t);
+    vec3 L = normalize(vec3(-0.45, 0.82, 0.28));
+    float diff = clamp(dot(normalize(vN), L), 0.0, 1.0);
+    vec3 shaded = base * (0.40 + 0.70 * diff);
+    vec3 mist = vec3(0.075, 0.090, 0.085);
+    vec3 col = mix(shaded, mist, vFog);
     gl_FragColor = vec4(col, 1.0);
   }
 `;
@@ -105,13 +105,22 @@ export default function ThreeScene() {
       (navigator.hardwareConcurrency ?? 8) <= 4;
 
     const scene = new THREE.Scene();
-    const camera = new THREE.Camera();
+    const camera = new THREE.PerspectiveCamera(
+      60,
+      window.innerWidth / window.innerHeight,
+      1,
+      4000,
+    );
+    const camBase = new THREE.Vector3(0, 95, 360);
+    camera.position.copy(camBase);
+    const lookTarget = new THREE.Vector3(0, 20, -600);
+    camera.lookAt(lookTarget);
 
     let renderer: THREE.WebGLRenderer;
     try {
       renderer = new THREE.WebGLRenderer({
-        antialias: false,
-        alpha: false,
+        antialias: !lowPerf,
+        alpha: true,
         powerPreference: "low-power",
       });
     } catch (error) {
@@ -121,25 +130,23 @@ export default function ThreeScene() {
 
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowPerf ? 1 : 1.5));
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x0a0b0c, 0);
     renderer.domElement.style.width = "100%";
     renderer.domElement.style.height = "100%";
     mount.appendChild(renderer.domElement);
 
-    const uniforms = {
-      uTime: { value: 8.0 },
-      uAspect: { value: window.innerWidth / window.innerHeight },
-      uMouse: { value: new THREE.Vector2(0, 0) },
-    };
-
+    const segX = lowPerf ? 120 : 200;
+    const segZ = lowPerf ? 100 : 160;
+    const geometry = new THREE.PlaneGeometry(2600, 2200, segX, segZ);
+    const uniforms = { uTime: { value: 5.0 } };
     const material = new THREE.ShaderMaterial({
       uniforms,
-      vertexShader: VERT,
-      fragmentShader: FRAG(lowPerf ? 5 : 7, lowPerf ? 3 : 4),
-      depthTest: false,
-      depthWrite: false,
+      vertexShader: VERT(lowPerf ? 3 : 4),
+      fragmentShader: FRAG,
+      side: THREE.DoubleSide,
     });
-    const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
-    scene.add(quad);
+    const terrain = new THREE.Mesh(geometry, material);
+    scene.add(terrain);
 
     let mx = 0;
     let tx = 0;
@@ -159,7 +166,9 @@ export default function ThreeScene() {
         uniforms.uTime.value = (performance.now() - start) / 1000;
         tx += (mx - tx) * 0.04;
         ty += (my - ty) * 0.04;
-        uniforms.uMouse.value.set(tx, ty);
+        camera.position.x = camBase.x + tx * 46;
+        camera.position.y = camBase.y + -ty * 18;
+        camera.lookAt(lookTarget);
         renderer.render(scene, camera);
       }
       animationFrame = window.requestAnimationFrame(loop);
@@ -180,11 +189,12 @@ export default function ThreeScene() {
     lenis?.on("scroll", handleScroll);
 
     const handleResize = () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
       renderer.setPixelRatio(
         Math.min(window.devicePixelRatio, lowPerf ? 1 : 1.5),
       );
       renderer.setSize(window.innerWidth, window.innerHeight);
-      uniforms.uAspect.value = window.innerWidth / window.innerHeight;
       if (reducedMotion) renderer.render(scene, camera);
     };
     window.addEventListener("resize", handleResize);
@@ -194,7 +204,7 @@ export default function ThreeScene() {
       window.removeEventListener("pointermove", onPointer);
       lenis?.off("scroll", handleScroll);
       window.cancelAnimationFrame(animationFrame);
-      quad.geometry.dispose();
+      geometry.dispose();
       material.dispose();
       renderer.dispose();
       renderer.forceContextLoss();
