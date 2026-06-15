@@ -4,6 +4,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { Project } from "@/data/projectData";
 import { vizBySlug } from "@/components/viz/registry";
+import Button from "@/components/system/Button";
 import styles from "@/styles/projectDetail.module.css";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -42,6 +43,25 @@ export default function ProjectDetail({ project }: { project: Project }) {
         {project.subtitle && <p className={styles.eyebrow}>{project.subtitle}</p>}
         <h1 className={styles.title}>{project.title}</h1>
         {project.tagline && <p className={styles.tagline}>{project.tagline}</p>}
+        {(project.websiteUrl || project.repoUrl || project.demoUrl) && (
+          <div className={styles.actions}>
+            {project.websiteUrl && (
+              <Button href={project.websiteUrl} variant="ghost" external>
+                Visit live site →
+              </Button>
+            )}
+            {project.repoUrl && (
+              <Button href={project.repoUrl} variant="ghost" external>
+                View on GitHub →
+              </Button>
+            )}
+            {project.demoUrl && (
+              <Button href={project.demoUrl} variant="ghost" external>
+                View demo →
+              </Button>
+            )}
+          </div>
+        )}
       </header>
 
       {Viz && (

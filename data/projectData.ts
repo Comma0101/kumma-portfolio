@@ -29,6 +29,7 @@ export interface Project {
   demoUrl?: string;
   caseStudyUrl?: string;
   websiteUrl?: string;
+  repoUrl?: string;
   featured?: boolean;
 }
 
@@ -87,6 +88,7 @@ export const projects: Project[] = [
     ],
     philosophical:
       "If software can listen in real time, it can operate in real time.",
+    websiteUrl: "https://kota.kummalabs.com",
     featured: true
   },
   {
@@ -154,6 +156,7 @@ export const projects: Project[] = [
     ],
     philosophical:
       "Intelligence is not the model. It is the system around it.",
+    repoUrl: "https://github.com/Comma0101/archon",
     featured: true
   },
   {
