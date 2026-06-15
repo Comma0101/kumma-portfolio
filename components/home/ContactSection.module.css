@@ -166,9 +166,9 @@
 
 .contactForm input:focus,
 .contactForm textarea:focus {
-  border-color: rgba(193, 67, 47, 0.7);
+  border-color: rgba(63, 157, 127, 0.7);
   background: rgba(255, 255, 255, 0.045);
-  box-shadow: 0 0 0 3px rgba(193, 67, 47, 0.14);
+  box-shadow: 0 0 0 3px rgba(63, 157, 127, 0.14);
 }
 
 .contactForm button {
@@ -182,7 +182,7 @@
   border: 1px solid var(--signal);
   border-radius: var(--radius-control);
   background: var(--signal);
-  color: var(--paper);
+  color: var(--canvas);
   font-family: var(--font-mono);
   font-size: 0.7rem;
   font-weight: 650;

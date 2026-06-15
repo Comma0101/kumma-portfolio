@@ -30,7 +30,7 @@
 }
 
 .row:hover {
-  border-color: rgba(193, 67, 47, 0.4);
+  border-color: rgba(63, 157, 127, 0.4);
 }
 
 .copy {
@@ -189,7 +189,7 @@
 
 .thumb:hover {
   transform: translateY(-4px);
-  border-color: rgba(193, 67, 47, 0.4);
+  border-color: rgba(63, 157, 127, 0.4);
 }
 
 .thumbImg {

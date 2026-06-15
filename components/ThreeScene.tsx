@@ -94,11 +94,11 @@ export default function ThreeScene() {
 
     // single muted-red signal that traces across the field occasionally
     const signalMat = new THREE.MeshBasicMaterial({
-      color: 0xc1432f,
+      color: 0x3f9d7f,
       transparent: true,
     });
     const haloMat = new THREE.MeshBasicMaterial({
-      color: 0xc1432f,
+      color: 0x3f9d7f,
       transparent: true,
       opacity: 0.22,
     });

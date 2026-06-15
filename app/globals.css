@@ -10,8 +10,8 @@
   --paper: #f0ede8;
   --steel: #a4a09a;
   --faint: #6f6b65;
-  --signal: #c1432f;          /* interactive / live ONLY */
-  --signal-strong: #d4543f;
+  --signal: #3f9d7f;          /* interactive / live ONLY */
+  --signal-strong: #52b594;
   --sand: #a3b5a8;            /* atmosphere ONLY, never interactive */
   --line: rgba(240, 237, 232, 0.12);
   --line-strong: rgba(240, 237, 232, 0.22);
