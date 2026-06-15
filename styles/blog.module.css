@@ -3,7 +3,7 @@
   min-height: 100vh;
   padding: clamp(6rem, 10vw, 8.5rem) 5% 4rem;
   background:
-    radial-gradient(circle at 16% 12%, rgba(201, 184, 160, 0.06), transparent 38%),
+    radial-gradient(circle at 16% 12%, rgba(163, 181, 168, 0.06), transparent 38%),
     radial-gradient(circle at 84% 84%, rgba(152, 183, 255, 0.06), transparent 44%);
   overflow: hidden;
 }
@@ -57,7 +57,7 @@
   font-size: 0.74rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(201, 184, 160, 0.82);
+  color: rgba(163, 181, 168, 0.82);
   font-weight: 700;
 }
 
@@ -138,7 +138,7 @@
 }
 
 .clearButton:hover {
-  border-color: rgba(201, 184, 160, 0.72);
+  border-color: rgba(163, 181, 168, 0.72);
   color: #ffffff;
   background: rgba(255, 255, 255, 0.08);
 }
@@ -166,13 +166,13 @@
 }
 
 .filterButton:hover {
-  border-color: rgba(201, 184, 160, 0.7);
+  border-color: rgba(163, 181, 168, 0.7);
   color: #ffffff;
 }
 
 .filterButton.active {
-  color: rgba(201, 184, 160, 0.95);
-  border-color: rgba(201, 184, 160, 0.8);
+  color: rgba(163, 181, 168, 0.95);
+  border-color: rgba(163, 181, 168, 0.8);
   background: rgba(255, 255, 255, 0.08);
 }
 
@@ -206,7 +206,7 @@
 }
 
 .articleEntry:hover {
-  border-color: rgba(201, 184, 160, 0.65);
+  border-color: rgba(163, 181, 168, 0.65);
   background: rgba(255, 255, 255, 0.055);
   transform: translateY(-2px);
 }
@@ -216,7 +216,7 @@
   font-size: 0.64rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(201, 184, 160, 0.74);
+  color: rgba(163, 181, 168, 0.74);
 }
 
 .articleMain {
@@ -271,10 +271,10 @@
 }
 
 .articleCategory {
-  border: 1px solid rgba(201, 184, 160, 0.65);
+  border: 1px solid rgba(163, 181, 168, 0.65);
   border-radius: 999px;
   padding: 0.22rem 0.52rem;
-  color: rgba(201, 184, 160, 0.95);
+  color: rgba(163, 181, 168, 0.95);
   background: rgba(255, 255, 255, 0.05);
 }
 
@@ -290,7 +290,7 @@
 }
 
 .highlight {
-  background: rgba(201, 184, 160, 0.35);
+  background: rgba(163, 181, 168, 0.35);
   color: #fff;
   border-radius: 4px;
   padding: 0 0.12em;
@@ -313,7 +313,7 @@
 }
 
 .resetButton {
-  border: 1px solid rgba(201, 184, 160, 0.74);
+  border: 1px solid rgba(163, 181, 168, 0.74);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.05);
   color: #fff;
@@ -349,7 +349,7 @@
 }
 
 .readMore {
-  color: rgba(201, 184, 160, 0.9);
+  color: rgba(163, 181, 168, 0.9);
   text-decoration: none;
   font-size: 0.78rem;
   letter-spacing: 0.1em;

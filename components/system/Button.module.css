@@ -21,7 +21,7 @@
 
 .primary {
   background: var(--signal);
-  color: #140c0b;
+  color: var(--paper);
 }
 
 .primary:hover {

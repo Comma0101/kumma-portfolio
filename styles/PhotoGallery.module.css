@@ -3,7 +3,7 @@
   min-height: 100vh;
   padding: clamp(6.6rem, 10vw, 8.8rem) 5% 4.8rem;
   background:
-    radial-gradient(circle at 14% 8%, rgba(201, 184, 160, 0.09), transparent 40%),
+    radial-gradient(circle at 14% 8%, rgba(163, 181, 168, 0.09), transparent 40%),
     radial-gradient(circle at 88% 84%, rgba(152, 183, 255, 0.09), transparent 46%);
   overflow: hidden;
 }
@@ -70,7 +70,7 @@
 
 .noteLabel {
   margin: 0;
-  color: rgba(201, 184, 160, 0.82);
+  color: rgba(163, 181, 168, 0.82);
   text-transform: uppercase;
   letter-spacing: 0.17em;
   font-size: 0.62rem;
@@ -87,7 +87,7 @@
 
 .galleryEyebrow {
   margin: 0;
-  color: rgba(201, 184, 160, 0.82);
+  color: rgba(163, 181, 168, 0.82);
   text-transform: uppercase;
   letter-spacing: 0.22em;
   font-size: 0.72rem;

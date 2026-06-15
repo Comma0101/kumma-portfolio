@@ -3,7 +3,7 @@
   width: 100%;
   min-height: 100vh;
   background:
-    radial-gradient(circle at 14% 10%, rgba(201, 184, 160, 0.06), transparent 38%),
+    radial-gradient(circle at 14% 10%, rgba(163, 181, 168, 0.06), transparent 38%),
     var(--canvas);
   overflow-x: hidden;
 }
@@ -62,7 +62,7 @@
 }
 
 .backLink:hover {
-  color: rgba(201, 184, 160, 0.95);
+  color: rgba(163, 181, 168, 0.95);
 }
 
 .chapterLabel {
@@ -80,7 +80,7 @@
 
 .galleryEyebrow {
   margin: 0;
-  color: rgba(201, 184, 160, 0.83);
+  color: rgba(163, 181, 168, 0.83);
   font-size: 0.7rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -218,7 +218,7 @@
 .loadingSpinner {
   border: 3px solid rgba(255, 255, 255, 0.2);
   border-radius: 50%;
-  border-top: 3px solid rgba(201, 184, 160, 0.95);
+  border-top: 3px solid rgba(163, 181, 168, 0.95);
   width: 34px;
   height: 34px;
   animation: spin 0.95s linear infinite;

@@ -34,7 +34,7 @@ async function card(key, title, kicker) {
     [
       el(
         "div",
-        { color: "#c06a5c", fontSize: 28, letterSpacing: 4, textTransform: "uppercase" },
+        { color: "#c1432f", fontSize: 28, letterSpacing: 4, textTransform: "uppercase" },
         kicker,
       ),
       el("div", { fontSize: 76, lineHeight: 1.05, maxWidth: 1040 }, title),

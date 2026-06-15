@@ -29,7 +29,7 @@
   height: 6px;
   border-radius: 50%;
   background: var(--signal);
-  box-shadow: 0 0 0 4px rgba(192, 106, 92, 0.16);
+  box-shadow: 0 0 0 4px rgba(193, 67, 47, 0.16);
 }
 
 .body {

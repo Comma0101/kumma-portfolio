@@ -31,8 +31,8 @@
 }
 
 .languageButton.active {
-  color: rgba(201, 184, 160, 0.95);
-  border-color: rgba(201, 184, 160, 0.76);
+  color: rgba(163, 181, 168, 0.95);
+  border-color: rgba(163, 181, 168, 0.76);
   background: rgba(255, 255, 255, 0.08);
 }
 

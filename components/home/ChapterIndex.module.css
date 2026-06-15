@@ -30,7 +30,7 @@
 }
 
 .row:hover {
-  border-color: rgba(192, 106, 92, 0.4);
+  border-color: rgba(193, 67, 47, 0.4);
 }
 
 .copy {
@@ -128,7 +128,7 @@
   min-height: 220px;
   background: radial-gradient(
     80% 80% at 70% 30%,
-    rgba(201, 184, 160, 0.14),
+    rgba(163, 181, 168, 0.14),
     transparent 60%
   );
 }
@@ -189,7 +189,7 @@
 
 .thumb:hover {
   transform: translateY(-4px);
-  border-color: rgba(192, 106, 92, 0.4);
+  border-color: rgba(193, 67, 47, 0.4);
 }
 
 .thumbImg {

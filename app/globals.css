@@ -10,9 +10,9 @@
   --paper: #f0ede8;
   --steel: #a4a09a;
   --faint: #6f6b65;
-  --signal: #c06a5c;          /* interactive / live ONLY */
-  --signal-strong: #cf7a6c;
-  --sand: #c9b8a0;            /* atmosphere ONLY, never interactive */
+  --signal: #c1432f;          /* interactive / live ONLY */
+  --signal-strong: #d4543f;
+  --sand: #a3b5a8;            /* atmosphere ONLY, never interactive */
   --line: rgba(240, 237, 232, 0.12);
   --line-strong: rgba(240, 237, 232, 0.22);
 
@@ -20,7 +20,7 @@
   --surface-raised: var(--raised);
   --muted: var(--steel);
   --accent: var(--sand);
-  --accent-strong: #ddcdb7;
+  --accent-strong: #c2d2c7;
 
   --background: var(--canvas);
   --foreground: var(--paper);

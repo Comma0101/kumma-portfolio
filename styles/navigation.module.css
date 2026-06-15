@@ -154,7 +154,7 @@
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(circle at 10% 12%, rgba(201, 184, 160, 0.12), transparent 38%),
+    radial-gradient(circle at 10% 12%, rgba(163, 181, 168, 0.12), transparent 38%),
     rgba(11, 11, 13, 0.97);
   transform: translateX(102%);
   opacity: 0;

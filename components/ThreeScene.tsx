@@ -70,7 +70,7 @@ export default function ThreeScene() {
     // topographic line field: one contour line per row, receding into fog
     const group = new THREE.Group();
     const lineMat = new THREE.LineBasicMaterial({
-      color: 0xc9b8a0,
+      color: 0xa3b5a8,
       transparent: true,
       opacity: 0.5,
     });
@@ -94,11 +94,11 @@ export default function ThreeScene() {
 
     // single muted-red signal that traces across the field occasionally
     const signalMat = new THREE.MeshBasicMaterial({
-      color: 0xc06a5c,
+      color: 0xc1432f,
       transparent: true,
     });
     const haloMat = new THREE.MeshBasicMaterial({
-      color: 0xc06a5c,
+      color: 0xc1432f,
       transparent: true,
       opacity: 0.22,
     });

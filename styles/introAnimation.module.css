@@ -11,7 +11,7 @@
     max(1rem, env(safe-area-inset-bottom))
     max(1rem, env(safe-area-inset-left));
   background:
-    radial-gradient(circle at 16% 14%, rgba(201, 184, 160, 0.08), transparent 42%),
+    radial-gradient(circle at 16% 14%, rgba(163, 181, 168, 0.08), transparent 42%),
     radial-gradient(circle at 84% 82%, rgba(152, 183, 255, 0.08), transparent 44%),
     #050505;
   z-index: 9999;
@@ -67,7 +67,7 @@
   font-size: 0.68rem;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: rgba(201, 184, 160, 0.88);
+  color: rgba(163, 181, 168, 0.88);
   font-weight: 700;
 }
 
@@ -113,7 +113,7 @@
 }
 
 .skipButton:hover {
-  border-color: rgba(201, 184, 160, 0.86);
+  border-color: rgba(163, 181, 168, 0.86);
   color: #ffffff;
   background: rgba(255, 255, 255, 0.1);
 }
