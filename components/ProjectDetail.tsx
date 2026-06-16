@@ -15,6 +15,7 @@ export default function ProjectDetail({ project }: { project: Project }) {
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const rafId = requestAnimationFrame(() => ScrollTrigger.refresh());
     const ctx = gsap.context(() => {
       gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach((el) => {
         gsap.fromTo(
@@ -34,7 +35,10 @@ export default function ProjectDetail({ project }: { project: Project }) {
         );
       });
     }, root);
-    return () => ctx.revert();
+    return () => {
+      cancelAnimationFrame(rafId);
+      ctx.revert();
+    };
   }, []);
 
   return (
