@@ -47,11 +47,12 @@ export async function generateMetadata({
       title: post.title,
       description: post.excerpt || "",
       alternates: {
-        languages: {
-          en: `/blog/en/${params.slug}`,
-          zh: `/blog/zh/${params.slug}`,
-          "x-default": `/blog/en/${params.slug}`,
-        },
+        languages: Object.fromEntries([
+          ...getAvailableLocalesForPost(params.slug).map(
+            (l) => [l, `/blog/${l}/${params.slug}`] as const,
+          ),
+          ["x-default", `/blog/en/${params.slug}`],
+        ]),
       },
       openGraph: {
         title,
