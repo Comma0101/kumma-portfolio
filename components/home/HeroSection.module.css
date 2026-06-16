@@ -58,6 +58,47 @@
   margin-top: 2rem;
 }
 
+.availability {
+  display: flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  max-width: 52ch;
+  margin: 1.6rem 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  color: var(--faint);
+}
+
+.availability::before {
+  content: "";
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--signal);
+  box-shadow: 0 0 0 4px rgba(63, 157, 127, 0.16);
+  transform: translateY(-1px);
+  animation: availPulse 2.8s ease-in-out infinite;
+}
+
+@keyframes availPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 3px rgba(63, 157, 127, 0.18);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(63, 157, 127, 0.06);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .availability::before {
+    animation: none;
+  }
+}
+
 @media (max-width: 640px) {
   .hero {
     min-height: auto;

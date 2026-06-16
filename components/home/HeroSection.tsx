@@ -27,23 +27,29 @@ export default function HeroSection() {
     <section ref={ref} id="home" className={styles.hero}>
       <div className={styles.inner}>
         <p data-hero-rise className={styles.eyebrow}>
-          AI systems engineer · Los Angeles
+          Real-time voice · agent systems · Los Angeles
         </p>
         <h1 data-hero-rise className={styles.title}>
-          I build AI systems that <em>act in the real world.</em>
+          I build AI that runs in production, <em>not in demos.</em>
         </h1>
         <p data-hero-rise className={styles.subtext}>
-          Real-time voice agents and multi-model orchestration. KOTA answers
-          restaurant calls; ARCHON orchestrates Claude, GPT, and Gemini.
+          Real-time voice and agent orchestration that survive real users. KOTA
+          answers restaurant calls live and turns them into kitchen-ready
+          orders. ARCHON routes Claude, GPT, and Gemini and delegates to coding
+          agents.
         </p>
         <div data-hero-rise className={styles.actions}>
           <Button href="#work" variant="primary">
-            View systems →
+            See the systems →
           </Button>
           <Button href="#contact" variant="ghost">
-            Contact
+            Start a conversation
           </Button>
         </div>
+        <p data-hero-rise className={styles.availability}>
+          Open to founding-engineer, applied-AI, and real-time-voice work, plus
+          KOTA partnerships. Usually replies within a day.
+        </p>
       </div>
     </section>
   );
