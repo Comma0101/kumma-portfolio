@@ -62,6 +62,7 @@ export default function Footer({ variant = "default" }: FooterProps) {
               </a>
             ))}
             <a href="/feed.xml">RSS</a>
+            <Link href="/agent">Agent protocol</Link>
           </div>
         </div>
 

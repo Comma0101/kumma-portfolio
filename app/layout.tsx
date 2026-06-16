@@ -12,6 +12,7 @@ import { PageTransitionProvider } from "@/components/PageTransition";
 import ThreeScene from "../components/ThreeScene";
 import IntroOverlay from "../components/IntroOverlay";
 import Analytics from "../components/Analytics";
+import AgentAwareness from "../components/AgentAwareness";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -83,6 +84,7 @@ export default function RootLayout({
           <ConditionalFooter />
         </PageTransitionProvider>
         <Analytics />
+        <AgentAwareness />
       </body>
     </html>
   );
