@@ -5,10 +5,13 @@ export interface TechStack {
 }
 
 // Proof shown high on the page and on the home cards.
-// NOTE: these are verifiable facts about each system, not performance claims.
-// Replace/extend with real measured numbers when available (KOTA: median
-// latency, calls handled, concurrent sessions; ARCHON: GitHub stars). Do not
-// invent metrics; an unverifiable number is worse than an honest fact.
+// These are system ATTRIBUTES / architecture facts (e.g. "Real-time",
+// "3 models", "Rules enforced"), NOT measured performance metrics. Keep that
+// distinction honest: never present an attribute as a benchmark.
+// Add real measured numbers only when verified (KOTA: median latency, calls
+// handled, concurrent sessions; ARCHON: GitHub stars, and only if the repo is
+// public and the count is meaningful). An unverifiable number is worse than an
+// honest fact.
 export interface Metric {
   value: string;
   label: string;
@@ -30,6 +33,7 @@ export interface Project {
   details: string;
   subtitle?: string;
   tagline?: string;
+  outcome?: string;
   overview?: {
     headline: string;
     content: string;
@@ -54,6 +58,8 @@ export const projects: Project[] = [
     subtitle: "Conversation as infrastructure.",
     tagline:
       "Restaurants don't need more apps. They need fewer missed orders.",
+    outcome:
+      "Turns restaurant phone calls into structured, actionable orders without requiring the restaurant to replace or deeply integrate its POS.",
     details:
       "KOTA replaces manual phone handling with a real-time voice agent that listens, structures, and executes orders directly into kitchen workflows without requiring a POS dependency.",
     overview: {
@@ -101,9 +107,9 @@ export const projects: Project[] = [
     philosophical:
       "If software can listen in real time, it can operate in real time.",
     metrics: [
-      { value: "Live", label: "in production", accent: true },
+      { value: "Live", label: "product site", accent: true },
       { value: "Real-time", label: "speech to order" },
-      { value: "0", label: "POS rewrite required" },
+      { value: "POS-independent", label: "no replacement" },
     ],
     websiteUrl: "https://kota.kummalabs.com",
     featured: true
@@ -117,6 +123,8 @@ export const projects: Project[] = [
     subtitle: "A self-aware personal agent.",
     tagline:
       "Most AI products fail not on the model, but on orchestration.",
+    outcome:
+      "Unifies multiple AI models and coding agents into one orchestration layer for real development workflows.",
     details:
       "Archon is a personal AI agent (Python, CLI-first) that coordinates Claude, GPT, and Gemini, runs a deep tool layer over the filesystem, web, and MCP servers, keeps compressed long-term memory, and delegates real work to coding-agent workers like Claude Code, Codex, and OpenCode through a router. It reaches the operator through the terminal, Telegram with human approvals, voice, and phone calls.",
     overview: {
@@ -187,6 +195,8 @@ export const projects: Project[] = [
     slug: "market-systems",
     subtitle: "Decision architecture under uncertainty.",
     tagline: "Insight is not enough. A system is only real when it stays executable under pressure.",
+    outcome:
+      "Converts discretionary market reading into a rules-based MNQ/MES execution framework designed to prioritize process, risk control, and repeatability over daily P&L.",
     description: "A decision-quality system that treats markets as a real-time system of risk, latency, and feedback.",
     details: "Market Systems treats trading as a real-time decision problem: noisy, adversarial, and latency-bound. It spans market-structure research (liquidity, ICT and Smart Money Concepts, regime classification on MNQ and MES futures), Pine Script tooling, a decision journal, and risk rules enforced by the system, with a dashboard that scores execution quality over raw PnL.",
     overview: {

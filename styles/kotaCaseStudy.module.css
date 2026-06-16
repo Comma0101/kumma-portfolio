@@ -84,11 +84,12 @@
 }
 
 .heroDesc {
-  margin: 0 0 0.8rem;
-  font-size: clamp(0.98rem, 1.35vw, 1.18rem);
-  line-height: 1.8;
-  color: rgba(220, 220, 220, 0.7);
-  max-width: 60ch;
+  margin: 0 0 1.2rem;
+  font-size: clamp(1.12rem, 1.7vw, 1.5rem);
+  font-weight: 500;
+  line-height: 1.45;
+  color: rgba(240, 237, 232, 0.92);
+  max-width: 48ch;
 }
 
 .heroContext {

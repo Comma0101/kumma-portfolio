@@ -68,6 +68,12 @@ export default function ProjectDetail({ project }: { project: Project }) {
         )}
       </header>
 
+      {project.outcome && (
+        <p className={styles.outcome} data-reveal>
+          {project.outcome}
+        </p>
+      )}
+
       {project.metrics && project.metrics.length > 0 && (
         <section className={styles.metrics} data-reveal>
           {project.metrics.map((m) => (
@@ -89,12 +95,6 @@ export default function ProjectDetail({ project }: { project: Project }) {
         </section>
       )}
 
-      {project.details && (
-        <section className={styles.block} data-reveal>
-          <p className={styles.lead}>{project.details}</p>
-        </section>
-      )}
-
       {project.overview && (
         <section className={styles.block} data-reveal>
           <h2 className={styles.h2}>{project.overview.headline}</h2>
@@ -104,6 +104,7 @@ export default function ProjectDetail({ project }: { project: Project }) {
 
       {project.narrative && (
         <section className={styles.block} data-reveal>
+          <h2 className={styles.h2}>Key decisions</h2>
           <div className={styles.arc}>
             <div>
               <span className={styles.arcNo}>01</span>

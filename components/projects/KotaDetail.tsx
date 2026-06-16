@@ -77,10 +77,11 @@ export default function KotaDetail({ project }: { project: Project }) {
         <p className={`${styles.subtitle} ${cormorant.className}`}>
           Conversation as infrastructure.
         </p>
-        <p className={`${styles.heroDesc} ${grotesk.className}`}>
-          A voice-first AI system that captures real customer calls and turns
-          them into structured kitchen actions in real time.
-        </p>
+        {project.outcome && (
+          <p className={`${styles.heroDesc} ${grotesk.className}`}>
+            {project.outcome}
+          </p>
+        )}
         <p className={`${styles.heroContext} ${grotesk.className}`}>
           Built for environments where missed calls mean lost revenue, and speed
           matters more than perfect inputs.
