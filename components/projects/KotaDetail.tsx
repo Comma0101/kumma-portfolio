@@ -103,6 +103,23 @@ export default function KotaDetail({ project }: { project: Project }) {
         )}
       </header>
 
+      {project.metrics && project.metrics.length > 0 && (
+        <section className={styles.metricsBand}>
+          {project.metrics.map((m) => (
+            <div key={m.label} className={styles.metricCell}>
+              <span
+                className={`${styles.metricNum} ${grotesk.className} ${m.accent ? styles.metricNumAccent : ""}`}
+              >
+                {m.value}
+              </span>
+              <span className={`${styles.metricCap} ${grotesk.className}`}>
+                {m.label}
+              </span>
+            </div>
+          ))}
+        </section>
+      )}
+
       <section className={styles.vizSection} aria-hidden="true">
         <KotaViz size="detail" />
       </section>

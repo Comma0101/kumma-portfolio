@@ -4,6 +4,17 @@ export interface TechStack {
   icon: string;
 }
 
+// Proof shown high on the page and on the home cards.
+// NOTE: these are verifiable facts about each system, not performance claims.
+// Replace/extend with real measured numbers when available (KOTA: median
+// latency, calls handled, concurrent sessions; ARCHON: GitHub stars). Do not
+// invent metrics; an unverifiable number is worse than an honest fact.
+export interface Metric {
+  value: string;
+  label: string;
+  accent?: boolean;
+}
+
 export interface NarrativeArc {
   context: string;
   decision: string;
@@ -26,6 +37,7 @@ export interface Project {
   narrative?: NarrativeArc;
   techStack?: TechStack[];
   philosophical?: string;
+  metrics?: Metric[];
   demoUrl?: string;
   caseStudyUrl?: string;
   websiteUrl?: string;
@@ -88,6 +100,11 @@ export const projects: Project[] = [
     ],
     philosophical:
       "If software can listen in real time, it can operate in real time.",
+    metrics: [
+      { value: "Live", label: "in production", accent: true },
+      { value: "Real-time", label: "speech to order" },
+      { value: "0", label: "POS rewrite required" },
+    ],
     websiteUrl: "https://kota.kummalabs.com",
     featured: true
   },
@@ -156,6 +173,11 @@ export const projects: Project[] = [
     ],
     philosophical:
       "Intelligence is not the model. It is the system around it.",
+    metrics: [
+      { value: "3", label: "models orchestrated" },
+      { value: "3", label: "coding agents delegated" },
+      { value: "Open", label: "source, self-hostable", accent: true },
+    ],
     repoUrl: "https://github.com/Comma0101/archon",
     featured: true
   },
@@ -210,6 +232,11 @@ export const projects: Project[] = [
       }
     ],
     philosophical: "A system is only as good as the feedback loop it generates.",
+    metrics: [
+      { value: "MNQ · MES", label: "futures studied" },
+      { value: "Decisions", label: "scored over PnL", accent: true },
+      { value: "Rules", label: "enforced by the system" },
+    ],
     featured: true
   }
 ];

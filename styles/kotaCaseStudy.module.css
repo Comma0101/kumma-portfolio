@@ -8,6 +8,46 @@
   margin: 0 auto;
 }
 
+/* ── Metrics band ── */
+
+.metricsBand {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1px;
+  margin: 0 0 clamp(4rem, 7vw, 6rem);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--line);
+  overflow: hidden;
+}
+
+.metricCell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding: clamp(1.2rem, 2.6vw, 1.9rem);
+  background: var(--surface);
+}
+
+.metricNum {
+  font-size: clamp(1.5rem, 2.8vw, 2.2rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--paper);
+}
+
+.metricNumAccent {
+  color: var(--signal);
+}
+
+.metricCap {
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
 /* ── Hero ── */
 
 .hero {

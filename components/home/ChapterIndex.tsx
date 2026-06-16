@@ -6,6 +6,7 @@ import Link from "next/link";
 import SectionHeader from "@/components/system/SectionHeader";
 import SystemViz from "@/components/system/SystemViz";
 import { vizBySlug } from "@/components/viz/registry";
+import { projects } from "@/data/projectData";
 import { chapters } from "./chapters";
 import styles from "./ChapterIndex.module.css";
 
@@ -42,6 +43,7 @@ export default function ChapterIndex() {
         {chapters.map((c) => {
           const slug = c.href.split("/").pop() ?? "";
           const Viz = vizBySlug[slug];
+          const metrics = projects.find((p) => p.slug === slug)?.metrics;
           return (
           <article
             key={c.no}
@@ -57,6 +59,20 @@ export default function ChapterIndex() {
                   <li key={t}>{t}</li>
                 ))}
               </ul>
+              {metrics && metrics.length > 0 && (
+                <dl className={styles.stats}>
+                  {metrics.map((m) => (
+                    <div key={m.label} className={styles.stat}>
+                      <dt
+                        className={`${styles.statValue} ${m.accent ? styles.statAccent : ""}`}
+                      >
+                        {m.value}
+                      </dt>
+                      <dd className={styles.statLabel}>{m.label}</dd>
+                    </div>
+                  ))}
+                </dl>
+              )}
               <div className={styles.links}>
                 <Link href={c.href} className={styles.link}>
                   {c.layout === "strip" ? "View studies →" : "Enter chapter →"}

@@ -68,6 +68,21 @@ export default function ProjectDetail({ project }: { project: Project }) {
         )}
       </header>
 
+      {project.metrics && project.metrics.length > 0 && (
+        <section className={styles.metrics} data-reveal>
+          {project.metrics.map((m) => (
+            <div key={m.label} className={styles.metric}>
+              <span
+                className={`${styles.metricValue} ${m.accent ? styles.metricAccent : ""}`}
+              >
+                {m.value}
+              </span>
+              <span className={styles.metricLabel}>{m.label}</span>
+            </div>
+          ))}
+        </section>
+      )}
+
       {Viz && (
         <section className={styles.vizSection} data-reveal aria-hidden="true">
           <Viz size="detail" />

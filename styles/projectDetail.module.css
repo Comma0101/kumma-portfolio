@@ -45,6 +45,46 @@
   margin-top: 1.8rem;
 }
 
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1px;
+  margin: clamp(2.5rem, 5vw, 4rem) 0 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--line);
+  overflow: hidden;
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding: clamp(1.2rem, 2.6vw, 1.9rem);
+  background: var(--surface);
+}
+
+.metricValue {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  font-size: clamp(1.5rem, 2.8vw, 2.2rem);
+  line-height: 1;
+  color: var(--paper);
+}
+
+.metricAccent {
+  color: var(--signal);
+}
+
+.metricLabel {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
 .vizSection {
   margin: clamp(3rem, 6vw, 5rem) 0;
   border: 1px solid var(--line);
