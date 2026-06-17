@@ -30,6 +30,7 @@
 }
 
 .metricNum {
+  font-family: var(--font-sans);
   font-size: clamp(1.5rem, 2.8vw, 2.2rem);
   font-weight: 600;
   letter-spacing: -0.02em;
@@ -42,10 +43,17 @@
 }
 
 .metricCap {
+  font-family: var(--font-mono);
   font-size: 0.62rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--faint);
+}
+
+@media (max-width: 560px) {
+  .metricsBand {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ── Hero ── */

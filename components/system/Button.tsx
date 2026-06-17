@@ -21,6 +21,7 @@ export default function Button({
     return (
       <a className={cls} href={href} target="_blank" rel="noopener noreferrer">
         {children}
+        <span className="sr-only"> (opens in new tab)</span>
       </a>
     );
   }

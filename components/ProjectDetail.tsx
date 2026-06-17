@@ -118,7 +118,7 @@ export default function ProjectDetail({ project }: { project: Project }) {
             </div>
             <div>
               <span className={styles.arcNo}>03</span>
-              <h3 className={styles.arcLabel}>Outcome</h3>
+              <h3 className={styles.arcLabel}>Result</h3>
               <p className={styles.body}>{project.narrative.outcome}</p>
             </div>
           </div>

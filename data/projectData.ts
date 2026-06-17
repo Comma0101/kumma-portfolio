@@ -107,7 +107,7 @@ export const projects: Project[] = [
     philosophical:
       "If software can listen in real time, it can operate in real time.",
     metrics: [
-      { value: "Live", label: "product site", accent: true },
+      { value: "Live demo", label: "deployed", accent: true },
       { value: "Real-time", label: "speech to order" },
       { value: "POS-independent", label: "no replacement" },
     ],
@@ -198,7 +198,7 @@ export const projects: Project[] = [
     outcome:
       "Converts discretionary market reading into a rules-based MNQ/MES execution framework designed to prioritize process, risk control, and repeatability over daily P&L.",
     description: "A decision-quality system that treats markets as a real-time system of risk, latency, and feedback.",
-    details: "Market Systems treats trading as a real-time decision problem: noisy, adversarial, and latency-bound. It spans market-structure research (liquidity, ICT and Smart Money Concepts, regime classification on MNQ and MES futures), Pine Script tooling, a decision journal, and risk rules enforced by the system, with a dashboard that scores execution quality over raw PnL.",
+    details: "Market Systems treats trading as a real-time decision problem: noisy, adversarial, and latency-bound. It spans market-structure research (liquidity, ICT and Smart Money Concepts, regime classification on MNQ and MES futures), Pine Script tooling, a decision journal, and risk rules defined by the system, with a dashboard that scores execution quality over raw PnL.",
     overview: {
       headline: "System Intent",
       content: "Instead of simply displaying PnL, this dashboard quantifies decision quality, risk exposure, and behavioral patterns to enforce disciplined systems thinking in a stochastic environment."
@@ -222,7 +222,7 @@ export const projects: Project[] = [
       },
       {
         name: "Risk architecture",
-        description: "Position and risk constraints enforced as system rules, not willpower",
+        description: "Position and risk limits defined as system rules, not willpower",
         icon: "receipt"
       },
       {
@@ -245,7 +245,7 @@ export const projects: Project[] = [
     metrics: [
       { value: "MNQ · MES", label: "futures studied" },
       { value: "Decisions", label: "scored over PnL", accent: true },
-      { value: "Rules", label: "enforced by the system" },
+      { value: "Rule-based", label: "execution framework" },
     ],
     featured: true
   }

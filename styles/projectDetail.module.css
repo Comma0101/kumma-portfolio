@@ -96,6 +96,12 @@
   color: var(--faint);
 }
 
+@media (max-width: 560px) {
+  .metrics {
+    grid-template-columns: 1fr;
+  }
+}
+
 .vizSection {
   margin: clamp(3rem, 6vw, 5rem) 0;
   border: 1px solid var(--line);

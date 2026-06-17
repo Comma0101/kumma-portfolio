@@ -98,7 +98,8 @@ export default function KotaDetail({ project }: { project: Project }) {
               rel="noopener noreferrer"
               className={`${styles.actionLink} ${grotesk.className}`}
             >
-              Visit Live Site &rarr;
+              Visit live site &rarr;
+              <span className="sr-only"> (opens in new tab)</span>
             </a>
           </div>
         )}
@@ -109,13 +110,11 @@ export default function KotaDetail({ project }: { project: Project }) {
           {project.metrics.map((m) => (
             <div key={m.label} className={styles.metricCell}>
               <span
-                className={`${styles.metricNum} ${grotesk.className} ${m.accent ? styles.metricNumAccent : ""}`}
+                className={`${styles.metricNum} ${m.accent ? styles.metricNumAccent : ""}`}
               >
                 {m.value}
               </span>
-              <span className={`${styles.metricCap} ${grotesk.className}`}>
-                {m.label}
-              </span>
+              <span className={styles.metricCap}>{m.label}</span>
             </div>
           ))}
         </section>

@@ -16,8 +16,8 @@ export const chapters: Chapter[] = [
     href: "/projects/kota",
     layout: "feature",
     blurb:
-      "A voice-first AI system that answers restaurant phone calls and turns them into structured, kitchen-ready orders.",
-    tags: ["real-time voice", "LLM orchestration", "production"],
+      "Turns restaurant phone calls into structured, actionable orders without requiring the restaurant to replace or deeply integrate its POS.",
+    tags: ["real-time voice", "LLM orchestration", "menu grounding"],
   },
   {
     no: "02",
@@ -25,7 +25,7 @@ export const chapters: Chapter[] = [
     href: "/projects/archon",
     layout: "flip",
     blurb:
-      "A self-aware personal AI agent that orchestrates models, tools, memory, and coding-agent workers through one inspectable control plane.",
+      "Unifies multiple AI models and coding agents into one orchestration layer for real development workflows.",
     tags: ["orchestration", "coding workers", "active R&D"],
   },
   {
@@ -34,7 +34,7 @@ export const chapters: Chapter[] = [
     href: "/projects/market-systems",
     layout: "band",
     blurb:
-      "Decision architecture under uncertainty. Treating markets as a real-time system of risk, latency, and feedback.",
+      "Converts discretionary market reading into a rules-based MNQ/MES execution framework designed to prioritize process, risk control, and repeatability over daily P&L.",
     tags: ["research", "risk", "execution"],
   },
   {
