@@ -5,7 +5,8 @@ import Footer from "./Footer";
 
 export default function ConditionalFooter() {
   const pathname = usePathname();
-  const hideFooter = pathname === "/stories";
+  const p = pathname?.replace(/\/+$/, "") || "/";
+  const hideFooter = p === "/stories" || p === "/build";
   const isBlog = pathname?.startsWith("/blog");
 
   if (hideFooter) {

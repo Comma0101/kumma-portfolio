@@ -171,6 +171,8 @@ const Navigation = () => {
     return activeSection === href.substring(1);
   };
 
+  if (pathname === "/build" || pathname === "/build/") return null;
+
   return (
     <nav
       className={`${styles.navigation} ${
