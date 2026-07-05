@@ -5,11 +5,13 @@ import { getSortedPostsData } from "@/lib/posts";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Between Logic and Light: Essays by KUMMA",
-  description: "Writing to understand what it means to make, feel, and be.",
+  title: {
+    absolute: "Field Notes | Kumma",
+  },
+  description: "Technical notes from systems that turn messy inputs into reliable action.",
   openGraph: {
-    title: "Between Logic and Light: Essays by KUMMA",
-    description: "Writing to understand what it means to make, feel, and be.",
+    title: "Field Notes | Kumma",
+    description: "Technical notes from systems that turn messy inputs into reliable action.",
     url: "https://kumma.me/blog",
     siteName: "KUMMA",
     images: [
@@ -24,8 +26,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Between Logic and Light: Essays by KUMMA",
-    description: "Writing to understand what it means to make, feel, and be.",
+    title: "Field Notes | Kumma",
+    description: "Technical notes from systems that turn messy inputs into reliable action.",
     creator: "@kumma",
     images: ["https://kumma.me/twitter-blog-image.png"],
   },

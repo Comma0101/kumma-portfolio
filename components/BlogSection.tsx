@@ -36,6 +36,9 @@ const spaceGrotesk = Space_Grotesk({
 const escapeRegExp = (value: string) =>
   value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
+const isEngineeringPost = (post: BlogPost) =>
+  post.category.toLowerCase() === "engineering";
+
 const Highlight = ({
   text,
   highlight,
@@ -90,7 +93,7 @@ const BlogSection = forwardRef<HTMLDivElement, BlogSectionProps>(
     const filteredPosts = useMemo(() => {
       const query = searchQuery.trim().toLowerCase();
 
-      return posts.filter((post) => {
+      const matchingPosts = posts.filter((post) => {
         const categoryMatches =
           selectedCategory === allCategoryLabel || post.category === selectedCategory;
 
@@ -103,6 +106,21 @@ const BlogSection = forwardRef<HTMLDivElement, BlogSectionProps>(
           post.tags.some((tag) => tag.toLowerCase().includes(query))
         );
       });
+
+      if (selectedCategory !== allCategoryLabel) {
+        return matchingPosts;
+      }
+
+      return [...matchingPosts].sort((a, b) => {
+        const aEngineering = isEngineeringPost(a);
+        const bEngineering = isEngineeringPost(b);
+
+        if (aEngineering === bEngineering) {
+          return 0;
+        }
+
+        return aEngineering ? -1 : 1;
+      });
     }, [posts, selectedCategory, searchQuery, allCategoryLabel]);
 
     const dateLocale = locale === "zh" ? "zh-CN" : "en-US";
@@ -112,14 +130,13 @@ const BlogSection = forwardRef<HTMLDivElement, BlogSectionProps>(
         <div className={styles.blogWrapper}>
           <header className={styles.blogHeader}>
             <p className={`${styles.blogEyebrow} ${spaceGrotesk.className}`}>
-              Essays / Journal
+              Systems / Notes
             </p>
             <h1 className={`${styles.blogTitle} ${cormorant.className}`}>
-              Between Logic And Light
+              Field Notes
             </h1>
             <p className={`${styles.blogIntro} ${spaceGrotesk.className}`}>
-              Writing to understand what it means to make, feel, and be.
-              Fragments on craft, systems, and the philosophy behind digital work.
+              Technical notes from systems that turn messy inputs into reliable action.
             </p>
           </header>
 
@@ -131,7 +148,7 @@ const BlogSection = forwardRef<HTMLDivElement, BlogSectionProps>(
               <input
                 id="blog-search"
                 type="text"
-                placeholder={locale === "zh" ? "搜索文章..." : "Search essays..."}
+                placeholder={locale === "zh" ? "搜索文章..." : "Search notes..."}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className={`${styles.searchInput} ${spaceGrotesk.className}`}
@@ -168,7 +185,7 @@ const BlogSection = forwardRef<HTMLDivElement, BlogSectionProps>(
           </div>
 
           <p className={`${styles.resultsMeta} ${spaceGrotesk.className}`}>
-            {filteredPosts.length} {locale === "zh" ? "篇文章" : "essays"}
+            {filteredPosts.length} {locale === "zh" ? "篇文章" : "notes"}
           </p>
 
           <div className={styles.articlesList}>
@@ -181,6 +198,11 @@ const BlogSection = forwardRef<HTMLDivElement, BlogSectionProps>(
                     className={styles.articleEntry}
                   >
                     <div className={styles.articleMain}>
+                      {isEngineeringPost(post) ? (
+                        <p className={`${styles.articleChapter} ${spaceGrotesk.className}`}>
+                          System note
+                        </p>
+                      ) : null}
                       <h2 className={`${styles.articleTitle} ${cormorant.className}`}>
                         <Highlight text={post.title} highlight={searchQuery} />
                       </h2>
@@ -223,7 +245,7 @@ const BlogSection = forwardRef<HTMLDivElement, BlogSectionProps>(
                 <p className={`${styles.noResultsText} ${spaceGrotesk.className}`}>
                   {locale === "zh"
                     ? "没有找到符合筛选条件的文章。"
-                    : "No essays matched your current filters."}
+                    : "No notes matched your current filters."}
                 </p>
                 <button
                   type="button"

@@ -9,7 +9,7 @@
 }
 
 .blogSection::before {
-  content: "Journal";
+  content: "Notes";
   position: absolute;
   top: 6%;
   right: 5%;

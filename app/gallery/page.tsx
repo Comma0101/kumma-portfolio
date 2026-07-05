@@ -65,10 +65,10 @@ export default function GalleryLanding() {
               Visual Studies
             </p>
             <h1 className={`${styles.galleryTitle} ${cormorant.className}`} data-reveal>
-              Interface & Atmosphere
+              Visual Systems
             </h1>
             <p className={`${styles.galleryIntro} ${spaceGrotesk.className}`} data-reveal>
-              Visual research that supports interface identity. Exploring atmosphere, spatial pacing, and rhythm as evidence of systems thinking.
+              Image sets and interface references for rhythm, mood, and spatial decisions.
             </p>
           </div>
 
@@ -77,7 +77,7 @@ export default function GalleryLanding() {
               Editorial Note
             </p>
             <p className={`${styles.noteText} ${spaceGrotesk.className}`}>
-              These studies inform the typographic, spatial, and motion choices used across production systems.
+              Interface studies for atmosphere, pacing, and system legibility.
             </p>
           </aside>
         </header>
