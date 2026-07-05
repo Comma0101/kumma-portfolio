@@ -7,6 +7,13 @@ export interface Chapter {
   layout: "feature" | "flip" | "band" | "strip";
   secondary?: { label: string; href: string };
   images?: string[];
+  evidence?: {
+    input: string;
+    transform: string;
+    output: string;
+    guardrail: string;
+  };
+  artifact?: string;
 }
 
 export const chapters: Chapter[] = [
@@ -18,6 +25,13 @@ export const chapters: Chapter[] = [
     blurb:
       "Turns restaurant phone calls into structured, actionable orders without requiring the restaurant to replace or deeply integrate its POS.",
     tags: ["real-time voice", "LLM orchestration", "menu grounding"],
+    evidence: {
+      input: "messy phone speech",
+      transform: "streaming STT + menu grounding",
+      output: "kitchen-ready order",
+      guardrail: "clarify before commit",
+    },
+    artifact: "live voice/order flow",
   },
   {
     no: "02",
@@ -27,6 +41,13 @@ export const chapters: Chapter[] = [
     blurb:
       "Unifies multiple AI models and coding agents into one orchestration layer for real development workflows.",
     tags: ["orchestration", "coding workers", "active R&D"],
+    evidence: {
+      input: "multi-step dev task",
+      transform: "models + tools + workers",
+      output: "inspectable agent session",
+      guardrail: "trace, policy, recovery",
+    },
+    artifact: "open-source control plane",
   },
   {
     no: "03",
@@ -36,6 +57,13 @@ export const chapters: Chapter[] = [
     blurb:
       "Converts discretionary market reading into a rules-based MNQ/MES execution framework designed to prioritize process, risk control, and repeatability over daily P&L.",
     tags: ["research", "risk", "execution"],
+    evidence: {
+      input: "noisy market context",
+      transform: "setup taxonomy + risk rules",
+      output: "scored decision record",
+      guardrail: "process over P&L",
+    },
+    artifact: "decision-quality workflow",
   },
   {
     no: "04",
