@@ -28,10 +28,20 @@ export default function KotaDetail({ project }: { project: Project }) {
   const sectionsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
     // Let layout settle after client-side navigation before measuring
     const rafId = requestAnimationFrame(() => {
       ScrollTrigger.refresh();
     });
+
+    if (reduceMotion) {
+      return () => {
+        cancelAnimationFrame(rafId);
+      };
+    }
 
     const ctx = gsap.context(() => {
       gsap.fromTo(
