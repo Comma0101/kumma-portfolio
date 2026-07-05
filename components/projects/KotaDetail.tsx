@@ -9,6 +9,9 @@ import type { Project } from "@/data/projectData";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const proofCaption =
+  "Messy speech becomes a menu-verified ticket with confidence checks.";
+
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
   weight: ["500", "600", "700"],
@@ -70,59 +73,67 @@ export default function KotaDetail({ project }: { project: Project }) {
     <div className={styles.page}>
       {/* ── Hero ── */}
       <header ref={heroRef} className={styles.hero}>
-        <p className={`${styles.eyebrow} ${grotesk.className}`}>
-          Flagship system
-        </p>
-        <h1 className={`${styles.title} ${cormorant.className}`}>KOTA</h1>
-        <p className={`${styles.subtitle} ${cormorant.className}`}>
-          Conversation as infrastructure.
-        </p>
-        {project.outcome && (
-          <p className={`${styles.heroDesc} ${grotesk.className}`}>
-            {project.outcome}
+        <div className={styles.heroCopy}>
+          <p className={`${styles.eyebrow} ${grotesk.className}`}>
+            Flagship system
           </p>
-        )}
-        <p className={`${styles.heroContext} ${grotesk.className}`}>
-          Built for environments where missed calls mean lost revenue, and speed
-          matters more than perfect inputs.
-        </p>
-        <p className={`${styles.stackLine} ${grotesk.className}`}>
-          Voice Agent · LLM Orchestration · Menu Intelligence · Real-time
-          Streaming · Order Sync
-        </p>
-        {project.websiteUrl && (
-          <div className={styles.actions}>
-            <a
-              href={project.websiteUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`${styles.actionLink} ${grotesk.className}`}
-            >
-              Visit live site &rarr;
-              <span className="sr-only"> (opens in new tab)</span>
-            </a>
-          </div>
-        )}
-      </header>
-
-      {project.metrics && project.metrics.length > 0 && (
-        <section className={styles.metricsBand}>
-          {project.metrics.map((m) => (
-            <div key={m.label} className={styles.metricCell}>
-              <span
-                className={`${styles.metricNum} ${m.accent ? styles.metricNumAccent : ""}`}
+          <h1 className={`${styles.title} ${cormorant.className}`}>KOTA</h1>
+          <p className={`${styles.subtitle} ${cormorant.className}`}>
+            Conversation as infrastructure.
+          </p>
+          {project.outcome && (
+            <p className={`${styles.heroDesc} ${grotesk.className}`}>
+              {project.outcome}
+            </p>
+          )}
+          <p className={`${styles.heroContext} ${grotesk.className}`}>
+            Built for environments where missed calls mean lost revenue, and speed
+            matters more than perfect inputs.
+          </p>
+          <p className={`${styles.stackLine} ${grotesk.className}`}>
+            Voice Agent · LLM Orchestration · Menu Intelligence · Real-time
+            Streaming · Order Sync
+          </p>
+          {project.websiteUrl && (
+            <div className={styles.actions}>
+              <a
+                href={project.websiteUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`${styles.actionLink} ${grotesk.className}`}
               >
-                {m.value}
-              </span>
-              <span className={styles.metricCap}>{m.label}</span>
+                Visit live site &rarr;
+                <span className="sr-only"> (opens in new tab)</span>
+              </a>
             </div>
-          ))}
-        </section>
-      )}
+          )}
+        </div>
 
-      <section className={styles.vizSection} aria-hidden="true">
-        <KotaViz size="detail" />
-      </section>
+        <div className={styles.heroProof}>
+          {project.metrics && project.metrics.length > 0 && (
+            <section className={styles.metricsBand} aria-label="KOTA proof metrics">
+              {project.metrics.map((m) => (
+                <div key={m.label} className={styles.metricCell}>
+                  <span
+                    className={`${styles.metricNum} ${m.accent ? styles.metricNumAccent : ""}`}
+                  >
+                    {m.value}
+                  </span>
+                  <span className={styles.metricCap}>{m.label}</span>
+                </div>
+              ))}
+            </section>
+          )}
+
+          <section className={styles.vizSection} aria-hidden="true">
+            <KotaViz size="teaser" />
+          </section>
+
+          <p className={`${styles.proofCaption} ${grotesk.className}`}>
+            {proofCaption}
+          </p>
+        </div>
+      </header>
 
       <div ref={sectionsRef}>
         {/* ── Reality Block ── */}

@@ -9,9 +9,19 @@ import styles from "@/styles/projectDetail.module.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const proofCaptions: Record<string, string> = {
+  archon: "Tasks route through models, tools, memory, workers, and recovery.",
+  "market-systems":
+    "Noisy context is reduced into rule-based decision records.",
+};
+
 export default function ProjectDetail({ project }: { project: Project }) {
   const root = useRef<HTMLDivElement>(null);
   const Viz = vizBySlug[project.slug];
+  const proofCaption =
+    proofCaptions[project.slug] ??
+    "System proof connects the project metrics to the operating model.";
+  const hasProof = Boolean(project.metrics?.length || Viz);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -44,56 +54,63 @@ export default function ProjectDetail({ project }: { project: Project }) {
   return (
     <div ref={root} className={styles.container}>
       <header className={styles.hero} data-reveal>
-        {project.subtitle && <p className={styles.eyebrow}>{project.subtitle}</p>}
-        <h1 className={styles.title}>{project.title}</h1>
-        {project.tagline && <p className={styles.tagline}>{project.tagline}</p>}
-        {(project.websiteUrl || project.repoUrl || project.demoUrl) && (
-          <div className={styles.actions}>
-            {project.websiteUrl && (
-              <Button href={project.websiteUrl} variant="ghost" external>
-                Visit live site →
-              </Button>
+        <div className={styles.heroCopy}>
+          {project.subtitle && <p className={styles.eyebrow}>{project.subtitle}</p>}
+          <h1 className={styles.title}>{project.title}</h1>
+          {project.tagline && <p className={styles.tagline}>{project.tagline}</p>}
+          {(project.websiteUrl || project.repoUrl || project.demoUrl) && (
+            <div className={styles.actions}>
+              {project.websiteUrl && (
+                <Button href={project.websiteUrl} variant="ghost" external>
+                  Visit live site →
+                </Button>
+              )}
+              {project.repoUrl && (
+                <Button href={project.repoUrl} variant="ghost" external>
+                  View on GitHub →
+                </Button>
+              )}
+              {project.demoUrl && (
+                <Button href={project.demoUrl} variant="ghost" external>
+                  View demo →
+                </Button>
+              )}
+            </div>
+          )}
+          {project.outcome && (
+            <p className={styles.outcome}>
+              {project.outcome}
+            </p>
+          )}
+        </div>
+
+        {hasProof && (
+          <div className={styles.heroProof}>
+            {project.metrics && project.metrics.length > 0 && (
+              <section className={styles.metrics} aria-label="Project proof metrics">
+                {project.metrics.map((m) => (
+                  <div key={m.label} className={styles.metric}>
+                    <span
+                      className={`${styles.metricValue} ${m.accent ? styles.metricAccent : ""}`}
+                    >
+                      {m.value}
+                    </span>
+                    <span className={styles.metricLabel}>{m.label}</span>
+                  </div>
+                ))}
+              </section>
             )}
-            {project.repoUrl && (
-              <Button href={project.repoUrl} variant="ghost" external>
-                View on GitHub →
-              </Button>
+
+            {Viz && (
+              <section className={styles.vizSection} aria-hidden="true">
+                <Viz size="teaser" />
+              </section>
             )}
-            {project.demoUrl && (
-              <Button href={project.demoUrl} variant="ghost" external>
-                View demo →
-              </Button>
-            )}
+
+            <p className={styles.proofCaption}>{proofCaption}</p>
           </div>
         )}
       </header>
-
-      {project.outcome && (
-        <p className={styles.outcome} data-reveal>
-          {project.outcome}
-        </p>
-      )}
-
-      {project.metrics && project.metrics.length > 0 && (
-        <section className={styles.metrics} data-reveal>
-          {project.metrics.map((m) => (
-            <div key={m.label} className={styles.metric}>
-              <span
-                className={`${styles.metricValue} ${m.accent ? styles.metricAccent : ""}`}
-              >
-                {m.value}
-              </span>
-              <span className={styles.metricLabel}>{m.label}</span>
-            </div>
-          ))}
-        </section>
-      )}
-
-      {Viz && (
-        <section className={styles.vizSection} data-reveal aria-hidden="true">
-          <Viz size="detail" />
-        </section>
-      )}
 
       {project.overview && (
         <section className={styles.block} data-reveal>

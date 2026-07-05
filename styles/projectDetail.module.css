@@ -1,15 +1,32 @@
 /* Project Detail - Atlas case study */
 
 .container {
-  width: min(100%, 980px);
+  width: min(100%, 1180px);
   margin: 0 auto;
-  padding: clamp(7rem, 11vw, 11rem) var(--page-gutter) clamp(5rem, 9vw, 9rem);
+  padding: clamp(6.5rem, 9vw, 8.5rem) var(--page-gutter) clamp(5rem, 9vw, 9rem);
 }
 
 .hero {
+  min-height: calc(100svh - clamp(6.5rem, 9vw, 8.5rem) - 1.5rem);
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(360px, 1.05fr);
+  align-items: center;
+  gap: clamp(2.5rem, 5vw, 5rem);
+}
+
+.heroCopy {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 1rem;
+  min-width: 0;
+}
+
+.heroProof {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  min-width: 0;
 }
 
 .eyebrow {
@@ -46,7 +63,7 @@
 }
 
 .outcome {
-  margin: clamp(1.8rem, 3.5vw, 2.8rem) 0 0;
+  margin: clamp(1rem, 2vw, 1.6rem) 0 0;
   max-width: 36ch;
   color: var(--paper);
   font-family: var(--font-sans);
@@ -58,9 +75,9 @@
 
 .metrics {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1px;
-  margin: clamp(2.5rem, 5vw, 4rem) 0 0;
+  margin: 0;
   border: 1px solid var(--line);
   border-radius: var(--radius-card);
   background: var(--line);
@@ -71,7 +88,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.45rem;
-  padding: clamp(1.2rem, 2.6vw, 1.9rem);
+  padding: clamp(1rem, 2vw, 1.45rem);
   background: var(--surface);
 }
 
@@ -79,9 +96,10 @@
   font-family: var(--font-sans);
   font-weight: 600;
   letter-spacing: -0.02em;
-  font-size: clamp(1.5rem, 2.8vw, 2.2rem);
-  line-height: 1;
+  font-size: clamp(1.35rem, 2vw, 1.75rem);
+  line-height: 1.08;
   color: var(--paper);
+  hyphens: manual;
 }
 
 .metricAccent {
@@ -103,11 +121,22 @@
 }
 
 .vizSection {
-  margin: clamp(3rem, 6vw, 5rem) 0;
+  height: clamp(17rem, 32vh, 22rem);
+  margin: 0;
   border: 1px solid var(--line);
   border-radius: var(--radius-card);
   background: var(--raised);
   overflow: hidden;
+}
+
+.proofCaption {
+  margin: 0;
+  color: var(--steel);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  line-height: 1.6;
+  text-transform: uppercase;
 }
 
 .block {
@@ -223,5 +252,32 @@
   .stack li {
     grid-template-columns: 1fr;
     gap: 0.3rem;
+  }
+}
+
+@media (max-width: 940px) {
+  .container {
+    width: min(100%, 980px);
+  }
+
+  .hero {
+    min-height: 0;
+    grid-template-columns: 1fr;
+    align-items: start;
+    gap: clamp(2rem, 6vw, 3.5rem);
+  }
+
+  .heroProof {
+    width: 100%;
+  }
+}
+
+@media (max-width: 620px) {
+  .container {
+    padding-top: 6rem;
+  }
+
+  .vizSection {
+    height: clamp(15rem, 52vw, 18rem);
   }
 }
