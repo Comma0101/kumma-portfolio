@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useReducedMotion } from "framer-motion";
+import { resolveHydratedReducedMotion } from "./reducedMotionState";
 
 export function useHydratedReducedMotion() {
   const prefersReducedMotion = useReducedMotion();
@@ -11,5 +12,5 @@ export function useHydratedReducedMotion() {
     setHydrated(true);
   }, []);
 
-  return hydrated && prefersReducedMotion === true;
+  return resolveHydratedReducedMotion({ hydrated, prefersReducedMotion });
 }

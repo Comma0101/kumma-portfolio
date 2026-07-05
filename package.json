@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 4242",
+    "test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-specifier-resolution=node --test components/*.test.ts components/**/*.test.ts",
     "prebuild": "node scripts/generate-og.mjs",
     "build": "next build",
     "start": "next start",

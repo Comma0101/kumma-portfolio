@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { getThreeSceneTuning } from "./threeSceneTuning";
+import { getThreeSceneTuning } from "./threeSceneTuning.ts";
 
 describe("getThreeSceneTuning", () => {
   it("keeps desktop at full terrain quality", () => {
@@ -40,6 +40,21 @@ describe("getThreeSceneTuning", () => {
       segmentX: 72,
       segmentZ: 56,
     });
+  });
+
+  it("keeps the mobile profile ahead of reduced motion on small viewports", () => {
+    const tuning = getThreeSceneTuning({
+      deviceMemory: 8,
+      devicePixelRatio: 3,
+      hardwareConcurrency: 8,
+      isCoarsePointer: false,
+      reducedMotion: true,
+      viewportWidth: 390,
+    });
+
+    assert.equal(tuning.profile, "mobile");
+    assert.equal(tuning.noiseOctaves, 2);
+    assert.equal(tuning.pixelRatio, 1);
   });
 
   it("uses a static reduced-motion profile without desktop-density geometry", () => {
