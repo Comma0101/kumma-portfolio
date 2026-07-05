@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { resolveHydratedReducedMotion } from "./reducedMotionState.ts";
+import { resolveHydratedReducedMotion } from "./reducedMotionState";
 
 describe("resolveHydratedReducedMotion", () => {
   it("uses static rendering before hydration", () => {

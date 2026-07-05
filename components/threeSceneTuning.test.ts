@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { getThreeSceneTuning } from "./threeSceneTuning.ts";
+import { getThreeSceneTuning } from "./threeSceneTuning";
 
 describe("getThreeSceneTuning", () => {
   it("keeps desktop at full terrain quality", () => {

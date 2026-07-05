@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 4242",
-    "test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-specifier-resolution=node --test components/*.test.ts components/**/*.test.ts",
+    "test": "sh -c 'tmp=/tmp/kumma-portfolio-tests; rm -rf \"$tmp\"; tsc components/threeSceneTuning.test.ts components/viz/reducedMotionState.test.ts --module commonjs --target es2020 --moduleResolution node --rootDir . --outDir \"$tmp\" --esModuleInterop --skipLibCheck && node --test \"$tmp/components/threeSceneTuning.test.js\" \"$tmp/components/viz/reducedMotionState.test.js\"; status=$?; rm -rf \"$tmp\"; exit $status'",
     "prebuild": "node scripts/generate-og.mjs",
     "build": "next build",
     "start": "next start",
