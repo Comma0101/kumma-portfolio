@@ -51,7 +51,20 @@ export default function AgentAwareness() {
 
   // The agent page is the protocol itself; /stories is its own experience.
   const path = (pathname || "/").replace(/\/+$/, "") || "/";
-  if (path === "/agent" || path === "/stories" || path === "/build") return null;
+  const footerProtocolRoutes =
+    path === "/blog" ||
+    path.startsWith("/blog/") ||
+    path === "/gallery" ||
+    path.startsWith("/gallery/");
+
+  if (
+    path === "/agent" ||
+    path === "/stories" ||
+    path === "/build" ||
+    footerProtocolRoutes
+  ) {
+    return null;
+  }
 
   const dismiss = () => {
     setDismissed(true);
