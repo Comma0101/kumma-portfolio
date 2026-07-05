@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import * as THREE from "three";
+import { getThreeSceneTuning } from "./threeSceneTuning";
 
 interface LenisInstance {
   scroll: number;
@@ -99,10 +100,15 @@ export default function ThreeScene() {
       "(prefers-reduced-motion: reduce)",
     ).matches;
     const nav = navigator as Navigator & { deviceMemory?: number };
-    const lowPerf =
-      window.matchMedia("(pointer: coarse)").matches ||
-      (nav.deviceMemory ?? 8) <= 4 ||
-      (navigator.hardwareConcurrency ?? 8) <= 4;
+    const isCoarsePointer = window.matchMedia("(pointer: coarse)").matches;
+    const initialTuning = getThreeSceneTuning({
+      deviceMemory: nav.deviceMemory,
+      devicePixelRatio: window.devicePixelRatio,
+      hardwareConcurrency: navigator.hardwareConcurrency,
+      isCoarsePointer,
+      reducedMotion,
+      viewportWidth: window.innerWidth,
+    });
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
@@ -119,7 +125,7 @@ export default function ThreeScene() {
     let renderer: THREE.WebGLRenderer;
     try {
       renderer = new THREE.WebGLRenderer({
-        antialias: !lowPerf,
+        antialias: initialTuning.antialias,
         alpha: true,
         powerPreference: "low-power",
       });
@@ -128,20 +134,23 @@ export default function ThreeScene() {
       return;
     }
 
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, lowPerf ? 1 : 1.5));
+    renderer.setPixelRatio(initialTuning.pixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0x0a0b0c, 0);
     renderer.domElement.style.width = "100%";
     renderer.domElement.style.height = "100%";
     mount.appendChild(renderer.domElement);
 
-    const segX = lowPerf ? 120 : 200;
-    const segZ = lowPerf ? 100 : 160;
-    const geometry = new THREE.PlaneGeometry(2600, 2200, segX, segZ);
+    const geometry = new THREE.PlaneGeometry(
+      2600,
+      2200,
+      initialTuning.segmentX,
+      initialTuning.segmentZ,
+    );
     const uniforms = { uTime: { value: 5.0 } };
     const material = new THREE.ShaderMaterial({
       uniforms,
-      vertexShader: VERT(lowPerf ? 3 : 4),
+      vertexShader: VERT(initialTuning.noiseOctaves),
       fragmentShader: FRAG,
       side: THREE.DoubleSide,
     });
@@ -156,54 +165,105 @@ export default function ThreeScene() {
       mx = e.clientX / window.innerWidth - 0.5;
       my = e.clientY / window.innerHeight - 0.5;
     };
-    window.addEventListener("pointermove", onPointer);
+    if (!reducedMotion) {
+      window.addEventListener("pointermove", onPointer);
+    }
 
     const start = performance.now();
     let animationFrame = 0;
+    let sceneVisible = true;
+
+    const renderFrame = () => {
+      uniforms.uTime.value = (performance.now() - start) / 1000;
+      tx += (mx - tx) * 0.04;
+      ty += (my - ty) * 0.04;
+      camera.position.x = camBase.x + tx * 46;
+      camera.position.y = camBase.y + -ty * 18;
+      camera.lookAt(lookTarget);
+      renderer.render(scene, camera);
+    };
+
+    const stopLoop = () => {
+      if (animationFrame) {
+        window.cancelAnimationFrame(animationFrame);
+        animationFrame = 0;
+      }
+    };
 
     const loop = () => {
-      if (!document.hidden) {
-        uniforms.uTime.value = (performance.now() - start) / 1000;
-        tx += (mx - tx) * 0.04;
-        ty += (my - ty) * 0.04;
-        camera.position.x = camBase.x + tx * 46;
-        camera.position.y = camBase.y + -ty * 18;
-        camera.lookAt(lookTarget);
-        renderer.render(scene, camera);
+      animationFrame = 0;
+      if (document.hidden || !sceneVisible) return;
+      renderFrame();
+      animationFrame = window.requestAnimationFrame(loop);
+    };
+
+    const startLoop = () => {
+      if (reducedMotion || animationFrame || document.hidden || !sceneVisible) {
+        return;
       }
       animationFrame = window.requestAnimationFrame(loop);
     };
 
-    if (reducedMotion) {
-      renderer.render(scene, camera);
-    } else {
-      loop();
-    }
-
     const lenis = (window as Window & { lenis?: LenisInstance }).lenis;
     const handleScroll = ({ scroll }: { scroll: number }) => {
       const progress = Math.min(1, Math.max(0, scroll / window.innerHeight));
-      renderer.domElement.style.opacity = String(1 - progress);
+      const opacity = 1 - progress;
+      const nextSceneVisible = opacity > 0.02;
+      renderer.domElement.style.opacity = String(opacity);
+      if (sceneVisible === nextSceneVisible) return;
+
+      sceneVisible = nextSceneVisible;
+      if (sceneVisible) {
+        if (reducedMotion) {
+          renderFrame();
+        } else {
+          startLoop();
+        }
+      } else {
+        stopLoop();
+      }
     };
     handleScroll({ scroll: lenis?.scroll ?? window.scrollY });
     lenis?.on("scroll", handleScroll);
+    renderFrame();
+    startLoop();
 
     const handleResize = () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
-      renderer.setPixelRatio(
-        Math.min(window.devicePixelRatio, lowPerf ? 1 : 1.5),
-      );
+      const resizeTuning = getThreeSceneTuning({
+        deviceMemory: nav.deviceMemory,
+        devicePixelRatio: window.devicePixelRatio,
+        hardwareConcurrency: navigator.hardwareConcurrency,
+        isCoarsePointer,
+        reducedMotion,
+        viewportWidth: window.innerWidth,
+      });
+      renderer.setPixelRatio(resizeTuning.pixelRatio);
       renderer.setSize(window.innerWidth, window.innerHeight);
-      if (reducedMotion) renderer.render(scene, camera);
+      if (sceneVisible) renderFrame();
     };
     window.addEventListener("resize", handleResize);
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        stopLoop();
+      } else if (sceneVisible) {
+        if (reducedMotion) {
+          renderFrame();
+        } else {
+          startLoop();
+        }
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     return () => {
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("pointermove", onPointer);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
       lenis?.off("scroll", handleScroll);
-      window.cancelAnimationFrame(animationFrame);
+      stopLoop();
       geometry.dispose();
       material.dispose();
       renderer.dispose();

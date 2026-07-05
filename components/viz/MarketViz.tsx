@@ -1,6 +1,7 @@
 "use client";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import type { VizProps } from "./types";
+import { useHydratedReducedMotion } from "./useHydratedReducedMotion";
 import styles from "./primitives.module.css";
 
 const PTS = [
@@ -17,7 +18,7 @@ const PTS = [
 const DUR = 6;
 
 export default function MarketViz({ size = "detail" }: VizProps) {
-  const reduce = useReducedMotion();
+  const reduce = useHydratedReducedMotion();
   const d = PTS.map((p, i) => `${i ? "L" : "M"}${p[0]} ${p[1]}`).join(" ");
   const xs = PTS.map((p) => p[0]);
   const ys = PTS.map((p) => p[1]);

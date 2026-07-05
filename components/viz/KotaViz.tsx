@@ -1,13 +1,14 @@
 "use client";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import type { VizProps } from "./types";
+import { useHydratedReducedMotion } from "./useHydratedReducedMotion";
 import styles from "./primitives.module.css";
 
 const D = 5;
 const BARS = [0, 1, 2, 3, 4, 5, 6, 7];
 
 export default function KotaViz({ size = "detail" }: VizProps) {
-  const reduce = useReducedMotion();
+  const reduce = useHydratedReducedMotion();
 
   return (
     <div className={`${styles.frame} ${size === "detail" ? styles.detail : ""}`}>
