@@ -31,9 +31,10 @@ export default function ProofConsole() {
                 href={item.href}
                 className={styles.card}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
               >
                 {content}
+                <span className="sr-only"> (opens in new tab)</span>
               </a>
             ) : (
               <Link key={item.slug} href={item.href} className={styles.card}>

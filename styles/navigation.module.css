@@ -14,7 +14,7 @@
 
 .navigationVisible {
   opacity: 1;
-  transform: translateY(0);
+  transform: none;
   transition:
     background-color 0.32s ease,
     border-color 0.32s ease,
@@ -153,6 +153,8 @@
 .mobileMenu {
   position: fixed;
   inset: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
   background:
     radial-gradient(circle at 10% 12%, rgba(163, 181, 168, 0.12), transparent 38%),
     rgba(11, 11, 13, 0.97);
@@ -161,7 +163,7 @@
   pointer-events: none;
   transition: transform 0.35s ease, opacity 0.35s ease;
   display: none;
-  z-index: 999;
+  z-index: 1102;
 }
 
 .mobileMenuOpen {
