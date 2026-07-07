@@ -8,64 +8,54 @@ category: "Voice AI"
 featured: false
 ---
 
-When an owner asks me about an AI receptionist, the question underneath is almost never "how does the technology work." It is quieter than that. It is: *will this thing make me look bad in front of a customer?*
+When an owner asks me about an AI receptionist, they rarely care how the technology works. The real question is quieter: *will this thing make me look bad in front of a customer?*
 
-That is a fair fear. You have spent years earning people's trust. The idea of handing your phone to a robot that might mishear an order, argue with a caller, or freeze up in the middle of a rush is genuinely scary. If it goes wrong, it goes wrong in your name.
+Fair. You spent years earning people's trust. Handing your phone to a robot that might mishear an order or freeze up mid-rush is a genuinely scary idea, because if it goes wrong, it goes wrong in your name.
 
-So let me answer the real question honestly, without the sales gloss. Here is what a well-built phone agent actually does on a messy call, and where it hands the call back to a human on purpose.
+So here's the honest version, no sales gloss. Some of these agents are junk and will embarrass you. A good one won't, and the difference comes down to a few boring engineering choices most people never see.
 
 ## Real callers don't talk like a demo
 
-Every slick AI demo uses a caller who speaks in one clean sentence: "I'd like a large pepperoni pizza." Real calls sound nothing like that. Real calls sound like:
+Every slick AI demo uses a caller who speaks in one clean sentence: "I'd like a large pepperoni pizza." Nobody talks like that on a real line. Real calls sound more like:
 
 > "uh yeah can I get, like, two orange chickens and... wait, do you guys have chow mein?"
 
-Background noise. Filler words. People changing their mind halfway through a sentence. Someone ordering while their kid is yelling. A caller who says an item that isn't quite what you actually call it on your menu.
+Background noise. Filler words. A kid yelling. Someone who changes their mind halfway through the sentence, or asks for an item by a name that isn't quite what you call it on your menu.
 
-A cheap bot chokes on all of this. It is only listening for the tidy version and gets lost the moment a real human opens their mouth. That is the bot that embarrasses you.
+A cheap bot only knows how to handle the tidy version, so it falls apart the second a real person opens their mouth. That's the bot that embarrasses you. A properly built agent assumes the opposite — that every call is a little bit of a mess — and is built around catching and correcting that mess instead of praying the first pass is right. That's the whole problem I built [KOTA](/projects/kota) to survive: it answers restaurant phones and turns rambling, real-time speech into an order the kitchen can actually make.
 
-A properly built agent is designed the opposite way: it *assumes* the call will be messy, and it is built around correction rather than around the hope that the first pass is right. This is exactly the problem I built [KOTA](/projects/kota) to survive. It answers restaurant phone calls and turns that kind of rambling, real-time speech into a kitchen-ready order. Not a scripted demo. Live calls.
+## It listens for what you meant, not just what you said
 
-## It listens for meaning, not just words
+Transcribing the words and understanding the request are two different jobs, and the second one is where cheap tools quietly cheat.
 
-The trick most people don't see is that transcribing what someone said and understanding what they *meant* are two different jobs.
+Say a caller asks for "orange chickens." The agent shouldn't go hunting for those exact words. It should check what you actually sell, match the request to the real item on your menu, and pick up the modifiers on the way. That's also what keeps it from confidently inventing something you don't offer — the thing owners are right to dread. The agent is fenced in by your menu, your services, your prices. It can only offer what's actually there.
 
-If a caller says "orange chickens," the agent shouldn't blindly search for those exact words. It checks what you actually sell, matches the intent to the real item on your menu, and picks up the modifiers along the way. This is what keeps it from confidently inventing an item you don't offer, which is the thing owners rightly dread. The agent is fenced in by *your* menu, *your* services, *your* policies. It can only offer what you actually have.
+TODO(kumma): drop in one real, anonymized example here of a specific mishear KOTA caught and re-confirmed on a live call. One concrete story does more than a page of reassurance.
 
-That fence is the difference between an assistant and a liability.
+## When it isn't sure, it asks
 
-## When it isn't sure, it asks instead of guessing
+This is the part I care about most.
 
-This is the part I care about most, and the part that decides whether an AI receptionist is safe to put your name on.
+A bad agent guesses when it's unsure and hopes it got lucky. A good one does what your sharpest employee does: when it doesn't quite catch something, it asks.
 
-A bad agent guesses when it is unsure and hopes it got lucky. A good one does what your best employee does: when it doesn't quite catch something, it asks a short, natural clarifying question and confirms before locking anything in.
+"You said two orange chickens and a chow mein — that right?"
 
-"You said two orange chickens and a chow mein, is that right?"
+That one habit is what keeps a customer from showing up to the wrong order. Under the hood the agent is tracking how confident it is on every call, and when that confidence drops, it slows down and checks instead of barreling ahead. Not glamorous. It's the thing that decides whether the whole idea is safe to put your name on.
 
-That single habit, confirming instead of assuming, is what stops the nightmare scenario where a customer shows up to the wrong order. The system tracks its own confidence on every call, and when confidence drops, it slows down and checks rather than barreling ahead.
+## When it shouldn't take the call, it hands it off
 
-TODO(kumma): drop in one real, anonymized example here of a specific mishear KOTA caught and corrected on a live call (e.g. a modifier it re-confirmed). One concrete story does more than a page of reassurance.
+An honest answer to "will it embarrass me" has to cover the calls the AI should never try to finish.
 
-## When it should NOT handle the call, it hands it to a human
+A good agent knows its edges. An angry customer, a strange one-off request, anything outside what it was set up for — it doesn't bluff. It takes a message, routes the call, or gets a real person on the line, without leaving the caller feeling stonewalled. The point was never to replace your judgment on the hard calls. It's to catch the routine, high-volume "we're slammed and the phone won't stop ringing" calls you're losing right now — and to know which is which. A missed call is already a bad customer experience. It just happens silently, so it's easy to pretend it costs you nothing.
 
-An honest answer to "will it embarrass me" has to include the calls the AI should never try to finish.
-
-A good agent knows its edges. When a call is clearly beyond it, an upset customer, a weird special request, something outside what it was set up to handle, it doesn't fake its way through. It hands off: takes a message, routes the call, or escalates to a real person, cleanly and without the caller feeling stonewalled.
-
-The goal was never to replace human judgment on the hard calls. It is to handle the routine, high-volume, "we're slammed and the phone won't stop" calls that you are currently *missing entirely*, and to know the difference. A missed call is already a bad customer experience. It just happens silently, so it is easy to pretend it isn't costing you anything.
-
-TODO(kumma): if you're comfortable, add the real fallback behavior you configure by default (voicemail-to-text, forward to owner's cell, SMS the caller a booking link) so owners can picture the safety net concretely.
+TODO(kumma): if you're comfortable, add the real fallback you set by default (voicemail-to-text, forward to your cell, SMS the caller a booking link) so owners can picture the safety net.
 
 ## So, will it embarrass you?
 
-A generic, set-it-and-forget-it bot, bought off a shelf and pointed at your line? Honestly, it might. That is the version that earns AI receptionists a bad reputation.
+A generic, set-it-and-forget-it bot bought off a shelf and pointed at your line? Yeah, it might. That's the version that gave AI receptionists their bad name.
 
-An agent built around *your* business, fenced to what you actually offer, that confirms when unsure and hands off when it's out of its depth, and that a real person (me) monitors and improves? That is a different animal. It is built to protect the customer experience you already worked hard for, not gamble with it.
+One built around your business, fenced to what you actually offer, that confirms when it's unsure and backs off when it's out of its depth, with a real person (me) watching it and fixing what breaks — that's a different thing entirely.
 
-The only way to really know is to hear one handle a real call. That is why I don't ask anyone to take this on faith.
+The only way to really know is to hear one take a real call. So I don't ask anyone to take it on faith. You can listen to KOTA handle a live restaurant call, and [see how I build and run these agents on the build page](/build) — including how I fence them to your business and keep a human behind every one.
 
-## Hear it, then decide
-
-You can listen to KOTA handle a live restaurant call yourself, and you can [see how I build these agents on the /build page](/build), including how I fence them to your business and keep a human behind every one.
-
-If you want to know whether an agent could safely answer *your* phones without embarrassing you, [book a free consult](/build). Tell me the kind of calls you get, the messy ones included, and I'll tell you straight whether an agent can handle them or whether it can't. No obligation, and you talk to the person who actually builds it.
+If you want to know whether an agent could answer *your* phones without making you cringe, [book a free consult](/build). Tell me about the calls you get, the ugly ones included, and I'll tell you straight whether an agent can handle them or whether it can't. No obligation, and you're talking to the person who actually builds it.

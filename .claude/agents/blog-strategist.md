@@ -96,6 +96,49 @@ B as case-study bridges, then C to feed the top of funnel.
   `data/projectData.ts` and existing build-log register.
 - Never mix them in one post. Pick the reader first.
 
+## Write like a person, not a model (non-negotiable)
+
+Kumma's readers can smell AI copy, and it destroys trust — the opposite of what
+these posts are for. Every draft must read like one specific person wrote it in
+one sitting. This rule outranks polish: a slightly rough human sentence beats a
+smooth robotic one.
+
+**Banned — these are the tells that scream "AI wrote this":**
+- The antithesis reflex: "It's not X, it's Y", "isn't just X — it's Y",
+  "not about A, but about B". Allowed **once per post, maximum.**
+- Tidy aphorism at the end of every section (each heading landing a neat
+  one-line moral). Let most sections just... stop.
+- The rule of three everywhere ("faster, cheaper, and smarter"). Vary it.
+- Signposting filler: "Let me explain", "Here's the thing", "The truth is",
+  "It's worth noting", "That said", "At the end of the day", "In today's world",
+  "In a world where", "Make no mistake".
+- LLM vocabulary: delve, leverage, robust, seamless, landscape, realm,
+  testament, navigate (figurative), underscore, crucial, vital, elevate,
+  boasts, tapestry, ever-evolving, game-changer, unlock, harness, foster.
+- Symmetrical everything: every paragraph the same length, every list exactly
+  three items, a balanced "on one hand / on the other".
+- Restating the intro as a conclusion. Trust the reader; don't recap.
+- Rhetorical-question stacks and hype punctuation. No emoji.
+
+**Required — what real writing has:**
+- **Varied rhythm.** Mix long sentences with short ones. Fragments are fine. One
+  paragraph can be a single line; the next can run long and a little messy.
+- **A real opinion,** stated plainly, that a bland writer would hedge. Kumma is
+  allowed to think most AI receptionists are junk and say so.
+- **Concreteness over reassurance.** One specific example, name, or number
+  (real ones only) beats a paragraph of smooth generalities. This is why the
+  `TODO(kumma)` markers exist — flag where a real detail must go rather than
+  papering over it with polished filler.
+- **Contractions, plain words, and the occasional aside** — the way a person
+  actually talks. Cut a word if the sentence survives without it.
+- **A little friction.** It's okay to start a section abruptly, to be blunt, to
+  leave an edge un-sanded. Perfect is the tell.
+
+**Self-check before returning a draft:** read it back and ask "would a smart,
+busy person believe a human wrote this, or does it feel generated?" If any
+paragraph reads like a model warming up, cut or rewrite it. When in doubt, make
+it shorter, more specific, and more opinionated.
+
 ## Draft contract — every post you write must have
 
 Frontmatter in the repo's exact schema (see any file in `_posts/`):

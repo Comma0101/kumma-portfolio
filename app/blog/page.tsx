@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     siteName: "KUMMA",
     images: [
       {
-        url: "https://kumma.me/og-blog-image.png",
+        url: "https://kumma.me/og/home.png",
         width: 1200,
         height: 630,
       },
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     title: "Field Notes | Kumma",
     description: "Technical notes from systems that turn messy inputs into reliable action.",
     creator: "@kumma",
-    images: ["https://kumma.me/twitter-blog-image.png"],
+    images: ["https://kumma.me/og/home.png"],
   },
 };
 
