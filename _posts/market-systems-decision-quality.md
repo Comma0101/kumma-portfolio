@@ -25,8 +25,8 @@ Insight is not enough. A system is only real when it stays executable under pres
 
 ## Why this connects to the rest of my work
 
-This is the same instinct as KOTA and Archon: take an environment full of uncertainty and build the structure that makes good behavior the default. A voice agent that must hold up at peak hour, an agent framework that must stay inspectable, and a trading process that must stay executable under stress are the same problem wearing different clothes.
+This is the same instinct as [KOTA](/projects/kota) and [Archon](/projects/archon): take an environment full of uncertainty and build the structure that makes good behavior the default. A voice agent that must hold up at peak hour, an agent framework that must stay inspectable, and a trading process that must stay executable under stress are the same problem wearing different clothes.
 
 I am not going to post return figures here. That is not the point, and unverified performance claims are noise. The point is the architecture of deciding well when you cannot remove the uncertainty.
 
-[If you want specifics on the regime classification or the execution-scoring model, ask.]
+If you want specifics on the regime classification or the execution-scoring model, [ask](mailto:dev@kumma.me). The same systems thinking is what I bring to the [agents I build for businesses](/build).

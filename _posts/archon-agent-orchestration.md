@@ -36,10 +36,12 @@ The goal is autonomy that stays inspectable. I can read what it did, why, and wh
 
 ## What it is not
 
-It is not a finished product, and I will not pretend otherwise. It is active research. [What is still rough: the worker router's recovery on failed delegations / the memory compression heuristics / multi-session scheduling.] What works today is the spine: routing, tools, memory, delegation, and approvals, driven from a CLI.
+It is not a finished product, and I will not pretend otherwise. It is active research. What is still rough: the worker router's recovery on failed delegations, the memory-compression heuristics, and multi-session scheduling. What works today is the spine: routing, tools, memory, delegation, and approvals, driven from a CLI.
 
 ## Run it
 
-The repo has [a quickstart and an architecture diagram]. If you are working on agent orchestration, multi-model routing, or MCP tooling, I would genuinely like the feedback: [github.com/Comma0101/archon](https://github.com/Comma0101/archon).
+The repo has a quickstart and an architecture diagram. If you are working on agent orchestration, multi-model routing, or MCP tooling, I would genuinely like the feedback: [github.com/Comma0101/archon](https://github.com/Comma0101/archon).
+
+This is also the serious systems work behind the [agents I build and run for businesses](/build) — the orchestration a phone or booking agent needs to hold up in production.
 
 Intelligence is not the model. It is the system around it.
