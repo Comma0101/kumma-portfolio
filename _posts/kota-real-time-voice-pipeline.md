@@ -25,10 +25,10 @@ Hesitation, filler words, mid-sentence corrections, menu items that do not match
 The flow is a chain from raw audio to an action the kitchen can trust:
 
 1. **Telephony stream.** The call comes in over Twilio Media Streams as a live audio socket, not a recording. Latency starts mattering here.
-2. **Real-time speech.** Audio is transcribed with low-latency streaming speech recognition [Deepgram Nova-2; I also evaluated Soniox for accuracy under cross-talk].
+2. **Real-time speech.** Audio is transcribed with low-latency streaming speech recognition — Deepgram Nova-2, though I also evaluated Soniox for accuracy under cross-talk.
 3. **Intent resolution, menu-grounded.** An LLM resolves the transcript into structured intent, grounded against that restaurant's actual menu so "orange chickens" maps to the real item and modifiers, and ambiguity triggers a clarifying question instead of a guess.
 4. **Structured ticket.** The result is a typed order object: items, quantities, modifiers, a confidence value, and any missing information.
-5. **Execution.** The ticket is committed into the restaurant's workflow without requiring a POS rewrite [Square API integration / direct kitchen output], with transactional SMS confirmation where the caller consents.
+5. **Execution.** The ticket is committed into the restaurant's workflow without requiring a POS rewrite — through a Square API integration or direct kitchen output — with transactional SMS confirmation where the caller consents.
 
 The design rule throughout: the model listens in real time, so it should be able to act in real time.
 
@@ -38,13 +38,13 @@ The model was rarely the bottleneck. The hard parts were operational:
 
 - **Latency under load.** A reply that is correct but arrives two seconds late breaks the conversation. Streaming end to end, and overlapping recognition with intent resolution, mattered more than model choice.
 - **Concurrent calls.** Peak hour means many simultaneous sessions, each holding its own audio stream, state, and menu context. Session isolation is a first-class concern, not an afterthought.
-- **Graceful failure.** When confidence drops, the system asks rather than assumes, and escalates to a human when it should. [One concrete example: how a mishear on a modifier was caught and confirmed.]
+- **Graceful failure.** When confidence drops, the system asks rather than assumes, and escalates to a human when it should.
 - **No clean inputs, ever.** There is no "happy path" on a phone line. The system is designed around correction, not around the assumption that the first pass is right.
 
 ## Where it is now
 
-KOTA currently [handles N calls / runs for X restaurants / resolves orders at Y accuracy with Z median latency]. It is in active development toward more locations and tighter kitchen integration.
+KOTA is live and in active development, moving toward more locations and tighter kitchen integration.
 
 The larger point, and the thing I care about across my work: a system is only real once it survives the conditions that a demo never shows it. For a phone agent, that means peak volume, bad audio, and a caller who changes their mind halfway through a sentence.
 
-If you run phone-heavy operations or are building in real-time voice, [reach out](mailto:dev@kumma.me).
+If you run a business that lives on the phone, this is the kind of agent [I build and run for you](/build). If you are building in real-time voice yourself and want to compare notes, [reach out](mailto:dev@kumma.me).
