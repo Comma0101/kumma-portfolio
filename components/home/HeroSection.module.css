@@ -166,7 +166,7 @@
   .hero {
     min-height: auto;
     padding-top: 5.75rem;
-    padding-bottom: 3rem;
+    padding-bottom: 2rem;
   }
 
   .inner {
@@ -217,7 +217,7 @@
   }
 
   .availability {
-    margin-top: 1.05rem;
+    margin-top: 0.85rem;
     font-size: 0.68rem;
     line-height: 1.45;
   }

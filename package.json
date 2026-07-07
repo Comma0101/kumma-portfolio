@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 4242",
-    "test": "sh -c 'tmp=$(mktemp -d /tmp/kumma-portfolio-tests.XXXXXX); tsc components/threeSceneTuning.test.ts components/navigationOverlayCss.test.ts components/viz/reducedMotionState.test.ts --module commonjs --target es2020 --moduleResolution node --rootDir . --outDir \"$tmp\" --esModuleInterop --skipLibCheck && node --test \"$tmp/components/threeSceneTuning.test.js\" \"$tmp/components/navigationOverlayCss.test.js\" \"$tmp/components/viz/reducedMotionState.test.js\"; status=$?; rm -rf \"$tmp\"; exit $status'",
+    "test": "sh -c 'tmp=$(mktemp -d /tmp/kumma-portfolio-tests.XXXXXX); tsc components/threeSceneTuning.test.ts components/navigationOverlayCss.test.ts components/uxPolishCss.test.ts components/viz/reducedMotionState.test.ts --module commonjs --target es2020 --moduleResolution node --rootDir . --outDir \"$tmp\" --esModuleInterop --skipLibCheck && node --test \"$tmp/components/threeSceneTuning.test.js\" \"$tmp/components/navigationOverlayCss.test.js\" \"$tmp/components/uxPolishCss.test.js\" \"$tmp/components/viz/reducedMotionState.test.js\"; status=$?; rm -rf \"$tmp\"; exit $status'",
     "prebuild": "node scripts/generate-og.mjs",
     "build": "next build",
     "start": "next start",

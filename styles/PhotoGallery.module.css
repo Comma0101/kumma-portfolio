@@ -156,6 +156,18 @@
 }
 
 @media (max-width: 560px) {
+  .galleryLanding {
+    padding-top: 4.7rem;
+  }
+
+  .galleryShell {
+    gap: 0.78rem;
+  }
+
+  .galleryHeader {
+    gap: 0.72rem;
+  }
+
   .galleryEyebrow {
     font-size: 0.66rem;
     letter-spacing: 0.18em;

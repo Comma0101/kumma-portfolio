@@ -94,11 +94,13 @@
     right: max(0.75rem, env(safe-area-inset-right));
     bottom: max(0.75rem, env(safe-area-inset-bottom));
     left: auto;
-    width: 2.75rem;
-    height: 2.75rem;
+    width: auto;
+    min-width: 4.75rem;
+    height: 2.5rem;
     justify-content: center;
-    padding: 0;
-    border-radius: 50%;
+    padding: 0 0.78rem;
+    border-radius: 999px;
+    background: rgba(19, 19, 22, 0.86);
   }
 
   .banner {
@@ -106,20 +108,19 @@
   }
 
   .pillLabel {
-    position: absolute;
-    width: 1px;
-    height: 1px;
+    position: static;
+    width: auto;
+    height: auto;
     padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
+    margin: 0;
+    overflow: visible;
     white-space: nowrap;
     border: 0;
   }
 
   .pillDot {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
     background: var(--signal);
     box-shadow: 0 0 0 6px rgba(63, 157, 127, 0.14);
   }
