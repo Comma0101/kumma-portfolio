@@ -77,6 +77,11 @@ export default function BuildLanding() {
     const mailto = `mailto:${contactEmail}?subject=${encodeURIComponent(
       subject,
     )}&body=${encodeURIComponent(body)}`;
+    // Conversion signal: a submitted consult request is the real lead event.
+    // No-ops safely when analytics is off (Umami not loaded).
+    (window as unknown as { umami?: { track?: (e: string) => void } }).umami?.track?.(
+      "build-consult-submit",
+    );
     setSent(true);
     window.location.href = mailto;
   };
@@ -87,7 +92,11 @@ export default function BuildLanding() {
         <a href="#top" className={styles.wordmark}>
           Kumma
         </a>
-        <a href="#consult" className={styles.headerCta}>
+        <a
+          href="#consult"
+          className={styles.headerCta}
+          data-umami-event="build-cta-click"
+        >
           Book a free consult
         </a>
       </header>

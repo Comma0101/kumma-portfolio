@@ -27,6 +27,12 @@ jobs:
       - name: Build Next.js site
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          # Public config (embedded in the static bundle at build time).
+          # Add these as repository secrets to turn on measurement:
+          #   NEXT_PUBLIC_UMAMI_ID  -> Umami website ID (analytics)
+          #   NEXT_PUBLIC_GSC_TOKEN -> Google Search Console verification token
+          NEXT_PUBLIC_UMAMI_ID: ${{ secrets.NEXT_PUBLIC_UMAMI_ID }}
+          NEXT_PUBLIC_GSC_TOKEN: ${{ secrets.NEXT_PUBLIC_GSC_TOKEN }}
         run: npm run build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
