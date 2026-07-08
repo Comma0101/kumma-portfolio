@@ -1,0 +1,445 @@
+/* Pattern library — extends the long-form reading aesthetic used by
+   blogDetail.module.css, tuned for engineering reference pages. */
+
+.page {
+  position: relative;
+  min-height: 100vh;
+  padding: clamp(7rem, 10vw, 9.4rem) 5% 5rem;
+  background:
+    radial-gradient(circle at 14% 10%, rgba(163, 181, 168, 0.06), transparent 38%),
+    radial-gradient(circle at 84% 82%, rgba(150, 181, 255, 0.06), transparent 44%);
+  color: #ece8e8;
+  overflow: hidden;
+}
+
+.page::before {
+  content: "Patterns";
+  position: absolute;
+  top: 4%;
+  right: 5%;
+  font-size: clamp(3.5rem, 10vw, 11.5rem);
+  line-height: 0.8;
+  letter-spacing: -0.034em;
+  color: rgba(255, 255, 255, 0.024);
+  text-transform: uppercase;
+  font-family: "Bebas Neue", "Oswald", sans-serif;
+  pointer-events: none;
+}
+
+.page::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(7, 7, 7, 0.9) 0%,
+      rgba(7, 7, 7, 0.72) 18%,
+      rgba(7, 7, 7, 0.58) 50%,
+      rgba(7, 7, 7, 0.72) 82%,
+      rgba(7, 7, 7, 0.9) 100%
+    );
+}
+
+/* ------------------------------------------------------------------ */
+/* Index                                                              */
+/* ------------------------------------------------------------------ */
+
+.indexWrapper {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+.indexHeader {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: clamp(2rem, 4vw, 3.2rem);
+  max-width: 72ch;
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(163, 181, 168, 0.82);
+  font-weight: 700;
+  font-family: var(--font-mono), monospace;
+}
+
+.indexTitle {
+  margin: 0;
+  font-size: clamp(2.35rem, 6.4vw, 6.4rem);
+  line-height: 0.92;
+  letter-spacing: -0.018em;
+  color: #f2edec;
+  max-width: 14ch;
+}
+
+.indexIntro {
+  margin: 0;
+  max-width: 68ch;
+  font-size: clamp(0.98rem, 1.24vw, 1.16rem);
+  line-height: 1.86;
+  letter-spacing: 0.01em;
+  color: rgba(223, 223, 223, 0.82);
+}
+
+.patternGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+/* Written entries are anchors; "coming" entries are plain divs. */
+.patternCard {
+  display: grid;
+  gap: 0.6rem;
+  align-content: start;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 1.1rem 1.15rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.patternCardWritten {
+  transition:
+    border-color 0.24s ease,
+    transform 0.24s ease,
+    background 0.24s ease;
+}
+
+.patternCardWritten:hover {
+  border-color: rgba(163, 181, 168, 0.65);
+  background: rgba(255, 255, 255, 0.055);
+  transform: translateY(-2px);
+}
+
+.patternCardComing {
+  opacity: 0.66;
+}
+
+.cardTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.cardIndex {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  color: rgba(163, 181, 168, 0.74);
+}
+
+.statusWritten,
+.statusComing {
+  border-radius: 999px;
+  padding: 0.2rem 0.52rem;
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-family: var(--font-mono), monospace;
+}
+
+.statusWritten {
+  border: 1px solid rgba(163, 181, 168, 0.62);
+  color: rgba(163, 181, 168, 0.95);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.statusComing {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: rgba(210, 210, 210, 0.6);
+}
+
+.cardTitle {
+  margin: 0;
+  color: #efeaea;
+  font-size: clamp(1.3rem, 2.4vw, 1.75rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+
+.cardBlurb {
+  margin: 0;
+  color: rgba(218, 218, 218, 0.72);
+  line-height: 1.68;
+  font-size: 0.92rem;
+}
+
+.cardArrow {
+  color: rgba(244, 244, 244, 0.88);
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-family: var(--font-mono), monospace;
+}
+
+/* ------------------------------------------------------------------ */
+/* Detail                                                             */
+/* ------------------------------------------------------------------ */
+
+.detailHeader {
+  width: min(760px, 100%);
+  margin: 0 auto 2.1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  padding-bottom: 1.35rem;
+  position: relative;
+  z-index: 2;
+}
+
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: rgba(233, 233, 233, 0.74);
+  text-decoration: none;
+  font-size: 0.68rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-family: var(--font-mono), monospace;
+  transition: color 0.22s ease;
+  margin-bottom: 1rem;
+}
+
+.backButton:hover {
+  color: rgba(163, 181, 168, 0.95);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(163, 181, 168, 0.68);
+  border-radius: 999px;
+  padding: 0.34rem 0.68rem;
+  color: rgba(163, 181, 168, 0.95);
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.05);
+  margin-bottom: 0.9rem;
+  font-family: var(--font-mono), monospace;
+}
+
+.detailTitle {
+  margin: 0;
+  color: #f2edec;
+  font-size: clamp(2.2rem, 5.4vw, 4.2rem);
+  line-height: 0.94;
+  letter-spacing: -0.018em;
+  max-width: 16ch;
+}
+
+.problem {
+  margin: 1.1rem 0 0;
+  max-width: 66ch;
+  color: rgba(223, 223, 223, 0.85);
+  font-size: clamp(0.99rem, 1.24vw, 1.18rem);
+  line-height: 1.86;
+  letter-spacing: 0.01em;
+}
+
+.body {
+  width: min(760px, 100%);
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+  color: rgba(228, 228, 228, 0.9);
+  font-size: clamp(1rem, 1.2vw, 1.12rem);
+  line-height: 1.9;
+}
+
+.section {
+  margin: 2.4rem 0 0;
+}
+
+.sectionTitle {
+  margin: 0 0 0.9rem;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: #f3efee;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(1.65rem, 3.2vw, 2.35rem);
+  scroll-margin-top: 90px;
+}
+
+.section p {
+  margin: 1.15rem 0;
+  max-width: 66ch;
+}
+
+.section a {
+  color: rgba(163, 181, 168, 0.96);
+  text-decoration-color: rgba(163, 181, 168, 0.52);
+  text-underline-offset: 0.18em;
+}
+
+.section strong {
+  color: #f4f1f1;
+}
+
+.section code {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(246, 246, 246, 0.9);
+  padding: 0.12rem 0.36rem;
+  font-family: var(--font-mono), "Roboto Mono", monospace;
+  font-size: 0.86em;
+}
+
+.failureList {
+  margin: 1rem 0;
+  padding-left: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.failureList li {
+  position: relative;
+  padding-left: 1.3rem;
+  max-width: 66ch;
+  line-height: 1.78;
+}
+
+.failureList li::before {
+  content: "\2014";
+  position: absolute;
+  left: 0;
+  color: rgba(163, 181, 168, 0.8);
+}
+
+.failureList li strong {
+  color: #f4f1f1;
+}
+
+.codeCaption {
+  margin: 1.4rem 0 0.5rem;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(210, 210, 210, 0.58);
+}
+
+.pre {
+  margin: 0.4rem 0 1.5rem;
+  padding: 1rem 1.1rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(10, 10, 10, 0.7);
+  overflow-x: auto;
+}
+
+.pre code {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: rgba(240, 240, 240, 0.92);
+  font-family: var(--font-mono), "Roboto Mono", monospace;
+  font-size: 0.84rem;
+  line-height: 1.72;
+  white-space: pre;
+}
+
+.relatedList {
+  margin: 1rem 0 0;
+  padding-left: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.relatedList li {
+  line-height: 1.6;
+}
+
+.relatedLink {
+  color: rgba(163, 181, 168, 0.96);
+  text-decoration-color: rgba(163, 181, 168, 0.52);
+  text-underline-offset: 0.18em;
+}
+
+.cta {
+  width: min(760px, 100%);
+  margin: 3rem auto 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 0.7rem;
+  color: rgba(223, 223, 223, 0.82);
+  font-size: clamp(0.98rem, 1.2vw, 1.1rem);
+  line-height: 1.8;
+}
+
+.ctaLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: rgba(163, 181, 168, 0.96);
+  text-decoration: none;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(163, 181, 168, 0.5);
+  padding-bottom: 1px;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.ctaLink:hover {
+  color: #ffffff;
+  border-color: rgba(163, 181, 168, 0.9);
+}
+
+/* ------------------------------------------------------------------ */
+/* Responsive                                                         */
+/* ------------------------------------------------------------------ */
+
+@media (max-width: 900px) {
+  .page {
+    padding: 6.2rem 6% 4.6rem;
+  }
+
+  .patternGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 520px) {
+  .page {
+    padding: 5.6rem 6% 4rem;
+  }
+
+  .page::before {
+    font-size: clamp(2.6rem, 18vw, 5.5rem);
+  }
+
+  .body {
+    font-size: 0.96rem;
+    line-height: 1.86;
+  }
+
+  .pre code {
+    font-size: 0.78rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .patternCardWritten,
+  .patternCardWritten:hover,
+  .ctaLink {
+    transition: none;
+    transform: none;
+  }
+}

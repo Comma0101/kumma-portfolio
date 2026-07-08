@@ -7,7 +7,24 @@ const BASE = "https://kumma.me";
 export const dynamic = "force-static";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const staticRoutes = ["", "/agent", "/blog", "/gallery", "/stories", "/build"].map((p) => ({
+  const staticRoutes = [
+    "",
+    "/agent",
+    "/blog",
+    "/gallery",
+    "/stories",
+    "/build",
+    // Voice AI rebuild routes
+    "/contact",
+    "/about",
+    "/call",
+    "/benchmark",
+    "/latency",
+    "/patterns",
+    "/patterns/barge-in",
+    "/patterns/endpointing",
+    "/work/kota",
+  ].map((p) => ({
     url: `${BASE}${p}`,
     lastModified: new Date(),
   }));

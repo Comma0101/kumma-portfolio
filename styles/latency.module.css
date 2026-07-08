@@ -1,0 +1,120 @@
+/* /latency : voice-stack latency report index. Extends styles/build.module.css. */
+
+.lead {
+  margin-top: 0;
+  max-width: 62ch;
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+}
+
+/* methodology spec — a definition table, mono scaffold (method, not data) */
+.spec {
+  margin: 2rem 0 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.specRow {
+  display: grid;
+  grid-template-columns: minmax(0, 14rem) 1fr;
+  gap: clamp(0.5rem, 3vw, 2rem);
+  padding: clamp(1rem, 2.4vw, 1.35rem) clamp(1.1rem, 2.6vw, 1.6rem);
+  border-top: 1px solid var(--line);
+}
+
+.specRow:first-child {
+  border-top: none;
+}
+
+.specTerm {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+  line-height: 1.6;
+}
+
+.specValue {
+  margin: 0;
+  color: var(--paper);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.specValue b {
+  font-weight: 600;
+  color: var(--paper);
+}
+
+/* reports index — empty / awaiting state */
+.awaiting {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: clamp(1.8rem, 5vw, 3rem);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+}
+
+.awaitingTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--signal);
+}
+
+.awaitingDot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--signal);
+}
+
+.awaitingTitle {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  font-size: clamp(1.15rem, 2.4vw, 1.45rem);
+  color: var(--paper);
+}
+
+.awaitingBody {
+  margin: 0;
+  max-width: 58ch;
+  color: var(--steel);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .awaitingDot {
+    animation: latencyPulse 2.4s var(--ease) infinite;
+  }
+}
+
+@keyframes latencyPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@media (max-width: 560px) {
+  .specRow {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+  }
+}

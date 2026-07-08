@@ -1,0 +1,54 @@
+/* /contact : voice-AI engagement intake.
+   Extends styles/build.module.css. This file only holds what build.module.css
+   cannot: the native <select> styled to match .form input/textarea, a honeypot,
+   and top spacing so the hero clears the fixed 72px global nav. */
+
+/* clear the fixed global Navigation (72px) */
+.top {
+  padding-top: 72px;
+}
+
+/* budget <select> — values mirrored from .form input in build.module.css */
+.budget {
+  width: 100%;
+  padding: 0.8rem 0.9rem;
+  padding-right: 2.4rem;
+  background-color: var(--raised);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--paper);
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  cursor: pointer;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'><path d='M1 1.5L6 6.5L11 1.5' stroke='%23a4a09a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0.9rem center;
+}
+
+.budget:focus {
+  outline: 2px solid var(--signal);
+  outline-offset: 2px;
+  border-color: transparent;
+}
+
+/* keep option list readable on platforms that render it from these props */
+.budget option {
+  color: var(--paper);
+  background: var(--surface);
+}
+
+/* honeypot: present in the DOM, out of sight and out of the tab order */
+.honeypot {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

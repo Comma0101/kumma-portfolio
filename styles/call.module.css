@@ -1,0 +1,381 @@
+/* /call : public live-demo line (dark Atlas, extends build/kota system) */
+
+.page {
+  position: relative;
+  z-index: 1;
+  min-height: 100dvh;
+  overflow-x: clip;
+  color: var(--paper);
+  padding: clamp(6rem, 10vw, 9rem) 0 clamp(4rem, 6vw, 6rem);
+}
+
+.shell {
+  width: min(100%, 1040px);
+  margin: 0 auto;
+  padding: 0 var(--page-gutter);
+}
+
+/* ── Hero ── */
+
+.hero {
+  padding-block: clamp(1rem, 4vw, 3rem) clamp(2.5rem, 6vw, 4rem);
+}
+
+.eyebrow {
+  margin: 0 0 1.2rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--sand);
+}
+
+.title {
+  margin: 0;
+  max-width: 16ch;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  font-size: clamp(2.6rem, 6vw, 4.6rem);
+  color: var(--paper);
+}
+
+/* number area */
+.numberBlock {
+  margin-top: clamp(1.6rem, 3vw, 2.2rem);
+}
+
+.numberLive {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+}
+
+.numberLink {
+  font-family: var(--font-mono);
+  font-size: clamp(1.6rem, 4vw, 2.6rem);
+  letter-spacing: 0.02em;
+  color: var(--signal);
+  text-decoration: none;
+}
+
+.numberLink:hover {
+  color: var(--signal-strong);
+}
+
+.copyButton {
+  padding: 0.55rem 0.95rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--paper);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    border-color 0.2s var(--ease),
+    color 0.2s var(--ease);
+}
+
+.copyButton:hover {
+  border-color: var(--signal);
+  color: var(--signal);
+}
+
+.numberAwaiting {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: clamp(1rem, 2.4vw, 1.4rem) clamp(1.2rem, 3vw, 1.8rem);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+}
+
+.awaitingLabel {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.awaitingValue {
+  font-family: var(--font-mono);
+  font-size: clamp(1.1rem, 2.6vw, 1.5rem);
+  letter-spacing: 0.01em;
+  color: var(--sand);
+}
+
+.subtitle {
+  margin: 1.8rem 0 0;
+  max-width: 52ch;
+  color: var(--steel);
+  font-size: clamp(1.05rem, 1.6vw, 1.3rem);
+  line-height: 1.55;
+}
+
+/* calls-handled counter (awaiting data, no number) */
+.counter {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-top: clamp(1.8rem, 3vw, 2.4rem);
+}
+
+.counterLabel {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.counterSlot {
+  display: inline-block;
+  width: 4.5rem;
+  height: 1.6rem;
+  border: 1px dashed var(--line-strong);
+  border-radius: 6px;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 6px,
+    rgba(240, 237, 232, 0.05) 6px,
+    rgba(240, 237, 232, 0.05) 12px
+  );
+}
+
+/* ── Section ── */
+
+.section {
+  padding: clamp(3rem, 6vw, 5rem) 0;
+  border-top: 1px solid var(--line);
+}
+
+.h2 {
+  margin: 0 0 1rem;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  color: var(--paper);
+}
+
+.sectionLead {
+  margin: 0 0 2rem;
+  max-width: 60ch;
+  color: var(--steel);
+  font-size: 0.98rem;
+  line-height: 1.6;
+}
+
+/* ── Menu ticket ── */
+
+.ticket {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  overflow: hidden;
+  font-family: var(--font-mono);
+}
+
+.ticketHead {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.9rem clamp(1rem, 2.4vw, 1.5rem);
+  border-bottom: 1px dashed var(--line-strong);
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.ticketGroup {
+  padding: clamp(1rem, 2.4vw, 1.4rem) clamp(1rem, 2.4vw, 1.5rem);
+  border-bottom: 1px solid var(--line);
+}
+
+.ticketGroup:last-child {
+  border-bottom: none;
+}
+
+.ticketGroupHead {
+  margin: 0 0 0.9rem;
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--signal);
+}
+
+.ticketList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.ticketRow {
+  display: grid;
+  grid-template-columns: minmax(9rem, 14rem) 1fr;
+  gap: 0.4rem 1.2rem;
+  align-items: baseline;
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+.ticketName {
+  color: var(--paper);
+}
+
+.ticketMods {
+  color: var(--steel);
+  font-size: 0.78rem;
+}
+
+/* ── Challenges ── */
+
+.challengeList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+}
+
+.challengeItem {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding: clamp(1rem, 2vw, 1.3rem) clamp(1rem, 2.4vw, 1.5rem);
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+}
+
+.challengeItem:first-child {
+  border-top: none;
+}
+
+.challengeNo {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--signal);
+}
+
+.challengeText {
+  color: var(--paper);
+  font-size: clamp(0.95rem, 1.4vw, 1.08rem);
+  line-height: 1.4;
+}
+
+/* ── Bounty ── */
+
+.bounty {
+  padding: clamp(1.6rem, 3vw, 2.2rem);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+}
+
+.bountyLead {
+  margin: 0 0 1.4rem;
+  font-size: clamp(1.1rem, 1.8vw, 1.4rem);
+  line-height: 1.4;
+  color: var(--paper);
+}
+
+.bountyAmount {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--signal);
+}
+
+.ruleList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.ruleItem {
+  display: flex;
+  align-items: baseline;
+  gap: 0.7rem;
+  color: var(--steel);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.ruleItem::before {
+  content: "";
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--sand);
+  transform: translateY(-2px);
+}
+
+/* ── Hall of fame (empty) ── */
+
+.fameEmpty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: clamp(9rem, 20vw, 12rem);
+  padding: 2rem;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+}
+
+.fameEmptyText {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+  color: var(--faint);
+  text-align: center;
+}
+
+/* ── Disclosure ── */
+
+.disclosureList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0;
+}
+
+.disclosureItem {
+  padding: 1.1rem 0;
+  border-top: 1px solid var(--line);
+  color: var(--steel);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  max-width: 72ch;
+}
+
+.disclosureItem:first-child {
+  border-top: none;
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 560px) {
+  .ticketRow {
+    grid-template-columns: 1fr;
+    gap: 0.15rem;
+  }
+}
