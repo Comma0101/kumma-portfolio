@@ -30,8 +30,6 @@ Transcribing the words and understanding the request are two different jobs, and
 
 Say a caller asks for "orange chickens." The agent shouldn't go hunting for those exact words. It should check what you actually sell, match the request to the real item on your menu, and pick up the modifiers on the way. That's also what keeps it from confidently inventing something you don't offer — the thing owners are right to dread. The agent is fenced in by your menu, your services, your prices. It can only offer what's actually there.
 
-TODO(kumma): drop in one real, anonymized example here of a specific mishear KOTA caught and re-confirmed on a live call. One concrete story does more than a page of reassurance.
-
 ## When it isn't sure, it asks
 
 This is the part I care about most.
@@ -46,9 +44,7 @@ That one habit is what keeps a customer from showing up to the wrong order. Unde
 
 An honest answer to "will it embarrass me" has to cover the calls the AI should never try to finish.
 
-A good agent knows its edges. An angry customer, a strange one-off request, anything outside what it was set up for — it doesn't bluff. It takes a message, routes the call, or gets a real person on the line, without leaving the caller feeling stonewalled. The point was never to replace your judgment on the hard calls. It's to catch the routine, high-volume "we're slammed and the phone won't stop ringing" calls you're losing right now — and to know which is which. A missed call is already a bad customer experience. It just happens silently, so it's easy to pretend it costs you nothing.
-
-TODO(kumma): if you're comfortable, add the real fallback you set by default (voicemail-to-text, forward to your cell, SMS the caller a booking link) so owners can picture the safety net.
+A good agent knows its edges. An angry customer, a strange one-off request, anything outside what it was set up for — it doesn't bluff. It hands off the way you'd want it to: it takes a message, forwards the call, or texts the caller a booking link, without leaving anyone feeling stonewalled. The point was never to replace your judgment on the hard calls. It's to catch the routine, high-volume "we're slammed and the phone won't stop ringing" calls you're losing right now — and to know which is which. A missed call is already a bad customer experience. It just happens silently, so it's easy to pretend it costs you nothing.
 
 ## So, will it embarrass you?
 
