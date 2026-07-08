@@ -14,8 +14,9 @@ confirm before publishing. No invented numbers.
 Content is organized as one **pillar** with interlinked **spokes** (see the agent
 spec). Every new post links to the pillar and at least one sibling.
 
-- **Pillar (to write):** *"AI receptionists for small business, explained"* — the
-  broad definitive page the spokes point back to.
+- ✅ **Pillar published:** *"AI receptionists for small business, explained"*
+  (`ai-receptionists-for-small-business-explained`, featured). The spokes link up
+  to it and it links down to them.
 - **Spokes published:** A6 (does it work / embarrass me), A5 (which option to
   pick). Next spokes: A1 (cost), A2 (med-spa worth-it), A4 (missed-call cost).
 

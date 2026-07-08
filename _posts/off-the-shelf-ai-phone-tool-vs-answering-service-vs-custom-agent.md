@@ -12,7 +12,7 @@ Three real options, one honest answer. If your call volume is tiny and your need
 
 That's the whole post in four sentences. If you want the reasoning — and the cases where I'd talk you *out* of hiring me — keep reading.
 
-I build custom voice agents for a living, so read the rest knowing my bias. I'm going to try to be fair anyway, because a rigged comparison is easy to see through and it doesn't win anyone a customer. There are plenty of businesses I'd point toward the cheaper options.
+I build custom voice agents for a living, so read the rest knowing my bias. I'm going to try to be fair anyway, because a rigged comparison is easy to see through and it doesn't win anyone a customer. There are plenty of businesses I'd point toward the cheaper options. (New to all this? The [plain-English overview of AI receptionists](/blog/en/ai-receptionists-for-small-business-explained) covers what they are before you pick which kind.)
 
 ## What are you actually choosing between?
 

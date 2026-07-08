@@ -12,7 +12,7 @@ When an owner asks me about an AI receptionist, they rarely care how the technol
 
 Fair. You spent years earning people's trust. Handing your phone to a robot that might mishear an order or freeze up mid-rush is a genuinely scary idea, because if it goes wrong, it goes wrong in your name.
 
-So here's the honest version, no sales gloss. Some of these agents are junk and will embarrass you. A good one won't, and the difference comes down to a few boring engineering choices most people never see.
+So here's the honest version, no sales gloss. Some of these agents are junk and will embarrass you. A good one won't, and the difference comes down to a few boring engineering choices most people never see. (If you're still fuzzy on what an AI receptionist even is, start with the [plain-English overview](/blog/en/ai-receptionists-for-small-business-explained) and come back.)
 
 ## Real callers don't talk like a demo
 
