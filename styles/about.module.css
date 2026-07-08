@@ -1,0 +1,124 @@
+/* /about : identity, working principles, and personal-work optionality.
+   Extends the austere home/section aesthetic; reuses global Atlas tokens. */
+
+.page {
+  position: relative;
+  z-index: 1;
+  min-height: 100dvh;
+  padding-top: clamp(5.5rem, 9vw, 7rem);
+  color: var(--paper);
+}
+
+.wrap {
+  width: min(100%, var(--page-width));
+  margin: 0 auto;
+  padding: 0 var(--page-gutter);
+}
+
+/* identity / lead */
+.hero {
+  padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(3rem, 7vw, 5rem);
+}
+
+.title {
+  margin: 1.4rem 0 0;
+  max-width: 22ch;
+  color: var(--paper);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  font-size: clamp(2.4rem, 6vw, 4.6rem);
+}
+
+.title em {
+  font-family: var(--font-editorial);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--sand);
+  letter-spacing: -0.01em;
+}
+
+.lead {
+  margin: 1.7rem 0 0;
+  max-width: 56ch;
+  color: var(--steel);
+  font-size: clamp(1.05rem, 1.6vw, 1.28rem);
+  line-height: 1.6;
+}
+
+/* generic content section */
+.section {
+  padding-block: clamp(3.25rem, 7vw, 5.5rem);
+  border-top: 1px solid var(--line);
+}
+
+.eyebrow {
+  margin: 0 0 1.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--sand);
+}
+
+.h2 {
+  margin: 0 0 1.6rem;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  color: var(--paper);
+}
+
+.body {
+  margin: 0;
+  max-width: 62ch;
+  color: var(--steel);
+  font-size: 1.02rem;
+  line-height: 1.7;
+}
+
+.body + .body {
+  margin-top: 1.1rem;
+}
+
+/* working principles — editorial list, matches PhilosophySection */
+.principles {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: clamp(1.8rem, 4vw, 2.8rem);
+  max-width: 60ch;
+}
+
+.principles li {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.pKey {
+  font-family: var(--font-editorial);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(1.5rem, 3.4vw, 2.4rem);
+  color: var(--sand);
+  line-height: 1.14;
+}
+
+.pVal {
+  color: var(--steel);
+  font-size: 1rem;
+  line-height: 1.6;
+  max-width: 52ch;
+}
+
+/* demoted personal-work note */
+.aside {
+  margin: 1.4rem 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  color: var(--faint);
+}
