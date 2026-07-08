@@ -46,6 +46,7 @@ const patterns: Pattern[] = [
     title: "VAD tuning",
     blurb:
       "Setting voice-activity thresholds and hangover windows so background noise does not register as speech and soft talkers do not get dropped.",
+    slug: "vad-tuning",
   },
   {
     index: "04",
@@ -58,18 +59,21 @@ const patterns: Pattern[] = [
     title: "Menu and domain grounding",
     blurb:
       "Constraining the model to a real menu or catalog so it resolves what the caller said to items that exist, instead of inventing plausible ones.",
+    slug: "menu-grounding",
   },
   {
     index: "06",
     title: "Clarify-before-commit guardrails",
     blurb:
       "Forcing a confirmation step before any irreversible action, so a low-confidence transcript never books, charges, or cancels on its own.",
+    slug: "clarify-before-commit",
   },
   {
     index: "07",
     title: "Human handoff design",
     blurb:
       "Detecting when the agent is out of its depth and transferring to a person with the transcript and intent carried across the boundary.",
+    slug: "human-handoff",
   },
   {
     index: "08",
@@ -121,7 +125,7 @@ export default function PatternsPage() {
               The recurring problems in building phone-grade voice AI, and the
               mechanisms that solve them. Each note frames a problem, its failure
               modes, and implementation notes drawn from systems that run live on
-              a call. Two are written; the rest are in progress.
+              a call. Six are written; the rest are in progress.
             </p>
           </header>
 
