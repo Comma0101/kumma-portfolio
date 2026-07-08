@@ -20,11 +20,12 @@ export const chapters: Chapter[] = [
   {
     no: "01",
     title: "KOTA",
-    href: "/projects/kota",
+    href: "/work/kota",
     layout: "feature",
     blurb:
       "Turns restaurant phone calls into structured, actionable orders without requiring the restaurant to replace or deeply integrate its POS.",
     tags: ["real-time voice", "LLM orchestration", "menu grounding"],
+    secondary: { label: "Call the line →", href: "/call" },
     evidence: {
       input: "messy phone speech",
       transform: "streaming STT + menu grounding",
@@ -51,34 +52,19 @@ export const chapters: Chapter[] = [
   },
   {
     no: "03",
-    title: "Market Systems",
-    href: "/projects/market-systems",
+    title: "Latency report",
+    href: "/latency",
     layout: "band",
     blurb:
-      "Converts discretionary market reading into a rules-based MNQ/MES execution framework designed to prioritize process, risk control, and repeatability over daily P&L.",
-    tags: ["research", "risk", "execution"],
+      "A monthly measurement of turn latency, barge-in response, and call setup across the major hosted voice stacks. Fixed methodology, raw CSV with every report. First report in progress.",
+    tags: ["latency", "methodology", "monthly"],
+    secondary: { label: "Stress suite →", href: "/benchmark" },
     evidence: {
-      input: "noisy market context",
-      transform: "setup taxonomy + risk rules",
-      output: "scored decision record",
-      guardrail: "process over P&L",
+      input: "scripted calls across hosted stacks",
+      transform: "identical prompts, fixed methodology",
+      output: "p50 / p95 turn latency, raw CSV",
+      guardrail: "no unmeasured numbers",
     },
-    artifact: "decision-quality workflow",
-  },
-  {
-    no: "04",
-    title: "Experiments & Visual",
-    href: "/gallery",
-    layout: "strip",
-    blurb:
-      "Interactive web, 3D, photography, and writing. Visual and written research that feeds how I design systems.",
-    tags: ["3D", "photography", "essays", "interface"],
-    secondary: { label: "Read essays →", href: "/blog" },
-    images: [
-      "/images/collection1/img1.jpg",
-      "/images/home/berlin-study.jpg",
-      "/images/collection2/img2.jpg",
-      "/images/collection1/img3.jpg",
-    ],
+    artifact: "monthly public report",
   },
 ];

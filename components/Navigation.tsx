@@ -12,15 +12,14 @@ interface NavLink {
 
 const navLinks: NavLink[] = [
   { name: "Work", href: "#work" },
-  { name: "ARCHON", href: "/projects/archon" },
-  { name: "Markets", href: "/projects/market-systems" },
-  { name: "Studies", href: "/gallery" },
-  { name: "Contact", href: "#contact" },
-  { name: "Work with me", href: "/build" },
+  { name: "Call the agent", href: "/call" },
+  { name: "Benchmark", href: "/benchmark" },
+  { name: "Notes", href: "/blog" },
+  { name: "Contact", href: "/contact" },
 ];
 
 // Nav items that get the accent (primary-action) styling.
-const accentLinks = new Set(["Work with me"]);
+const accentLinks = new Set(["Call the agent"]);
 
 const homeSectionIds = ["home", "work", "philosophy", "contact"];
 

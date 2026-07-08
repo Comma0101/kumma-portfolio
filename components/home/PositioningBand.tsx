@@ -1,12 +1,12 @@
 import styles from "./PositioningBand.module.css";
 
 const disciplines = [
-  "AI systems",
   "real-time voice",
-  "product engineering",
   "agent orchestration",
-  "markets",
-  "visual practice",
+  "streaming speech",
+  "eval and benchmarking",
+  "latency engineering",
+  "production guardrails",
 ];
 
 export default function PositioningBand() {

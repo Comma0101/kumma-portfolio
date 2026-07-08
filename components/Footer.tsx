@@ -8,11 +8,14 @@ interface FooterProps {
 }
 
 const quickLinks = [
-  { label: "Work", href: "/#work" },
-  { label: "ARCHON", href: "/projects/archon" },
-  { label: "Markets", href: "/projects/market-systems" },
-  { label: "Studies", href: "/gallery" },
-  { label: "Blog", href: "/blog" },
+  { label: "Call the agent", href: "/call" },
+  { label: "Benchmark", href: "/benchmark" },
+  { label: "Latency", href: "/latency" },
+  { label: "Patterns", href: "/patterns" },
+  { label: "KOTA", href: "/work/kota" },
+  { label: "Notes", href: "/blog" },
+  { label: "Contact", href: "/contact" },
+  { label: "About", href: "/about" },
 ];
 
 const socialLinks = [
