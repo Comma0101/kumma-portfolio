@@ -16,7 +16,11 @@ const navLinks: NavLink[] = [
   { name: "Markets", href: "/projects/market-systems" },
   { name: "Studies", href: "/gallery" },
   { name: "Contact", href: "#contact" },
+  { name: "Work with me", href: "/build" },
 ];
+
+// Nav items that get the accent (primary-action) styling.
+const accentLinks = new Set(["Work with me"]);
 
 const homeSectionIds = ["home", "work", "philosophy", "contact"];
 
@@ -203,7 +207,7 @@ const Navigation = () => {
                   key={link.name}
                   href={link.href}
                   className={`${styles.navLink} ${isActive ? styles.active : ""} ${
-                  link.name === "Contact" ? styles.contactLink : ""
+                  accentLinks.has(link.name) ? styles.contactLink : ""
                 }`}
                 >
                   {link.name}
@@ -217,7 +221,7 @@ const Navigation = () => {
                 key={link.name}
                 href={link.href}
                 className={`${styles.navLink} ${isActive ? styles.active : ""} ${
-                  link.name === "Contact" ? styles.contactLink : ""
+                  accentLinks.has(link.name) ? styles.contactLink : ""
                 }`}
                 onClick={(e) => scrollToSection(e, link.href)}
                 aria-current={isActive ? "page" : undefined}

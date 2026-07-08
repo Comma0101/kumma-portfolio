@@ -53,16 +53,17 @@ export default function HeroSection() {
           </ul>
         </div>
         <div data-hero-rise className={styles.actions}>
-          <Button href="#work" variant="primary">
-            See the systems →
+          <Button href="/build" variant="primary">
+            Work with me →
           </Button>
-          <Button href="#contact" variant="ghost">
-            Start a conversation
+          <Button href="#work" variant="ghost">
+            See the systems →
           </Button>
         </div>
         <p data-hero-rise className={styles.availability}>
-          Open to founding-engineer, applied-AI, and real-time-voice work, plus
-          KOTA partnerships. Usually replies within a day.
+          I design and ship real-time voice and agent systems for teams that
+          need them running in production — fixed-scope builds and consulting.
+          Usually replies within a day.
         </p>
       </div>
     </section>
