@@ -53,6 +53,7 @@ const patterns: Pattern[] = [
     title: "Streaming STT selection",
     blurb:
       "Choosing a streaming speech-to-text path on partial-transcript stability, endpoint signals, and phone-band audio rather than headline accuracy.",
+    slug: "streaming-stt",
   },
   {
     index: "05",
@@ -80,18 +81,21 @@ const patterns: Pattern[] = [
     title: "Telephony failure modes",
     blurb:
       "The failure surface of SIP and Twilio: one-way audio, dropped media, DTMF collisions, and reconnection when a leg goes silent mid-call.",
+    slug: "telephony-failure-modes",
   },
   {
     index: "09",
     title: "Voice eval harness design",
     blurb:
       "Replaying recorded calls and synthetic turns through the pipeline so a change to a prompt or timer is measured, not guessed at.",
+    slug: "eval-harness",
   },
   {
     index: "10",
     title: "Latency budgets",
     blurb:
       "Accounting for every millisecond from end-of-speech to first audio out across VAD, STT, model, and TTS so the turn feels like a conversation.",
+    slug: "latency-budgets",
   },
 ];
 
@@ -125,7 +129,7 @@ export default function PatternsPage() {
               The recurring problems in building phone-grade voice AI, and the
               mechanisms that solve them. Each note frames a problem, its failure
               modes, and implementation notes drawn from systems that run live on
-              a call. Six are written; the rest are in progress.
+              a call.
             </p>
           </header>
 
