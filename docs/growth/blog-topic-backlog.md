@@ -9,6 +9,23 @@ write sooner. Status: `idea` → `queued` → `drafting` → `published`.
 **Honesty rule:** posts marked ⚠️ depend on a real metric or demo Kumma must
 confirm before publishing. No invented numbers.
 
+## Cluster structure (pillar → spokes)
+
+Content is organized as one **pillar** with interlinked **spokes** (see the agent
+spec). Every new post links to the pillar and at least one sibling.
+
+- **Pillar (to write):** *"AI receptionists for small business, explained"* — the
+  broad definitive page the spokes point back to.
+- **Spokes published:** A6 (does it work / embarrass me), A5 (which option to
+  pick). Next spokes: A1 (cost), A2 (med-spa worth-it), A4 (missed-call cost).
+
+## Published
+
+- ✅ **A6** — `does-an-ai-receptionist-actually-work` (2026-07-07). Live.
+- ✅ **A5** — `off-the-shelf-ai-phone-tool-vs-answering-service-vs-custom-agent`
+  (2026-07-08). Reframed to a durable category-level comparison (no vendor names,
+  since current product specs can't be verified). Live.
+
 ---
 
 ## Bucket A — Buyer-intent / SEO (owner voice, closest to money)
@@ -19,8 +36,8 @@ confirm before publishing. No invented numbers.
 | A2 | Is an AI phone answering service worth it for a med spa? | "ai answering service med spa" | High | queued | Beachhead vertical, zero content today. |
 | A3 | AI answering service vs. hiring a receptionist: the real math | "ai vs receptionist cost" | High | idea | Decision-stage. Third-party stats must be sourced. |
 | A4 | How much revenue is your HVAC business losing to missed calls? | "missed call cost home services" | High | idea | Secondary vertical; pain-quantifier. |
-| A5 | Vapi vs. Retell vs. a custom-built agent: which should an SMB use? | "vapi vs retell small business" | High | idea | Captures tool-shoppers; positions done-for-you. |
-| A6 | Does an AI receptionist actually work, or will it embarrass me? | "does ai receptionist work" | High | idea | Named objection; pair with callable demo. |
+| A5 | Off-the-shelf tool vs. answering service vs. custom agent (published as category-level) | "ai answering service vs custom ai agent" | High | ✅ published | Reframed from vendor names to durable approach comparison. |
+| A6 | Does an AI receptionist actually work, or will it embarrass me? | "does ai receptionist work" | High | ✅ published | Live. Pair with callable demo when ready. |
 | A7 | Can AI book straight into my calendar / booking system? | "ai appointment booking integration" | Medium | idea | Integration objection. |
 | A8 | AI front desk for aesthetic clinics: intake, reminders, no-show follow-up | "ai front desk aesthetic clinic" | High | idea | Whole-workflow, low-competition long-tail. |
 

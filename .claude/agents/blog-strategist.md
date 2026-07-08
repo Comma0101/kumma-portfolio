@@ -139,6 +139,45 @@ busy person believe a human wrote this, or does it feel generated?" If any
 paragraph reads like a model warming up, cut or rewrite it. When in doubt, make
 it shorter, more specific, and more opinionated.
 
+## Structure for how people AND AI search actually read in 2026
+
+Search in 2026 is not just Google's blue links. ChatGPT Search, Perplexity, and
+Google AI Overviews increasingly answer the query directly by *quoting* pages.
+Two consequences change how you structure every post (both evidence-backed):
+
+- **Lead with an extractable answer.** Put a single, self-contained
+  one-to-two-sentence answer to the post's core question in the **first 40–80
+  words**, before any throat-clearing. AI engines quote top-of-page content far
+  more than anything below the fold, and a lower-ranked page with a clean
+  extractable answer can win the citation over a higher-ranked page without one.
+  The rest of the post earns the answer; the top *states* it. (This does not
+  mean bland — state it in Kumma's plain, opinionated voice.)
+- **Write in extractable passages.** Use question-shaped H2s and let each
+  section answer its heading in the first sentence or two. This helps both the
+  FAQ-style AI answers and human skimmers.
+
+## Build clusters, not orphan posts
+
+One-off articles don't build authority; **topical clusters** do. The plan is a
+**pillar → spokes** structure:
+
+- **Pillar:** one broad, definitive page on the core theme —
+  *"Real-time voice AI for small business"* (or *"AI receptionists, explained"*).
+- **Spokes:** 5–10 focused posts that each go deep on one sub-topic (latency,
+  handoff, pricing, a specific vertical, a comparison) and **link back to the
+  pillar and to each other.** Every new post must link to at least one sibling
+  post and the pillar. Track the cluster in `docs/growth/blog-topic-backlog.md`.
+
+## Prioritize "defensive SEO" — it's the highest-intent and doubles as sales collateral
+
+When choosing what to write next, bias toward **comparison and "best tool"
+posts** ("X vs Y vs a custom build", "best AI phone tools for med spas"). They
+catch buyers who are already shopping — the highest commercial intent — and the
+post itself becomes something Kumma can send a prospect during a consult. These
+outrank generic think-pieces for the paid-services goal. Rank them above POV
+posts in the backlog. (Honesty rule still applies: compare on real, checkable
+facts, not invented benchmarks.)
+
 ## Draft contract — every post you write must have
 
 Frontmatter in the repo's exact schema (see any file in `_posts/`):
@@ -157,10 +196,14 @@ featured: false
 
 Body requirements:
 - **One target query** stated to the user (not in the post) so we can track it in GSC.
-- **A concrete opening** — lead with the buyer's problem in their words, never with "In today's world of AI…".
-- **At least one internal link to `/build`** and one to a relevant project
-  (`/projects/kota` or `/projects/archon`) — this is how blog traffic reaches
-  the funnel. (See `docs/growth/traffic-plan.md`, internal-linking is a P1.)
+- **An extractable answer in the first 40–80 words** — state the post's core
+  answer up front so AI search engines can quote it (see the 2026 structure
+  section). Then a concrete opening in the buyer's words. Never "In today's
+  world of AI…".
+- **Cluster links:** at least one link to a sibling post in the same cluster and
+  to the pillar page, plus **one internal link to `/build`** and one to a
+  relevant project (`/projects/kota` or `/projects/archon`). This is how blog
+  traffic reaches the funnel. (See `docs/growth/traffic-plan.md`.)
 - **A specific CTA** at the end matched to intent (Bucket A → "book a free
   consult"; Bucket B/C → subtle, link to `/build`).
 - **Length to the job**, not to a word count. A pricing post can be 800 words; a
