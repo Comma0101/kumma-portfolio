@@ -74,10 +74,10 @@ export default function ContactSection() {
     >
       <div className={styles.contactWrapper}>
         <div className={styles.contactIntro}>
-          <h2>Building something difficult? Let&apos;s examine the system.</h2>
+          <h2>Building a voice agent? Tell me the problem and the constraint.</h2>
           <p className={styles.contactDescription}>
-            For founders, technical leaders, and collaborators. Tell me the
-            problem and the constraint.
+            Voice agent audits, production builds, and advisory. Send the
+            problem and the constraint, or use the full form.
           </p>
 
           <a href="mailto:dev@kumma.me" className={styles.emailLink}>

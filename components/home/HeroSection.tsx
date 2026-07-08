@@ -9,7 +9,7 @@ import styles from "./HeroSection.module.css";
 const heroSignals = [
   ["KOTA", "call -> order"],
   ["ARCHON", "route -> worker"],
-  ["Markets", "signal -> rule"],
+  ["Stress suite", "scenario -> score"],
 ] as const;
 
 export default function HeroSection() {
@@ -36,12 +36,13 @@ export default function HeroSection() {
           Real-time voice · agent systems · Los Angeles
         </p>
         <h1 data-hero-rise className={styles.title}>
-          I build AI that runs in production, <em>not in demos.</em>
+          Real-time voice AI, built and <em>broken in public.</em>
         </h1>
         <div data-hero-rise className={styles.systemProof}>
           <p className={styles.subtext}>
-            Real-time voice, agent orchestration, and decision systems built
-            around messy inputs, visible guardrails, and reliable outputs.
+            I design and ship voice agents that survive real phone calls —
+            streaming speech, agent orchestration, and the guardrails between
+            them. Call the line and try to break it.
           </p>
           <ul className={styles.signalRail} aria-label="Operational signals">
             {heroSignals.map(([name, flow]) => (
@@ -53,17 +54,16 @@ export default function HeroSection() {
           </ul>
         </div>
         <div data-hero-rise className={styles.actions}>
-          <Button href="/build" variant="primary">
-            Work with me →
+          <Button href="/call" variant="primary">
+            Call the line →
           </Button>
-          <Button href="#work" variant="ghost">
-            See the systems →
+          <Button href="/contact" variant="ghost">
+            Bring me a problem →
           </Button>
         </div>
         <p data-hero-rise className={styles.availability}>
-          I design and ship real-time voice and agent systems for teams that
-          need them running in production — fixed-scope builds and consulting.
-          Usually replies within a day.
+          Independent voice AI systems builder, Los Angeles. Available for
+          audits, builds, and advisory. Usually replies within a day.
         </p>
       </div>
     </section>

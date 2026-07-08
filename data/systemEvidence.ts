@@ -1,7 +1,7 @@
 export type EvidenceKind = "live" | "open-source" | "artifact" | "workflow";
 
 export interface SystemEvidence {
-  slug: "kota" | "archon" | "market-systems" | "field-notes";
+  slug: "kota" | "archon" | "benchmark" | "field-notes";
   label: string;
   status: string;
   signal: string;
@@ -25,8 +25,7 @@ export const systemEvidence: SystemEvidence[] = [
     output: "kitchen-ready order ticket",
     guardrail: "clarifies ambiguity before commit",
     kind: "live",
-    href: "https://kota.kummalabs.com",
-    external: true,
+    href: "/work/kota",
   },
   {
     slug: "archon",
@@ -41,16 +40,16 @@ export const systemEvidence: SystemEvidence[] = [
     href: "/projects/archon",
   },
   {
-    slug: "market-systems",
-    label: "Market Systems",
-    status: "decision-quality tooling",
-    signal: "signal -> rule",
-    input: "noisy market context",
-    transform: "setup taxonomy, risk rules, execution journal",
-    output: "scored decision record",
-    guardrail: "process over P&L",
-    kind: "workflow",
-    href: "/projects/market-systems",
+    slug: "benchmark",
+    label: "Voice stress suite",
+    status: "open eval suite",
+    signal: "scenario -> score",
+    input: "50 hard call scenarios",
+    transform: "rubric scoring, downloadable audio",
+    output: "published scores, warts included",
+    guardrail: "no unmeasured numbers",
+    kind: "open-source",
+    href: "/benchmark",
   },
   {
     slug: "field-notes",
