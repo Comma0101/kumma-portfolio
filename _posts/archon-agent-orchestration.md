@@ -1,5 +1,5 @@
 ---
-title: "Archon: orchestrating Claude, GPT, and Gemini, and delegating to coding agents"
+title: "Why single-prompt AI agents break: orchestration is the product, not the model"
 excerpt: "Most agents are one prompt in a loop. Archon is a control plane: it routes across models, runs tools over MCP, keeps compressed memory, and hands real work to coding agents through a worker router."
 date: "2026-06-12"
 author: "Kumma"
