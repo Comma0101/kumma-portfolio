@@ -1,5 +1,8 @@
 export const PAGE_TRANSITION_SECONDS = 0.35;
 
+export const scrollBehaviorForMotion = (prefersReducedMotion: boolean) =>
+  prefersReducedMotion ? "auto" : "smooth";
+
 interface NavigationIntent {
   button: number;
   metaKey: boolean;

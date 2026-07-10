@@ -4,7 +4,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import styles from "../styles/navigation.module.css";
 import TransitionLink from "./TransitionLink";
-import { inertAttribute, nextFocusIndex } from "./navigationBehavior";
+import {
+  inertAttribute,
+  nextFocusIndex,
+  scrollBehaviorForMotion,
+} from "./navigationBehavior";
 
 interface NavLink {
   name: string;
@@ -77,18 +81,27 @@ const Navigation = () => {
     const handleLenisScroll = ({ scroll }: { scroll: number }) => {
       updateNavigation(scroll);
     };
+    const handleNativeScroll = () => updateNavigation(window.scrollY);
     const handleResize = () => updateNavigation(lenis?.scroll ?? window.scrollY);
 
     frame = window.requestAnimationFrame(() => {
       lenis = (window as Window & { lenis?: LenisInstance }).lenis;
       updateNavigation(lenis?.scroll ?? window.scrollY);
-      lenis?.on("scroll", handleLenisScroll);
+      if (lenis) {
+        lenis.on("scroll", handleLenisScroll);
+      } else {
+        window.addEventListener("scroll", handleNativeScroll, { passive: true });
+      }
     });
     window.addEventListener("resize", handleResize);
 
     return () => {
       window.cancelAnimationFrame(frame);
-      lenis?.off("scroll", handleLenisScroll);
+      if (lenis) {
+        lenis.off("scroll", handleLenisScroll);
+      } else {
+        window.removeEventListener("scroll", handleNativeScroll);
+      }
       window.removeEventListener("resize", handleResize);
     };
   }, [isHomePage]);
@@ -239,7 +252,12 @@ const Navigation = () => {
         } else {
           const offsetTop =
             element.getBoundingClientRect().top + window.scrollY - 82;
-          window.scrollTo({ top: Math.max(0, offsetTop), behavior: "smooth" });
+          window.scrollTo({
+            top: Math.max(0, offsetTop),
+            behavior: scrollBehaviorForMotion(
+              window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+            ),
+          });
         }
       }
     } else {
@@ -257,7 +275,12 @@ const Navigation = () => {
       if (lenis) {
         lenis.scrollTo(0);
       } else {
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        window.scrollTo({
+          top: 0,
+          behavior: scrollBehaviorForMotion(
+            window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+          ),
+        });
       }
       closeMenu();
       return;

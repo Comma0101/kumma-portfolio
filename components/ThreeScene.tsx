@@ -222,7 +222,12 @@ export default function ThreeScene() {
       }
     };
     handleScroll({ scroll: lenis?.scroll ?? window.scrollY });
-    lenis?.on("scroll", handleScroll);
+    const handleNativeScroll = () => handleScroll({ scroll: window.scrollY });
+    if (lenis) {
+      lenis.on("scroll", handleScroll);
+    } else {
+      window.addEventListener("scroll", handleNativeScroll, { passive: true });
+    }
     renderFrame();
     startLoop();
 
@@ -260,7 +265,11 @@ export default function ThreeScene() {
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("pointermove", onPointer);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-      lenis?.off("scroll", handleScroll);
+      if (lenis) {
+        lenis.off("scroll", handleScroll);
+      } else {
+        window.removeEventListener("scroll", handleNativeScroll);
+      }
       stopLoop();
       geometry.dispose();
       material.dispose();

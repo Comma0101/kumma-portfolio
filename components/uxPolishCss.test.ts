@@ -4,6 +4,7 @@ import path from "node:path";
 import { describe, it } from "node:test";
 import {
   PAGE_TRANSITION_SECONDS,
+  scrollBehaviorForMotion,
   shouldAnimateNavigation,
 } from "./navigationBehavior";
 
@@ -144,6 +145,14 @@ describe("native-compatible route navigation", () => {
     assert.ok(PAGE_TRANSITION_SECONDS <= 0.35);
   });
 
+  it("uses immediate native scrolling for reduced motion", () => {
+    assert.equal(scrollBehaviorForMotion(true), "auto");
+  });
+
+  it("keeps smooth native scrolling for no preference", () => {
+    assert.equal(scrollBehaviorForMotion(false), "smooth");
+  });
+
   it("guards TransitionLink interception and exposes active semantics", () => {
     const source = readCss("components/TransitionLink.tsx");
 
@@ -212,5 +221,52 @@ describe("homepage terrain and reduced motion", () => {
     );
     assert.ok(guard >= 0, "Expected a reduced-motion guard");
     assert.ok(constructor > guard, "Expected the guard before Lenis construction");
+  });
+
+  it("tracks homepage navigation with native scroll when Lenis is absent", () => {
+    const source = readCss("components/Navigation.tsx");
+    const effect = source.slice(
+      source.indexOf("if (!isHomePage)"),
+      source.indexOf("}, [isHomePage]);"),
+    );
+
+    assert.match(
+      effect,
+      /const handleNativeScroll\s*=\s*\(\)\s*=>\s*updateNavigation\(window\.scrollY\)/,
+    );
+    assert.match(
+      effect,
+      /if\s*\(lenis\)[\s\S]*lenis\.on\(["']scroll["'], handleLenisScroll\)[\s\S]*else[\s\S]*window\.addEventListener\(["']scroll["'], handleNativeScroll, \{ passive: true \}\)/,
+    );
+    assert.match(
+      effect,
+      /if\s*\(lenis\)[\s\S]*lenis\.off\(["']scroll["'], handleLenisScroll\)[\s\S]*else[\s\S]*window\.removeEventListener\(["']scroll["'], handleNativeScroll\)/,
+    );
+  });
+
+  it("tracks terrain visibility with native scroll when Lenis is absent", () => {
+    const source = readCss("components/ThreeScene.tsx");
+
+    assert.match(
+      source,
+      /const handleNativeScroll\s*=\s*\(\)\s*=>\s*handleScroll\(\{ scroll: window\.scrollY \}\)/,
+    );
+    assert.match(
+      source,
+      /if\s*\(lenis\)[\s\S]*lenis\.on\(["']scroll["'], handleScroll\)[\s\S]*else[\s\S]*window\.addEventListener\(["']scroll["'], handleNativeScroll, \{ passive: true \}\)/,
+    );
+    assert.match(
+      source,
+      /if\s*\(lenis\)[\s\S]*lenis\.off\(["']scroll["'], handleScroll\)[\s\S]*else[\s\S]*window\.removeEventListener\(["']scroll["'], handleNativeScroll\)/,
+    );
+  });
+
+  it("uses the motion-aware behavior for both native anchor fallbacks", () => {
+    const source = readCss("components/Navigation.tsx");
+
+    assert.equal(
+      source.match(/behavior:\s*scrollBehaviorForMotion\(/g)?.length,
+      2,
+    );
   });
 });
