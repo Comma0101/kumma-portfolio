@@ -52,3 +52,27 @@ describe("UX polish CSS", () => {
     assert.doesNotMatch(css, /\.pillLabel\s*\{[^}]*clip:\s*rect/s);
   });
 });
+
+describe("accessible page landmarks", () => {
+  it("connects the global skip link to a focusable main landmark", () => {
+    const layout = readCss("app/layout.tsx");
+
+    assert.match(layout, /href="#main-content"/);
+    assert.match(layout, /id="main-content"/);
+    assert.match(layout, /tabIndex=\{-1\}/);
+  });
+
+  for (const file of [
+    "components/ContactPage.tsx",
+    "components/BenchmarkPage.tsx",
+    "components/LatencyPage.tsx",
+    "components/build/BuildLanding.tsx",
+    "app/patterns/page.tsx",
+    "app/projects/page.tsx",
+    "app/agent/page.tsx",
+  ]) {
+    it(`${file} delegates the main landmark to the root layout`, () => {
+      assert.doesNotMatch(readCss(file), /<main\b/);
+    });
+  }
+});

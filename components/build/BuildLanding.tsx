@@ -101,7 +101,7 @@ export default function BuildLanding() {
         </a>
       </header>
 
-      <main id="top">
+      <div id="top">
         {/* Hero */}
         <section className={`${styles.hero} ${styles.shell}`}>
           <p className={styles.eyebrow}>{heroEyebrow}</p>
@@ -270,7 +270,7 @@ export default function BuildLanding() {
             )}
           </form>
         </section>
-      </main>
+      </div>
 
       <footer className={styles.footer}>
         <span>© {new Date().getFullYear()} Kumma</span>

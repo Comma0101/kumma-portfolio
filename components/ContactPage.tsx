@@ -111,7 +111,7 @@ export default function ContactPage() {
 
   return (
     <div ref={root} className={`${styles.page} ${contact.top}`}>
-      <main>
+      <div>
         {/* Intro */}
         <section className={`${styles.hero} ${styles.shell}`}>
           <p className={styles.eyebrow}>Contact</p>
@@ -257,7 +257,7 @@ export default function ContactPage() {
             )}
           </form>
         </section>
-      </main>
+      </div>
     </div>
   );
 }

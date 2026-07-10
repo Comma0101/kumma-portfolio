@@ -9,7 +9,7 @@ export default function ProjectsPage() {
   }, []);
 
   return (
-    <main
+    <div
       style={{
         minHeight: "60vh",
         display: "grid",
@@ -24,6 +24,6 @@ export default function ProjectsPage() {
         </Link>
         .
       </p>
-    </main>
+    </div>
   );
 }

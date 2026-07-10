@@ -120,7 +120,7 @@ export default function PatternsPage() {
   return (
     <>
       <JsonLd data={collectionLd} />
-      <main className={styles.page}>
+      <div className={styles.page}>
         <div className={styles.indexWrapper}>
           <header className={styles.indexHeader}>
             <p className={styles.eyebrow}>Pattern library</p>
@@ -165,7 +165,7 @@ export default function PatternsPage() {
             )}
           </div>
         </div>
-      </main>
+      </div>
     </>
   );
 }

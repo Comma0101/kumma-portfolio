@@ -74,12 +74,17 @@ export default function RootLayout({
         className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} ${cormorant.variable}`}
         suppressHydrationWarning
       >
+        <a className="skip-link" href="#main-content">
+          Skip to content
+        </a>
         <IntroOverlay />
         <PageTransitionProvider>
           <SmoothScrollProvider>
             <ThreeScene />
             <Navigation />
-            <main className="site-main">{children}</main>
+            <main id="main-content" className="site-main" tabIndex={-1}>
+              {children}
+            </main>
           </SmoothScrollProvider>
           <ConditionalFooter />
         </PageTransitionProvider>

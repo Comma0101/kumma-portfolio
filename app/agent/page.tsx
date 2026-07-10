@@ -30,7 +30,7 @@ const machine = [
 
 export default function AgentPage() {
   return (
-    <main className={styles.wrap}>
+    <div className={styles.wrap}>
       <JsonLd data={personLd} />
 
       <header className={styles.head}>
@@ -137,6 +137,6 @@ export default function AgentPage() {
         </Link>
         <span>detection is heuristic. this protocol is open to every visitor.</span>
       </footer>
-    </main>
+    </div>
   );
 }

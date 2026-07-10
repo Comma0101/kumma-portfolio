@@ -127,7 +127,7 @@ export default function BenchmarkPage() {
         </a>
       </header>
 
-      <main id="top">
+      <div id="top">
         {/* Hero */}
         <section className={`${bs.hero} ${bs.shell}`}>
           <p className={bs.eyebrow}>Voice Agent Stress Suite v1</p>
@@ -332,7 +332,7 @@ export default function BenchmarkPage() {
             </li>
           </ol>
         </section>
-      </main>
+      </div>
 
       <footer className={bs.footer}>
         <span>© {new Date().getFullYear()} Kumma — Los Angeles</span>

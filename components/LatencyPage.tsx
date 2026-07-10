@@ -51,7 +51,7 @@ const methodology: { term: string; value: ReactNode }[] = [
 export default function LatencyPage() {
   return (
     <div className={base.page}>
-      <main id="top">
+      <div id="top">
         {/* Hero */}
         <section className={`${base.hero} ${base.shell}`}>
           <p className={base.eyebrow}>Monthly latency report</p>
@@ -100,7 +100,7 @@ export default function LatencyPage() {
             </p>
           </div>
         </section>
-      </main>
+      </div>
     </div>
   );
 }
