@@ -99,6 +99,7 @@ button:focus-visible {
 }
 
 .skip-link:focus {
+  z-index: 2001;
   transform: translateY(0);
 }
 

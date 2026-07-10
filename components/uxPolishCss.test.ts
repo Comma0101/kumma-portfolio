@@ -54,12 +54,38 @@ describe("UX polish CSS", () => {
 });
 
 describe("accessible page landmarks", () => {
-  it("connects the global skip link to a focusable main landmark", () => {
+  it("renders a skip link targeting the focusable main landmark", () => {
     const layout = readCss("app/layout.tsx");
 
-    assert.match(layout, /href="#main-content"/);
-    assert.match(layout, /id="main-content"/);
-    assert.match(layout, /tabIndex=\{-1\}/);
+    assert.match(
+      layout,
+      /<a\b(?=[^>]*\bclassName="skip-link")(?=[^>]*\bhref="#main-content")[^>]*>\s*Skip to content\s*<\/a>/s,
+    );
+    assert.match(
+      layout,
+      /<main\b(?=[^>]*\bid="main-content")(?=[^>]*\bclassName="site-main")(?=[^>]*\btabIndex=\{-1\})[^>]*>/s,
+    );
+  });
+
+  it("reveals the skip link on focus with the intended motion", () => {
+    const css = readCss("app/globals.css");
+
+    assert.match(blockFor(css, ".skip-link"), /transform:\s*translateY\(-160%\);/);
+    assert.match(blockFor(css, ".skip-link"), /transition:\s*transform 180ms ease;/);
+    assert.match(blockFor(css, ".skip-link:focus"), /transform:\s*translateY\(0\);/);
+  });
+
+  it("keeps the focused skip link above the intro overlay", () => {
+    const focusedSkipLink = blockFor(readCss("app/globals.css"), ".skip-link:focus");
+    const introOverlay = blockFor(
+      readCss("styles/introOverlay.module.css"),
+      ".overlay",
+    );
+
+    assert.ok(
+      numberAfter(focusedSkipLink, /z-index:\s*(\d+)/) >
+        numberAfter(introOverlay, /z-index:\s*(\d+)/),
+    );
   });
 
   for (const file of [
