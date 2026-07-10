@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import styles from "../styles/navigation.module.css";
 import TransitionLink from "./TransitionLink";
-import { nextFocusIndex } from "./navigationBehavior";
+import { inertAttribute, nextFocusIndex } from "./navigationBehavior";
 
 interface NavLink {
   name: string;
@@ -38,6 +38,7 @@ const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isNavVisible, setIsNavVisible] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
   const pathname = usePathname();
@@ -123,7 +124,7 @@ const Navigation = () => {
     const frame = window.requestAnimationFrame(() => {
       const firstLink =
         overlayRef.current?.querySelector<HTMLElement>("a[href]");
-      (firstLink ?? menuButtonRef.current)?.focus();
+      (firstLink ?? closeButtonRef.current)?.focus();
     });
 
     return () => {
@@ -136,14 +137,27 @@ const Navigation = () => {
     };
   }, [isMenuOpen]);
 
-  const closeMenu = (restoreFocus = false) => {
+  const closeMenu = useCallback((restoreFocus = false) => {
     setIsMenuOpen(false);
     if (restoreFocus) {
       const previousFocus = previousFocusRef.current;
       previousFocusRef.current = null;
       window.requestAnimationFrame(() => previousFocus?.focus());
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (!isMenuOpen) return;
+
+    const mobileViewport = window.matchMedia("(max-width: 980px)");
+    const handleViewportChange = (event: MediaQueryListEvent) => {
+      if (!event.matches) closeMenu(true);
+    };
+
+    mobileViewport.addEventListener("change", handleViewportChange);
+    return () =>
+      mobileViewport.removeEventListener("change", handleViewportChange);
+  }, [closeMenu, isMenuOpen]);
 
   const toggleMenu = () => {
     if (isMenuOpen) {
@@ -158,9 +172,7 @@ const Navigation = () => {
     setIsMenuOpen(true);
   };
 
-  const handleMenuKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
-    if (!isMenuOpen) return;
-
+  const handleMenuKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Escape") {
       e.preventDefault();
       closeMenu(true);
@@ -169,12 +181,11 @@ const Navigation = () => {
 
     if (e.key !== "Tab") return;
 
-    const focusable = [
-      menuButtonRef.current,
-      ...Array.from(
-        overlayRef.current?.querySelectorAll<HTMLElement>("a[href]") ?? [],
-      ),
-    ].filter((element): element is HTMLElement => element !== null);
+    const focusable = Array.from(
+      overlayRef.current?.querySelectorAll<HTMLElement>(
+        "a[href], button:not([disabled])",
+      ) ?? [],
+    );
     const current = focusable.indexOf(
       document.activeElement as HTMLElement,
     );
@@ -194,6 +205,10 @@ const Navigation = () => {
       e.preventDefault();
       focusable[next].focus();
     }
+  };
+
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) closeMenu(true);
   };
 
   const scrollToSection = (
@@ -265,7 +280,6 @@ const Navigation = () => {
         isScrolled || !isHomePage ? styles.pageNav : ""
       } ${isNavVisible ? styles.navigationVisible : ""}`}
       aria-label="Main navigation"
-      onKeyDown={handleMenuKeyDown}
     >
       <div className={styles.navContainer}>
         <a
@@ -319,10 +333,12 @@ const Navigation = () => {
 
         <button
           ref={menuButtonRef}
-          className={`${styles.menuButton} ${isMenuOpen ? styles.open : ""}`}
+          className={styles.menuButton}
           onClick={toggleMenu}
-          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+          aria-label="Open menu"
           aria-expanded={isMenuOpen}
+          aria-hidden={isMenuOpen}
+          tabIndex={isMenuOpen ? -1 : undefined}
         >
           <span className={styles.menuBar}></span>
           <span className={styles.menuBar}></span>
@@ -339,10 +355,22 @@ const Navigation = () => {
         aria-modal="true"
         aria-label="Site navigation"
         aria-hidden={!isMenuOpen}
-        inert={!isMenuOpen}
-        onClick={() => closeMenu(true)}
+        {...inertAttribute(!isMenuOpen)}
+        onKeyDown={handleMenuKeyDown}
+        onClick={handleBackdropClick}
       >
-        <div className={styles.mobileLinksContainer} onClick={(e) => e.stopPropagation()}>
+        <button
+          ref={closeButtonRef}
+          className={`${styles.menuButton} ${styles.menuCloseButton} ${styles.open}`}
+          onClick={() => closeMenu(true)}
+          aria-label="Close menu"
+        >
+          <span className={styles.menuBar}></span>
+          <span className={styles.menuBar}></span>
+          <span className={styles.menuBar}></span>
+        </button>
+
+        <div className={styles.mobileLinksContainer}>
           <p className={styles.mobileKicker}>Navigation</p>
           {navLinks.map((link) => {
             const isActive = link.href.startsWith("/")

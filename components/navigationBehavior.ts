@@ -36,3 +36,7 @@ export const nextFocusIndex = (
   if (currentIndex === -1) return shiftKey ? length - 1 : 0;
   return (currentIndex + (shiftKey ? -1 : 1) + length) % length;
 };
+
+// React 18 only forwards this native boolean attribute when given a string.
+export const inertAttribute = (enabled: boolean) =>
+  enabled ? { inert: "" as never } : {};
