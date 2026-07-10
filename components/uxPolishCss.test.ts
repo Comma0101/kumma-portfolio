@@ -367,6 +367,7 @@ describe("contrast and touch targets", () => {
     ".outputNote",
     ".stackGroupLabel",
     ".quoteAttrib",
+    ".arrowLabel",
   ]) {
     it(`keeps ${selector} semantic text readable`, () => {
       const block = blockFor(

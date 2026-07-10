@@ -3,7 +3,11 @@ import fs from "node:fs";
 import { createRequire } from "node:module";
 import path from "node:path";
 import { describe, it } from "node:test";
-import { inertAttribute, nextFocusIndex } from "./navigationBehavior";
+import {
+  inertAttribute,
+  nextFocusIndex,
+  shouldRestoreMenuFocus,
+} from "./navigationBehavior";
 
 const requireFromProject = createRequire(
   path.resolve(process.cwd(), "package.json"),
@@ -151,6 +155,30 @@ describe("mobile navigation overlay CSS", () => {
     assert.match(
       breakpointEffect,
       /requestAnimationFrame\(\(\)\s*=>\s*logoRef\.current\?\.focus\(\)\)/,
+    );
+  });
+
+  it("restores focus for same-page anchors and exact current routes", () => {
+    assert.equal(shouldRestoreMenuFocus("/", "#work"), true);
+    assert.equal(shouldRestoreMenuFocus("/contact", "/contact"), true);
+  });
+
+  it("leaves real route changes to the page-transition focus handoff", () => {
+    assert.equal(shouldRestoreMenuFocus("/contact", "/blog"), false);
+    assert.equal(shouldRestoreMenuFocus("/blog/hello", "/blog"), false);
+    assert.equal(shouldRestoreMenuFocus("/contact", "#work"), false);
+  });
+
+  it("uses target-aware focus restoration for both mobile link types", () => {
+    const source = readCss("components/Navigation.tsx");
+
+    assert.match(
+      source,
+      /closeMenu\(shouldRestoreMenuFocus\(pathname,\s*href\)\)/,
+    );
+    assert.match(
+      source,
+      /onNavigate=\{\(\)\s*=>\s*closeMenu\(\s*shouldRestoreMenuFocus\(pathname,\s*link\.href\)\s*\)\s*\}/,
     );
   });
 });

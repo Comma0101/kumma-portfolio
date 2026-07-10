@@ -8,6 +8,7 @@ import {
   inertAttribute,
   nextFocusIndex,
   scrollBehaviorForMotion,
+  shouldRestoreMenuFocus,
 } from "./navigationBehavior";
 
 interface NavLink {
@@ -264,7 +265,7 @@ const Navigation = () => {
       router.push(`/${href}`);
     }
 
-    closeMenu();
+    closeMenu(shouldRestoreMenuFocus(pathname, href));
   };
 
   const scrollToTop = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -412,7 +413,9 @@ const Navigation = () => {
                   key={link.name}
                   href={link.href}
                   ariaCurrent={isActive ? "page" : undefined}
-                  onNavigate={closeMenu}
+                  onNavigate={() =>
+                    closeMenu(shouldRestoreMenuFocus(pathname, link.href))
+                  }
                   className={`${styles.mobileLink} ${isActive ? styles.active : ""}`}
                 >
                   {link.name}

@@ -40,6 +40,9 @@ export const nextFocusIndex = (
   return (currentIndex + (shiftKey ? -1 : 1) + length) % length;
 };
 
+export const shouldRestoreMenuFocus = (pathname: string, href: string) =>
+  pathname === href || (pathname === "/" && href.startsWith("#"));
+
 // React 18 only forwards this native boolean attribute when given a string.
 export const inertAttribute = (enabled: boolean) =>
   enabled ? { inert: "" as never } : {};
