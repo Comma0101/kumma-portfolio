@@ -16,7 +16,7 @@ export default function SmoothScrollProvider({
   const lenisRef = useRef<Lenis | null>(null);
 
   useLayoutEffect(() => {
-    const prefersReducedMotion = window.matchMedia(
+    const prefersReducedMotion = window.matchMedia?.(
       "(prefers-reduced-motion: reduce)",
     ).matches;
     if (!shouldInitializeSmoothScroll(prefersReducedMotion)) return;

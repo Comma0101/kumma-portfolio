@@ -45,4 +45,8 @@ describe("shouldInitializeSmoothScroll", () => {
   it("initializes smooth scrolling for no-preference users", () => {
     assert.equal(shouldInitializeSmoothScroll(false), true);
   });
+
+  it("initializes smooth scrolling when matchMedia is unavailable", () => {
+    assert.equal(shouldInitializeSmoothScroll(undefined), true);
+  });
 });

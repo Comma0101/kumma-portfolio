@@ -263,7 +263,7 @@
   letter-spacing: 0.04em;
   padding: 0.25rem 0.6rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(220, 220, 220, 0.5);
+  color: rgba(220, 220, 220, 0.58);
 }
 
 /* Output block */
@@ -299,7 +299,7 @@
 }
 
 .outputNote {
-  color: rgba(163, 181, 168, 0.6);
+  color: rgba(163, 181, 168, 0.7);
   font-size: 0.74rem;
 }
 
@@ -567,7 +567,7 @@
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(163, 181, 168, 0.65);
+  color: rgba(163, 181, 168, 0.7);
 }
 
 .stackGroupItems {
@@ -599,7 +599,7 @@
   font-size: 0.75rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(163, 181, 168, 0.6);
+  color: rgba(163, 181, 168, 0.7);
 }
 
 /* ── Responsive ── */

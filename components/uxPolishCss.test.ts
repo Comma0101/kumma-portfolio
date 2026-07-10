@@ -266,6 +266,10 @@ describe("homepage terrain and reduced motion", () => {
       source,
       /import\s*\{\s*shouldInitializeSmoothScroll\s*\}\s*from\s*["']\.\/viz\/reducedMotionState["']/,
     );
+    assert.match(
+      source,
+      /window\.matchMedia\?\.\(\s*["']\(prefers-reduced-motion: reduce\)["']\s*,?\s*\)\.matches/,
+    );
     assert.ok(guard >= 0, "Expected a reduced-motion guard");
     assert.ok(constructor > guard, "Expected the guard before Lenis construction");
   });
@@ -359,6 +363,10 @@ describe("contrast and touch targets", () => {
     ".pipelineKey",
     ".failureExample",
     ".impactDetail",
+    ".signal",
+    ".outputNote",
+    ".stackGroupLabel",
+    ".quoteAttrib",
   ]) {
     it(`keeps ${selector} semantic text readable`, () => {
       const block = blockFor(
