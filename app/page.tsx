@@ -1,10 +1,10 @@
 import Home from "@/components/Home";
-import { JsonLd, personLd } from "@/components/seo/JsonLd";
+import { JsonLd, homeLd } from "@/components/seo/JsonLd";
 
 export default function HomePage() {
   return (
     <>
-      <JsonLd data={personLd} />
+      <JsonLd data={homeLd} />
       <Home />
     </>
   );

@@ -130,13 +130,15 @@ const BlogSection = forwardRef<HTMLDivElement, BlogSectionProps>(
         <div className={styles.blogWrapper}>
           <header className={styles.blogHeader}>
             <p className={`${styles.blogEyebrow} ${spaceGrotesk.className}`}>
-              Systems / Notes
+              Build Logs / Essays
             </p>
             <h1 className={`${styles.blogTitle} ${cormorant.className}`}>
-              Field Notes
+              AI Systems Build Logs
             </h1>
             <p className={`${styles.blogIntro} ${spaceGrotesk.className}`}>
-              Technical notes from systems that turn messy inputs into reliable action.
+              Notes on real-time voice, agent orchestration, and decision
+              systems. The throughline is what survives production: latency,
+              memory, tools, approvals, and messy inputs.
             </p>
           </header>
 
@@ -148,7 +150,7 @@ const BlogSection = forwardRef<HTMLDivElement, BlogSectionProps>(
               <input
                 id="blog-search"
                 type="text"
-                placeholder={locale === "zh" ? "搜索文章..." : "Search notes..."}
+                placeholder={locale === "zh" ? "搜索文章..." : "Search build logs..."}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className={`${styles.searchInput} ${spaceGrotesk.className}`}
@@ -185,7 +187,7 @@ const BlogSection = forwardRef<HTMLDivElement, BlogSectionProps>(
           </div>
 
           <p className={`${styles.resultsMeta} ${spaceGrotesk.className}`}>
-            {filteredPosts.length} {locale === "zh" ? "篇文章" : "notes"}
+            {filteredPosts.length} {locale === "zh" ? "篇文章" : "posts"}
           </p>
 
           <div className={styles.articlesList}>
@@ -245,7 +247,7 @@ const BlogSection = forwardRef<HTMLDivElement, BlogSectionProps>(
                 <p className={`${styles.noResultsText} ${spaceGrotesk.className}`}>
                   {locale === "zh"
                     ? "没有找到符合筛选条件的文章。"
-                    : "No notes matched your current filters."}
+                    : "No posts matched your current filters."}
                 </p>
                 <button
                   type="button"
