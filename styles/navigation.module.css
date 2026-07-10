@@ -130,6 +130,11 @@
   padding: 0;
 }
 
+.menuButton.open {
+  position: relative;
+  z-index: 1103;
+}
+
 .menuBar {
   width: 16px;
   height: 1.5px;

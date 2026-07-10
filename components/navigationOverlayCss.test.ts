@@ -38,6 +38,16 @@ describe("mobile navigation overlay CSS", () => {
     );
   });
 
+  it("keeps the open menu trigger above the mobile menu", () => {
+    const css = readCss("styles/navigation.module.css");
+    const openButton = blockFor(css, ".menuButton.open");
+
+    assert.match(openButton, /position:\s*relative;/);
+    assert.ok(
+      zIndexFor(css, ".menuButton.open") > zIndexFor(css, ".mobileMenu"),
+    );
+  });
+
   it("gives the menu trigger a 44px touch target", () => {
     const menuButton = blockFor(
       readCss("styles/navigation.module.css"),
