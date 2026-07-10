@@ -76,7 +76,7 @@ export default function AgentAwareness() {
   };
 
   return (
-    <>
+    <div data-agent-awareness>
       {bannerEligible && !dismissed && (
         <div className={styles.banner} role="status">
           <span className={styles.dot} aria-hidden="true" />
@@ -101,6 +101,6 @@ export default function AgentAwareness() {
         <span className={styles.pillDot} aria-hidden="true" />
         <span className={styles.pillLabel}>agent protocol</span>
       </Link>
-    </>
+    </div>
   );
 }

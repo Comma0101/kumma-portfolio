@@ -26,3 +26,13 @@ export const shouldAnimateNavigation = ({
   !altKey &&
   target !== "_blank" &&
   !download;
+
+export const nextFocusIndex = (
+  currentIndex: number,
+  length: number,
+  shiftKey: boolean,
+) => {
+  if (length === 0) return -1;
+  if (currentIndex === -1) return shiftKey ? length - 1 : 0;
+  return (currentIndex + (shiftKey ? -1 : 1) + length) % length;
+};

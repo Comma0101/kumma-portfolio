@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import styles from "../styles/navigation.module.css";
 import TransitionLink from "./TransitionLink";
+import { nextFocusIndex } from "./navigationBehavior";
 
 interface NavLink {
   name: string;
@@ -36,6 +37,9 @@ const Navigation = () => {
   const [activeSection, setActiveSection] = useState("home");
   const [isScrolled, setIsScrolled] = useState(false);
   const [isNavVisible, setIsNavVisible] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
   const pathname = usePathname();
 
   const isHomePage = pathname === "/";
@@ -92,25 +96,88 @@ const Navigation = () => {
   }, []);
 
   useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isMenuOpen) {
-        setIsMenuOpen(false);
-      }
-    };
-
-    window.addEventListener("keydown", handleEscape);
-    return () => window.removeEventListener("keydown", handleEscape);
-  }, [isMenuOpen]);
-
-  useEffect(() => {
     document.body.style.overflow = isMenuOpen ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
   }, [isMenuOpen]);
 
-  const closeMenu = () => {
+  useEffect(() => {
+    if (!isMenuOpen) return;
+
+    const background = Array.from(
+      document.querySelectorAll<HTMLElement>(
+        "#main-content, footer, [data-agent-awareness]",
+      ),
+    ).map((element) => ({
+      element,
+      inert: element.inert,
+      ariaHidden: element.getAttribute("aria-hidden"),
+    }));
+
+    background.forEach(({ element }) => {
+      element.inert = true;
+      element.setAttribute("aria-hidden", "true");
+    });
+
+    const frame = window.requestAnimationFrame(() => {
+      overlayRef.current?.querySelector<HTMLElement>("a[href]")?.focus();
+    });
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      background.forEach(({ element, inert, ariaHidden }) => {
+        element.inert = inert;
+        if (ariaHidden === null) element.removeAttribute("aria-hidden");
+        else element.setAttribute("aria-hidden", ariaHidden);
+      });
+    };
+  }, [isMenuOpen]);
+
+  const closeMenu = (restoreFocus = false) => {
     setIsMenuOpen(false);
+    if (restoreFocus) {
+      const previousFocus = previousFocusRef.current;
+      previousFocusRef.current = null;
+      window.requestAnimationFrame(() => previousFocus?.focus());
+    }
+  };
+
+  const toggleMenu = () => {
+    if (isMenuOpen) {
+      closeMenu(true);
+      return;
+    }
+
+    previousFocusRef.current =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : menuButtonRef.current;
+    setIsMenuOpen(true);
+  };
+
+  const handleMenuKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Escape") {
+      e.preventDefault();
+      closeMenu(true);
+      return;
+    }
+
+    if (e.key !== "Tab") return;
+
+    const focusable = Array.from(
+      overlayRef.current?.querySelectorAll<HTMLElement>("a[href]") ?? [],
+    );
+    const next = nextFocusIndex(
+      focusable.indexOf(document.activeElement as HTMLElement),
+      focusable.length,
+      e.shiftKey,
+    );
+
+    if (next !== -1) {
+      e.preventDefault();
+      focusable[next].focus();
+    }
   };
 
   const scrollToSection = (
@@ -234,8 +301,9 @@ const Navigation = () => {
         </div>
 
         <button
+          ref={menuButtonRef}
           className={`${styles.menuButton} ${isMenuOpen ? styles.open : ""}`}
-          onClick={() => setIsMenuOpen((prev) => !prev)}
+          onClick={toggleMenu}
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           aria-expanded={isMenuOpen}
         >
@@ -246,10 +314,17 @@ const Navigation = () => {
       </div>
 
       <div
+        ref={overlayRef}
         className={`${styles.mobileMenu} ${
           isMenuOpen ? styles.mobileMenuOpen : ""
         }`}
-        onClick={closeMenu}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Site navigation"
+        aria-hidden={!isMenuOpen}
+        inert={!isMenuOpen}
+        onKeyDown={handleMenuKeyDown}
+        onClick={() => closeMenu(true)}
       >
         <div className={styles.mobileLinksContainer} onClick={(e) => e.stopPropagation()}>
           <p className={styles.mobileKicker}>Navigation</p>
