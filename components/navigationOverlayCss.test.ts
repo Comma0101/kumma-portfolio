@@ -136,12 +136,22 @@ describe("mobile navigation overlay CSS", () => {
     assert.match(navigation, /onClick=\{handleBackdropClick\}/);
   });
 
-  it("closes and restores focus when leaving the mobile breakpoint", () => {
+  it("closes and focuses a visible target when leaving the mobile breakpoint", () => {
     const source = readCss("components/Navigation.tsx");
+    const breakpointEffect = source.slice(
+      source.indexOf('matchMedia("(max-width: 980px)")'),
+      source.indexOf("const toggleMenu"),
+    );
 
     assert.match(source, /matchMedia\(["']\(max-width: 980px\)["']\)/);
     assert.match(source, /addEventListener\(["']change["']/);
-    assert.match(source, /if\s*\(!event\.matches\)\s*closeMenu\(true\)/);
+    assert.match(source, /ref=\{logoRef\}/);
+    assert.doesNotMatch(breakpointEffect, /closeMenu\(true\)/);
+    assert.match(breakpointEffect, /previousFocusRef\.current\s*=\s*null/);
+    assert.match(
+      breakpointEffect,
+      /requestAnimationFrame\(\(\)\s*=>\s*logoRef\.current\?\.focus\(\)\)/,
+    );
   });
 });
 

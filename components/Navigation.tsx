@@ -37,6 +37,7 @@ const Navigation = () => {
   const [activeSection, setActiveSection] = useState("home");
   const [isScrolled, setIsScrolled] = useState(false);
   const [isNavVisible, setIsNavVisible] = useState(false);
+  const logoRef = useRef<HTMLAnchorElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -151,13 +152,17 @@ const Navigation = () => {
 
     const mobileViewport = window.matchMedia("(max-width: 980px)");
     const handleViewportChange = (event: MediaQueryListEvent) => {
-      if (!event.matches) closeMenu(true);
+      if (event.matches) return;
+
+      setIsMenuOpen(false);
+      previousFocusRef.current = null;
+      window.requestAnimationFrame(() => logoRef.current?.focus());
     };
 
     mobileViewport.addEventListener("change", handleViewportChange);
     return () =>
       mobileViewport.removeEventListener("change", handleViewportChange);
-  }, [closeMenu, isMenuOpen]);
+  }, [isMenuOpen]);
 
   const toggleMenu = () => {
     if (isMenuOpen) {
@@ -283,6 +288,7 @@ const Navigation = () => {
     >
       <div className={styles.navContainer}>
         <a
+          ref={logoRef}
           href="#home"
           className={styles.logoWrapper}
           onClick={scrollToTop}
