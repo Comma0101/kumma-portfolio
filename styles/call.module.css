@@ -41,76 +41,6 @@
   color: var(--paper);
 }
 
-/* number area */
-.numberBlock {
-  margin-top: clamp(1.6rem, 3vw, 2.2rem);
-}
-
-.numberLive {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 1rem;
-}
-
-.numberLink {
-  font-family: var(--font-mono);
-  font-size: clamp(1.6rem, 4vw, 2.6rem);
-  letter-spacing: 0.02em;
-  color: var(--signal);
-  text-decoration: none;
-}
-
-.numberLink:hover {
-  color: var(--signal-strong);
-}
-
-.copyButton {
-  padding: 0.55rem 0.95rem;
-  border: 1px solid var(--line-strong);
-  border-radius: 999px;
-  background: transparent;
-  color: var(--paper);
-  font-family: var(--font-mono);
-  font-size: 0.66rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition:
-    border-color 0.2s var(--ease),
-    color 0.2s var(--ease);
-}
-
-.copyButton:hover {
-  border-color: var(--signal);
-  color: var(--signal);
-}
-
-.numberAwaiting {
-  display: inline-flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  padding: clamp(1rem, 2.4vw, 1.4rem) clamp(1.2rem, 3vw, 1.8rem);
-  border: 1px dashed var(--line-strong);
-  border-radius: var(--radius-card);
-  background: var(--surface);
-}
-
-.awaitingLabel {
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--faint);
-}
-
-.awaitingValue {
-  font-family: var(--font-mono);
-  font-size: clamp(1.1rem, 2.6vw, 1.5rem);
-  letter-spacing: 0.01em;
-  color: var(--sand);
-}
-
 .subtitle {
   margin: 1.8rem 0 0;
   max-width: 52ch;
@@ -119,35 +49,22 @@
   line-height: 1.55;
 }
 
-/* calls-handled counter (awaiting data, no number) */
-.counter {
+/* hero actions */
+.ctaRow {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 0.9rem;
+  gap: 1rem;
   margin-top: clamp(1.8rem, 3vw, 2.4rem);
 }
 
-.counterLabel {
+.heroNote {
+  margin: 1.4rem 0 0;
+  max-width: 56ch;
   font-family: var(--font-mono);
-  font-size: 0.66rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-size: 0.78rem;
+  line-height: 1.6;
   color: var(--faint);
-}
-
-.counterSlot {
-  display: inline-block;
-  width: 4.5rem;
-  height: 1.6rem;
-  border: 1px dashed var(--line-strong);
-  border-radius: 6px;
-  background: repeating-linear-gradient(
-    45deg,
-    transparent,
-    transparent 6px,
-    rgba(240, 237, 232, 0.05) 6px,
-    rgba(240, 237, 232, 0.05) 12px
-  );
 }
 
 /* ── Section ── */
@@ -172,6 +89,49 @@
   color: var(--steel);
   font-size: 0.98rem;
   line-height: 1.6;
+}
+
+/* ── Recorded calls ── */
+
+.recordingsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.recordingItem {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  padding: clamp(1.4rem, 3vw, 1.9rem);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+}
+
+.transcriptNote {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--line-strong);
+}
+
+.transcriptTag {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.transcriptBody {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  line-height: 1.6;
+  color: var(--sand);
 }
 
 /* ── Menu ticket ── */
@@ -372,6 +332,12 @@
 }
 
 /* ── Responsive ── */
+
+@media (max-width: 860px) {
+  .recordingsGrid {
+    grid-template-columns: 1fr;
+  }
+}
 
 @media (max-width: 560px) {
   .ticketRow {
