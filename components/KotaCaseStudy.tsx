@@ -533,7 +533,7 @@ export default function KotaCaseStudy() {
             className={`${styles.quote} ${cormorant.className}`}
             style={{ textDecoration: "none", display: "inline-block" }}
           >
-            This system answers the public line — call it.
+            Hear this system take a real call, or book a live demo.
           </Link>
         </footer>
       </div>

@@ -1,12 +1,6 @@
-"use client";
-
-import { useState } from "react";
 import styles from "@/styles/call.module.css";
-
-// Not available yet. When the line is live, set this to the E.164 / display
-// number and the hero will render a `tel:` link plus a copy button.
-// Leave empty to keep the "line goes live soon" awaiting state.
-export const DEMO_NUMBER: string = "";
+import Button from "@/components/system/Button";
+import AudioSlot from "@/components/AudioSlot";
 
 type MenuSection = {
   heading: string;
@@ -91,6 +85,31 @@ const MENU: MenuSection[] = [
   },
 ];
 
+// The three recorded clips are the zero-cost proof. Each slot renders a
+// non-autoplaying "recording coming" placeholder until a real audio src is
+// wired in. To publish a clip later, pass its URL as `src` to the matching
+// slot; nothing else needs to change.
+const RECORDINGS: { label: string; caption: string; note: string }[] = [
+  {
+    label: "a clean call",
+    caption:
+      "A straightforward order, from what the caller said to the ticket the kitchen sees.",
+    note: "transcript and the ticket it produced land here with the clip.",
+  },
+  {
+    label: "a messy call",
+    caption:
+      "Hesitation, corrections, and a mid-call language switch, resolved into one ticket.",
+    note: "transcript and the ticket it produced land here with the clip.",
+  },
+  {
+    label: "a failure and the fix",
+    caption:
+      "Where the agent got the ticket wrong, and the change that handled it.",
+    note: "transcript, the wrong ticket, and the fix land here with the clip.",
+  },
+];
+
 const CHALLENGES = [
   "Order five items with modifications.",
   "Reverse the order halfway through.",
@@ -101,85 +120,76 @@ const CHALLENGES = [
 
 const BOUNTY_RULES = [
   "One payout per person per month.",
-  "Submission is the call timestamp, what you said, and expected versus actual ticket.",
-  "Wu verifies the claim against the transcript.",
+  "You book a slot and we run the call together.",
+  "I verify the claim against the transcript.",
   "Decisions are final.",
 ];
 
 const DISCLOSURE = [
-  "Every call is recorded and may be published.",
+  "Every demo call is recorded and may be published.",
   "A consent message plays at pickup before anything is recorded.",
   "The agent never asks for personal information.",
   "Audio is scrubbed of incidental personal information before anything is published.",
 ];
 
 export default function CallPage() {
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(DEMO_NUMBER);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 2000);
-    } catch {
-      setCopied(false);
-    }
-    (
-      window as unknown as { umami?: { track?: (e: string) => void } }
-    ).umami?.track?.("tel_click");
-  };
-
   return (
     <div className={styles.page}>
       <div className={styles.shell}>
         {/* ── Hero ── */}
         <header className={styles.hero}>
-          <p className={styles.eyebrow}>Live demo line</p>
-          <h1 className={styles.title}>Call the agent</h1>
-
-          <div className={styles.numberBlock}>
-            {DEMO_NUMBER ? (
-              <div className={styles.numberLive}>
-                <a
-                  href={`tel:${DEMO_NUMBER.replace(/[^\d+]/g, "")}`}
-                  className={styles.numberLink}
-                  onClick={handleCopy}
-                >
-                  {DEMO_NUMBER}
-                </a>
-                <button
-                  type="button"
-                  className={styles.copyButton}
-                  onClick={handleCopy}
-                  aria-live="polite"
-                >
-                  {copied ? "copied" : "copy number"}
-                </button>
-              </div>
-            ) : (
-              <div className={styles.numberAwaiting}>
-                <span className={styles.awaitingLabel}>number</span>
-                <span className={styles.awaitingValue}>
-                  the line goes live soon
-                </span>
-              </div>
-            )}
-          </div>
+          <p className={styles.eyebrow}>Voice agent demo</p>
+          <h1 className={styles.title}>Hear the agent take an order</h1>
 
           <p className={styles.subtitle}>
             An AI agent taking phone orders for Kumma Diner, a fictional demo
-            restaurant with a real menu.
+            restaurant with a real menu. Listen to recorded calls below, or book
+            a slot to run one live.
           </p>
 
-          <div className={styles.counter}>
-            <span className={styles.counterLabel}>Calls handled</span>
-            <span
-              className={styles.counterSlot}
-              aria-label="awaiting data"
-              title="awaiting data"
-            />
+          <div className={styles.ctaRow}>
+            <Button href="/contact" variant="primary">
+              Book a live demo
+            </Button>
+            <Button href="#recordings" variant="ghost">
+              Hear recorded calls
+            </Button>
           </div>
+
+          <p className={styles.heroNote}>
+            The live line runs by appointment, so the agent is not a target for
+            spam. You get a real conversation, not a robot to hammer.
+          </p>
         </header>
+
+        {/* ── Recorded calls (centerpiece) ── */}
+        <section
+          id="recordings"
+          className={styles.section}
+          aria-labelledby="recordings-heading"
+        >
+          <h2 id="recordings-heading" className={styles.h2}>
+            Recorded calls
+          </h2>
+          <p className={styles.sectionLead}>
+            Recordings of demo calls, so you can hear the agent work without
+            booking anything. Nothing plays until you press play.
+          </p>
+
+          <div className={styles.recordingsGrid}>
+            {RECORDINGS.map((r) => (
+              <div key={r.label} className={styles.recordingItem}>
+                <AudioSlot label={r.label} caption={r.caption} />
+                <div className={styles.transcriptNote}>
+                  <span className={styles.transcriptTag}>
+                    transcript → ticket
+                  </span>
+                  <p className={styles.transcriptBody}>{r.note}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
 
         {/* ── Menu ── */}
         <section className={styles.section} aria-labelledby="menu-heading">
@@ -214,13 +224,14 @@ export default function CallPage() {
           </div>
         </section>
 
-        {/* ── Challenges ── */}
+        {/* ── Challenges (what to try in a live demo) ── */}
         <section className={styles.section} aria-labelledby="challenge-heading">
           <h2 id="challenge-heading" className={styles.h2}>
-            Try to break it
+            What to try in a live demo
           </h2>
           <p className={styles.sectionLead}>
-            The agent is meant to hold up under real conditions. Push on it.
+            Book a slot and push on it under real conditions. These are the
+            things worth trying.
           </p>
           <ol className={styles.challengeList}>
             {CHALLENGES.map((c, i) => (
@@ -234,7 +245,7 @@ export default function CallPage() {
           </ol>
         </section>
 
-        {/* ── Bounty ── */}
+        {/* ── Bounty (gated) ── */}
         <section className={styles.section} aria-labelledby="bounty-heading">
           <h2 id="bounty-heading" className={styles.h2}>
             The bounty
@@ -242,7 +253,7 @@ export default function CallPage() {
           <div className={styles.bounty}>
             <p className={styles.bountyLead}>
               <span className={styles.bountyAmount}>$50</span> to anyone who
-              makes it produce a wrong kitchen ticket.
+              produces a wrong kitchen ticket in a live demo.
             </p>
             <ul className={styles.ruleList}>
               {BOUNTY_RULES.map((rule) => (
@@ -261,7 +272,7 @@ export default function CallPage() {
           </h2>
           <div className={styles.fameEmpty}>
             <p className={styles.fameEmptyText}>
-              The best break attempts will show up here.
+              The best break attempts from live demos will show up here.
             </p>
           </div>
         </section>
@@ -269,7 +280,7 @@ export default function CallPage() {
         {/* ── Disclosure ── */}
         <section className={styles.section} aria-labelledby="disclosure-heading">
           <h2 id="disclosure-heading" className={styles.h2}>
-            Before you call
+            Recording and consent
           </h2>
           <ul className={styles.disclosureList}>
             {DISCLOSURE.map((line) => (

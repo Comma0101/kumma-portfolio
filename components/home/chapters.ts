@@ -25,7 +25,7 @@ export const chapters: Chapter[] = [
     blurb:
       "Turns restaurant phone calls into structured, actionable orders without requiring the restaurant to replace or deeply integrate its POS.",
     tags: ["real-time voice", "LLM orchestration", "menu grounding"],
-    secondary: { label: "Call the line →", href: "/call" },
+    secondary: { label: "Hear the demo →", href: "/call" },
     evidence: {
       input: "messy phone speech",
       transform: "streaming STT + menu grounding",

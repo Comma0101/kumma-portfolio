@@ -42,7 +42,8 @@ export default function HeroSection() {
           <p className={styles.subtext}>
             I design and ship voice agents that survive real phone calls —
             streaming speech, agent orchestration, and the guardrails between
-            them. Call the line and try to break it.
+            them. Hear one take a real call, then book a live demo and try to
+            break it.
           </p>
           <ul className={styles.signalRail} aria-label="Operational signals">
             {heroSignals.map(([name, flow]) => (
@@ -55,7 +56,7 @@ export default function HeroSection() {
         </div>
         <div data-hero-rise className={styles.actions}>
           <Button href="/call" variant="primary">
-            Call the line →
+            Hear the demo →
           </Button>
           <Button href="/contact" variant="ghost">
             Bring me a problem →
