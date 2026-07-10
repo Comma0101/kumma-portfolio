@@ -153,6 +153,7 @@ export default function ContactPage() {
               <input
                 type="text"
                 name="name"
+                autoComplete="name"
                 value={form.name}
                 onChange={onChange}
                 placeholder="Your name"
@@ -164,6 +165,7 @@ export default function ContactPage() {
               <input
                 type="email"
                 name="email"
+                autoComplete="email"
                 value={form.email}
                 onChange={onChange}
                 placeholder="you@company.com"
@@ -247,7 +249,7 @@ export default function ContactPage() {
             </div>
 
             <button type="submit" className={styles.submit}>
-              Send
+              Open Email
             </button>
             {sent && (
               <p className={styles.status} role="status">

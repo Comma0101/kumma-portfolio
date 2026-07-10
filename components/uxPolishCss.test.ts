@@ -418,3 +418,36 @@ describe("contrast and touch targets", () => {
     assert.match(socialLinks, /min-height:\s*44px;/);
   });
 });
+
+describe("contact form semantics", () => {
+  for (const file of [
+    "components/ContactPage.tsx",
+    "components/home/ContactSection.tsx",
+  ]) {
+    it(`${file} identifies visible name and email fields for autofill`, () => {
+      const source = readCss(file);
+
+      assert.match(
+        source,
+        /<input\b(?=[^>]*\bname="name")(?=[^>]*\bautoComplete="name")[^>]*\/>/s,
+      );
+      assert.match(
+        source,
+        /<input\b(?=[^>]*\bname="email")(?=[^>]*\bautoComplete="email")[^>]*\/>/s,
+      );
+    });
+  }
+
+  it("describes the full contact form mailto handoff accurately", () => {
+    const source = readCss("components/ContactPage.tsx");
+
+    assert.match(
+      source,
+      /<button\b(?=[^>]*\btype="submit")[^>]*>\s*Open Email\s*<\/button>/s,
+    );
+    assert.doesNotMatch(
+      source,
+      /<button\b(?=[^>]*\btype="submit")[^>]*>\s*Send\s*<\/button>/s,
+    );
+  });
+});

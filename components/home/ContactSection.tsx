@@ -118,6 +118,7 @@ export default function ContactSection() {
               <input
                 type="text"
                 name="name"
+                autoComplete="name"
                 placeholder="Your name"
                 value={formData.name}
                 onChange={handleChange}
@@ -130,6 +131,7 @@ export default function ContactSection() {
               <input
                 type="email"
                 name="email"
+                autoComplete="email"
                 placeholder="you@example.com"
                 value={formData.email}
                 onChange={handleChange}
