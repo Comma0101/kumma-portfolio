@@ -158,14 +158,18 @@ describe("mobile navigation overlay CSS", () => {
     );
   });
 
-  it("restores focus for same-page anchors and exact current routes", () => {
+  it("restores focus for same-page anchors and current routes", () => {
     assert.equal(shouldRestoreMenuFocus("/", "#work"), true);
     assert.equal(shouldRestoreMenuFocus("/contact", "/contact"), true);
+    assert.equal(shouldRestoreMenuFocus("/contact/", "/contact"), true);
+    assert.equal(shouldRestoreMenuFocus("/contact", "/contact/"), true);
+    assert.equal(shouldRestoreMenuFocus("/", "///"), true);
   });
 
   it("leaves real route changes to the page-transition focus handoff", () => {
     assert.equal(shouldRestoreMenuFocus("/contact", "/blog"), false);
     assert.equal(shouldRestoreMenuFocus("/blog/hello", "/blog"), false);
+    assert.equal(shouldRestoreMenuFocus("/blog/post/", "/blog"), false);
     assert.equal(shouldRestoreMenuFocus("/contact", "#work"), false);
   });
 
