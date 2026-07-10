@@ -240,6 +240,44 @@ export default function BenchmarkPage() {
           </ul>
         </section>
 
+        {/* Reference baselines — published third-party figures, cited. Not this suite's scores. */}
+        <section className={`${bs.section} ${bs.shell}`}>
+          <h2 className={`${bs.h2} ${bs.reveal}`} data-reveal>
+            Reference baselines
+          </h2>
+          <p className={`${s.lead} ${bs.reveal}`} data-reveal>
+            For context, here is what the components publish on clean, general
+            audio. Deepgram Nova-3 reports a median streaming word error rate
+            near 6.8% and sub-300ms streaming latency (
+            <a
+              href="https://deepgram.com/learn/speech-to-text-benchmarks"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Deepgram
+            </a>
+            ); the fast text-to-speech voices publish time-to-first-audio in the
+            tens of milliseconds (
+            <a
+              href="https://gradium.ai/content/tts-latency-benchmark-2026"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Gradium
+            </a>
+            ). Those are the easy conditions.
+          </p>
+          <p className={`${s.lead} ${bs.reveal}`} data-reveal>
+            This suite exists because the hard part is the other twenty percent —
+            kitchen noise, code-switching, a caller reversing an order
+            mid-sentence, a prompt-injection attempt — where those numbers stop
+            describing the call. The figures above are third-party baselines on
+            clean audio, not this suite&rsquo;s scores. KOTA&rsquo;s scores
+            against the fifty scenarios land in the table below once the run is
+            complete.
+          </p>
+        </section>
+
         {/* Results — empty state */}
         <section className={`${bs.section} ${bs.shell}`}>
           <h2 className={`${bs.h2} ${bs.reveal}`} data-reveal>
