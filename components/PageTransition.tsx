@@ -4,6 +4,7 @@ import React, { createContext, useContext, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
+import { PAGE_TRANSITION_SECONDS } from "./navigationBehavior";
 
 const PageTransitionContext = createContext({
   animatePageOut: (href: string) => {},
@@ -17,6 +18,7 @@ export const PageTransitionProvider = ({
   const router = useRouter();
   const pathname = usePathname();
   const overlayRef = useRef<HTMLDivElement>(null);
+  const previousPathname = useRef(pathname);
 
   const animatePageOut = (href: string) => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -28,13 +30,13 @@ export const PageTransitionProvider = ({
     if (overlay) {
       gsap.to(overlay, {
         clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-        duration: 0.75,
+        duration: PAGE_TRANSITION_SECONDS,
         ease: "power3.inOut",
         onComplete: () => {
           if (pathname === href) {
             gsap.to(overlay, {
               clipPath: "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)",
-              duration: 0.75,
+              duration: PAGE_TRANSITION_SECONDS,
               ease: "power3.inOut",
             });
           } else {
@@ -42,10 +44,21 @@ export const PageTransitionProvider = ({
           }
         },
       });
+    } else {
+      router.push(href);
     }
   };
 
   useGSAP(() => {
+    if (previousPathname.current !== pathname) {
+      previousPathname.current = pathname;
+      window.requestAnimationFrame(() => {
+        document
+          .getElementById("main-content")
+          ?.focus({ preventScroll: true });
+      });
+    }
+
     const overlay = overlayRef.current;
     if (overlay) {
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -60,9 +73,9 @@ export const PageTransitionProvider = ({
         { clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)" },
         {
           clipPath: "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)",
-          duration: 0.75,
+          duration: PAGE_TRANSITION_SECONDS,
           ease: "power3.inOut",
-        }
+        },
       );
     }
   }, [pathname]);

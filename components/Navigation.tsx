@@ -205,6 +205,7 @@ const Navigation = () => {
                 <TransitionLink
                   key={link.name}
                   href={link.href}
+                  ariaCurrent={isActive ? "page" : undefined}
                   className={`${styles.navLink} ${isActive ? styles.active : ""} ${
                   accentLinks.has(link.name) ? styles.contactLink : ""
                 }`}
@@ -262,6 +263,7 @@ const Navigation = () => {
                 <TransitionLink
                   key={link.name}
                   href={link.href}
+                  ariaCurrent={isActive ? "page" : undefined}
                   onNavigate={closeMenu}
                   className={`${styles.mobileLink} ${isActive ? styles.active : ""}`}
                 >

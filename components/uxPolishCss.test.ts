@@ -2,6 +2,10 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { describe, it } from "node:test";
+import {
+  PAGE_TRANSITION_SECONDS,
+  shouldAnimateNavigation,
+} from "./navigationBehavior";
 
 const readCss = (file: string) =>
   fs.readFileSync(path.resolve(process.cwd(), file), "utf8");
@@ -101,4 +105,79 @@ describe("accessible page landmarks", () => {
       assert.doesNotMatch(readCss(file), /<main\b/);
     });
   }
+});
+
+describe("native-compatible route navigation", () => {
+  const primaryClick = {
+    button: 0,
+    metaKey: false,
+    ctrlKey: false,
+    shiftKey: false,
+    altKey: false,
+    target: "",
+    download: false,
+  };
+
+  it("animates an unmodified primary click", () => {
+    assert.equal(shouldAnimateNavigation(primaryClick), true);
+  });
+
+  for (const [name, override] of [
+    ["middle click", { button: 1 }],
+    ["non-primary click", { button: 2 }],
+    ["meta click", { metaKey: true }],
+    ["control click", { ctrlKey: true }],
+    ["shift click", { shiftKey: true }],
+    ["alt click", { altKey: true }],
+    ["blank target", { target: "_blank" }],
+    ["download", { download: true }],
+  ] as const) {
+    it(`leaves ${name} to the browser`, () => {
+      assert.equal(
+        shouldAnimateNavigation({ ...primaryClick, ...override }),
+        false,
+      );
+    });
+  }
+
+  it("keeps the page-cover transition short", () => {
+    assert.ok(PAGE_TRANSITION_SECONDS <= 0.35);
+  });
+
+  it("guards TransitionLink interception and exposes active semantics", () => {
+    const source = readCss("components/TransitionLink.tsx");
+
+    assert.match(
+      source,
+      /import\s*\{[^}]*shouldAnimateNavigation[^}]*\}\s*from\s*["']\.\/navigationBehavior["']/s,
+    );
+    assert.match(source, /if\s*\(\s*!shouldAnimateNavigation\s*\(/);
+    assert.match(source, /ariaCurrent\?:\s*["']page["']/);
+    assert.match(source, /aria-current=\{ariaCurrent\}/);
+  });
+
+  it("uses the shared duration and focuses main after a route change", () => {
+    const source = readCss("components/PageTransition.tsx");
+
+    assert.match(
+      source,
+      /import\s*\{[^}]*PAGE_TRANSITION_SECONDS[^}]*\}\s*from\s*["']\.\/navigationBehavior["']/s,
+    );
+    assert.doesNotMatch(source, /duration:\s*0\.75/);
+    assert.match(source, /duration:\s*PAGE_TRANSITION_SECONDS/g);
+    assert.match(source, /previousPathname\.current\s*!==\s*pathname/);
+    assert.match(
+      source,
+      /requestAnimationFrame\([\s\S]*getElementById\(["']main-content["']\)[\s\S]*focus\(\{\s*preventScroll:\s*true\s*\}\)/,
+    );
+  });
+
+  it("marks both desktop and mobile active route links", () => {
+    const source = readCss("components/Navigation.tsx");
+    const matches = source.match(
+      /ariaCurrent=\{isActive\s*\?\s*["']page["']\s*:\s*undefined\}/g,
+    );
+
+    assert.equal(matches?.length, 2);
+  });
 });
