@@ -32,6 +32,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/patterns/eval-harness",
     "/patterns/latency-budgets",
     "/work/kota",
+    "/work/audiobook",
     "/work/archon",
     "/work/robinhood-dashboard",
   ].map((p) => ({

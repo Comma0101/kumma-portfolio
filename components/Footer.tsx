@@ -13,6 +13,7 @@ const quickLinks = [
   { label: "Latency", href: "/latency" },
   { label: "Patterns", href: "/patterns" },
   { label: "KOTA", href: "/work/kota" },
+  { label: "Audiobook AI", href: "/work/audiobook" },
   { label: "Notes", href: "/blog" },
   { label: "Contact", href: "/contact" },
   { label: "About", href: "/about" },
