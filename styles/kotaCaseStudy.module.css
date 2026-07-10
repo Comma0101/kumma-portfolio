@@ -344,7 +344,7 @@
   margin: 0;
   font-size: clamp(0.82rem, 1vw, 0.9rem);
   line-height: 1.65;
-  color: rgba(220, 220, 220, 0.42);
+  color: rgba(220, 220, 220, 0.58);
 }
 
 /* ── System Flow / Pipeline ── */
@@ -408,7 +408,7 @@
   font-size: 0.68rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.28);
+  color: rgba(255, 255, 255, 0.5);
   padding-top: 0.1em;
 }
 
@@ -539,7 +539,7 @@
 .impactDetail {
   font-size: 0.8rem;
   line-height: 1.6;
-  color: rgba(220, 220, 220, 0.48);
+  color: rgba(220, 220, 220, 0.58);
   margin-top: 0.2rem;
 }
 

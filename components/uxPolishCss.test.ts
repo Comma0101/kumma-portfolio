@@ -30,11 +30,15 @@ const hexToken = (css: string, token: string) => {
   return match[1];
 };
 
-const relativeLuminance = (hex: string) => {
-  const channels = hex
+const rgbFromHex = (hex: string) =>
+  hex
     .slice(1)
     .match(/.{2}/g)!
-    .map((channel) => parseInt(channel, 16) / 255)
+    .map((channel) => parseInt(channel, 16));
+
+const relativeLuminance = (rgb: number[]) => {
+  const channels = rgb
+    .map((channel) => channel / 255)
     .map((channel) =>
       channel <= 0.04045
         ? channel / 12.92
@@ -44,12 +48,28 @@ const relativeLuminance = (hex: string) => {
   return channels[0] * 0.2126 + channels[1] * 0.7152 + channels[2] * 0.0722;
 };
 
-const contrastRatio = (first: string, second: string) => {
+const contrastRatio = (first: number[], second: number[]) => {
   const luminances = [relativeLuminance(first), relativeLuminance(second)].sort(
     (a, b) => b - a,
   );
   return (luminances[0] + 0.05) / (luminances[1] + 0.05);
 };
+
+const rgbaColor = (block: string) => {
+  const match = block.match(
+    /color:\s*rgba\(\s*(\d+),\s*(\d+),\s*(\d+),\s*([0-9.]+)\s*\)/,
+  );
+  assert.ok(match, "Expected an rgba text color");
+  return {
+    rgb: match.slice(1, 4).map(Number),
+    alpha: Number(match[4]),
+  };
+};
+
+const composite = (foreground: number[], alpha: number, background: number[]) =>
+  foreground.map(
+    (channel, index) => channel * alpha + background[index] * (1 - alpha),
+  );
 
 describe("UX polish CSS", () => {
   it("keeps gallery study cards visibly interactive by default", () => {
@@ -299,12 +319,16 @@ describe("homepage terrain and reduced motion", () => {
 });
 
 describe("contrast and touch targets", () => {
-  it("keeps faint text readable against the canvas", () => {
+  it("keeps faint text readable against every canonical surface", () => {
     const css = readCss("app/globals.css");
+    const faint = rgbFromHex(hexToken(css, "faint"));
 
-    assert.ok(
-      contrastRatio(hexToken(css, "faint"), hexToken(css, "canvas")) >= 4.5,
-    );
+    for (const surface of ["canvas", "surface", "raised"]) {
+      assert.ok(
+        contrastRatio(faint, rgbFromHex(hexToken(css, surface))) >= 4.5,
+        `Expected --faint to pass on --${surface}`,
+      );
+    }
   });
 
   it("places a noninteractive desktop quiet layer behind hero copy only", () => {
@@ -325,23 +349,35 @@ describe("contrast and touch targets", () => {
     );
   });
 
-  for (const [selector, minimumAlpha] of [
-    [".heroContext", 0.6],
-    [".stackLine", 0.5],
-    [".realityTag", 0.5],
-    [".outputKey", 0.5],
-    [".pipelineIndex", 0.5],
-    [".failureExample", 0.6],
-  ] as const) {
+  for (const selector of [
+    ".heroContext",
+    ".stackLine",
+    ".realityTag",
+    ".outputKey",
+    ".problemResult",
+    ".pipelineIndex",
+    ".pipelineKey",
+    ".failureExample",
+    ".impactDetail",
+  ]) {
     it(`keeps ${selector} semantic text readable`, () => {
-      const block = blockFor(readCss("styles/kotaCaseStudy.module.css"), selector);
-
-      assert.ok(
-        numberAfter(
-          block,
-          /color:\s*rgba\([^,]+,[^,]+,[^,]+,\s*([0-9.]+)\)/,
-        ) >= minimumAlpha,
+      const block = blockFor(
+        readCss("styles/kotaCaseStudy.module.css"),
+        selector,
       );
+      const textColor = rgbaColor(block);
+      const tokens = readCss("app/globals.css");
+
+      for (const surface of ["canvas", "surface", "raised"]) {
+        const background = rgbFromHex(hexToken(tokens, surface));
+        assert.ok(
+          contrastRatio(
+            composite(textColor.rgb, textColor.alpha, background),
+            background,
+          ) >= 4.5,
+          `Expected ${selector} to pass on --${surface}`,
+        );
+      }
     });
   }
 
