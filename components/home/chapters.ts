@@ -36,9 +36,25 @@ export const chapters: Chapter[] = [
   },
   {
     no: "02",
+    title: "Audiobook AI",
+    href: "/work/audiobook",
+    layout: "flip",
+    blurb:
+      "Turns any document — a PDF, an EPUB, a web page — into an audiobook with the open-source Kokoro model, behind a hardened job queue. The text-to-speech side of the same voice craft as KOTA. Live at listen.kummalabs.com.",
+    tags: ["text-to-speech", "Kokoro", "production pipeline"],
+    evidence: {
+      input: "messy PDF, EPUB, or web page",
+      transform: "normalize, chunk, Kokoro TTS, assemble",
+      output: "a continuous audiobook",
+      guardrail: "queue limits, stale-job recovery",
+    },
+    artifact: "live TTS product",
+  },
+  {
+    no: "03",
     title: "ARCHON",
     href: "/work/archon",
-    layout: "flip",
+    layout: "band",
     blurb:
       "Unifies multiple AI models and coding agents into one orchestration layer for real development workflows.",
     tags: ["orchestration", "coding workers", "active R&D"],
@@ -51,7 +67,7 @@ export const chapters: Chapter[] = [
     artifact: "open-source control plane",
   },
   {
-    no: "03",
+    no: "04",
     title: "Latency report",
     href: "/latency",
     layout: "band",
