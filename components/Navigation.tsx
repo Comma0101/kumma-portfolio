@@ -121,7 +121,9 @@ const Navigation = () => {
     });
 
     const frame = window.requestAnimationFrame(() => {
-      overlayRef.current?.querySelector<HTMLElement>("a[href]")?.focus();
+      const firstLink =
+        overlayRef.current?.querySelector<HTMLElement>("a[href]");
+      (firstLink ?? menuButtonRef.current)?.focus();
     });
 
     return () => {
@@ -156,7 +158,9 @@ const Navigation = () => {
     setIsMenuOpen(true);
   };
 
-  const handleMenuKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+  const handleMenuKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
+    if (!isMenuOpen) return;
+
     if (e.key === "Escape") {
       e.preventDefault();
       closeMenu(true);
@@ -165,11 +169,23 @@ const Navigation = () => {
 
     if (e.key !== "Tab") return;
 
-    const focusable = Array.from(
-      overlayRef.current?.querySelectorAll<HTMLElement>("a[href]") ?? [],
+    const focusable = [
+      menuButtonRef.current,
+      ...Array.from(
+        overlayRef.current?.querySelectorAll<HTMLElement>("a[href]") ?? [],
+      ),
+    ].filter((element): element is HTMLElement => element !== null);
+    const current = focusable.indexOf(
+      document.activeElement as HTMLElement,
     );
+    const isBoundary =
+      current === -1 ||
+      (e.shiftKey ? current === 0 : current === focusable.length - 1);
+
+    if (!isBoundary) return;
+
     const next = nextFocusIndex(
-      focusable.indexOf(document.activeElement as HTMLElement),
+      current,
       focusable.length,
       e.shiftKey,
     );
@@ -249,6 +265,7 @@ const Navigation = () => {
         isScrolled || !isHomePage ? styles.pageNav : ""
       } ${isNavVisible ? styles.navigationVisible : ""}`}
       aria-label="Main navigation"
+      onKeyDown={handleMenuKeyDown}
     >
       <div className={styles.navContainer}>
         <a
@@ -323,7 +340,6 @@ const Navigation = () => {
         aria-label="Site navigation"
         aria-hidden={!isMenuOpen}
         inert={!isMenuOpen}
-        onKeyDown={handleMenuKeyDown}
         onClick={() => closeMenu(true)}
       >
         <div className={styles.mobileLinksContainer} onClick={(e) => e.stopPropagation()}>

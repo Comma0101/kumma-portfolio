@@ -68,6 +68,36 @@ describe("mobile navigation overlay CSS", () => {
 
     assert.equal(source.match(/data-agent-awareness/g)?.length, 1);
   });
+
+  it("focuses the first menu link with the trigger as fallback", () => {
+    const source = readCss("components/Navigation.tsx");
+
+    assert.match(source, /const firstLink =/);
+    assert.match(
+      source,
+      /\(firstLink\s*\?\?\s*menuButtonRef\.current\)\?\.focus\(\)/,
+    );
+  });
+
+  it("contains the trigger and links while preserving interior Tab movement", () => {
+    const source = readCss("components/Navigation.tsx");
+    const handler = source.slice(
+      source.indexOf("const handleMenuKeyDown"),
+      source.indexOf("const scrollToSection"),
+    );
+    const tabTrap = handler.slice(handler.indexOf('if (e.key !== "Tab")'));
+
+    assert.match(handler, /if \(!isMenuOpen\) return;/);
+    assert.match(
+      tabTrap,
+      /const focusable = \[\s*menuButtonRef\.current,\s*\.\.\.Array\.from/,
+    );
+    assert.match(tabTrap, /if \(!isBoundary\) return;/);
+    assert.ok(
+      tabTrap.indexOf("if (!isBoundary) return;") <
+        tabTrap.indexOf("e.preventDefault()"),
+    );
+  });
 });
 
 describe("mobile navigation focus index", () => {
