@@ -24,6 +24,33 @@ const numberAfter = (block: string, pattern: RegExp) => {
   return Number(match[1]);
 };
 
+const hexToken = (css: string, token: string) => {
+  const match = css.match(new RegExp(`--${token}:\\s*(#[0-9a-f]{6});`, "i"));
+  assert.ok(match, `Expected hex token --${token}`);
+  return match[1];
+};
+
+const relativeLuminance = (hex: string) => {
+  const channels = hex
+    .slice(1)
+    .match(/.{2}/g)!
+    .map((channel) => parseInt(channel, 16) / 255)
+    .map((channel) =>
+      channel <= 0.04045
+        ? channel / 12.92
+        : ((channel + 0.055) / 1.055) ** 2.4,
+    );
+
+  return channels[0] * 0.2126 + channels[1] * 0.7152 + channels[2] * 0.0722;
+};
+
+const contrastRatio = (first: string, second: string) => {
+  const luminances = [relativeLuminance(first), relativeLuminance(second)].sort(
+    (a, b) => b - a,
+  );
+  return (luminances[0] + 0.05) / (luminances[1] + 0.05);
+};
+
 describe("UX polish CSS", () => {
   it("keeps gallery study cards visibly interactive by default", () => {
     const css = readCss("styles/MenuItem.module.css");
@@ -268,5 +295,90 @@ describe("homepage terrain and reduced motion", () => {
       source.match(/behavior:\s*scrollBehaviorForMotion\(/g)?.length,
       2,
     );
+  });
+});
+
+describe("contrast and touch targets", () => {
+  it("keeps faint text readable against the canvas", () => {
+    const css = readCss("app/globals.css");
+
+    assert.ok(
+      contrastRatio(hexToken(css, "faint"), hexToken(css, "canvas")) >= 4.5,
+    );
+  });
+
+  it("places a noninteractive desktop quiet layer behind hero copy only", () => {
+    const css = readCss("components/home/HeroSection.module.css");
+    const layer = blockFor(css, ".hero::before");
+    const inner = blockFor(css, ".inner");
+
+    assert.match(layer, /pointer-events:\s*none;/);
+    assert.match(layer, /linear-gradient\(\s*to right,/);
+    assert.match(layer, /transparent\s+[0-9]+%/);
+    assert.ok(
+      numberAfter(inner, /z-index:\s*(\d+)/) >
+        numberAfter(layer, /z-index:\s*(\d+)/),
+    );
+    assert.match(
+      css,
+      /@media \(max-width: 640px\)[\s\S]*?\.hero::before\s*\{[^}]*display:\s*none;/,
+    );
+  });
+
+  for (const [selector, minimumAlpha] of [
+    [".heroContext", 0.6],
+    [".stackLine", 0.5],
+    [".realityTag", 0.5],
+    [".outputKey", 0.5],
+    [".pipelineIndex", 0.5],
+    [".failureExample", 0.6],
+  ] as const) {
+    it(`keeps ${selector} semantic text readable`, () => {
+      const block = blockFor(readCss("styles/kotaCaseStudy.module.css"), selector);
+
+      assert.ok(
+        numberAfter(
+          block,
+          /color:\s*rgba\([^,]+,[^,]+,[^,]+,\s*([0-9.]+)\)/,
+        ) >= minimumAlpha,
+      );
+    });
+  }
+
+  it("shows blog input focus and keeps mobile controls touch sized", () => {
+    const css = readCss("styles/blog.module.css");
+    const focus = blockFor(css, ".searchBar:focus-within");
+
+    assert.match(focus, /(?:outline|box-shadow):[^;]*var\(--signal\)/);
+    assert.match(
+      css,
+      /@media \(max-width: 760px\)[\s\S]*?\.searchInput,\s*\.filterButton\s*\{[^}]*min-height:\s*44px;/,
+    );
+  });
+
+  it("exposes selected blog filters to assistive technology", () => {
+    assert.match(
+      readCss("components/BlogSection.tsx"),
+      /aria-pressed=\{isActive\}/,
+    );
+  });
+
+  it("keeps mobile chapter links touch sized without enlarging type", () => {
+    const css = readCss("components/home/ChapterIndex.module.css");
+
+    assert.match(
+      css,
+      /@media \(max-width: 620px\)[\s\S]*?\.link,\s*\.linkSecondary\s*\{[^}]*display:\s*inline-flex;[^}]*align-items:\s*center;[^}]*min-height:\s*44px;[^}]*padding:/,
+    );
+  });
+
+  it("keeps home social links touch sized", () => {
+    const socialLinks = blockFor(
+      readCss("components/home/ContactSection.module.css"),
+      ".socialLinks a",
+    );
+
+    assert.match(socialLinks, /display:\s*inline-flex;/);
+    assert.match(socialLinks, /min-height:\s*44px;/);
   });
 });

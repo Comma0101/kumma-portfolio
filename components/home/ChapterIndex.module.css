@@ -313,6 +313,14 @@
 }
 
 @media (max-width: 620px) {
+  .link,
+  .linkSecondary {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0.5rem 0;
+  }
+
   .evidenceFlow {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }

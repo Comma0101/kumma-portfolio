@@ -7,6 +7,20 @@
   overflow: clip;
 }
 
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to right,
+    rgba(10, 10, 11, 0.96) 0%,
+    rgba(10, 10, 11, 0.82) 34%,
+    transparent 58%
+  );
+}
+
 .inner {
   position: relative;
   z-index: 1;
@@ -163,6 +177,10 @@
 }
 
 @media (max-width: 640px) {
+  .hero::before {
+    display: none;
+  }
+
   .hero {
     min-height: auto;
     padding-top: 5.75rem;

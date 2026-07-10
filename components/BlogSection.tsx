@@ -174,6 +174,7 @@ const BlogSection = forwardRef<HTMLDivElement, BlogSectionProps>(
                   <button
                     key={category}
                     type="button"
+                    aria-pressed={isActive}
                     className={`${styles.filterButton} ${
                       isActive ? styles.active : ""
                     } ${spaceGrotesk.className}`}

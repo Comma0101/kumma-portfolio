@@ -81,6 +81,7 @@
 .socialLinks a {
   display: inline-flex;
   align-items: center;
+  min-height: 44px;
   gap: 0.45rem;
   padding: 0.6rem 0.8rem;
   border: 1px solid var(--line);

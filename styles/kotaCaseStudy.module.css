@@ -125,7 +125,7 @@
   margin: 0 0 1.8rem;
   font-size: clamp(0.88rem, 1.1vw, 0.96rem);
   line-height: 1.7;
-  color: rgba(220, 220, 220, 0.45);
+  color: rgba(220, 220, 220, 0.68);
   max-width: 60ch;
 }
 
@@ -133,7 +133,7 @@
   margin: 0 0 1.6rem;
   font-size: 0.74rem;
   letter-spacing: 0.06em;
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.58);
   text-transform: uppercase;
 }
 
@@ -241,7 +241,7 @@
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.58);
 }
 
 .realityQuote {
@@ -288,7 +288,7 @@
 }
 
 .outputKey {
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.55);
   font-size: 0.72rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -377,7 +377,7 @@
 .pipelineIndex {
   font-size: 0.66rem;
   letter-spacing: 0.12em;
-  color: rgba(255, 255, 255, 0.25);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .pipelineLabel {
@@ -439,7 +439,7 @@
 .failureExample {
   font-size: 0.8rem;
   line-height: 1.6;
-  color: rgba(220, 220, 220, 0.45);
+  color: rgba(220, 220, 220, 0.62);
   font-style: italic;
 }
 

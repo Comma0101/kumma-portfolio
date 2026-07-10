@@ -96,6 +96,11 @@
   padding: 0.7rem 0.85rem;
 }
 
+.searchBar:focus-within {
+  outline: 2px solid var(--signal);
+  outline-offset: 2px;
+}
+
 .searchLabel {
   font-size: 0.62rem;
   letter-spacing: 0.19em;
@@ -391,6 +396,11 @@
   .searchBar {
     grid-template-columns: minmax(0, 1fr);
     gap: 0.45rem;
+  }
+
+  .searchInput,
+  .filterButton {
+    min-height: 44px;
   }
 
   .clearButton {
