@@ -37,7 +37,7 @@ export const chapters: Chapter[] = [
   {
     no: "02",
     title: "ARCHON",
-    href: "/projects/archon",
+    href: "/work/archon",
     layout: "flip",
     blurb:
       "Unifies multiple AI models and coding agents into one orchestration layer for real development workflows.",
