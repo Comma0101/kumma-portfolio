@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { usePathname } from "next/navigation";
 import * as THREE from "three";
 import { getThreeSceneTuning } from "./threeSceneTuning";
 
@@ -89,12 +88,11 @@ const FRAG = /* glsl */ `
 `;
 
 export default function ThreeScene() {
-  const pathname = usePathname();
   const mountRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const mount = mountRef.current;
-    if (!mount || pathname !== "/") return;
+    if (!mount) return;
 
     const reducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
@@ -272,7 +270,7 @@ export default function ThreeScene() {
         mount.removeChild(renderer.domElement);
       }
     };
-  }, [pathname]);
+  }, []);
 
   return (
     <div

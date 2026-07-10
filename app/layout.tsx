@@ -9,7 +9,6 @@ import Navigation from "../components/Navigation";
 import SmoothScrollProvider from "../components/SmoothScrollProvider";
 import ConditionalFooter from "../components/ConditionalFooter";
 import { PageTransitionProvider } from "@/components/PageTransition";
-import ThreeScene from "../components/ThreeScene";
 import IntroOverlay from "../components/IntroOverlay";
 import Analytics from "../components/Analytics";
 import AgentAwareness from "../components/AgentAwareness";
@@ -80,7 +79,6 @@ export default function RootLayout({
         <IntroOverlay />
         <PageTransitionProvider>
           <SmoothScrollProvider>
-            <ThreeScene />
             <Navigation />
             <main id="main-content" className="site-main" tabIndex={-1}>
               {children}

@@ -181,3 +181,36 @@ describe("native-compatible route navigation", () => {
     assert.equal(matches?.length, 2);
   });
 });
+
+describe("homepage terrain and reduced motion", () => {
+  it("loads the terrain from the homepage instead of the root layout", () => {
+    const layout = readCss("app/layout.tsx");
+    const homepage = readCss("app/page.tsx");
+
+    assert.doesNotMatch(layout, /import\s+ThreeScene\b/);
+    assert.doesNotMatch(layout, /<ThreeScene\b/);
+    assert.match(homepage, /import\s+ThreeScene\s+from\s+["']@\/components\/ThreeScene["']/);
+    assert.match(homepage, /<ThreeScene\s*\/>/);
+  });
+
+  it("mounts the homepage terrain without route state", () => {
+    const source = readCss("components/ThreeScene.tsx");
+
+    assert.doesNotMatch(source, /usePathname/);
+    assert.doesNotMatch(source, /\bpathname\b/);
+    assert.match(source, /\}, \[\]\);/);
+  });
+
+  it("guards Lenis construction with the reduced-motion helper", () => {
+    const source = readCss("components/SmoothScrollProvider.tsx");
+    const guard = source.indexOf("if (!shouldInitializeSmoothScroll(");
+    const constructor = source.indexOf("new Lenis(");
+
+    assert.match(
+      source,
+      /import\s*\{\s*shouldInitializeSmoothScroll\s*\}\s*from\s*["']\.\/viz\/reducedMotionState["']/,
+    );
+    assert.ok(guard >= 0, "Expected a reduced-motion guard");
+    assert.ok(constructor > guard, "Expected the guard before Lenis construction");
+  });
+});

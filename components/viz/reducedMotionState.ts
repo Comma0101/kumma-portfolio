@@ -9,3 +9,7 @@ export function resolveHydratedReducedMotion({
 }: ReducedMotionStateInput) {
   return !hydrated || prefersReducedMotion !== false;
 }
+
+export function shouldInitializeSmoothScroll(prefersReducedMotion: boolean) {
+  return !prefersReducedMotion;
+}

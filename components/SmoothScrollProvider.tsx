@@ -4,6 +4,7 @@ import { useLayoutEffect, useRef } from "react";
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { shouldInitializeSmoothScroll } from "./viz/reducedMotionState";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -15,6 +16,11 @@ export default function SmoothScrollProvider({
   const lenisRef = useRef<Lenis | null>(null);
 
   useLayoutEffect(() => {
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (!shouldInitializeSmoothScroll(prefersReducedMotion)) return;
+
     // Initialize Lenis
     const lenis = new Lenis({
       duration: 1.2,
