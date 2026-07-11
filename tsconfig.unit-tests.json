@@ -1,0 +1,20 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2020",
+    "moduleResolution": "node",
+    "noEmit": false,
+    "isolatedModules": false,
+    "rootDir": ".",
+    "skipLibCheck": true
+  },
+  "include": [
+    "components/**/*.test.ts",
+    "data/**/*.test.ts",
+    "components/threeSceneTuning.ts",
+    "components/viz/reducedMotionState.ts",
+    "components/immersive/**/*.ts",
+    "data/workProjects.ts"
+  ]
+}
