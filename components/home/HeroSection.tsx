@@ -4,16 +4,15 @@ import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import Button from "@/components/system/Button";
+import { heroContent, productionBoundaries } from "./homeContent";
 import styles from "./HeroSection.module.css";
-
-const heroSignals = [
-  ["KOTA", "call -> order"],
-  ["ARCHON", "route -> worker"],
-  ["Stress suite", "scenario -> score"],
-] as const;
 
 export default function HeroSection() {
   const ref = useRef<HTMLElement>(null);
+  const titleLead = heroContent.title.slice(
+    0,
+    -heroContent.titleEmphasis.length,
+  );
 
   useGSAP(
     () => {
@@ -30,41 +29,46 @@ export default function HeroSection() {
   );
 
   return (
-    <section ref={ref} id="home" className={styles.hero}>
+    <section
+      ref={ref}
+      id="home"
+      className={styles.hero}
+      data-immersive-stage="hero"
+    >
       <div className={styles.inner}>
         <p data-hero-rise className={styles.eyebrow}>
-          Real-time voice · agent systems · Los Angeles
+          {heroContent.eyebrow}
         </p>
         <h1 data-hero-rise className={styles.title}>
-          Real-time voice AI, built and <em>broken in public.</em>
+          {titleLead}
+          <em>{heroContent.titleEmphasis}</em>
         </h1>
         <div data-hero-rise className={styles.systemProof}>
-          <p className={styles.subtext}>
-            I design and ship voice agents that survive real phone calls —
-            streaming speech, agent orchestration, and the guardrails between
-            them. Hear one take a real call, then book a live demo and try to
-            break it.
-          </p>
-          <ul className={styles.signalRail} aria-label="Operational signals">
-            {heroSignals.map(([name, flow]) => (
-              <li key={name} className={styles.signalItem}>
-                <span className={styles.signalName}>{name}</span>
-                <span className={styles.signalFlow}>{flow}</span>
+          <p className={styles.subtext}>{heroContent.subtext}</p>
+          <ul
+            className={styles.signalRail}
+            aria-label="Three production AI boundaries"
+          >
+            {productionBoundaries.map((boundary) => (
+              <li key={boundary.label} className={styles.signalItem}>
+                <span className={styles.signalName}>{boundary.label}</span>
+                <span className={styles.signalFlow}>
+                  {boundary.explanation}
+                </span>
               </li>
             ))}
           </ul>
         </div>
         <div data-hero-rise className={styles.actions}>
-          <Button href="/call" variant="primary">
-            Hear the demo →
+          <Button href={heroContent.primaryCta.href} variant="primary">
+            {heroContent.primaryCta.label}
           </Button>
-          <Button href="/contact" variant="ghost">
-            Bring me a problem →
+          <Button href={heroContent.secondaryCta.href} variant="ghost">
+            {heroContent.secondaryCta.label}
           </Button>
         </div>
         <p data-hero-rise className={styles.availability}>
-          Independent voice AI systems builder, Los Angeles. Available for
-          audits, builds, and advisory. Usually replies within a day.
+          {heroContent.availability}
         </p>
       </div>
     </section>

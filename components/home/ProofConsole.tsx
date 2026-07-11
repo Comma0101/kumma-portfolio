@@ -4,7 +4,11 @@ import styles from "./ProofConsole.module.css";
 
 export default function ProofConsole() {
   return (
-    <section className={styles.section} aria-labelledby="proof-console-title">
+    <section
+      className={styles.section}
+      aria-labelledby="proof-console-title"
+      data-immersive-stage="proof"
+    >
       <div className={styles.inner}>
         <div className={styles.head}>
           <p className={styles.eyebrow}>Operational proof</p>

@@ -6,8 +6,11 @@ import styles from "./ContactSection.module.css";
 const initialForm = {
   name: "",
   email: "",
-  subject: "",
-  message: "",
+  problem: "",
+  constraint: "",
+  stack: "",
+  timeline: "Not sure yet",
+  budget: "Need help scoping",
 };
 
 export default function ContactSection() {
@@ -20,7 +23,10 @@ export default function ContactSection() {
     const container = containerRef.current;
     if (!container) return;
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      !("IntersectionObserver" in window)
+    ) {
       setIsVisible(true);
       return;
     }
@@ -40,7 +46,9 @@ export default function ContactSection() {
   }, []);
 
   const handleChange = (
-    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    event: ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
   ) => {
     const { name, value } = event.target;
     setFormData((current) => ({ ...current, [name]: value }));
@@ -50,14 +58,18 @@ export default function ContactSection() {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    const subject = `Production AI project — ${formData.name}`;
     const body = [
       `Name: ${formData.name}`,
       `Email: ${formData.email}`,
-      "",
-      formData.message,
-    ].join("\n");
+      `Problem: ${formData.problem}`,
+      `Constraint: ${formData.constraint}`,
+      `Current stack: ${formData.stack || "Not provided"}`,
+      `Timeline: ${formData.timeline}`,
+      `Budget: ${formData.budget}`,
+    ].join("\n\n");
     const mailto = `mailto:dev@kumma.me?subject=${encodeURIComponent(
-      formData.subject,
+      subject,
     )}&body=${encodeURIComponent(body)}`;
 
     setEmailOpened(true);
@@ -68,20 +80,23 @@ export default function ContactSection() {
     <section
       id="contact"
       ref={containerRef}
+      data-immersive-stage="contact"
       className={`${styles.contactSection} ${
         isVisible ? styles.contactActive : ""
       }`}
     >
       <div className={styles.contactWrapper}>
         <div className={styles.contactIntro}>
-          <h2>Building a voice agent? Tell me the problem and the constraint.</h2>
+          <p className={styles.eyebrow}>Start a project</p>
+          <h2>Bring the production-AI problem and the constraint.</h2>
           <p className={styles.contactDescription}>
-            Voice agent audits, production builds, and advisory. Send the
-            problem and the constraint, or use the full form.
+            A focused audit, scoped build, or advisory relationship starts with
+            the system boundary that is blocking production. A short brief is
+            enough for an initial reply.
           </p>
 
           <a href="mailto:dev@kumma.me" className={styles.emailLink}>
-            <span>Email</span>
+            <span>Direct email</span>
             <strong>dev@kumma.me</strong>
           </a>
 
@@ -111,66 +126,106 @@ export default function ContactSection() {
         </div>
 
         <div className={styles.contactPanel}>
-          <p className={styles.formLead}>A short brief is enough to start.</p>
+          <p className={styles.formLead}>Project brief</p>
           <form className={styles.contactForm} onSubmit={handleSubmit}>
-            <label>
-              <span>Name</span>
-              <input
-                type="text"
-                name="name"
-                autoComplete="name"
-                placeholder="Your name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-              />
-            </label>
+            <div className={styles.fieldPair}>
+              <label>
+                <span>Name</span>
+                <input
+                  type="text"
+                  name="name"
+                  autoComplete="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                />
+              </label>
+
+              <label>
+                <span>Email</span>
+                <input
+                  type="email"
+                  name="email"
+                  autoComplete="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
+              </label>
+            </div>
 
             <label>
-              <span>Email</span>
-              <input
-                type="email"
-                name="email"
-                autoComplete="email"
-                placeholder="you@example.com"
-                value={formData.email}
-                onChange={handleChange}
-                required
-              />
-            </label>
-
-            <label>
-              <span>Subject</span>
-              <input
-                type="text"
-                name="subject"
-                placeholder="Project subject"
-                value={formData.subject}
-                onChange={handleChange}
-                required
-              />
-            </label>
-
-            <label>
-              <span>Message</span>
+              <span>Problem</span>
               <textarea
-                name="message"
-                placeholder="Context, constraints, and the outcome you need."
-                rows={6}
-                value={formData.message}
+                name="problem"
+                rows={5}
+                value={formData.problem}
                 onChange={handleChange}
                 required
               />
             </label>
+
+            <label>
+              <span>Constraint</span>
+              <textarea
+                name="constraint"
+                rows={4}
+                value={formData.constraint}
+                onChange={handleChange}
+                required
+              />
+            </label>
+
+            <label>
+              <span>Current stack (optional)</span>
+              <input
+                type="text"
+                name="stack"
+                value={formData.stack}
+                onChange={handleChange}
+              />
+            </label>
+
+            <div className={styles.fieldPair}>
+              <label>
+                <span>Timeline</span>
+                <select
+                  name="timeline"
+                  value={formData.timeline}
+                  onChange={handleChange}
+                  required
+                >
+                  <option>Not sure yet</option>
+                  <option>2–4 weeks</option>
+                  <option>1–3 months</option>
+                  <option>Ongoing advisory</option>
+                </select>
+              </label>
+
+              <label>
+                <span>Budget</span>
+                <select
+                  name="budget"
+                  value={formData.budget}
+                  onChange={handleChange}
+                  required
+                >
+                  <option>Need help scoping</option>
+                  <option>Under $10k</option>
+                  <option>$10k–$25k</option>
+                  <option>$25k–$50k</option>
+                  <option>$50k+</option>
+                </select>
+              </label>
+            </div>
 
             <button type="submit">
-              Open Email <span aria-hidden="true">→</span>
+              Open project email <span aria-hidden="true">→</span>
             </button>
 
             {emailOpened && (
               <p className={styles.statusMessage} role="status">
-                Your email app is opening. You can also write directly to
-                dev@kumma.me.
+                Your email app is opening. You can also write directly to dev@kumma.me.
               </p>
             )}
           </form>

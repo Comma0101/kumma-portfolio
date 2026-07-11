@@ -3,7 +3,9 @@ import HeroSection from "./home/HeroSection";
 import ProofConsole from "./home/ProofConsole";
 import PositioningBand from "./home/PositioningBand";
 import ChapterIndex from "./home/ChapterIndex";
-import PhilosophySection from "./home/PhilosophySection";
+import CapabilitiesSection from "./home/CapabilitiesSection";
+import ResearchProofSection from "./home/ResearchProofSection";
+import LabsSection from "./home/LabsSection";
 import ContactSection from "./home/ContactSection";
 
 const Home = () => {
@@ -13,7 +15,9 @@ const Home = () => {
       <ProofConsole />
       <PositioningBand />
       <ChapterIndex />
-      <PhilosophySection />
+      <CapabilitiesSection />
+      <ResearchProofSection />
+      <LabsSection />
       <ContactSection />
     </div>
   );
