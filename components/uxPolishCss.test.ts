@@ -322,6 +322,25 @@ describe("homepage terrain and reduced motion", () => {
   });
 });
 
+describe("homepage structured data", () => {
+  it("exports the named value consumed by the homepage", () => {
+    const homepage = readCss("app/page.tsx");
+    const jsonLd = readCss("components/seo/JsonLd.tsx");
+
+    assert.match(homepage, /import\s*\{\s*JsonLd,\s*homeLd\s*\}/);
+    assert.match(jsonLd, /export const homeLd\s*=/);
+  });
+
+  it("connects the person, organization, and website in one graph", () => {
+    const jsonLd = readCss("components/seo/JsonLd.tsx");
+
+    assert.match(jsonLd, /export const homeLd\s*=\s*\{[\s\S]*"@graph":\s*\[/);
+    assert.match(jsonLd, /"@type":\s*"Organization"/);
+    assert.match(jsonLd, /"@type":\s*"WebSite"/);
+    assert.match(jsonLd, /founder:\s*\{\s*"@id":\s*"https:\/\/kumma\.me\/#person"\s*\}/);
+  });
+});
+
 describe("contrast and touch targets", () => {
   it("keeps faint text readable against every canonical surface", () => {
     const css = readCss("app/globals.css");
