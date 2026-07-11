@@ -48,6 +48,92 @@ const methodology: { term: string; value: ReactNode }[] = [
   },
 ];
 
+// Published third-party component latencies — vendor or independent-benchmark
+// figures, each cited. These are NOT measurements of this line; they are the
+// on-paper starting point the measured monthly report will replace.
+const referenceBudget: { term: string; value: ReactNode }[] = [
+  {
+    term: "Human turn gap",
+    value: (
+      <>
+        ~200ms is natural, comfortable under ~500ms (
+        <a
+          href="https://prodinit.com/blog/production-voice-ai-agents-latency-architecture"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Prodinit
+        </a>
+        ).
+      </>
+    ),
+  },
+  {
+    term: "Deepgram STT (Nova-3)",
+    value: (
+      <>
+        First token ~150ms in the US, sub-300ms streaming (
+        <a
+          href="https://deepgram.com/learn/introducing-nova-3-speech-to-text-api"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Deepgram
+        </a>
+        ).
+      </>
+    ),
+  },
+  {
+    term: "LLM first token",
+    value: (
+      <>
+        ~100–180ms on fast models, 300–500ms common (
+        <a
+          href="https://introl.com/blog/voice-ai-infrastructure-real-time-speech-agents-asr-tts-guide-2025"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Introl
+        </a>
+        ).
+      </>
+    ),
+  },
+  {
+    term: "TTS first audio",
+    value: (
+      <>
+        ~40–90ms vendor targets, ~190–310ms measured P50 (
+        <a
+          href="https://gradium.ai/content/tts-latency-benchmark-2026"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Gradium
+        </a>
+        ).
+      </>
+    ),
+  },
+  {
+    term: "Telephony / network",
+    value: (
+      <>
+        20–40ms WebRTC; Twilio targets sub-600ms end to end (
+        <a
+          href="https://www.twilio.com/en-us/blog/developers/best-practices/guide-core-latency-ai-voice-agents"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Twilio
+        </a>
+        ).
+      </>
+    ),
+  },
+];
+
 export default function LatencyPage() {
   return (
     <div className={base.page}>
@@ -81,6 +167,34 @@ export default function LatencyPage() {
           <p className={base.note}>
             No measurements are published yet. Nothing here is estimated or
             modeled.
+          </p>
+        </section>
+
+        {/* Reference budget — published third-party figures, cited. Not ours. */}
+        <section className={`${base.section} ${base.shell}`}>
+          <h2 className={base.h2}>Reference budget, from published figures</h2>
+          <p className={`${base.subtitle} ${styles.lead}`}>
+            Until the first measured report lands, here is what the stack costs
+            on paper. Each stage below is a latency figure published by the
+            vendor or an independent benchmark, cited. These are third-party
+            numbers, not measurements of my line, and they are the starting
+            point the monthly report will replace with measured ones. The full
+            breakdown, and why the naive sum is a trap, is in{" "}
+            <a href="/blog/en/latency-budget-twilio-deepgram-voice-agent">
+              the latency-budget note
+            </a>
+            .
+          </p>
+          <dl className={styles.spec}>
+            {referenceBudget.map((row) => (
+              <div key={row.term} className={styles.specRow}>
+                <dt className={styles.specTerm}>{row.term}</dt>
+                <dd className={styles.specValue}>{row.value}</dd>
+              </div>
+            ))}
+          </dl>
+          <p className={base.note}>
+            Published third-party figures, cited. Not measured on this line.
           </p>
         </section>
 

@@ -55,6 +55,12 @@ export default function AboutPage() {
             than outcome. It lives here, off the main site, because it is about
             process and discipline, not tactics, forecasts, or returns.
           </p>
+          <p className={styles.body}>
+            The one part worth showing is a build, not a trade: a dashboard that
+            turns a messy brokerage export into a correct per-trade ledger, which
+            is a data-correctness problem more than a market one. It is written up
+            as a <a href="/work/robinhood-dashboard">case study</a>.
+          </p>
           <p className={styles.aside}>Personal practice — not a service.</p>
         </section>
 

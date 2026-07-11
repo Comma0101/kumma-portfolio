@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import CallPage from "@/components/CallPage";
 
 export const metadata: Metadata = {
-  title: "Call the agent",
+  title: "Voice agent demo",
   description:
-    "Call the live voice AI agent taking phone orders for Kumma Diner, a fictional demo restaurant with a real menu. Try to break it. Every call is recorded and may be published.",
+    "Hear a voice AI agent take phone orders for Kumma Diner, a fictional demo restaurant with a real menu. Listen to recorded calls, or book a live demo. Every demo call is recorded and may be published.",
   alternates: { canonical: "https://kumma.me/call" },
   openGraph: {
-    title: "Call the agent | Kumma",
+    title: "Voice agent demo | Kumma",
     description:
-      "A live voice AI agent takes phone orders for Kumma Diner, a fictional demo restaurant with a real menu. Order five items, switch to Mandarin, try to break it.",
+      "A voice AI agent takes phone orders for Kumma Diner, a fictional demo restaurant with a real menu. Hear recorded calls, or book a live demo to try to break it.",
     url: "https://kumma.me/call",
     type: "website",
   },

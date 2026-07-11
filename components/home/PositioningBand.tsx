@@ -13,7 +13,9 @@ export default function PositioningBand() {
   return (
     <section className={styles.band}>
       <p className={styles.statement}>
-        I build systems where intelligence becomes action, not just output.
+        Real-time voice is the hardest version of one problem: making AI systems
+        reliable in production. The craft underneath runs through everything I
+        build.
       </p>
       <ul className={styles.tags}>
         {disciplines.map((d) => (

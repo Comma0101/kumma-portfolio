@@ -90,6 +90,42 @@ const rubricCols = [
   "Graceful failure",
 ];
 
+// Published third-party component figures for the KOTA stack (Twilio + Deepgram).
+// This is a PROJECTED envelope from vendors'/benchmarks' numbers — NOT a measured
+// run of this suite. Each row is cited. The measured 0–2 scores replace nothing
+// here; they land in the Results table once the suite runs on the live line.
+const expectedEnvelope: {
+  stage: string;
+  figure: string;
+  src: string;
+  href: string;
+}[] = [
+  {
+    stage: "Speech-to-text (Deepgram Nova-3)",
+    figure: "~150ms first token, sub-300ms streaming; ~6.8% streaming WER",
+    src: "Deepgram",
+    href: "https://deepgram.com/learn/introducing-nova-3-speech-to-text-api",
+  },
+  {
+    stage: "LLM first token",
+    figure: "~100–180ms on fast models, 300–500ms common",
+    src: "Introl",
+    href: "https://introl.com/blog/voice-ai-infrastructure-real-time-speech-agents-asr-tts-guide-2025",
+  },
+  {
+    stage: "Text-to-speech first audio",
+    figure: "~40–90ms vendor targets",
+    src: "Gradium",
+    href: "https://gradium.ai/content/tts-latency-benchmark-2026",
+  },
+  {
+    stage: "End-to-end turn",
+    figure: "sub-600ms target; 800ms–2s common in the wild",
+    src: "Twilio",
+    href: "https://www.twilio.com/en-us/blog/developers/best-practices/guide-core-latency-ai-voice-agents",
+  },
+];
+
 export default function BenchmarkPage() {
   const root = useRef<HTMLDivElement>(null);
 
@@ -238,6 +274,84 @@ export default function BenchmarkPage() {
               </li>
             ))}
           </ul>
+        </section>
+
+        {/* Reference baselines — published third-party figures, cited. Not this suite's scores. */}
+        <section className={`${bs.section} ${bs.shell}`}>
+          <h2 className={`${bs.h2} ${bs.reveal}`} data-reveal>
+            Reference baselines
+          </h2>
+          <p className={`${s.lead} ${bs.reveal}`} data-reveal>
+            For context, here is what the components publish on clean, general
+            audio. Deepgram Nova-3 reports a median streaming word error rate
+            near 6.8% and sub-300ms streaming latency (
+            <a
+              href="https://deepgram.com/learn/speech-to-text-benchmarks"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Deepgram
+            </a>
+            ); the fast text-to-speech voices publish time-to-first-audio in the
+            tens of milliseconds (
+            <a
+              href="https://gradium.ai/content/tts-latency-benchmark-2026"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Gradium
+            </a>
+            ). Those are the easy conditions.
+          </p>
+          <p className={`${s.lead} ${bs.reveal}`} data-reveal>
+            This suite exists because the hard part is the other twenty percent —
+            kitchen noise, code-switching, a caller reversing an order
+            mid-sentence, a prompt-injection attempt — where those numbers stop
+            describing the call. The figures above are third-party baselines on
+            clean audio, not this suite&rsquo;s scores. KOTA&rsquo;s scores
+            against the fifty scenarios land in the table below once the run is
+            complete.
+          </p>
+          <div className={`${s.tableFrame} ${bs.reveal}`} data-reveal>
+            <div className={s.tableScroll}>
+              <table className={s.table}>
+                <caption>
+                  Expected performance envelope — projected from published
+                  component figures, not a measured KOTA run
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Stage</th>
+                    <th scope="col">Published figure</th>
+                    <th scope="col">Source</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {expectedEnvelope.map((row) => (
+                    <tr key={row.stage}>
+                      <th scope="row" className={s.cellName}>
+                        {row.stage}
+                      </th>
+                      <td>{row.figure}</td>
+                      <td>
+                        <a
+                          href={row.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {row.src}
+                        </a>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <p className={bs.note}>
+            Projected from published third-party figures, cited. Not a measured
+            run of this suite.
+          </p>
         </section>
 
         {/* Results — empty state */}
