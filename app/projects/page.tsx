@@ -1,29 +1,5 @@
-"use client";
-
-import { useEffect } from "react";
-import Link from "next/link";
+import { permanentRedirect } from "next/navigation";
 
 export default function ProjectsPage() {
-  useEffect(() => {
-    window.location.replace("/#work");
-  }, []);
-
-  return (
-    <div
-      style={{
-        minHeight: "60vh",
-        display: "grid",
-        placeItems: "center",
-        padding: "9rem 1.5rem",
-      }}
-    >
-      <p style={{ color: "var(--steel)" }}>
-        Redirecting to{" "}
-        <Link href="/#work" style={{ color: "var(--signal)" }}>
-          the work index
-        </Link>
-        .
-      </p>
-    </div>
-  );
+  permanentRedirect("/work");
 }

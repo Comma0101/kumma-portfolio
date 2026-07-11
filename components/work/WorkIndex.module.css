@@ -1,0 +1,485 @@
+.page {
+  min-width: 0;
+  overflow: clip;
+  background: var(--canvas);
+  color: var(--paper);
+}
+
+.shell {
+  width: min(100%, var(--page-width));
+  margin: 0 auto;
+  padding: clamp(8rem, 13vw, 12rem) var(--page-gutter)
+    clamp(6rem, 10vw, 10rem);
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 2.2fr);
+  column-gap: clamp(2rem, 6vw, 7rem);
+  row-gap: 1.5rem;
+  padding-bottom: clamp(6rem, 11vw, 11rem);
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--sand);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  max-width: 16ch;
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: clamp(3rem, 7.4vw, 7.4rem);
+  font-weight: 500;
+  letter-spacing: -0.065em;
+  line-height: 0.94;
+  text-wrap: balance;
+}
+
+.intro {
+  grid-column: 2;
+  max-width: 64ch;
+  margin: clamp(1rem, 3vw, 3rem) 0 0;
+  color: var(--steel);
+  font-family: var(--font-sans);
+  font-size: clamp(1.1rem, 1.7vw, 1.4rem);
+  line-height: 1.65;
+}
+
+.workSection {
+  padding: clamp(5rem, 9vw, 9rem) 0;
+  border-top: 1px solid var(--line);
+}
+
+.sectionHeader {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 2.2fr);
+  gap: clamp(2rem, 6vw, 7rem);
+  align-items: start;
+  margin-bottom: clamp(3rem, 7vw, 7rem);
+}
+
+.sectionHeader h2,
+.cta h2 {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: clamp(2.4rem, 5vw, 5.2rem);
+  font-weight: 500;
+  letter-spacing: -0.055em;
+  line-height: 0.98;
+}
+
+.sectionHeader > div > p {
+  max-width: 58ch;
+  margin: 1.25rem 0 0;
+  color: var(--steel);
+  font-size: 1.05rem;
+  line-height: 1.65;
+}
+
+.projectGrid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: clamp(3rem, 7vw, 7rem) clamp(1rem, 2.2vw, 2rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.projectItem {
+  min-width: 0;
+}
+
+.featuredGrid .projectItem:nth-child(1) {
+  grid-column: 1 / span 8;
+}
+
+.featuredGrid .projectItem:nth-child(2) {
+  grid-column: 8 / span 5;
+  margin-top: clamp(2rem, 7vw, 8rem);
+}
+
+.featuredGrid .projectItem:nth-child(3) {
+  grid-column: 2 / span 7;
+}
+
+.featuredGrid .projectItem:nth-child(4) {
+  grid-column: 7 / span 6;
+  margin-top: clamp(1rem, 5vw, 5rem);
+}
+
+.labGrid .projectItem:first-child {
+  grid-column: 1 / span 7;
+}
+
+.labGrid .projectItem:last-child {
+  grid-column: 8 / span 5;
+  margin-top: clamp(2rem, 6vw, 6rem);
+}
+
+.card {
+  display: block;
+  min-width: 0;
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  color: var(--paper);
+  text-decoration: none;
+  touch-action: manipulation;
+  transition:
+    transform 220ms var(--ease),
+    opacity 180ms var(--ease),
+    border-color 220ms var(--ease);
+}
+
+.card article {
+  min-width: 0;
+  padding: clamp(1.2rem, 3vw, 2.5rem);
+}
+
+.cardHeader {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.cardIdentity {
+  min-width: 0;
+}
+
+.projectNo,
+.cardArrow,
+.status,
+.artifact,
+.tags,
+.evidence dt,
+.cardAction,
+.mechanismLabel {
+  font-family: var(--font-mono);
+}
+
+.projectNo {
+  display: block;
+  margin-bottom: 0.65rem;
+  color: var(--sand);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+}
+
+.card h3 {
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-size: clamp(2rem, 4vw, 4rem);
+  font-weight: 500;
+  letter-spacing: -0.055em;
+  line-height: 1;
+}
+
+.cardArrow {
+  flex: 0 0 auto;
+  color: var(--signal);
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.cardMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1rem;
+  margin-top: 1.5rem;
+}
+
+.status,
+.artifact {
+  margin: 0;
+  font-size: 0.68rem;
+  letter-spacing: 0.055em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+.status {
+  color: var(--paper);
+}
+
+.artifact {
+  color: var(--sand);
+}
+
+.summary {
+  max-width: 64ch;
+  margin: 1.75rem 0 0;
+  color: var(--steel);
+  font-size: clamp(1rem, 1.35vw, 1.15rem);
+  line-height: 1.65;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tags li {
+  padding: 0.45rem 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  color: var(--steel);
+  font-size: 0.67rem;
+  letter-spacing: 0.04em;
+  line-height: 1.35;
+}
+
+.visual {
+  min-width: 0;
+  margin-top: clamp(2rem, 4vw, 3.25rem);
+}
+
+.mechanismFallback {
+  min-width: 0;
+}
+
+.mechanismTrack {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mechanismStep {
+  position: relative;
+  min-width: 0;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+}
+
+.mechanismLabel {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: var(--sand);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.mechanismValue {
+  display: block;
+  color: var(--paper);
+  font-size: 0.9rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.mechanismArrow {
+  position: absolute;
+  right: 0.85rem;
+  bottom: -1.05rem;
+  z-index: 1;
+  color: var(--signal);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+}
+
+.evidence {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  margin: clamp(2rem, 4vw, 3.25rem) 0 0;
+  border-top: 1px solid var(--line);
+  border-left: 1px solid var(--line);
+}
+
+.evidenceItem {
+  min-width: 0;
+  padding: 1rem;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.evidence dt {
+  color: var(--sand);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.evidence dd {
+  margin: 0.55rem 0 0;
+  color: var(--paper);
+  font-size: 0.94rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.cardAction {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  margin: 1.25rem 0 0;
+  color: var(--signal);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 4px;
+}
+
+.cta {
+  display: flex;
+  gap: clamp(2rem, 6vw, 7rem);
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-top: clamp(3rem, 6vw, 6rem);
+  padding: clamp(3rem, 7vw, 7rem) 0 0;
+  border-top: 1px solid var(--line);
+}
+
+.cta h2 {
+  max-width: 13ch;
+  margin-top: 1rem;
+}
+
+.ctaLink {
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  min-width: min(100%, 16rem);
+  min-height: 44px;
+  padding: 0.95rem 1.15rem;
+  border: 1px solid var(--signal);
+  border-radius: var(--radius-control);
+  background: var(--signal);
+  color: var(--canvas);
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  text-transform: uppercase;
+  touch-action: manipulation;
+  transition:
+    transform 200ms var(--ease),
+    opacity 180ms var(--ease),
+    border-color 200ms var(--ease);
+}
+
+.ctaLink:focus-visible {
+  outline: 2px solid var(--paper);
+  outline-offset: 4px;
+}
+
+@media (hover: hover) {
+  .card:hover {
+    border-color: var(--line-strong);
+    transform: translateY(-4px);
+  }
+
+  .ctaLink:hover {
+    border-color: var(--signal-strong);
+    transform: translateY(-2px);
+  }
+}
+
+.card:active,
+.ctaLink:active {
+  opacity: 0.82;
+  transform: translateY(1px);
+}
+
+@media (max-width: 760px) {
+  .shell {
+    padding-top: 7.5rem;
+  }
+
+  .hero,
+  .sectionHeader {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+  }
+
+  .hero h1 {
+    max-width: 18ch;
+    font-size: clamp(2.8rem, 14vw, 4.6rem);
+  }
+
+  .intro {
+    grid-column: 1;
+    margin-top: 0.5rem;
+    font-size: 1rem;
+  }
+
+  .sectionHeader > div > p,
+  .summary,
+  .mechanismValue,
+  .evidence dd {
+    font-size: 1rem;
+  }
+
+  .projectGrid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+  }
+
+  .featuredGrid .projectItem:nth-child(n),
+  .labGrid .projectItem:first-child,
+  .labGrid .projectItem:last-child {
+    grid-column: 1;
+    margin-top: 0;
+  }
+
+  .card article {
+    padding: 1.2rem;
+  }
+
+  .card h3 {
+    font-size: clamp(2rem, 10vw, 3rem);
+  }
+
+  .evidence {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cta {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .ctaLink {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .ctaLink {
+    transition: none;
+  }
+
+  .card:hover,
+  .card:active,
+  .ctaLink:hover,
+  .ctaLink:active {
+    transform: none;
+  }
+}

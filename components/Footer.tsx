@@ -8,6 +8,7 @@ interface FooterProps {
 }
 
 const quickLinks = [
+  { label: "Work", href: "/work" },
   { label: "Demo", href: "/call" },
   { label: "Benchmark", href: "/benchmark" },
   { label: "Latency", href: "/latency" },
