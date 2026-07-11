@@ -436,6 +436,15 @@
     font-size: 1rem;
   }
 
+  .status,
+  .artifact,
+  .tags,
+  .tags li,
+  .evidence dt,
+  .cardAction {
+    font-size: 1rem;
+  }
+
   .projectGrid {
     grid-template-columns: minmax(0, 1fr);
     gap: 1.5rem;

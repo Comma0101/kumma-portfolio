@@ -16,6 +16,47 @@ function readSource(file: string): string {
   return fs.readFileSync(path.resolve(process.cwd(), file), "utf8");
 }
 
+function extractCssBlock(source: string, marker: string): string {
+  const markerIndex = source.indexOf(marker);
+  assert.notEqual(markerIndex, -1, `expected CSS marker ${marker}`);
+
+  const openBrace = source.indexOf("{", markerIndex);
+  assert.notEqual(openBrace, -1, `expected an opening brace after ${marker}`);
+
+  let depth = 0;
+  for (let index = openBrace; index < source.length; index += 1) {
+    if (source[index] === "{") depth += 1;
+    if (source[index] !== "}") continue;
+
+    depth -= 1;
+    if (depth === 0) return source.slice(openBrace + 1, index);
+  }
+
+  assert.fail(`expected a closing brace for ${marker}`);
+}
+
+function assertSelectorFontSize(
+  cssBlock: string,
+  selector: string,
+  fontSize: string,
+): void {
+  const rules = cssBlock.matchAll(/([^{}]+)\{([^{}]*)\}/g);
+
+  for (const [, selectorList, declarations] of rules) {
+    const selectors = selectorList.split(",").map((value) => value.trim());
+    if (
+      selectors.includes(selector) &&
+      new RegExp(`font-size:\\s*${fontSize.replace(".", "\\.")}\\s*;`).test(
+        declarations,
+      )
+    ) {
+      return;
+    }
+  }
+
+  assert.fail(`${selector} must use font-size: ${fontSize} in the mobile rule`);
+}
+
 describe("legacy work route map", () => {
   it("resolves legacy project slugs to canonical work routes", () => {
     assert.equal(resolveLegacyWorkHref("kota"), "/work/kota");
@@ -134,5 +175,21 @@ describe("canonical work index source contracts", () => {
       /aria-label=\{`View \$\{project\.title\}: \$\{project\.artifact\}`\}/,
     );
     assert.doesNotMatch(source, /const\s+\w*[Pp]rojects?\s*=\s*\[/);
+  });
+
+  it("keeps core project metadata at 16px or larger on mobile", () => {
+    const source = readSource("components/work/WorkIndex.module.css");
+    const mobile = extractCssBlock(source, "@media (max-width: 760px)");
+
+    for (const selector of [
+      ".status",
+      ".artifact",
+      ".tags",
+      ".tags li",
+      ".evidence dt",
+      ".cardAction",
+    ]) {
+      assertSelectorFontSize(mobile, selector, "1rem");
+    }
   });
 });
