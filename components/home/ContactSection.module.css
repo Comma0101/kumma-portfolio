@@ -14,21 +14,27 @@
 .contactIntro,
 .contactPanel {
   min-width: 0;
+  opacity: 1;
+  transform: none;
+}
+
+.contactEnhanced .contactIntro,
+.contactEnhanced .contactPanel {
   opacity: 0;
   transform: translateY(36px);
+}
+
+.contactEnhanced.contactActive .contactIntro,
+.contactEnhanced.contactActive .contactPanel {
+  opacity: 1;
+  transform: translateY(0);
   transition:
     opacity 700ms var(--ease),
     transform 800ms var(--ease);
 }
 
-.contactPanel {
+.contactEnhanced.contactActive .contactPanel {
   transition-delay: 100ms;
-}
-
-.contactActive .contactIntro,
-.contactActive .contactPanel {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 .eyebrow {
@@ -301,13 +307,16 @@
 
 @media (prefers-reduced-motion: reduce) {
   .contactIntro,
-  .contactPanel {
+  .contactPanel,
+  .contactEnhanced .contactIntro,
+  .contactEnhanced .contactPanel,
+  .contactEnhanced.contactActive .contactIntro,
+  .contactEnhanced.contactActive .contactPanel {
     opacity: 1;
     transform: none;
+    transition: none;
   }
 
-  .contactIntro,
-  .contactPanel,
   .emailLink,
   .socialLinks a,
   .contactForm input,

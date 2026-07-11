@@ -214,4 +214,45 @@ describe("homepage production AI source contracts", () => {
       );
     }
   });
+
+  it("keeps contact content visible until reveal enhancement is active", () => {
+    const css = readSource("components/home/ContactSection.module.css");
+    const base = cssBlockFor(css, ".contactIntro,\n.contactPanel");
+    const enhanced = cssBlockFor(
+      css,
+      ".contactEnhanced .contactIntro,\n.contactEnhanced .contactPanel",
+    );
+    const active = cssBlockFor(
+      css,
+      ".contactEnhanced.contactActive .contactIntro,\n.contactEnhanced.contactActive .contactPanel",
+    );
+
+    assert.match(base, /opacity:\s*1;/);
+    assert.match(base, /transform:\s*none;/);
+    assert.doesNotMatch(base, /opacity:\s*0;|translateY\(/);
+    assert.match(enhanced, /opacity:\s*0;/);
+    assert.match(enhanced, /transform:\s*translateY\(/);
+    assert.match(active, /opacity:\s*1;/);
+    assert.match(active, /transform:\s*(?:none|translateY\(0\));/);
+  });
+
+  it("enables contact reveal only after an observer is attached", () => {
+    const source = readSource("components/home/ContactSection.tsx");
+    const constructor = source.indexOf("new IntersectionObserver(");
+    const observe = source.indexOf("observer.observe(container)");
+    const enhance = source.indexOf("setIsEnhanced(true)");
+
+    assert.match(
+      source,
+      /const \[isEnhanced, setIsEnhanced\] = useState\(false\);/,
+    );
+    assert.match(source, /isEnhanced \? styles\.contactEnhanced : ""/);
+    assert.ok(constructor >= 0, "Expected IntersectionObserver construction");
+    assert.ok(observe > constructor, "Expected observation after construction");
+    assert.ok(enhance > observe, "Expected enhancement after observation");
+    assert.match(
+      source,
+      /try\s*\{[\s\S]*new IntersectionObserver\([\s\S]*observer\.observe\(container\);[\s\S]*setIsEnhanced\(true\);[\s\S]*\}\s*catch\s*\{[\s\S]*observer\?\.disconnect\(\);[\s\S]*return;/,
+    );
+  });
 });

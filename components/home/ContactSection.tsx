@@ -15,6 +15,7 @@ const initialForm = {
 
 export default function ContactSection() {
   const containerRef = useRef<HTMLElement>(null);
+  const [isEnhanced, setIsEnhanced] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [formData, setFormData] = useState(initialForm);
   const [emailOpened, setEmailOpened] = useState(false);
@@ -27,22 +28,30 @@ export default function ContactSection() {
       window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
       !("IntersectionObserver" in window)
     ) {
-      setIsVisible(true);
       return;
     }
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.18 },
-    );
+    let observer: IntersectionObserver | null = null;
 
-    observer.observe(container);
-    return () => observer.disconnect();
+    try {
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+            observer?.disconnect();
+          }
+        },
+        { threshold: 0.18 },
+      );
+
+      observer.observe(container);
+      setIsEnhanced(true);
+    } catch {
+      observer?.disconnect();
+      return;
+    }
+
+    return () => observer?.disconnect();
   }, []);
 
   const handleChange = (
@@ -82,6 +91,8 @@ export default function ContactSection() {
       ref={containerRef}
       data-immersive-stage="contact"
       className={`${styles.contactSection} ${
+        isEnhanced ? styles.contactEnhanced : ""
+      } ${
         isVisible ? styles.contactActive : ""
       }`}
     >
