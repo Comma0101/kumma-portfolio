@@ -250,9 +250,15 @@ because it undermines reading, accessibility, and conversion.
 - Refactor the current homepage-only `ThreeScene` into an immersive scene director.
 - Keep one renderer, one camera, and one frame loop.
 - Define pure stage data in `immersiveStages.ts`.
-- Mark HTML sections with stable `data-scene` identifiers.
-- A `ScrollStageProvider` observes stage elements and exposes active stage and
-  normalized progress.
+- Keep the homepage's semantic `data-immersive-stage` section identifiers for
+  content structure and analytics. They are not the camera-stage contract.
+- Mark the eight spatial waypoints with dedicated `data-immersive-anchor`
+  identifiers: hero, proof, each of the four featured project rows,
+  research/labs, and contact.
+- A `ScrollStageProvider` observes those spatial anchors and exposes active stage
+  and normalized progress. The positioning bridge and the three
+  research/capability sections inherit the interpolated or settled world around
+  them rather than inventing extra camera environments.
 - GSAP ScrollTrigger maps native scroll progress to camera-rig interpolation and
   group opacity/scale. Lenis remains an enhancement, never a requirement.
 - Scene groups are created once, reuse geometries/materials, and avoid allocations

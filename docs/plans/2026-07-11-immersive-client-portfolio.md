@@ -408,9 +408,14 @@ assert.equal(getImmersiveProfile({ reducedMotion: false, width: 430 }), "mobile"
 assert.equal(getImmersiveProfile({ reducedMotion: false, width: 1440 }), "desktop");
 ```
 
-Also test midpoint interpolation, stage-group weights summing to approximately 1, and the exact ordered IDs:
+Also test midpoint interpolation, stage-group weights summing to approximately 1, and the exact ordered spatial IDs from the approved scene design:
 
-`hero`, `proof`, `bridge`, `featured-work`, `capabilities`, `research`, `labs`, `contact`.
+`hero`, `proof`, `kota`, `audiobook`, `archon`, `splash-ink`, `research-labs`, `contact`.
+
+These scene IDs are deliberately separate from the homepage's semantic
+`data-immersive-stage` section labels. The semantic labels continue to describe
+the content hierarchy; the spatial IDs describe camera environments and project
+mechanisms.
 
 **Step 2: Run the focused suite and verify failure**
 
@@ -458,7 +463,11 @@ git commit -m "feat: model immersive scroll stages"
 - Create: `components/immersive/scrollProgress.ts`
 - Create: `components/immersive/scrollProgress.test.ts`
 - Create: `components/immersive/useImmersiveScroll.ts`
-- Modify: `components/Home.tsx`
+- Modify: `components/home/HeroSection.tsx`
+- Modify: `components/home/ProofConsole.tsx`
+- Modify: `components/home/ChapterIndex.tsx`
+- Modify: `components/home/CapabilitiesSection.tsx`
+- Modify: `components/home/ContactSection.tsx`
 - Modify: `components/ThreeScene.tsx`
 
 **Step 1: Write failing geometry tests**
@@ -482,9 +491,15 @@ Expected: FAIL because `scrollProgress.ts` does not exist.
 
 **Step 3: Implement the hook without scroll-jacking**
 
+Add ordered `data-immersive-anchor` markers to the hero, operational proof,
+each of the four featured project rows, the capabilities section (the start of
+the shared research/labs measurement plane), and contact. Keep the existing
+semantic `data-immersive-stage` attributes unchanged.
+
 `useImmersiveScroll(onSample)` must:
 
-- query ordered `[data-immersive-stage]` sections;
+- query ordered `[data-immersive-anchor]` elements and validate their IDs against
+  the pure spatial-stage contract;
 - use the existing Lenis `scroll` event if available, native passive scroll otherwise;
 - batch DOM reads and updates through `requestAnimationFrame`;
 - refresh rects on resize and `ResizeObserver` callbacks;
@@ -498,12 +513,13 @@ Pass samples to `ThreeScene` through a small event/channel or a shared provider 
 
 Run: `npm test && npm run build`
 
-Expected: tests pass; semantic sections compile with stable ordered stage IDs.
+Expected: tests pass; semantic sections retain their stable labels and the page
+compiles with the eight ordered spatial anchors.
 
 **Step 5: Commit**
 
 ```bash
-git add components/immersive components/Home.tsx components/ThreeScene.tsx
+git add components/immersive components/home components/ThreeScene.tsx
 git commit -m "feat: map homepage scroll to immersive stages"
 ```
 
@@ -921,4 +937,3 @@ Use @superpowers:finishing-a-development-branch. Reinspect the main worktree and
 **Step 5: Push only after verified integration**
 
 Run the full verification gate on the integrated branch, then push the intended branch. Confirm local and remote commit IDs match before telling the user another agent can safely continue.
-
