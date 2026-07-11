@@ -1,8 +1,20 @@
 import { mkdtemp, readdir, rm } from "node:fs/promises";
+import { createRequire } from "node:module";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+
+const require = createRequire(import.meta.url);
+const runnerFile = fileURLToPath(import.meta.url);
+const runnerSelfTest = path.join(
+  path.dirname(runnerFile),
+  "run-unit-tests.test.mjs",
+);
+
+export function resolveTypeScriptCompiler() {
+  return require.resolve("typescript/bin/tsc");
+}
 
 export async function collectTestFiles(root) {
   const testFiles = [];
@@ -25,6 +37,12 @@ export async function collectTestFiles(root) {
   return testFiles.sort();
 }
 
+export function assertTestFilesFound(testFiles) {
+  if (testFiles.length === 0) {
+    throw new Error("No compiled unit test files were found.");
+  }
+}
+
 async function runUnitTests() {
   const outputDirectory = await mkdtemp(
     path.join(tmpdir(), "kumma-portfolio-tests-"),
@@ -32,8 +50,14 @@ async function runUnitTests() {
 
   try {
     const compilation = spawnSync(
-      "tsc",
-      ["-p", "tsconfig.unit-tests.json", "--outDir", outputDirectory],
+      process.execPath,
+      [
+        resolveTypeScriptCompiler(),
+        "-p",
+        "tsconfig.unit-tests.json",
+        "--outDir",
+        outputDirectory,
+      ],
       { stdio: "inherit" },
     );
 
@@ -47,9 +71,12 @@ async function runUnitTests() {
     }
 
     const testFiles = await collectTestFiles(outputDirectory);
-    const tests = spawnSync(process.execPath, ["--test", ...testFiles], {
-      stdio: "inherit",
-    });
+    assertTestFilesFound(testFiles);
+    const tests = spawnSync(
+      process.execPath,
+      ["--test", runnerSelfTest, ...testFiles],
+      { stdio: "inherit" },
+    );
 
     if (tests.error) {
       console.error(tests.error);
@@ -64,7 +91,7 @@ async function runUnitTests() {
 
 if (
   process.argv[1] &&
-  path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
+  path.resolve(process.argv[1]) === runnerFile
 ) {
   process.exitCode = await runUnitTests();
 }
