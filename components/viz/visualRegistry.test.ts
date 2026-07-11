@@ -95,17 +95,67 @@ describe("project visual component contracts", () => {
     }
   });
 
-  it("limits new visual motion to transforms, opacity, and path progression", () => {
-    for (const key of Object.keys(mechanismVocabulary)) {
-      const source = readSource(componentFiles[key as keyof typeof componentFiles]);
+  for (const [key, file] of Object.entries(componentFiles)) {
+    it(`${key} limits motion to transforms, opacity, and path progression`, () => {
+      const source = readSource(file);
+      const animationBodies = Array.from(
+        source.matchAll(/animate=\{([\s\S]*?)\}\s*transition=/g),
+        (match) => match[1],
+      );
 
+      for (const animation of animationBodies) {
+        assert.doesNotMatch(
+          animation,
+          /\b(?:cx|cy|r|width|height)\s*:/,
+          `${key} must not animate SVG geometry or layout dimensions`,
+        );
+      }
       assert.doesNotMatch(
         source,
-        /animate=\{\{[^}]*\b(?:cx|cy|width|height)\s*:/s,
-        `${key} must not animate SVG geometry or layout dimensions`,
+        /<animate\b[^>]*attributeName=["'](?:cx|cy|r|width|height)["']/s,
+        `${key} must not use SMIL to animate SVG geometry`,
       );
-    }
-  });
+    });
+
+    it(`${key} uses no more than two moving mechanism elements`, () => {
+      const source = readSource(file);
+      const motionElements = source.match(/<motion\.[a-z]+\b/g) ?? [];
+
+      assert.ok(
+        motionElements.length <= 2,
+        `${key} declares ${motionElements.length} motion elements; expected at most 2`,
+      );
+    });
+
+    it(`${key} keeps animation cycles between three and seven seconds`, () => {
+      const source = readSource(file);
+      const literalDurations = [
+        ...Array.from(
+          source.matchAll(/\bduration:\s*(\d+(?:\.\d+)?)/g),
+          (match) => Number(match[1]),
+        ),
+        ...Array.from(
+          source.matchAll(/\bdur=["'](\d+(?:\.\d+)?)s["']/g),
+          (match) => Number(match[1]),
+        ),
+      ];
+      const namedDurations = Array.from(
+        source.matchAll(/\bconst\s+(?:D|DUR)\s*=\s*(\d+(?:\.\d+)?)/g),
+        (match) => Number(match[1]),
+      );
+
+      assert.deepEqual(
+        literalDurations.filter((duration) => duration < 3 || duration > 7),
+        [],
+        `${key} has a literal animation duration outside 3–7 seconds`,
+      );
+      assert.deepEqual(
+        namedDurations.filter((duration) => duration < 3 || duration > 7),
+        [],
+        `${key} has a D/DUR animation constant outside 3–7 seconds`,
+      );
+    });
+  }
 
   it("maps every catalog visual and only the approved compatibility alias", () => {
     const source = readSource("components/viz/registry.ts");
