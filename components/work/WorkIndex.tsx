@@ -16,33 +16,25 @@ const evidenceSteps = [
 ] as const;
 
 function MechanismFallback({ project }: { project: WorkProject }) {
-  const accessibleLabel = evidenceSteps
-    .map(
-      ({ key, label }) => `${label}: ${project.evidence[key]}`,
-    )
-    .join(". ");
-
   return (
-    <div
-      className={styles.mechanismFallback}
-      role="img"
-      aria-label={`${project.title} mechanism. ${accessibleLabel}`}
-    >
-      <ol className={styles.mechanismTrack}>
-        {evidenceSteps.map(({ key, label }, index) => (
-          <li className={styles.mechanismStep} key={key}>
-            <span className={styles.mechanismLabel}>{label}</span>
-            <span className={styles.mechanismValue} aria-hidden="true">
-              {project.evidence[key]}
-            </span>
-            {index < evidenceSteps.length - 1 ? (
-              <span className={styles.mechanismArrow} aria-hidden="true">
-                ↓
-              </span>
-            ) : null}
-          </li>
-        ))}
-      </ol>
+    <div className={styles.mechanismFallback} aria-hidden="true">
+      <div className={styles.mechanismNode}>
+        <span className={styles.mechanismLabel}>Input</span>
+        <span className={styles.mechanismValue}>
+          {project.evidence.input}
+        </span>
+      </div>
+      <div className={styles.mechanismBridge}>
+        <span>Transform</span>
+        <span className={styles.mechanismArrow}>→</span>
+        <span>Guardrail</span>
+      </div>
+      <div className={styles.mechanismNode}>
+        <span className={styles.mechanismLabel}>Output</span>
+        <span className={styles.mechanismValue}>
+          {project.evidence.output}
+        </span>
+      </div>
     </div>
   );
 }

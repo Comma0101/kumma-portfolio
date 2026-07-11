@@ -16,6 +16,10 @@ export const legacyWorkSlugs = Object.freeze(
   Object.keys(legacyWorkRoutes) as LegacyWorkSlug[],
 );
 
+export function normalizeStaticAliasHref(href: string): string {
+  return href.endsWith("/") ? href : `${href}/`;
+}
+
 export function resolveLegacyWorkHref(
   slug: string,
 ): WorkProject["href"] | null {
