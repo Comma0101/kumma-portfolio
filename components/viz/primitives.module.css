@@ -19,6 +19,10 @@
   display: block;
 }
 
+.mobileCaption {
+  display: none;
+}
+
 .node {
   fill: var(--surface);
   stroke: var(--sand);
@@ -281,10 +285,39 @@
 
 @media (max-width: 600px) {
   .frame {
-    min-height: 200px;
+    height: auto;
+    min-height: 0;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    overflow: visible;
   }
 
   .detail {
+    min-height: 0;
+  }
+
+  .svg {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    min-height: 200px;
+    flex: 0 0 auto;
+    overflow: visible;
+  }
+
+  .detail .svg {
     min-height: 280px;
+  }
+
+  .mobileCaption {
+    display: block;
+    width: 100%;
+    margin: 0.75rem 0 0;
+    color: var(--steel);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
   }
 }

@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import type { VizProps } from "./types";
 import { useHydratedReducedMotion } from "./useHydratedReducedMotion";
+import { visualRegistry } from "./visualRegistry";
 import styles from "./primitives.module.css";
 
 const RAW_LINES = [0, 1, 2, 3, 4];
@@ -97,6 +98,9 @@ export default function AudiobookViz({ size = "detail" }: VizProps) {
           />
         )}
       </svg>
+      <p className={styles.mobileCaption} aria-hidden="true">
+        {visualRegistry["audiobook"].reducedMotionLabel}
+      </p>
     </div>
   );
 }

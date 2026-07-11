@@ -2,6 +2,7 @@
 import { motion } from "framer-motion";
 import type { VizProps } from "./types";
 import { useHydratedReducedMotion } from "./useHydratedReducedMotion";
+import { visualRegistry } from "./visualRegistry";
 import styles from "./primitives.module.css";
 
 const D = 5.6;
@@ -92,6 +93,9 @@ export default function KotaViz({ size = "detail" }: VizProps) {
           <text x="480" y="170" textAnchor="end" className={styles.label} fill="var(--sand)">high</text>
         </motion.g>
       </svg>
+      <p className={styles.mobileCaption} aria-hidden="true">
+        {visualRegistry["kota"].reducedMotionLabel}
+      </p>
     </div>
   );
 }

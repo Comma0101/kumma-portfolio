@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import type { VizProps } from "./types";
 import { useHydratedReducedMotion } from "./useHydratedReducedMotion";
+import { visualRegistry } from "./visualRegistry";
 import styles from "./primitives.module.css";
 
 const FFT_BANDS = [24, 48, 34, 72, 55, 31, 62, 42];
@@ -86,6 +87,9 @@ export default function SpectralViz({ size = "detail" }: VizProps) {
           />
         )}
       </svg>
+      <p className={styles.mobileCaption} aria-hidden="true">
+        {visualRegistry["spectral-world"].reducedMotionLabel}
+      </p>
     </div>
   );
 }

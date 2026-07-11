@@ -95,6 +95,83 @@ describe("project visual component contracts", () => {
     }
   });
 
+  it("names ARCHON's visible routed boundaries without inventing absent nodes", () => {
+    const source = readSource(componentFiles.archon);
+    const ariaLabel = source.match(/aria-label="([^"]+)"/)?.[1] ?? "";
+
+    for (const boundary of [
+      "workers",
+      "tools",
+      "memory",
+      "models",
+      "channels",
+      "safety",
+    ]) {
+      assert.match(
+        ariaLabel,
+        new RegExp(`\\b${boundary}\\b`, "i"),
+        `ARCHON aria-label must name the visible ${boundary} boundary`,
+      );
+    }
+    assert.match(ariaLabel, /coordinator/i);
+    assert.match(ariaLabel, /trace/i);
+    assert.match(ariaLabel, /recover/i);
+    assert.doesNotMatch(
+      ariaLabel,
+      /\b(?:context|router|evaluator)\b/i,
+      "ARCHON aria-label must not claim nodes that are absent from the diagram",
+    );
+  });
+
+  it("adds a registry-sourced mobile caption after every catalog SVG", () => {
+    for (const [key, file] of Object.entries(componentFiles)) {
+      const source = readSource(file);
+      const registryAccess = `visualRegistry[${JSON.stringify(key)}].reducedMotionLabel`;
+      const caption = source.indexOf(
+        `<p className={styles.mobileCaption} aria-hidden="true">`,
+      );
+
+      assert.match(
+        source,
+        /import\s*\{\s*visualRegistry\s*\}\s*from\s*["']\.\/visualRegistry["']/,
+        `${key} must import shared visual metadata`,
+      );
+      assert.ok(
+        source.includes(`{${registryAccess}}`),
+        `${key} mobile caption must use its reduced-motion label`,
+      );
+      assert.ok(caption >= 0, `${key} needs a mobile caption`);
+      assert.ok(
+        caption > source.lastIndexOf("</svg>"),
+        `${key} mobile caption must sit outside and after its scaled SVG`,
+      );
+      assert.ok(
+        source.indexOf("</p>", caption) > caption,
+        `${key} mobile caption must be a complete paragraph`,
+      );
+    }
+  });
+
+  it("keeps mobile diagrams and their explanatory captions readable", () => {
+    const source = readSource("components/viz/primitives.module.css");
+    const desktopCaption = source.match(/\.mobileCaption\s*\{([\s\S]*?)\}/)?.[1] ?? "";
+    const mobileSource = source.slice(source.indexOf("@media (max-width: 600px)"));
+
+    assert.match(desktopCaption, /display:\s*none/);
+    assert.match(
+      mobileSource,
+      /\.frame\s*\{[\s\S]*?height:\s*auto[\s\S]*?flex-direction:\s*column[\s\S]*?overflow:\s*visible[\s\S]*?\}/,
+    );
+    assert.match(
+      mobileSource,
+      /\.svg\s*\{[\s\S]*?height:\s*auto[\s\S]*?min-height:\s*[1-9]\d*px[\s\S]*?overflow:\s*visible[\s\S]*?\}/,
+    );
+    assert.match(
+      mobileSource,
+      /\.mobileCaption\s*\{[\s\S]*?display:\s*block[\s\S]*?color:\s*var\(--(?:steel|paper)\)[\s\S]*?font-size:\s*1rem[\s\S]*?line-height:\s*1\.[5-9][\s\S]*?\}/,
+    );
+  });
+
   for (const [key, file] of Object.entries(componentFiles)) {
     it(`${key} limits motion to transforms, opacity, and path progression`, () => {
       const source = readSource(file);

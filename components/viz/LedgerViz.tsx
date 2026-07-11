@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import type { VizProps } from "./types";
 import { useHydratedReducedMotion } from "./useHydratedReducedMotion";
+import { visualRegistry } from "./visualRegistry";
 import styles from "./primitives.module.css";
 
 const RAW_ROWS = ["fill, buy", "option, sell", "equity, buy", "fill, sell"];
@@ -90,6 +91,9 @@ export default function LedgerViz({ size = "detail" }: VizProps) {
           </g>
         )}
       </svg>
+      <p className={styles.mobileCaption} aria-hidden="true">
+        {visualRegistry["ledger"].reducedMotionLabel}
+      </p>
     </div>
   );
 }

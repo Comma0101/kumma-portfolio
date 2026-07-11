@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import type { VizProps } from "./types";
 import { useHydratedReducedMotion } from "./useHydratedReducedMotion";
+import { visualRegistry } from "./visualRegistry";
 import styles from "./primitives.module.css";
 
 const DEPTH_POINTS = [
@@ -105,6 +106,9 @@ export default function SplashInkViz({ size = "detail" }: VizProps) {
           </motion.g>
         )}
       </svg>
+      <p className={styles.mobileCaption} aria-hidden="true">
+        {visualRegistry["splash-ink"].reducedMotionLabel}
+      </p>
     </div>
   );
 }

@@ -2,6 +2,7 @@
 import { motion } from "framer-motion";
 import type { VizProps } from "./types";
 import { useHydratedReducedMotion } from "./useHydratedReducedMotion";
+import { visualRegistry } from "./visualRegistry";
 import styles from "./primitives.module.css";
 
 const CX = 260;
@@ -67,7 +68,7 @@ export default function ArchonViz({ size = "detail" }: VizProps) {
         viewBox="0 0 520 320"
         preserveAspectRatio="xMidYMid meet"
         role="img"
-        aria-label="Archon: a coordinator routing signals to tools, memory, context, router, evaluator, and recovery"
+        aria-label="ARCHON coordinator routes work across workers, tools, memory, models, channels, and safety with trace and recovery"
       >
         {DATA.map((n) => (
           <path key={`c-${n.label}`} d={n.d} fill="none" stroke="var(--line-strong)" strokeWidth="1" opacity="0.5" />
@@ -120,6 +121,9 @@ export default function ArchonViz({ size = "detail" }: VizProps) {
         <text x={CX} y={CY - 36} textAnchor="middle" className={styles.label} fill="var(--paper)">coordinator</text>
         <text x={CX} y={CY + 46} textAnchor="middle" className={styles.label}>route, trace, recover</text>
       </svg>
+      <p className={styles.mobileCaption} aria-hidden="true">
+        {visualRegistry["archon"].reducedMotionLabel}
+      </p>
     </div>
   );
 }
