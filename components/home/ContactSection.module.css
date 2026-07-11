@@ -68,11 +68,17 @@
   padding: 0.8rem 0;
   border-bottom: 1px solid var(--line);
   text-decoration: none;
-  transition: border-color 180ms ease;
+  transition:
+    border-color 180ms ease,
+    opacity 120ms ease;
 }
 
 .emailLink:hover {
   border-color: var(--signal);
+}
+
+.emailLink:active {
+  opacity: 0.72;
 }
 
 .emailLink:focus-visible,
@@ -117,12 +123,18 @@
   letter-spacing: 0.07em;
   text-decoration: none;
   text-transform: uppercase;
-  transition: border-color 180ms ease;
+  transition:
+    border-color 180ms ease,
+    opacity 120ms ease;
 }
 
 .socialLinks a:hover {
   border-color: var(--signal);
   color: var(--paper);
+}
+
+.socialLinks a:active {
+  opacity: 0.72;
 }
 
 .contactPanel {

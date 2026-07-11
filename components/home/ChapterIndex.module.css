@@ -184,6 +184,7 @@
   letter-spacing: 0.08em;
   text-decoration: none;
   text-transform: uppercase;
+  transition: opacity 120ms ease;
 }
 
 .link {
@@ -194,12 +195,20 @@
   color: var(--signal-strong);
 }
 
+.link:active {
+  opacity: 0.72;
+}
+
 .linkSecondary {
   color: var(--sand);
 }
 
 .linkSecondary:hover {
   color: var(--signal);
+}
+
+.linkSecondary:active {
+  opacity: 0.72;
 }
 
 .link:focus-visible,
@@ -326,7 +335,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .row {
+  .row,
+  .link,
+  .linkSecondary {
     transition: none;
   }
 

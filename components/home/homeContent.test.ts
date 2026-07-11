@@ -15,6 +15,14 @@ const readSource = (file: string) =>
 
 const isConcrete = (value: string) => value.trim().length > 0;
 
+const cssBlockFor = (css: string, selector: string) => {
+  const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const match = css.match(new RegExp(`${escaped}\\s*\\{([^}]*)\\}`));
+
+  assert.ok(match, `Expected CSS block for ${selector}`);
+  return match[1];
+};
+
 describe("homepage production AI content", () => {
   it("leads with production AI, the three boundaries, and the approved CTAs", () => {
     assert.match(heroContent.title, /production AI/i);
@@ -186,5 +194,24 @@ describe("homepage production AI source contracts", () => {
     assert.match(source, /role="status"/);
     assert.match(source, /email app is opening/i);
     assert.match(source, /write directly to\s*dev@kumma\.me/i);
+  });
+
+  it("gives featured and contact links perceptible pressed feedback", () => {
+    const contracts = [
+      ["components/home/ChapterIndex.module.css", ".link:active"],
+      ["components/home/ChapterIndex.module.css", ".linkSecondary:active"],
+      ["components/home/ContactSection.module.css", ".emailLink:active"],
+      ["components/home/ContactSection.module.css", ".socialLinks a:active"],
+    ] as const;
+
+    for (const [file, selector] of contracts) {
+      const block = cssBlockFor(readSource(file), selector);
+
+      assert.match(
+        block,
+        /opacity:\s*0?\.\d+|transform:\s*(?!none)[^;]+;/,
+        `${selector} needs opacity or transform pressed feedback`,
+      );
+    }
   });
 });
