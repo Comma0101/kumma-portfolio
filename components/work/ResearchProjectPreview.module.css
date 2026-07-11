@@ -103,6 +103,16 @@
   line-height: 1.4;
 }
 
+.visual {
+  min-width: 0;
+  min-height: clamp(26rem, 52vw, 38rem);
+  padding-bottom: clamp(5rem, 9vw, 9rem);
+}
+
+.visualFrame {
+  min-height: clamp(26rem, 52vw, 38rem);
+}
+
 .mechanism,
 .limits,
 .cta {
@@ -274,6 +284,11 @@
   .summary,
   .limits > div > p {
     font-size: 1rem;
+  }
+
+  .visual,
+  .visualFrame {
+    min-height: 22rem;
   }
 
   .flow {

@@ -61,3 +61,230 @@
   stroke-width: 1.5;
   fill: none;
 }
+
+.panel,
+.ghostPanel,
+.panelActive,
+.guide,
+.guideStrong,
+.textRule,
+.timeline,
+.signalStroke,
+.sandStroke,
+.signalPath,
+.inkContour,
+.inkWash,
+.depthGrid,
+.depthLine,
+.depthAxis,
+.splat,
+.splatActive,
+.terrain,
+.gate,
+.openMarker,
+.dashedRule {
+  vector-effect: non-scaling-stroke;
+}
+
+.panel {
+  fill: var(--surface);
+  stroke: var(--line-strong);
+  stroke-width: 1;
+}
+
+.ghostPanel {
+  fill: var(--raised);
+  stroke: var(--line);
+  stroke-width: 1;
+}
+
+.panelActive {
+  fill: var(--signal);
+  stroke: var(--signal);
+  stroke-width: 1;
+}
+
+.guide,
+.guideStrong,
+.textRule,
+.timeline,
+.signalStroke,
+.sandStroke,
+.signalPath,
+.inkContour,
+.inkWash,
+.depthGrid,
+.depthLine,
+.depthAxis,
+.terrain,
+.dashedRule {
+  fill: none;
+}
+
+.guide {
+  stroke: var(--line);
+  stroke-width: 1;
+}
+
+.guideStrong {
+  stroke: var(--line-strong);
+  stroke-width: 1;
+}
+
+.textRule {
+  stroke: var(--sand);
+  stroke-linecap: round;
+  stroke-width: 1;
+  opacity: 0.7;
+}
+
+.timeline {
+  stroke: var(--steel);
+  stroke-dasharray: 5 4;
+  stroke-width: 1;
+}
+
+.stageLabel {
+  fill: var(--faint);
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.05em;
+}
+
+.strongText {
+  fill: var(--paper);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.signalFill {
+  fill: var(--signal);
+}
+
+.sandFill {
+  fill: var(--sand);
+}
+
+.steelFill {
+  fill: var(--steel);
+}
+
+.signalStroke,
+.signalPath {
+  stroke: var(--signal);
+  stroke-linecap: round;
+  stroke-width: 1.75;
+}
+
+.sandStroke {
+  stroke: var(--sand);
+  stroke-linecap: round;
+  stroke-width: 1.5;
+}
+
+.inkContour {
+  stroke: var(--sand);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 4;
+  opacity: 0.78;
+}
+
+.inkWash {
+  stroke: var(--steel);
+  stroke-linecap: round;
+  stroke-width: 10;
+  opacity: 0.18;
+}
+
+.inkMark {
+  fill: var(--sand);
+  opacity: 0.68;
+}
+
+.inkMarkQuiet {
+  fill: var(--steel);
+  opacity: 0.48;
+}
+
+.depthGrid {
+  stroke: var(--line);
+  stroke-dasharray: 2 7;
+  stroke-width: 1;
+}
+
+.depthLine {
+  stroke: var(--line-strong);
+  stroke-dasharray: 2 4;
+  stroke-width: 1;
+  opacity: 0.72;
+}
+
+.depthAxis {
+  stroke: var(--line-strong);
+  stroke-width: 1;
+}
+
+.splat {
+  fill: var(--surface);
+  stroke: var(--sand);
+  stroke-width: 1;
+  opacity: 0.72;
+}
+
+.splatActive {
+  fill: var(--signal);
+  stroke: var(--signal);
+  stroke-width: 1;
+  opacity: 0.5;
+}
+
+.badge {
+  fill: var(--raised);
+  stroke: var(--signal);
+  stroke-width: 1;
+}
+
+.badgeText {
+  fill: var(--signal);
+  font-family: var(--font-mono);
+  font-size: 7px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.terrain {
+  stroke: var(--sand);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.5;
+}
+
+.gate {
+  fill: var(--canvas);
+  stroke: var(--sand);
+  stroke-width: 1;
+}
+
+.openMarker {
+  fill: none;
+  stroke: var(--sand);
+  stroke-width: 1.5;
+}
+
+.dashedRule {
+  stroke: var(--steel);
+  stroke-dasharray: 3 5;
+  stroke-width: 1;
+}
+
+@media (max-width: 600px) {
+  .frame {
+    min-height: 200px;
+  }
+
+  .detail {
+    min-height: 280px;
+  }
+}

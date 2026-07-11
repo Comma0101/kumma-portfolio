@@ -1,4 +1,6 @@
 import Link from "next/link";
+import SystemViz from "@/components/system/SystemViz";
+import { vizBySlug } from "@/components/viz/registry";
 import type { WorkProject } from "@/data/workProjects";
 import styles from "./ResearchProjectPreview.module.css";
 
@@ -18,6 +20,8 @@ export default function ResearchProjectPreview({
   project,
   limits,
 }: ResearchProjectPreviewProps) {
+  const Visualization = vizBySlug[project.visualKey];
+
   return (
     <div className={styles.page}>
       <div className={styles.shell}>
@@ -44,6 +48,19 @@ export default function ResearchProjectPreview({
             </ul>
           </div>
         </header>
+
+        <section
+          className={styles.visual}
+          aria-label={`${project.title} mechanism visualization`}
+        >
+          <SystemViz
+            className={styles.visualFrame}
+            label={`${project.title} / research mechanism`}
+            live={project.status === "live"}
+          >
+            <Visualization size="detail" />
+          </SystemViz>
+        </section>
 
         <section className={styles.mechanism} aria-labelledby="mechanism-title">
           <header className={styles.sectionHeader}>
