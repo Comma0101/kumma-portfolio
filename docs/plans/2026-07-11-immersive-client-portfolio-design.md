@@ -255,12 +255,15 @@ because it undermines reading, accessibility, and conversion.
 - Mark the eight spatial waypoints with dedicated `data-immersive-anchor`
   identifiers: hero, proof, each of the four featured project rows,
   research/labs, and contact.
-- A `ScrollStageProvider` observes those spatial anchors and exposes active stage
-  and normalized progress. The positioning bridge and the three
+- A lightweight `useImmersiveScroll` coordinator observes those spatial anchors
+  and writes active stage and normalized progress into the scene director's
+  stable ref without triggering React renders. The positioning bridge and the three
   research/capability sections inherit the interpolated or settled world around
   them rather than inventing extra camera environments.
-- GSAP ScrollTrigger maps native scroll progress to camera-rig interpolation and
-  group opacity/scale. Lenis remains an enhancement, never a requirement.
+- The coordinator reads the existing Lenis event when available and a passive
+  native-scroll fallback otherwise. GSAP continues to choreograph foreground
+  reveals and route motion; the camera does not add a second ScrollTrigger-based
+  scroll controller.
 - Scene groups are created once, reuse geometries/materials, and avoid allocations
   inside the frame loop.
 - Project SVG visualizations remain the accessible foreground explanation and
