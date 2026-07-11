@@ -8,6 +8,7 @@ export default function ProofConsole() {
       className={styles.section}
       aria-labelledby="proof-console-title"
       data-immersive-stage="proof"
+      data-immersive-anchor="proof"
     >
       <div className={styles.inner}>
         <div className={styles.head}>

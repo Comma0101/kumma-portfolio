@@ -1,7 +1,11 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import * as THREE from "three";
+import {
+  useImmersiveScroll,
+  type ImmersiveScrollSnapshot,
+} from "./immersive/useImmersiveScroll";
 import { getThreeSceneTuning } from "./threeSceneTuning";
 
 interface LenisInstance {
@@ -89,6 +93,15 @@ const FRAG = /* glsl */ `
 
 export default function ThreeScene() {
   const mountRef = useRef<HTMLDivElement>(null);
+  const immersiveScrollSnapshotRef =
+    useRef<ImmersiveScrollSnapshot | null>(null);
+  const storeImmersiveSnapshot = useCallback(
+    (snapshot: ImmersiveScrollSnapshot) => {
+      immersiveScrollSnapshotRef.current = snapshot;
+    },
+    [],
+  );
+  useImmersiveScroll(storeImmersiveSnapshot);
 
   useEffect(() => {
     const mount = mountRef.current;

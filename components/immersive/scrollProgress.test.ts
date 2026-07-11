@@ -1,0 +1,359 @@
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import path from "node:path";
+import { describe, it } from "node:test";
+import { immersiveStageIds } from "./immersiveStages";
+import {
+  JOURNEY_ENTRY_VIEWPORT_RATIO,
+  JOURNEY_SETTLE_VIEWPORT_RATIO,
+  resolveJourneyProgress,
+  resolveJourneyState,
+  sectionProgress,
+  transitionWindowForAnchor,
+  validateImmersiveAnchorOrder,
+  type ImmersiveAnchorRect,
+} from "./scrollProgress";
+
+const VIEWPORT_HEIGHT = 800;
+
+function makeAnchors(
+  tops: readonly number[] = immersiveStageIds.map((_, index) => index * 1000),
+  heights: readonly number[] = immersiveStageIds.map(() => 600),
+): readonly ImmersiveAnchorRect[] {
+  return immersiveStageIds.map((id, index) => ({
+    id,
+    top: tops[index],
+    height: heights[index],
+  }));
+}
+
+function readSource(relativePath: string): string {
+  return fs.readFileSync(path.join(process.cwd(), relativePath), "utf8");
+}
+
+describe("sectionProgress", () => {
+  it("preserves the documented section boundary examples", () => {
+    const rect = { top: 100, height: 600 };
+
+    assert.equal(sectionProgress(rect, 0, 800), 0);
+    assert.equal(sectionProgress(rect, 1000, 800), 1);
+  });
+
+  it("normalizes zero, negative, non-finite, and overflowing geometry", () => {
+    const cases = [
+      sectionProgress({ top: -10, height: -5 }, -20, 0),
+      sectionProgress({ top: Number.NaN, height: Number.NaN }, Number.NaN, Number.NaN),
+      sectionProgress({ top: Number.POSITIVE_INFINITY, height: Number.NEGATIVE_INFINITY }, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY),
+      sectionProgress({ top: Number.MAX_VALUE, height: Number.MAX_VALUE }, Number.MAX_VALUE, Number.MAX_VALUE),
+    ];
+
+    for (const progress of cases) {
+      assert.ok(Number.isFinite(progress));
+      assert.ok(progress >= 0 && progress <= 1);
+    }
+  });
+});
+
+describe("immersive anchor validation", () => {
+  it("accepts only the exact ordered spatial-stage contract", () => {
+    const anchors = makeAnchors();
+    assert.equal(validateImmersiveAnchorOrder(anchors), true);
+    assert.deepEqual(
+      anchors.map((anchor) => anchor.id),
+      [
+        "hero",
+        "proof",
+        "kota",
+        "audiobook",
+        "archon",
+        "splash-ink",
+        "research-labs",
+        "contact",
+      ],
+    );
+
+    assert.equal(validateImmersiveAnchorOrder(anchors.slice(0, -1)), false);
+    assert.equal(
+      validateImmersiveAnchorOrder(
+        anchors.map((anchor, index) =>
+          index === 2 ? { ...anchor, id: "proof" } : anchor,
+        ),
+      ),
+      false,
+    );
+    assert.equal(
+      validateImmersiveAnchorOrder([
+        anchors[0],
+        anchors[2],
+        anchors[1],
+        ...anchors.slice(3),
+      ]),
+      false,
+    );
+    assert.equal(
+      validateImmersiveAnchorOrder([
+        ...anchors.slice(0, 7),
+        { ...anchors[7], id: "unknown" },
+      ]),
+      false,
+    );
+  });
+
+  it("fails safely for invalid runtime anchors", () => {
+    const invalid = makeAnchors().slice(0, -1);
+    const resolution = resolveJourneyState(invalid, 1200, VIEWPORT_HEIGHT);
+
+    assert.equal(resolution.valid, false);
+    assert.equal(resolution.inJourney, false);
+    assert.equal(resolution.journeyProgress, 0);
+    assert.equal(resolveJourneyProgress(invalid, 1200, VIEWPORT_HEIGHT), 0);
+  });
+});
+
+describe("journey geometry", () => {
+  it("starts at zero and ends at one", () => {
+    const anchors = makeAnchors();
+
+    assert.equal(resolveJourneyProgress(anchors, 0, VIEWPORT_HEIGHT), 0);
+    assert.equal(resolveJourneyProgress(anchors, 7200, VIEWPORT_HEIGHT), 1);
+  });
+
+  it("publishes an explicit lower-entry and stable-reading-line policy", () => {
+    assert.ok(JOURNEY_ENTRY_VIEWPORT_RATIO > JOURNEY_SETTLE_VIEWPORT_RATIO);
+    assert.ok(JOURNEY_ENTRY_VIEWPORT_RATIO > 0.5);
+    assert.ok(JOURNEY_ENTRY_VIEWPORT_RATIO < 1);
+    assert.ok(JOURNEY_SETTLE_VIEWPORT_RATIO > 0);
+    assert.ok(JOURNEY_SETTLE_VIEWPORT_RATIO < 0.5);
+
+    const window = transitionWindowForAnchor(
+      { top: 1000, height: 600 },
+      VIEWPORT_HEIGHT,
+    );
+    assert.equal(
+      window.start,
+      1000 - VIEWPORT_HEIGHT * JOURNEY_ENTRY_VIEWPORT_RATIO,
+    );
+    assert.equal(
+      window.end,
+      1000 - VIEWPORT_HEIGHT * JOURNEY_SETTLE_VIEWPORT_RATIO,
+    );
+  });
+
+  it("holds, transitions, and settles around the next anchor", () => {
+    const anchors = makeAnchors();
+    const proofWindow = transitionWindowForAnchor(
+      anchors[1],
+      VIEWPORT_HEIGHT,
+    );
+    const midpoint = (proofWindow.start + proofWindow.end) / 2;
+
+    assert.equal(
+      resolveJourneyProgress(anchors, proofWindow.start - 1, VIEWPORT_HEIGHT),
+      0,
+    );
+    assert.equal(
+      resolveJourneyProgress(anchors, proofWindow.start, VIEWPORT_HEIGHT),
+      0,
+    );
+    assert.equal(
+      resolveJourneyProgress(anchors, midpoint, VIEWPORT_HEIGHT),
+      0.5 / (anchors.length - 1),
+    );
+    assert.equal(
+      resolveJourneyProgress(anchors, proofWindow.end, VIEWPORT_HEIGHT),
+      1 / (anchors.length - 1),
+    );
+
+    const kotaWindow = transitionWindowForAnchor(
+      anchors[2],
+      VIEWPORT_HEIGHT,
+    );
+    const holdY = (proofWindow.end + kotaWindow.start) / 2;
+    const hold = resolveJourneyState(anchors, holdY, VIEWPORT_HEIGHT);
+    assert.equal(hold.phase, "hold");
+    assert.equal(hold.activeStageId, "proof");
+    assert.equal(hold.journeyProgress, 1 / (anchors.length - 1));
+  });
+
+  it("lands exactly on every stage boundary for spaced anchors", () => {
+    const anchors = makeAnchors();
+
+    anchors.slice(1).forEach((anchor, index) => {
+      const window = transitionWindowForAnchor(anchor, VIEWPORT_HEIGHT);
+      assert.equal(
+        resolveJourneyProgress(anchors, window.end, VIEWPORT_HEIGHT),
+        (index + 1) / (anchors.length - 1),
+      );
+    });
+  });
+
+  it("supports uneven spacing and zero-height anchors", () => {
+    const anchors = makeAnchors(
+      [0, 900, 2700, 3100, 5200, 6100, 8200, 11800],
+      [0, 1, 0, 900, 20, 0, 1400, 0],
+    );
+    const samples = [0, 400, 1000, 2500, 3000, 5000, 8000, 12000].map(
+      (scrollY) => resolveJourneyProgress(anchors, scrollY, VIEWPORT_HEIGHT),
+    );
+
+    assert.equal(samples[0], 0);
+    assert.equal(samples.at(-1), 1);
+    samples.forEach((sample) => assert.ok(Number.isFinite(sample)));
+  });
+
+  it("handles overlapping and equal anchor positions without division by zero", () => {
+    const anchors = makeAnchors([0, 1000, 1000, 1000, 1200, 1200, 1500, 1500]);
+    const samples = Array.from({ length: 2201 }, (_, scrollY) =>
+      resolveJourneyProgress(anchors, scrollY, VIEWPORT_HEIGHT),
+    );
+
+    samples.forEach((sample) => {
+      assert.ok(Number.isFinite(sample));
+      assert.ok(sample >= 0 && sample <= 1);
+    });
+    for (let index = 1; index < samples.length; index += 1) {
+      assert.ok(samples[index] >= samples[index - 1]);
+    }
+  });
+
+  it("stays monotonic across malformed geometry", () => {
+    const anchors = makeAnchors([
+      -100,
+      Number.NaN,
+      400,
+      200,
+      Number.POSITIVE_INFINITY,
+      800,
+      Number.MAX_VALUE,
+      1200,
+    ]);
+    const samples = Array.from({ length: 1801 }, (_, scrollY) =>
+      resolveJourneyProgress(anchors, scrollY, 0),
+    );
+
+    for (let index = 1; index < samples.length; index += 1) {
+      assert.ok(Number.isFinite(samples[index]));
+      assert.ok(samples[index] >= samples[index - 1]);
+    }
+  });
+
+  it("does not mutate caller-owned anchor geometry", () => {
+    const anchors = makeAnchors().map((anchor) => Object.freeze({ ...anchor }));
+    const before = JSON.stringify(anchors);
+
+    resolveJourneyState(Object.freeze(anchors), 2400, VIEWPORT_HEIGHT);
+
+    assert.equal(JSON.stringify(anchors), before);
+  });
+});
+
+describe("homepage immersive scroll source contract", () => {
+  it("adds the eight spatial anchors without changing semantic stages", () => {
+    const roots = [
+      ["components/home/HeroSection.tsx", "hero", "hero"],
+      ["components/home/ProofConsole.tsx", "proof", "proof"],
+      ["components/home/CapabilitiesSection.tsx", "capabilities", "research-labs"],
+      ["components/home/ContactSection.tsx", "contact", "contact"],
+    ] as const;
+
+    for (const [file, semanticStage, spatialAnchor] of roots) {
+      const source = readSource(file);
+      const root = source.match(/<section\b[^>]*>/)?.[0] ?? "";
+      assert.match(root, new RegExp(`data-immersive-stage=["']${semanticStage}["']`));
+      assert.match(root, new RegExp(`data-immersive-anchor=["']${spatialAnchor}["']`));
+    }
+
+    const chapters = readSource("components/home/ChapterIndex.tsx");
+    assert.match(
+      chapters.match(/<section\b[^>]*>/)?.[0] ?? "",
+      /data-immersive-stage=["']featured-work["']/,
+    );
+    assert.match(chapters, /<article\b[^>]*data-immersive-anchor=\{project\.slug\}[^>]*>/s);
+
+    const catalog = readSource("data/workProjects.ts");
+    const featuredSlugs = ["kota", "audiobook", "archon", "splash-ink"];
+    let cursor = -1;
+    for (const slug of featuredSlugs) {
+      const next = catalog.indexOf(`slug: "${slug}"`);
+      assert.ok(next > cursor, `${slug} must keep its spatial order`);
+      cursor = next;
+    }
+
+    for (const file of [
+      "components/home/PositioningBand.tsx",
+      "components/home/ResearchProofSection.tsx",
+      "components/home/LabsSection.tsx",
+    ]) {
+      assert.doesNotMatch(readSource(file), /data-immersive-anchor/);
+    }
+  });
+
+  it("keeps the pure geometry module framework and DOM independent", () => {
+    const source = readSource("components/immersive/scrollProgress.ts");
+
+    assert.doesNotMatch(source, /\b(?:window|document|HTMLElement|Element)\b/);
+    assert.doesNotMatch(source, /\b(?:react|gsap|three)\b/i);
+  });
+
+  it("batches reads and samples in RAF without React state", () => {
+    const source = readSource("components/immersive/useImmersiveScroll.ts");
+
+    assert.match(source, /requestAnimationFrame/);
+    assert.match(source, /getBoundingClientRect/);
+    assert.match(source, /sampleImmersiveJourney/);
+    assert.match(source, /getImmersiveProfile/);
+    assert.match(source, /querySelectorAll[\s\S]*data-immersive-anchor/);
+    assert.doesNotMatch(source, /\buseState\b|\buseReducer\b|createContext/);
+
+    const frame = source.slice(
+      source.indexOf("const runFrame"),
+      source.indexOf("const scheduleFrame"),
+    );
+    assert.match(frame, /getBoundingClientRect/);
+    assert.match(frame, /onSampleRef\.current/);
+
+    const nativeHandler = source.slice(
+      source.indexOf("const handleNativeScroll"),
+      source.indexOf("const handleResize"),
+    );
+    const resizeHandler = source.slice(
+      source.indexOf("const handleResize"),
+      source.indexOf("const handleMotionChange"),
+    );
+    assert.doesNotMatch(nativeHandler, /window\.scrollY/);
+    assert.doesNotMatch(resizeHandler, /window\.scrollY/);
+  });
+
+  it("uses existing Lenis or passive native scroll and cleans up every lifecycle handle", () => {
+    const source = readSource("components/immersive/useImmersiveScroll.ts");
+
+    assert.doesNotMatch(source, /new\s+Lenis/);
+    assert.match(source, /if\s*\(lenis\)[\s\S]*\.on\(["']scroll["']/);
+    assert.match(source, /else[\s\S]*addEventListener\(["']scroll["'][\s\S]*passive:\s*true/);
+    assert.match(source, /if\s*\(lenis\)[\s\S]*\.off\(["']scroll["']/);
+    assert.match(source, /removeEventListener\(["']scroll["']/);
+    assert.match(source, /ResizeObserver/);
+    assert.match(source, /\.disconnect\(\)/);
+    assert.match(source, /cancelAnimationFrame/);
+    assert.match(source, /addListener|addEventListener\(["']change["']/);
+    assert.match(source, /removeListener|removeEventListener\(["']change["']/);
+  });
+
+  it("contains no scroll-jacking behavior", () => {
+    const source = readSource("components/immersive/useImmersiveScroll.ts");
+
+    assert.doesNotMatch(
+      source,
+      /scrollTo|scrollIntoView|preventDefault|\.focus\(|wheel|touchmove|scrollSnap|style\s*\./,
+    );
+  });
+
+  it("stores one hook subscription in a stable ThreeScene ref", () => {
+    const source = readSource("components/ThreeScene.tsx");
+
+    assert.equal(source.match(/useImmersiveScroll\(/g)?.length, 1);
+    assert.match(source, /useRef<ImmersiveScrollSnapshot\s*\|\s*null>/);
+    assert.match(source, /\.current\s*=\s*snapshot/);
+    assert.doesNotMatch(source, /useState<ImmersiveScrollSnapshot/);
+  });
+});

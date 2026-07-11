@@ -100,6 +100,7 @@ export default function ChapterIndex() {
             <article
               key={project.slug}
               data-reveal
+              data-immersive-anchor={project.slug}
               className={`${styles.row} ${styles[project.layout]}`}
             >
               <div className={styles.copy}>

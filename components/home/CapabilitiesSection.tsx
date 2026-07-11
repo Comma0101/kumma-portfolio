@@ -8,6 +8,7 @@ export default function CapabilitiesSection() {
     <section
       className={styles.section}
       data-immersive-stage="capabilities"
+      data-immersive-anchor="research-labs"
     >
       <SectionHeader
         eyebrow="Ways to work together"

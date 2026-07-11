@@ -90,6 +90,7 @@ export default function ContactSection() {
       id="contact"
       ref={containerRef}
       data-immersive-stage="contact"
+      data-immersive-anchor="contact"
       className={`${styles.contactSection} ${
         isEnhanced ? styles.contactEnhanced : ""
       } ${

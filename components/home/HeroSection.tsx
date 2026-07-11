@@ -34,6 +34,7 @@ export default function HeroSection() {
       id="home"
       className={styles.hero}
       data-immersive-stage="hero"
+      data-immersive-anchor="hero"
     >
       <div className={styles.inner}>
         <p data-hero-rise className={styles.eyebrow}>
