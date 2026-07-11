@@ -1,86 +1,31 @@
+import { featuredWork } from "../../data/workProjects";
+
 export interface Chapter {
-  no: string;
-  title: string;
-  href: string;
-  blurb: string;
-  tags: string[];
-  layout: "feature" | "flip" | "band" | "strip";
-  secondary?: { label: string; href: string };
-  images?: string[];
-  evidence?: {
-    input: string;
-    transform: string;
-    output: string;
-    guardrail: string;
+  readonly no: string;
+  readonly title: string;
+  readonly href: string;
+  readonly blurb: string;
+  readonly tags: readonly string[];
+  readonly layout: "feature" | "flip" | "band" | "strip";
+  readonly secondary?: { readonly label: string; readonly href: string };
+  readonly images?: readonly string[];
+  readonly evidence?: {
+    readonly input: string;
+    readonly transform: string;
+    readonly output: string;
+    readonly guardrail: string;
   };
-  artifact?: string;
+  readonly artifact?: string;
 }
 
-export const chapters: Chapter[] = [
-  {
-    no: "01",
-    title: "KOTA",
-    href: "/work/kota",
-    layout: "feature",
-    blurb:
-      "Turns restaurant phone calls into structured, actionable orders without requiring the restaurant to replace or deeply integrate its POS.",
-    tags: ["real-time voice", "LLM orchestration", "menu grounding"],
-    secondary: { label: "Hear the demo →", href: "/call" },
-    evidence: {
-      input: "messy phone speech",
-      transform: "streaming STT + menu grounding",
-      output: "kitchen-ready order",
-      guardrail: "clarify before commit",
-    },
-    artifact: "live voice/order flow",
-  },
-  {
-    no: "02",
-    title: "Audiobook AI",
-    href: "/work/audiobook",
-    layout: "flip",
-    blurb:
-      "Turns any document — a PDF, an EPUB, a web page — into an audiobook with the open-source Kokoro model, behind a hardened job queue. The text-to-speech side of the same voice craft as KOTA. Live at listen.kummalabs.com.",
-    tags: ["text-to-speech", "Kokoro", "production pipeline"],
-    evidence: {
-      input: "messy PDF, EPUB, or web page",
-      transform: "normalize, chunk, Kokoro TTS, assemble",
-      output: "a continuous audiobook",
-      guardrail: "queue limits, stale-job recovery",
-    },
-    artifact: "live TTS product",
-  },
-  {
-    no: "03",
-    title: "ARCHON",
-    href: "/work/archon",
-    layout: "band",
-    blurb:
-      "Unifies multiple AI models and coding agents into one orchestration layer for real development workflows.",
-    tags: ["orchestration", "coding workers", "active R&D"],
-    evidence: {
-      input: "multi-step dev task",
-      transform: "models + tools + workers",
-      output: "inspectable agent session",
-      guardrail: "trace, policy, recovery",
-    },
-    artifact: "open-source control plane",
-  },
-  {
-    no: "04",
-    title: "Latency report",
-    href: "/latency",
-    layout: "band",
-    blurb:
-      "A monthly measurement of turn latency, barge-in response, and call setup across the major hosted voice stacks. Fixed methodology, raw CSV with every report. First report in progress.",
-    tags: ["latency", "methodology", "monthly"],
-    secondary: { label: "Stress suite →", href: "/benchmark" },
-    evidence: {
-      input: "scripted calls across hosted stacks",
-      transform: "identical prompts, fixed methodology",
-      output: "p50 / p95 turn latency, raw CSV",
-      guardrail: "no unmeasured numbers",
-    },
-    artifact: "monthly public report",
-  },
-];
+export const chapters: readonly Chapter[] = featuredWork.map((project) => ({
+  no: project.no,
+  title: project.title,
+  href: project.href,
+  blurb: project.summary,
+  tags: project.tags,
+  layout: project.layout,
+  evidence: project.evidence,
+  artifact: project.artifact,
+  ...(project.primaryAction ? { secondary: project.primaryAction } : {}),
+}));

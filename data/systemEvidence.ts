@@ -37,7 +37,7 @@ export const systemEvidence: SystemEvidence[] = [
     output: "inspectable agent work session",
     guardrail: "trace, policy, recovery",
     kind: "open-source",
-    href: "/projects/archon",
+    href: "/work/archon",
   },
   {
     slug: "benchmark",
