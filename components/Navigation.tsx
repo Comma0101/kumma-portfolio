@@ -123,7 +123,7 @@ const Navigation = () => {
 
     const background = Array.from(
       document.querySelectorAll<HTMLElement>(
-        "#main-content, footer, [data-agent-awareness]",
+        "#main-content, footer, [data-agent-awareness], .skip-link, [data-navigation-background]",
       ),
     ).map((element) => ({
       element,
@@ -313,6 +313,7 @@ const Navigation = () => {
       <div className={styles.navContainer}>
         <a
           ref={logoRef}
+          data-navigation-background
           href="#home"
           className={styles.logoWrapper}
           onClick={scrollToTop}
@@ -322,7 +323,7 @@ const Navigation = () => {
           <span className={styles.logoMeta}>Independent systems builder</span>
         </a>
 
-        <div className={styles.navLinks}>
+        <div className={styles.navLinks} data-navigation-background>
           {navLinks.map((link) => {
             const isActive = link.href.startsWith("/")
               ? isRouteLinkActive(link.href)

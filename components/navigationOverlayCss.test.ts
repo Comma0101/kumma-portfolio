@@ -84,6 +84,21 @@ describe("mobile navigation overlay CSS", () => {
     );
   });
 
+  it("isolates the skip link and navigation chrome behind the dialog", () => {
+    const layout = readCss("app/layout.tsx");
+    const navigation = readCss("components/Navigation.tsx");
+
+    assert.match(layout, /className="skip-link"/);
+    assert.match(
+      navigation,
+      /#main-content, footer, \[data-agent-awareness\], \.skip-link, \[data-navigation-background\]/,
+    );
+    assert.equal(
+      navigation.match(/\sdata-navigation-background(?=\s|>)/g)?.length,
+      2,
+    );
+  });
+
   it("marks the rendered agent-awareness UI for isolation", () => {
     const source = readCss("components/AgentAwareness.tsx");
 
