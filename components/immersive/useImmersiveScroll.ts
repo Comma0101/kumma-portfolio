@@ -62,12 +62,13 @@ export function useImmersiveScroll(onSample: ImmersiveScrollListener): void {
       typeof window.matchMedia === "function"
         ? window.matchMedia("(prefers-reduced-motion: reduce)")
         : null;
+    const lenis = (window as ImmersiveWindow).lenis;
 
     const runFrame = () => {
       animationFrame = 0;
 
       try {
-        const scrollY = pendingScrollY ?? window.scrollY;
+        const scrollY = pendingScrollY ?? lenis?.scroll ?? window.scrollY;
         pendingScrollY = null;
 
         if (rectsDirty) {
@@ -91,6 +92,9 @@ export function useImmersiveScroll(onSample: ImmersiveScrollListener): void {
 
           if (resizeObserver && !anchorsObserved) {
             anchorElements.forEach((element) => resizeObserver?.observe(element));
+            const contentRoot =
+              document.getElementById("main-content") ?? document.body;
+            resizeObserver.observe(contentRoot);
             anchorsObserved = true;
           }
         }
@@ -156,7 +160,6 @@ export function useImmersiveScroll(onSample: ImmersiveScrollListener): void {
       }
     }
 
-    const lenis = (window as ImmersiveWindow).lenis;
     if (lenis) {
       lenis.on("scroll", handleLenisScroll);
     } else {

@@ -295,21 +295,23 @@ describe("homepage terrain and reduced motion", () => {
     );
   });
 
-  it("tracks terrain visibility with native scroll when Lenis is absent", () => {
-    const source = readCss("components/ThreeScene.tsx");
+  it("lets the immersive hook own the terrain scroll fallback", () => {
+    const scene = readCss("components/ThreeScene.tsx");
+    const hook = readCss("components/immersive/useImmersiveScroll.ts");
 
     assert.match(
-      source,
-      /const handleNativeScroll\s*=\s*\(\)\s*=>\s*handleScroll\(\{ scroll: window\.scrollY \}\)/,
+      hook,
+      /const handleNativeScroll\s*=\s*\(\)\s*=>\s*\{[\s\S]*scheduleFrame\(\)/,
     );
     assert.match(
-      source,
-      /if\s*\(lenis\)[\s\S]*lenis\.on\(["']scroll["'], handleScroll\)[\s\S]*else[\s\S]*window\.addEventListener\(["']scroll["'], handleNativeScroll, \{ passive: true \}\)/,
+      hook,
+      /if\s*\(lenis\)[\s\S]*lenis\.on\(["']scroll["'], handleLenisScroll\)[\s\S]*else[\s\S]*window\.addEventListener\(["']scroll["'], handleNativeScroll, \{ passive: true \}\)/,
     );
     assert.match(
-      source,
-      /if\s*\(lenis\)[\s\S]*lenis\.off\(["']scroll["'], handleScroll\)[\s\S]*else[\s\S]*window\.removeEventListener\(["']scroll["'], handleNativeScroll\)/,
+      hook,
+      /if\s*\(lenis\)[\s\S]*lenis\.off\(["']scroll["'], handleLenisScroll\)[\s\S]*else[\s\S]*window\.removeEventListener\(["']scroll["'], handleNativeScroll\)/,
     );
+    assert.doesNotMatch(scene, /addEventListener\(["']scroll["']|\.on\(["']scroll["']/);
   });
 
   it("uses the motion-aware behavior for both native anchor fallbacks", () => {

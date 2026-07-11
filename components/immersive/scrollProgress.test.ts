@@ -339,6 +339,34 @@ describe("homepage immersive scroll source contract", () => {
     assert.match(source, /removeListener|removeEventListener\(["']change["']/);
   });
 
+  it("invalidates cached anchors when the stable content root changes size", () => {
+    const source = readSource("components/immersive/useImmersiveScroll.ts");
+
+    assert.match(
+      source,
+      /document\.getElementById\(["']main-content["']\)\s*\?\?\s*document\.body/,
+    );
+    assert.match(source, /resizeObserver\.observe\(contentRoot\)/);
+    assert.match(
+      source,
+      /new ResizeObserver\(\(\)\s*=>\s*\{\s*rectsDirty\s*=\s*true;\s*scheduleFrame\(\);/,
+    );
+    assert.match(source, /resizeObserver\?\.disconnect\(\)/);
+  });
+
+  it("uses live Lenis coordinates for non-scroll invalidations", () => {
+    const source = readSource("components/immersive/useImmersiveScroll.ts");
+    const frame = source.slice(
+      source.indexOf("const runFrame"),
+      source.indexOf("const scheduleFrame"),
+    );
+
+    assert.match(
+      frame,
+      /pendingScrollY\s*\?\?\s*lenis\?\.scroll\s*\?\?\s*window\.scrollY/,
+    );
+  });
+
   it("contains no scroll-jacking behavior", () => {
     const source = readSource("components/immersive/useImmersiveScroll.ts");
 
@@ -355,5 +383,45 @@ describe("homepage immersive scroll source contract", () => {
     assert.match(source, /useRef<ImmersiveScrollSnapshot\s*\|\s*null>/);
     assert.match(source, /\.current\s*=\s*snapshot/);
     assert.doesNotMatch(source, /useState<ImmersiveScrollSnapshot/);
+  });
+
+  it("makes the hook the scene's sole scroll subscription", () => {
+    const source = readSource("components/ThreeScene.tsx");
+
+    assert.equal(source.match(/useImmersiveScroll\(/g)?.length, 1);
+    assert.doesNotMatch(source, /LenisInstance|handleScroll|handleNativeScroll/);
+    assert.doesNotMatch(
+      source,
+      /\.on\(["']scroll["']|addEventListener\(["']scroll["']/,
+    );
+    assert.doesNotMatch(source, /style\.opacity|const opacity|sceneVisible/);
+  });
+
+  it("pauses and wakes the renderer from immutable scroll snapshots", () => {
+    const source = readSource("components/ThreeScene.tsx");
+
+    assert.match(source, /sceneWakeRef\s*=\s*useRef<\(\(\)\s*=>\s*void\)\s*\|\s*null>/);
+    assert.match(
+      source,
+      /immersiveScrollSnapshotRef\.current\s*=\s*snapshot;[\s\S]*sceneWakeRef\.current\?\.\(\)/,
+    );
+    assert.match(
+      source,
+      /immersiveScrollSnapshotRef\.current\?\.inJourney\s*\?\?\s*true/,
+    );
+    assert.match(
+      source,
+      /const isReducedMotion[\s\S]*immersiveScrollSnapshotRef\.current\?\.profile/,
+    );
+    assert.match(source, /sceneWakeRef\.current\s*=\s*wakeScene/);
+    assert.match(
+      source,
+      /const wakeScene[\s\S]*!isSceneInJourney\(\)[\s\S]*stopLoop\(\)[\s\S]*isReducedMotion\(\)[\s\S]*renderFrame\(\)[\s\S]*startLoop\(\)/,
+    );
+    assert.match(
+      source,
+      /if\s*\(isReducedMotion\(\)\)\s*\{\s*stopLoop\(\);\s*renderFrame\(\);/,
+    );
+    assert.match(source, /sceneWakeRef\.current\s*=\s*null/);
   });
 });

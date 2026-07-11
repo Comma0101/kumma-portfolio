@@ -8,12 +8,6 @@ import {
 } from "./immersive/useImmersiveScroll";
 import { getThreeSceneTuning } from "./threeSceneTuning";
 
-interface LenisInstance {
-  scroll: number;
-  on: (event: "scroll", callback: (data: { scroll: number }) => void) => void;
-  off: (event: "scroll", callback: (data: { scroll: number }) => void) => void;
-}
-
 const SNOISE = /* glsl */ `
   vec3 mod289(vec3 x){return x - floor(x*(1.0/289.0))*289.0;}
   vec2 mod289(vec2 x){return x - floor(x*(1.0/289.0))*289.0;}
@@ -95,9 +89,11 @@ export default function ThreeScene() {
   const mountRef = useRef<HTMLDivElement>(null);
   const immersiveScrollSnapshotRef =
     useRef<ImmersiveScrollSnapshot | null>(null);
+  const sceneWakeRef = useRef<(() => void) | null>(null);
   const storeImmersiveSnapshot = useCallback(
     (snapshot: ImmersiveScrollSnapshot) => {
       immersiveScrollSnapshotRef.current = snapshot;
+      sceneWakeRef.current?.();
     },
     [],
   );
@@ -182,7 +178,12 @@ export default function ThreeScene() {
 
     const start = performance.now();
     let animationFrame = 0;
-    let sceneVisible = true;
+    const isSceneInJourney = () =>
+      immersiveScrollSnapshotRef.current?.inJourney ?? true;
+    const isReducedMotion = () => {
+      const profile = immersiveScrollSnapshotRef.current?.profile;
+      return profile ? profile === "reduced" : reducedMotion;
+    };
 
     const renderFrame = () => {
       uniforms.uTime.value = (performance.now() - start) / 1000;
@@ -203,44 +204,37 @@ export default function ThreeScene() {
 
     const loop = () => {
       animationFrame = 0;
-      if (document.hidden || !sceneVisible) return;
+      if (document.hidden || !isSceneInJourney() || isReducedMotion()) return;
       renderFrame();
       animationFrame = window.requestAnimationFrame(loop);
     };
 
     const startLoop = () => {
-      if (reducedMotion || animationFrame || document.hidden || !sceneVisible) {
+      if (
+        isReducedMotion() ||
+        animationFrame ||
+        document.hidden ||
+        !isSceneInJourney()
+      ) {
         return;
       }
       animationFrame = window.requestAnimationFrame(loop);
     };
 
-    const lenis = (window as Window & { lenis?: LenisInstance }).lenis;
-    const handleScroll = ({ scroll }: { scroll: number }) => {
-      const progress = Math.min(1, Math.max(0, scroll / window.innerHeight));
-      const opacity = 1 - progress;
-      const nextSceneVisible = opacity > 0.02;
-      renderer.domElement.style.opacity = String(opacity);
-      if (sceneVisible === nextSceneVisible) return;
-
-      sceneVisible = nextSceneVisible;
-      if (sceneVisible) {
-        if (reducedMotion) {
-          renderFrame();
-        } else {
-          startLoop();
-        }
-      } else {
+    const wakeScene = () => {
+      if (!isSceneInJourney() || document.hidden) {
         stopLoop();
+        return;
+      }
+
+      if (isReducedMotion()) {
+        stopLoop();
+        renderFrame();
+      } else {
+        startLoop();
       }
     };
-    handleScroll({ scroll: lenis?.scroll ?? window.scrollY });
-    const handleNativeScroll = () => handleScroll({ scroll: window.scrollY });
-    if (lenis) {
-      lenis.on("scroll", handleScroll);
-    } else {
-      window.addEventListener("scroll", handleNativeScroll, { passive: true });
-    }
+    sceneWakeRef.current = wakeScene;
     renderFrame();
     startLoop();
 
@@ -257,19 +251,15 @@ export default function ThreeScene() {
       });
       renderer.setPixelRatio(resizeTuning.pixelRatio);
       renderer.setSize(window.innerWidth, window.innerHeight);
-      if (sceneVisible) renderFrame();
+      if (!document.hidden && isSceneInJourney()) renderFrame();
     };
     window.addEventListener("resize", handleResize);
 
     const handleVisibilityChange = () => {
       if (document.hidden) {
         stopLoop();
-      } else if (sceneVisible) {
-        if (reducedMotion) {
-          renderFrame();
-        } else {
-          startLoop();
-        }
+      } else {
+        wakeScene();
       }
     };
     document.addEventListener("visibilitychange", handleVisibilityChange);
@@ -278,11 +268,7 @@ export default function ThreeScene() {
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("pointermove", onPointer);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-      if (lenis) {
-        lenis.off("scroll", handleScroll);
-      } else {
-        window.removeEventListener("scroll", handleNativeScroll);
-      }
+      sceneWakeRef.current = null;
       stopLoop();
       geometry.dispose();
       material.dispose();
