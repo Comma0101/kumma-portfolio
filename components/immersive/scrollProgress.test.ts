@@ -416,12 +416,105 @@ describe("homepage immersive scroll source contract", () => {
     assert.match(source, /sceneWakeRef\.current\s*=\s*wakeScene/);
     assert.match(
       source,
-      /const wakeScene[\s\S]*!isSceneInJourney\(\)[\s\S]*stopLoop\(\)[\s\S]*isReducedMotion\(\)[\s\S]*renderFrame\(\)[\s\S]*startLoop\(\)/,
+      /const wakeScene[\s\S]*!isSceneInJourney\(\)[\s\S]*stopLoop\(\)[\s\S]*isReducedMotion\(\)[\s\S]*renderStaticFrame\(\)[\s\S]*startLoop\(\)/,
     );
     assert.match(
       source,
-      /if\s*\(isReducedMotion\(\)\)\s*\{\s*stopLoop\(\);\s*renderFrame\(\);/,
+      /if\s*\(isReducedMotion\(\)\)\s*\{\s*stopLoop\(\);\s*renderStaticFrame\(\);/,
     );
     assert.match(source, /sceneWakeRef\.current\s*=\s*null/);
+  });
+
+  it("deduplicates scene wakes by discrete snapshot state", () => {
+    const source = readSource("components/ThreeScene.tsx");
+    const helper = source.slice(
+      source.indexOf("function shouldWakeScene"),
+      source.indexOf("const SNOISE"),
+    );
+    const store = source.slice(
+      source.indexOf("const storeImmersiveSnapshot"),
+      source.indexOf("useImmersiveScroll(storeImmersiveSnapshot)"),
+    );
+
+    assert.match(helper, /previous\s*===\s*null/);
+    assert.match(helper, /previous\.profile\s*!==\s*next\.profile/);
+    assert.match(
+      helper,
+      /previous\.activeStageId\s*!==\s*next\.activeStageId/,
+    );
+    assert.match(helper, /previous\.inJourney\s*!==\s*next\.inJourney/);
+    assert.match(
+      helper,
+      /previous\.anchorsValid\s*!==\s*next\.anchorsValid/,
+    );
+    assert.match(store, /shouldWakeScene\(previousSnapshot, snapshot\)/);
+    assert.match(
+      store,
+      /if\s*\(shouldWake\)\s*\{\s*sceneWakeRef\.current\?\.\(\);/,
+    );
+  });
+
+  it("keeps static draws frozen and advances motion only in the RAF loop", () => {
+    const source = readSource("components/ThreeScene.tsx");
+    const staticFrame = source.slice(
+      source.indexOf("const renderStaticFrame"),
+      source.indexOf("const renderAnimatedFrame"),
+    );
+    const animatedFrame = source.slice(
+      source.indexOf("const renderAnimatedFrame"),
+      source.indexOf("const stopLoop"),
+    );
+    const loop = source.slice(
+      source.indexOf("const loop"),
+      source.indexOf("const startLoop"),
+    );
+
+    assert.ok(staticFrame.length > 0);
+    assert.doesNotMatch(
+      staticFrame,
+      /performance\.now|uniforms\.uTime\.value|tx\s*\+=|ty\s*\+=/,
+    );
+    assert.match(staticFrame, /mx\s*=\s*0/);
+    assert.match(staticFrame, /my\s*=\s*0/);
+    assert.match(staticFrame, /tx\s*=\s*0/);
+    assert.match(staticFrame, /ty\s*=\s*0/);
+    assert.match(animatedFrame, /performance\.now/);
+    assert.match(animatedFrame, /uniforms\.uTime\.value\s*\+=/);
+    assert.match(animatedFrame, /tx\s*\+=/);
+    assert.match(animatedFrame, /ty\s*\+=/);
+    assert.match(loop, /renderAnimatedFrame\(\)/);
+    assert.doesNotMatch(loop, /renderStaticFrame\(\)/);
+    assert.equal(source.match(/performance\.now\(\)/g)?.length, 1);
+    assert.equal(source.match(/uniforms\.uTime\.value\s*\+=/g)?.length, 1);
+  });
+
+  it("gates pointer parallax with the live profile and fine-pointer capability", () => {
+    const source = readSource("components/ThreeScene.tsx");
+    const pointerHandler = source.slice(
+      source.indexOf("const onPointer"),
+      source.indexOf("const renderScene"),
+    );
+    const resizeHandler = source.slice(
+      source.indexOf("const handleResize"),
+      source.indexOf('window.addEventListener("resize"'),
+    );
+
+    assert.match(pointerHandler, /if\s*\(isReducedMotion\(\)\)\s*return/);
+    assert.match(
+      source,
+      /if\s*\(!isCoarsePointer\)\s*\{\s*window\.addEventListener\(["']pointermove["'], onPointer\)/,
+    );
+    assert.match(
+      source,
+      /const isReducedMotion[\s\S]*immersiveScrollSnapshotRef\.current\?\.profile/,
+    );
+    assert.match(
+      resizeHandler,
+      /const currentReducedMotion\s*=\s*isReducedMotion\(\)/,
+    );
+    assert.match(
+      resizeHandler,
+      /reducedMotion:\s*currentReducedMotion/,
+    );
   });
 });

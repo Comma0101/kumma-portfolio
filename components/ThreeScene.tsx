@@ -8,6 +8,19 @@ import {
 } from "./immersive/useImmersiveScroll";
 import { getThreeSceneTuning } from "./threeSceneTuning";
 
+function shouldWakeScene(
+  previous: ImmersiveScrollSnapshot | null,
+  next: ImmersiveScrollSnapshot,
+): boolean {
+  return (
+    previous === null ||
+    previous.profile !== next.profile ||
+    previous.activeStageId !== next.activeStageId ||
+    previous.inJourney !== next.inJourney ||
+    previous.anchorsValid !== next.anchorsValid
+  );
+}
+
 const SNOISE = /* glsl */ `
   vec3 mod289(vec3 x){return x - floor(x*(1.0/289.0))*289.0;}
   vec2 mod289(vec2 x){return x - floor(x*(1.0/289.0))*289.0;}
@@ -92,8 +105,12 @@ export default function ThreeScene() {
   const sceneWakeRef = useRef<(() => void) | null>(null);
   const storeImmersiveSnapshot = useCallback(
     (snapshot: ImmersiveScrollSnapshot) => {
+      const previousSnapshot = immersiveScrollSnapshotRef.current;
+      const shouldWake = shouldWakeScene(previousSnapshot, snapshot);
       immersiveScrollSnapshotRef.current = snapshot;
-      sceneWakeRef.current?.();
+      if (shouldWake) {
+        sceneWakeRef.current?.();
+      }
     },
     [],
   );
@@ -164,20 +181,6 @@ export default function ThreeScene() {
     const terrain = new THREE.Mesh(geometry, material);
     scene.add(terrain);
 
-    let mx = 0;
-    let tx = 0;
-    let my = 0;
-    let ty = 0;
-    const onPointer = (e: PointerEvent) => {
-      mx = e.clientX / window.innerWidth - 0.5;
-      my = e.clientY / window.innerHeight - 0.5;
-    };
-    if (!reducedMotion) {
-      window.addEventListener("pointermove", onPointer);
-    }
-
-    const start = performance.now();
-    let animationFrame = 0;
     const isSceneInJourney = () =>
       immersiveScrollSnapshotRef.current?.inJourney ?? true;
     const isReducedMotion = () => {
@@ -185,17 +188,56 @@ export default function ThreeScene() {
       return profile ? profile === "reduced" : reducedMotion;
     };
 
-    const renderFrame = () => {
-      uniforms.uTime.value = (performance.now() - start) / 1000;
-      tx += (mx - tx) * 0.04;
-      ty += (my - ty) * 0.04;
-      camera.position.x = camBase.x + tx * 46;
-      camera.position.y = camBase.y + -ty * 18;
+    let mx = 0;
+    let tx = 0;
+    let my = 0;
+    let ty = 0;
+    const onPointer = (e: PointerEvent) => {
+      if (isReducedMotion()) return;
+      mx = e.clientX / window.innerWidth - 0.5;
+      my = e.clientY / window.innerHeight - 0.5;
+    };
+    if (!isCoarsePointer) {
+      window.addEventListener("pointermove", onPointer);
+    }
+
+    let animationFrame = 0;
+    let previousFrameTime: number | null = null;
+
+    const renderScene = () => {
       camera.lookAt(lookTarget);
       renderer.render(scene, camera);
     };
 
+    const renderStaticFrame = () => {
+      mx = 0;
+      my = 0;
+      tx = 0;
+      ty = 0;
+      previousFrameTime = null;
+      camera.position.copy(camBase);
+      renderScene();
+    };
+
+    const renderAnimatedFrame = () => {
+      const frameTime = performance.now();
+      if (previousFrameTime !== null) {
+        const deltaSeconds = Math.min(
+          Math.max(0, frameTime - previousFrameTime) / 1000,
+          0.1,
+        );
+        uniforms.uTime.value += deltaSeconds;
+      }
+      previousFrameTime = frameTime;
+      tx += (mx - tx) * 0.04;
+      ty += (my - ty) * 0.04;
+      camera.position.x = camBase.x + tx * 46;
+      camera.position.y = camBase.y + -ty * 18;
+      renderScene();
+    };
+
     const stopLoop = () => {
+      previousFrameTime = null;
       if (animationFrame) {
         window.cancelAnimationFrame(animationFrame);
         animationFrame = 0;
@@ -205,7 +247,7 @@ export default function ThreeScene() {
     const loop = () => {
       animationFrame = 0;
       if (document.hidden || !isSceneInJourney() || isReducedMotion()) return;
-      renderFrame();
+      renderAnimatedFrame();
       animationFrame = window.requestAnimationFrame(loop);
     };
 
@@ -229,16 +271,17 @@ export default function ThreeScene() {
 
       if (isReducedMotion()) {
         stopLoop();
-        renderFrame();
+        renderStaticFrame();
       } else {
         startLoop();
       }
     };
     sceneWakeRef.current = wakeScene;
-    renderFrame();
+    renderStaticFrame();
     startLoop();
 
     const handleResize = () => {
+      const currentReducedMotion = isReducedMotion();
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       const resizeTuning = getThreeSceneTuning({
@@ -246,12 +289,18 @@ export default function ThreeScene() {
         devicePixelRatio: window.devicePixelRatio,
         hardwareConcurrency: navigator.hardwareConcurrency,
         isCoarsePointer,
-        reducedMotion,
+        reducedMotion: currentReducedMotion,
         viewportWidth: window.innerWidth,
       });
       renderer.setPixelRatio(resizeTuning.pixelRatio);
       renderer.setSize(window.innerWidth, window.innerHeight);
-      if (!document.hidden && isSceneInJourney()) renderFrame();
+      if (!document.hidden && isSceneInJourney()) {
+        if (currentReducedMotion) {
+          renderStaticFrame();
+        } else {
+          renderScene();
+        }
+      }
     };
     window.addEventListener("resize", handleResize);
 
