@@ -12,20 +12,35 @@ import {
   type WorkProject,
 } from "./workProjects";
 
+if (false) {
+  // @ts-expect-error Catalog summaries are readonly for callers.
+  featuredWork[0].summary = "mutated summary";
+
+  // @ts-expect-error Nested evidence is readonly for callers.
+  featuredWork[0].evidence.input = "mutated input";
+
+  // @ts-expect-error Nested primary actions are readonly for callers.
+  featuredWork[0].primaryAction!.label = "mutated label";
+}
+
 function replaceProject(
   slug: string,
-  replacement: WorkProject,
-): WorkProject[] {
+  replacement: unknown,
+): unknown[] {
   return workProjects.map((project) =>
     project.slug === slug ? replacement : project,
   );
 }
 
 function assertValidationError(
-  projects: readonly WorkProject[],
+  projects: readonly unknown[],
   expected: RegExp,
 ): void {
-  const errors = validateWorkProjects(projects);
+  let errors: string[] = [];
+
+  assert.doesNotThrow(() => {
+    errors = validateWorkProjects(projects);
+  });
 
   assert.ok(errors.length > 0, "expected validation to report an error");
   assert.match(errors.join("\n"), expected);
@@ -102,7 +117,7 @@ describe("validateWorkProjects", () => {
     const malformed = {
       ...workProjects[0],
       href: "/work/not-kota",
-    } as WorkProject;
+    };
 
     assertValidationError(replaceProject("kota", malformed), /href.*kota/i);
   });
@@ -111,7 +126,7 @@ describe("validateWorkProjects", () => {
     const malformed = {
       ...workProjects[0],
       visualKey: "unknown-visual",
-    } as unknown as WorkProject;
+    };
 
     assertValidationError(
       replaceProject("kota", malformed),
@@ -149,7 +164,7 @@ describe("validateWorkProjects", () => {
     const malformed = {
       ...workProjects[0],
       tier: "archive",
-    } as unknown as WorkProject;
+    };
 
     assertValidationError(replaceProject("kota", malformed), /tier.*archive/i);
   });
@@ -158,12 +173,56 @@ describe("validateWorkProjects", () => {
     const malformed = {
       ...workProjects[0],
       status: "planned",
-    } as unknown as WorkProject;
+    };
 
     assertValidationError(
       replaceProject("kota", malformed),
       /status.*planned/i,
     );
+  });
+
+  it("reports non-object entries instead of throwing", () => {
+    for (const entry of [null, "not-an-object"]) {
+      assertValidationError([entry], /index 0.*object/i);
+    }
+  });
+
+  it("reports missing evidence instead of throwing", () => {
+    const { evidence: _evidence, ...malformed } = workProjects[0];
+
+    assertValidationError([malformed], /evidence.*object/i);
+  });
+
+  it("reports null evidence instead of throwing", () => {
+    const malformed = {
+      ...workProjects[0],
+      evidence: null,
+    };
+
+    assertValidationError([malformed], /evidence.*object/i);
+  });
+
+  it("reports a blank slug", () => {
+    const malformed: WorkProject = {
+      ...workProjects[0],
+      slug: "   ",
+    };
+
+    assertValidationError([malformed], /slug.*blank/i);
+  });
+
+  it("reports blank identity text", () => {
+    for (const field of ["no", "title"] as const) {
+      const malformed: WorkProject = {
+        ...workProjects[0],
+        [field]: "   ",
+      };
+
+      assertValidationError(
+        [malformed],
+        new RegExp(`${field}.*blank`, "i"),
+      );
+    }
   });
 });
 

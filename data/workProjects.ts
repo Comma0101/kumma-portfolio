@@ -15,26 +15,26 @@ export type WorkVisualKey =
   | "ledger";
 
 export interface WorkProject {
-  slug: string;
-  no: string;
-  title: string;
-  href: `/work/${string}`;
-  tier: WorkTier;
-  status: WorkStatus;
-  statusLabel: string;
-  summary: string;
-  tags: readonly string[];
-  artifact: string;
-  evidence: {
-    input: string;
-    transform: string;
-    output: string;
-    guardrail: string;
+  readonly slug: string;
+  readonly no: string;
+  readonly title: string;
+  readonly href: `/work/${string}`;
+  readonly tier: WorkTier;
+  readonly status: WorkStatus;
+  readonly statusLabel: string;
+  readonly summary: string;
+  readonly tags: readonly string[];
+  readonly artifact: string;
+  readonly evidence: {
+    readonly input: string;
+    readonly transform: string;
+    readonly output: string;
+    readonly guardrail: string;
   };
-  visualKey: WorkVisualKey;
-  layout: "feature" | "flip" | "band";
-  primaryAction?: { label: string; href: string };
-  externalUrl?: string;
+  readonly visualKey: WorkVisualKey;
+  readonly layout: "feature" | "flip" | "band";
+  readonly primaryAction?: { readonly label: string; readonly href: string };
+  readonly externalUrl?: string;
 }
 
 export const workVisualKeys = [
@@ -207,74 +207,128 @@ const evidenceFields = [
   "output",
   "guardrail",
 ] as const;
+const identityTextFields = ["no", "title"] as const;
 const publicTextFields = ["statusLabel", "artifact", "summary"] as const;
 
-function isBlank(value: unknown): boolean {
-  return typeof value !== "string" || value.trim().length === 0;
+function isNonBlankString(value: unknown): value is string {
+  return typeof value === "string" && value.trim().length > 0;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function describeValue(value: unknown): string {
+  if (typeof value === "string") return `"${value}"`;
+  if (value === null) return "null";
+  return typeof value;
+}
+
+function projectLabel(
+  project: Record<string, unknown>,
+  index: number,
+): string {
+  return isNonBlankString(project.slug)
+    ? `Project "${project.slug}"`
+    : `Work project at index ${index}`;
 }
 
 function validateIdentity(
-  project: WorkProject,
+  project: Record<string, unknown>,
+  index: number,
   seenSlugs: Set<string>,
   errors: string[],
 ): void {
-  if (seenSlugs.has(project.slug)) {
-    errors.push(`Duplicate work project slug "${project.slug}".`);
-  }
-  seenSlugs.add(project.slug);
+  const label = projectLabel(project, index);
 
-  const expectedHref = `/work/${project.slug}`;
-  if (project.href !== expectedHref) {
-    errors.push(
-      `Project "${project.slug}" href must be "${expectedHref}"; received "${project.href}".`,
-    );
-  }
+  if (!isNonBlankString(project.slug)) {
+    errors.push(`${label} slug must not be blank.`);
+  } else {
+    if (seenSlugs.has(project.slug)) {
+      errors.push(`Duplicate work project slug "${project.slug}".`);
+    }
+    seenSlugs.add(project.slug);
 
-  if (!workVisualKeys.includes(project.visualKey)) {
-    errors.push(
-      `Project "${project.slug}" visual key "${project.visualKey}" is not recognized.`,
-    );
-  }
-}
-
-function validateRequiredText(project: WorkProject, errors: string[]): void {
-  for (const field of evidenceFields) {
-    if (isBlank(project.evidence[field])) {
+    const expectedHref = `/work/${project.slug}`;
+    if (project.href !== expectedHref) {
       errors.push(
-        `Project "${project.slug}" evidence.${field} must not be blank.`,
+        `${label} href must be "${expectedHref}"; received ${describeValue(project.href)}.`,
       );
     }
   }
 
+  if (!workVisualKeys.some((key) => key === project.visualKey)) {
+    errors.push(
+      `${label} visual key ${describeValue(project.visualKey)} is not recognized.`,
+    );
+  }
+}
+
+function validateRequiredText(
+  project: Record<string, unknown>,
+  index: number,
+  errors: string[],
+): void {
+  const label = projectLabel(project, index);
+
+  for (const field of identityTextFields) {
+    if (!isNonBlankString(project[field])) {
+      errors.push(`${label} ${field} must not be blank.`);
+    }
+  }
+
+  if (!isRecord(project.evidence)) {
+    errors.push(`${label} evidence must be an object.`);
+  } else {
+    for (const field of evidenceFields) {
+      if (!isNonBlankString(project.evidence[field])) {
+        errors.push(`${label} evidence.${field} must not be blank.`);
+      }
+    }
+  }
+
   for (const field of publicTextFields) {
-    if (isBlank(project[field])) {
-      errors.push(`Project "${project.slug}" ${field} must not be blank.`);
+    if (!isNonBlankString(project[field])) {
+      errors.push(`${label} ${field} must not be blank.`);
     }
   }
 }
 
-function validateClassification(project: WorkProject, errors: string[]): void {
-  if (!workTiers.includes(project.tier)) {
-    errors.push(`Project "${project.slug}" tier "${project.tier}" is not public.`);
+function validateClassification(
+  project: Record<string, unknown>,
+  index: number,
+  errors: string[],
+): void {
+  const label = projectLabel(project, index);
+
+  if (!workTiers.some((tier) => tier === project.tier)) {
+    errors.push(
+      `${label} tier ${describeValue(project.tier)} is not public.`,
+    );
   }
 
-  if (!workStatuses.includes(project.status)) {
+  if (!workStatuses.some((status) => status === project.status)) {
     errors.push(
-      `Project "${project.slug}" status "${project.status}" is not public.`,
+      `${label} status ${describeValue(project.status)} is not public.`,
     );
   }
 }
 
 export function validateWorkProjects(
-  projects: readonly WorkProject[],
+  projects: readonly unknown[],
 ): string[] {
   const errors: string[] = [];
   const seenSlugs = new Set<string>();
 
-  for (const project of projects) {
-    validateIdentity(project, seenSlugs, errors);
-    validateRequiredText(project, errors);
-    validateClassification(project, errors);
+  for (const [index, project] of projects.entries()) {
+    if (!isRecord(project)) {
+      errors.push(`Work project at index ${index} must be an object.`);
+      continue;
+    }
+
+    validateIdentity(project, index, seenSlugs, errors);
+    validateRequiredText(project, index, errors);
+    validateClassification(project, index, errors);
   }
 
   return errors;
