@@ -2,6 +2,28 @@
 
 Updated: 2026-07-11 (America/Los_Angeles)
 
+## Completion update (2026-07-11, later session)
+
+All fourteen plan tasks are complete. The Task 8 review checkpoint passed
+(both handoff judgment points accepted as-is), Tasks 9–13 were implemented
+test-first, and the Task 14 independent review returned APPROVE with zero
+blocker/major findings; its two minor findings (runtime tests for the
+privacy-critical analytics forwarding) and two in-scope nits (self-contained
+`/work` JSON-LD author, 16px mobile stage prose) were remediated in `7b4f6fe`.
+
+- Final verification: 312/312 unit tests, `next build` 65/65 static pages,
+  `git diff --check 709e2ca...HEAD` clean, worktree clean.
+- QA evidence: `docs/qa/2026-07-11-immersive-client-portfolio.md`.
+- Branch pushed: `feature/immersive-client-portfolio` at
+  `7b4f6fe1e303bb84670f22d488e0c60f9c8ad1da`, tracking origin; local and
+  remote IDs verified identical. `origin/master` was still at `709e2ca`
+  (the branch base), so no reconciliation was required.
+- Deliberately not done: merging to `master` (which deploys the live site).
+  The dirty `master` checkout in `/home/comma/Documents/kumma-portfolio`
+  still holds unrelated uncommitted experiments that overlap this branch
+  (`app/sitemap.ts`, `data/projectData.ts`, `package.json`); that merge and
+  the conflict decisions belong to the user.
+
 ## Start here
 
 Continue in the clean feature worktree:
