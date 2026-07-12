@@ -362,4 +362,3 @@ Review that slice in a real browser at desktop, mobile, and reduced motion befor
 building the later chambers. The slice must prove forward travel, scale,
 occlusion, content aperture, and reverse-scroll behavior. If it still reads as a
 background pattern, later project geometry must not proceed.
-
