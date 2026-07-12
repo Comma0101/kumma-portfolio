@@ -1,33 +1,54 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import ResearchProjectPreview from "@/components/work/ResearchProjectPreview";
-import { getWorkProject } from "@/data/workProjects";
+import SpectralWorldCaseStudy from "@/components/SpectralWorldCaseStudy";
+import { JsonLd } from "@/components/seo/JsonLd";
 
 export const metadata: Metadata = {
-  title: "Spectral World Player — real-time graphics research",
+  title: "Spectral World Player — audio-reactive Three.js case study",
   description:
-    "An active R&D system that keeps local audio private while Web Audio FFT, beat, and onset analysis drive an adaptive audio-reactive 3D world.",
+    "How a local audio file becomes a living 3D world: Web Audio FFT and onset analysis, deterministic per-song themes, an allocation-free frame loop, and the honest limits of an active research build.",
   alternates: { canonical: "https://kumma.me/work/spectral-world" },
   openGraph: {
-    title: "Spectral World Player — real-time graphics research | Kumma",
+    title: "Spectral World Player — audio-reactive Three.js | Kumma",
     description:
-      "A grounded look at the local-audio input, Web Audio analysis, adaptive 3D output, and current browser and device limits.",
+      "Web Audio analysis driving terrain, pillars, particles, and flight in the browser — mechanism, architecture, and failure modes documented honestly.",
     url: "https://kumma.me/work/spectral-world",
     type: "article",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Spectral World Player — audio-reactive Three.js | Kumma",
+    description:
+      "Local audio in, a living 3D world out: FFT interpretation, beat and onset detection, and honest limits of an active R&D build.",
+  },
+};
+
+const caseStudyLd = {
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  name: "Spectral World Player",
+  creativeWorkStatus: "Active R&D",
+  description:
+    "A browser application that transforms one local audio file into an audio-reactive 3D world through Web Audio FFT, beat, and onset analysis, with no backend and no upload.",
+  url: "https://kumma.me/work/spectral-world",
+  about: [
+    "Web Audio API",
+    "real-time graphics",
+    "Three.js",
+    "audio analysis",
+  ],
+  author: {
+    "@type": "Person",
+    name: "Kumma",
+    alternateName: "Yang Wu",
+    url: "https://kumma.me",
   },
 };
 
 export default function SpectralWorldPage() {
-  const project = getWorkProject("spectral-world");
-
-  if (!project) {
-    notFound();
-  }
-
   return (
-    <ResearchProjectPreview
-      project={project}
-      limits="This is active browser R&D, not a claim of uniform visual fidelity across devices. Audio remains local, while rendering quality adapts to browser and device performance limits; beat and onset interpretation still depends on the recording."
-    />
+    <>
+      <JsonLd data={caseStudyLd} />
+      <SpectralWorldCaseStudy />
+    </>
   );
 }

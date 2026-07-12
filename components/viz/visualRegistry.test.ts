@@ -285,24 +285,30 @@ describe("project visual consumers", () => {
     assert.match(source, /<Visualization\s+size="teaser"\s*\/>/);
   });
 
-  it("enhances research previews with the matching visual before evidence and limits", () => {
-    const source = readSource("components/work/ResearchProjectPreview.tsx");
+  it("enhances research case studies with the matching visual before evidence and limits", () => {
+    const shell = readSource("components/work/CaseStudyShell.tsx");
 
-    assert.match(source, /import SystemViz/);
-    assert.match(source, /import\s*\{\s*vizBySlug\s*\}/);
-    assert.match(source, /vizBySlug\[project\.visualKey\]/);
-    assert.match(source, /<SystemViz/);
-
-    const visual = source.indexOf("<SystemViz");
-    const evidence = source.indexOf("<section className={styles.mechanism}");
-    const limits = source.indexOf("<section className={styles.limits}");
+    const visual = shell.indexOf("className={styles.visual}");
+    const evidence = shell.indexOf("<section className={styles.flowSection}");
+    const limits = shell.indexOf("<section className={styles.limits}");
 
     assert.ok(visual >= 0 && visual < evidence, "visual must precede evidence");
     assert.ok(visual < limits, "visual must precede limits");
 
+    for (const file of [
+      "components/SplashInkCaseStudy.tsx",
+      "components/SpectralWorldCaseStudy.tsx",
+    ]) {
+      const source = readSource(file);
+      assert.match(source, /import SystemViz/);
+      assert.match(source, /import\s*\{\s*vizBySlug\s*\}/);
+      assert.match(source, /vizBySlug\[project\.visualKey\]/);
+      assert.match(source, /<SystemViz/);
+    }
+
     for (const route of ["splash-ink", "spectral-world"]) {
       const page = readSource(`app/work/${route}/page.tsx`);
-      assert.match(page, /<ResearchProjectPreview/);
+      assert.match(page, /CaseStudy/);
     }
   });
 });

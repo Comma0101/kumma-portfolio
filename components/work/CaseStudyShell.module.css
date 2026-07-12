@@ -76,7 +76,7 @@
   text-wrap: balance;
 }
 
-.summary {
+.outcome {
   max-width: 64ch;
   margin: clamp(2rem, 4vw, 4rem) 0 0;
   color: var(--steel);
@@ -109,12 +109,16 @@
   padding-bottom: clamp(5rem, 9vw, 9rem);
 }
 
-.visualFrame {
+.visual > * {
   min-height: clamp(26rem, 52vw, 38rem);
 }
 
+.context,
+.flowSection,
 .mechanism,
 .limits,
+.artifact,
+.related,
 .cta {
   padding: clamp(5rem, 9vw, 9rem) 0;
   border-top: 1px solid var(--line);
@@ -137,6 +141,7 @@
 
 .sectionHeader h2,
 .limits h2,
+.artifact h2,
 .cta h2 {
   max-width: 18ch;
   margin: 0;
@@ -145,6 +150,31 @@
   letter-spacing: -0.05em;
   line-height: 1;
   text-wrap: balance;
+}
+
+.contextColumns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(2rem, 5vw, 5rem);
+}
+
+.contextColumns h3,
+.stage h3 {
+  margin: 0 0 1rem;
+  color: var(--sand);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.contextColumns p {
+  max-width: 58ch;
+  margin: 0;
+  color: var(--steel);
+  font-size: 1.05rem;
+  line-height: 1.7;
 }
 
 .flow {
@@ -202,18 +232,134 @@
   overflow-wrap: anywhere;
 }
 
-.limits {
+.mechanismLead {
+  max-width: 72ch;
+  margin: 0 0 clamp(3rem, 5vw, 5rem);
+  color: var(--steel);
+  font-size: clamp(1.05rem, 1.5vw, 1.25rem);
+  line-height: 1.75;
+}
+
+.stages {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 1px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--line);
+  background: var(--line);
+  list-style: none;
+  counter-reset: stage;
+}
+
+.stage {
+  min-width: 0;
+  padding: clamp(1.25rem, 2.5vw, 2rem);
+  background: var(--surface);
+}
+
+.stage h3 {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.stage h3 span {
+  color: var(--steel);
+}
+
+.stage p {
+  margin: 0;
+  color: var(--steel);
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
+.limits,
+.artifact {
   display: grid;
   grid-template-columns: minmax(0, 0.8fr) minmax(0, 2.2fr);
   gap: clamp(2rem, 6vw, 7rem);
 }
 
-.limits > div > p {
+.limitList {
+  margin: 1.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.limitList li {
+  position: relative;
+  max-width: 64ch;
+  margin: 0;
+  padding: 1.1rem 0 1.1rem 1.75rem;
+  border-bottom: 1px solid var(--line);
+  color: var(--steel);
+  font-size: 1.05rem;
+  line-height: 1.65;
+}
+
+.limitList li::before {
+  position: absolute;
+  top: 1.2rem;
+  left: 0;
+  color: var(--sand);
+  content: "—";
+  font-family: var(--font-mono);
+}
+
+.artifact > div > p {
   max-width: 64ch;
   margin: 1.5rem 0 0;
   color: var(--steel);
   font-size: 1.05rem;
   line-height: 1.65;
+}
+
+.relatedList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.relatedLink {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  min-height: 44px;
+  padding: clamp(1.25rem, 2.5vw, 1.75rem);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  color: var(--paper);
+  text-decoration: none;
+  transition:
+    transform 200ms var(--ease),
+    border-color 200ms var(--ease);
+}
+
+.relatedLabel {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.relatedLabel span {
+  color: var(--signal);
+}
+
+.relatedNote {
+  color: var(--steel);
+  font-size: 0.92rem;
+  line-height: 1.6;
 }
 
 .cta {
@@ -240,7 +386,8 @@
 }
 
 .backLink:focus-visible,
-.ctaLink:focus-visible {
+.ctaLink:focus-visible,
+.relatedLink:focus-visible {
   outline: 2px solid var(--signal);
   outline-offset: 4px;
 }
@@ -248,6 +395,11 @@
 @media (hover: hover) {
   .backLink:hover,
   .ctaLink:hover {
+    transform: translateY(-2px);
+  }
+
+  .relatedLink:hover {
+    border-color: var(--signal);
     transform: translateY(-2px);
   }
 }
@@ -261,7 +413,8 @@
 @media (max-width: 760px) {
   .hero,
   .sectionHeader,
-  .limits {
+  .limits,
+  .artifact {
     grid-template-columns: minmax(0, 1fr);
     gap: 1.5rem;
   }
@@ -276,19 +429,30 @@
   .cta > div > p,
   .tags li,
   .flow dt,
+  .contextColumns h3,
+  .stage h3,
+  .relatedLabel,
   .backLink,
   .ctaLink {
     font-size: 1rem;
   }
 
-  .summary,
-  .limits > div > p {
+  .outcome,
+  .contextColumns p,
+  .mechanismLead,
+  .limitList li,
+  .artifact > div > p,
+  .relatedNote {
     font-size: 1rem;
   }
 
   .visual,
-  .visualFrame {
+  .visual > * {
     min-height: 22rem;
+  }
+
+  .contextColumns {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .flow {
@@ -318,14 +482,16 @@
 
 @media (prefers-reduced-motion: reduce) {
   .backLink,
-  .ctaLink {
+  .ctaLink,
+  .relatedLink {
     transition: none;
   }
 
   .backLink:hover,
   .backLink:active,
   .ctaLink:hover,
-  .ctaLink:active {
+  .ctaLink:active,
+  .relatedLink:hover {
     transform: none;
   }
 }

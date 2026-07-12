@@ -243,45 +243,29 @@ describe("research work route source contracts", () => {
     {
       slug: "splash-ink",
       file: "app/work/splash-ink/page.tsx",
+      component: "SplashInkCaseStudy",
       canonical: "https://kumma.me/work/splash-ink",
     },
     {
       slug: "spectral-world",
       file: "app/work/spectral-world/page.tsx",
+      component: "SpectralWorldCaseStudy",
       canonical: "https://kumma.me/work/spectral-world",
     },
   ] as const;
 
   for (const route of routes) {
-    it(`publishes a catalog-backed ${route.slug} preview`, () => {
+    it(`publishes a full ${route.slug} case study with structured data`, () => {
       const source = readSource(route.file);
 
-      assert.match(source, /ResearchProjectPreview/);
+      assert.match(source, new RegExp(route.component));
       assert.match(source, /export const metadata/);
-      assert.match(
-        source,
-        new RegExp(`getWorkProject\\(["']${route.slug}["']\\)`),
-      );
       assert.ok(source.includes(`canonical: "${route.canonical}"`));
-      assert.match(source, /limits=/);
+      assert.match(source, /JsonLd/);
+      assert.match(source, /["']@type["']:\s*["']CreativeWork["']/);
+      assert.match(source, /creativeWorkStatus/);
+      assert.doesNotMatch(source, /ResearchProjectPreview/);
       assert.doesNotMatch(source, /coming soon|placeholder/i);
     });
   }
-
-  it("renders a substantive shared research preview", () => {
-    const source = readSource("components/work/ResearchProjectPreview.tsx");
-
-    assert.equal(source.match(/<h1\b/g)?.length, 1);
-    assert.match(source, /project\.statusLabel/);
-    assert.match(source, /project\.summary/);
-    assert.match(source, /project\.evidence\[key\]/);
-    assert.match(source, /Input/);
-    assert.match(source, /Transform/);
-    assert.match(source, /Output/);
-    assert.match(source, /Guardrail/);
-    assert.match(source, /limits/);
-    assert.match(source, /href=["']\/work["']/);
-    assert.match(source, /href=["']\/contact["']/);
-    assert.doesNotMatch(source, /coming soon|placeholder/i);
-  });
 });

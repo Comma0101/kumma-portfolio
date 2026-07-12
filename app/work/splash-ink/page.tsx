@@ -1,33 +1,54 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import ResearchProjectPreview from "@/components/work/ResearchProjectPreview";
-import { getWorkProject } from "@/data/workProjects";
+import SplashInkCaseStudy from "@/components/SplashInkCaseStudy";
+import { JsonLd } from "@/components/seo/JsonLd";
 
 export const metadata: Metadata = {
-  title: "Splash Ink — AI-to-3D research prototype",
+  title: "Splash Ink — single-image 3D Gaussian Splatting case study",
   description:
-    "An active R&D prototype exploring how a single classical ink image can become an explorable spatial scene through depth and point initialization and 3D Gaussian Splatting.",
+    "How one classical ink painting becomes an explorable 3D scene: depth and point initialization, single-image 3D Gaussian Splatting, authored camera paths, and the honest limits of an active research prototype.",
   alternates: { canonical: "https://kumma.me/work/splash-ink" },
   openGraph: {
-    title: "Splash Ink — AI-to-3D research prototype | Kumma",
+    title: "Splash Ink — single-image 3D Gaussian Splatting | Kumma",
     description:
-      "A grounded look at the input, transformation, output, and current limits of an active single-image-to-3D research prototype.",
+      "A research pipeline lifting classical ink paintings into explorable Gaussian-splat scenes, with the mechanism, architecture, and failure modes documented honestly.",
     url: "https://kumma.me/work/splash-ink",
     type: "article",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Splash Ink — single-image 3D Gaussian Splatting | Kumma",
+    description:
+      "One painting in, an explorable splat scene out: mechanism, architecture, and honest limits of an active R&D prototype.",
+  },
+};
+
+const caseStudyLd = {
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  name: "Splash Ink",
+  creativeWorkStatus: "Active R&D",
+  description:
+    "A research pipeline that lifts a single classical ink painting into an explorable spatial scene through depth and point initialization and single-image 3D Gaussian Splatting, presented in a scroll-driven web viewer.",
+  url: "https://kumma.me/work/splash-ink",
+  about: [
+    "3D Gaussian Splatting",
+    "single-image reconstruction",
+    "computer vision",
+    "Three.js",
+  ],
+  author: {
+    "@type": "Person",
+    name: "Kumma",
+    alternateName: "Yang Wu",
+    url: "https://kumma.me",
   },
 };
 
 export default function SplashInkPage() {
-  const project = getWorkProject("splash-ink");
-
-  if (!project) {
-    notFound();
-  }
-
   return (
-    <ResearchProjectPreview
-      project={project}
-      limits="This is an active research prototype, not a one-click reconstruction product. Spatial quality depends on the source image and on the depth and point initialization; unsuitable inputs can produce incomplete or unstable geometry."
-    />
+    <>
+      <JsonLd data={caseStudyLd} />
+      <SplashInkCaseStudy />
+    </>
   );
 }
