@@ -1,9 +1,9 @@
 # Immersive Client Portfolio Design
 
-**Status:** Approved  
-**Date:** 2026-07-11  
-**Audience:** Founders and CTOs buying production-AI work  
-**Primary outcome:** Qualified paid-project inquiries, not full-time employment
+- **Status:** Approved
+- **Date:** 2026-07-11
+- **Audience:** Founders and CTOs buying production-AI work
+- **Primary outcome:** Qualified paid-project inquiries, not full-time employment
 
 ## Objective
 
