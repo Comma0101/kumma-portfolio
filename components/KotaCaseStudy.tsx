@@ -528,12 +528,23 @@ export default function KotaCaseStudy() {
 
         {/* ── Close ── */}
         <footer className={styles.philosophical} data-animate>
+          <p className={`${styles.quote} ${cormorant.className}`}>
+            Hear this system take a real call, then bring the hard version of
+            your problem.
+          </p>
           <Link
             href="/call"
-            className={`${styles.quote} ${cormorant.className}`}
-            style={{ textDecoration: "none", display: "inline-block" }}
+            className={`${styles.actionLink} ${grotesk.className}`}
+            style={{ display: "inline-block", marginRight: "2rem" }}
           >
-            Hear this system take a real call, or book a live demo.
+            Hear the demo →
+          </Link>
+          <Link
+            href="/contact"
+            className={`${styles.actionLink} ${grotesk.className}`}
+            style={{ display: "inline-block" }}
+          >
+            Build a system like this →
           </Link>
         </footer>
       </div>

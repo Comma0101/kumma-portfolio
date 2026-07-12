@@ -433,7 +433,7 @@ export default function ArchonCaseStudy() {
             className={grotesk.className}
             style={ctaStyle}
           >
-            Working on agent orchestration? Get in touch →
+            Build a system like this →
           </Link>
         </footer>
       </div>

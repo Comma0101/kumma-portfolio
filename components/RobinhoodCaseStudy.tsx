@@ -530,13 +530,16 @@ export default function RobinhoodCaseStudy() {
 
         {/* ── Close ── */}
         <footer className={styles.philosophical} data-animate>
+          <p className={`${styles.quote} ${cormorant.className}`}>
+            Messy input, reliable output — the same discipline as the voice
+            work, a different domain.
+          </p>
           <Link
             href="/contact"
-            className={`${styles.quote} ${cormorant.className}`}
-            style={{ textDecoration: "none", display: "inline-block" }}
+            className={`${styles.actionLink} ${grotesk.className}`}
+            style={{ display: "inline-block" }}
           >
-            Messy input, reliable output — the same discipline as the voice work,
-            a different domain. Let&apos;s talk.
+            Build a system like this →
           </Link>
         </footer>
       </div>

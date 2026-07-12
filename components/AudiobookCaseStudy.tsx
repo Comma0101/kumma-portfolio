@@ -536,12 +536,15 @@ export default function AudiobookCaseStudy() {
 
         {/* ── Close ── */}
         <footer className={styles.philosophical} data-animate>
+          <p className={`${styles.quote} ${cormorant.className}`}>
+            Have a document, a stream, or a voice problem?
+          </p>
           <Link
             href="/contact"
-            className={`${styles.quote} ${cormorant.className}`}
-            style={{ textDecoration: "none", display: "inline-block" }}
+            className={`${styles.actionLink} ${grotesk.className}`}
+            style={{ display: "inline-block" }}
           >
-            Have a document, a stream, or a voice problem? Let&apos;s talk.
+            Build a system like this →
           </Link>
         </footer>
       </div>
