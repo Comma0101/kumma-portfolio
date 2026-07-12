@@ -1,6 +1,10 @@
 "use client";
 
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
+import {
+  createConversionEvent,
+  dispatchConversionEvent,
+} from "@/components/analytics/conversionEvents";
 import styles from "./ContactSection.module.css";
 
 const initialForm = {
@@ -81,6 +85,11 @@ export default function ContactSection() {
       subject,
     )}&body=${encodeURIComponent(body)}`;
 
+    // The analytics event carries only the source; the brief itself travels
+    // exclusively through the visitor's own mail app.
+    dispatchConversionEvent(
+      createConversionEvent("mailto_submit", { source: "contact" }),
+    );
     setEmailOpened(true);
     window.location.href = mailto;
   };
@@ -107,7 +116,15 @@ export default function ContactSection() {
             enough for an initial reply.
           </p>
 
-          <a href="mailto:dev@kumma.me" className={styles.emailLink}>
+          <a
+            href="mailto:dev@kumma.me"
+            className={styles.emailLink}
+            onClick={() =>
+              dispatchConversionEvent(
+                createConversionEvent("contact_open", { source: "contact" }),
+              )
+            }
+          >
             <span>Direct email</span>
             <strong>dev@kumma.me</strong>
           </a>

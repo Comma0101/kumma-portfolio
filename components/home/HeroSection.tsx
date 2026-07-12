@@ -61,10 +61,20 @@ export default function HeroSection() {
           </ul>
         </div>
         <div data-hero-rise className={styles.actions}>
-          <Button href={heroContent.primaryCta.href} variant="primary">
+          <Button
+            href={heroContent.primaryCta.href}
+            variant="primary"
+            event="project_start"
+            source="hero"
+          >
             {heroContent.primaryCta.label}
           </Button>
-          <Button href={heroContent.secondaryCta.href} variant="ghost">
+          <Button
+            href={heroContent.secondaryCta.href}
+            variant="ghost"
+            event="demo_open"
+            source="hero"
+          >
             {heroContent.secondaryCta.label}
           </Button>
         </div>

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import TrackedLink from "@/components/analytics/TrackedLink";
 import SectionHeader from "@/components/system/SectionHeader";
 import { engagements } from "./homeContent";
 import styles from "./CapabilitiesSection.module.css";
@@ -36,9 +36,14 @@ export default function CapabilitiesSection() {
                   <li key={deliverable}>{deliverable}</li>
                 ))}
               </ul>
-              <Link href={engagement.cta.href} className={styles.link}>
+              <TrackedLink
+                href={engagement.cta.href}
+                className={styles.link}
+                event="project_start"
+                source="capabilities"
+              >
                 {engagement.cta.label}
-              </Link>
+              </TrackedLink>
             </div>
           </article>
         ))}

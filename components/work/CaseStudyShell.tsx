@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import TrackedLink from "@/components/analytics/TrackedLink";
 import type { CaseStudyContent } from "@/data/caseStudyContent";
 import type { WorkProject } from "@/data/workProjects";
 import styles from "./CaseStudyShell.module.css";
@@ -160,10 +161,15 @@ export default function CaseStudyShell({
             <p>Production question</p>
             <h2 id="case-contact-title">Build a system like this.</h2>
           </div>
-          <Link className={styles.ctaLink} href="/contact">
+          <TrackedLink
+            className={styles.ctaLink}
+            href="/contact"
+            event="project_start"
+            source="case-study"
+          >
             Start a project
             <span aria-hidden="true">↗</span>
-          </Link>
+          </TrackedLink>
         </section>
       </div>
     </div>

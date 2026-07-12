@@ -1,4 +1,6 @@
 import Link from "next/link";
+import TrackedLink from "@/components/analytics/TrackedLink";
+import type { ConversionEventName } from "@/components/analytics/conversionEvents";
 import styles from "./Button.module.css";
 
 type Variant = "primary" | "ghost";
@@ -8,6 +10,8 @@ interface ButtonProps {
   variant?: Variant;
   children: React.ReactNode;
   external?: boolean;
+  event?: ConversionEventName;
+  source?: string;
 }
 
 export default function Button({
@@ -15,6 +19,8 @@ export default function Button({
   variant = "primary",
   children,
   external,
+  event,
+  source,
 }: ButtonProps) {
   const cls = `${styles.btn} ${variant === "primary" ? styles.primary : styles.ghost}`;
   if (external) {
@@ -26,6 +32,13 @@ export default function Button({
     );
   }
   if (href.startsWith("#") || href.startsWith("/")) {
+    if (event && source) {
+      return (
+        <TrackedLink className={cls} href={href} event={event} source={source}>
+          {children}
+        </TrackedLink>
+      );
+    }
     return (
       <Link className={cls} href={href}>
         {children}

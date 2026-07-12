@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
+import TrackedLink from "@/components/analytics/TrackedLink";
 import SectionHeader from "@/components/system/SectionHeader";
 import SystemViz from "@/components/system/SystemViz";
 import { vizBySlug } from "@/components/viz/registry";
@@ -130,16 +130,23 @@ export default function ChapterIndex() {
                   </dl>
                 </div>
                 <div className={styles.links}>
-                  <Link href={project.href} className={styles.link}>
+                  <TrackedLink
+                    href={project.href}
+                    className={styles.link}
+                    event="case_study_open"
+                    source="featured-work"
+                  >
                     Read the case study →
-                  </Link>
+                  </TrackedLink>
                   {project.primaryAction && (
-                    <Link
+                    <TrackedLink
                       href={project.primaryAction.href}
                       className={styles.linkSecondary}
+                      event="demo_open"
+                      source="featured-work"
                     >
                       {project.primaryAction.label}
-                    </Link>
+                    </TrackedLink>
                   )}
                 </div>
               </div>
