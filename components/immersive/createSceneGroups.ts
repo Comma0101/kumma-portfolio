@@ -48,6 +48,13 @@ export interface ImmersiveSceneGroups {
   dispose(): void;
 }
 
+export interface SceneGroupBuildOptions {
+  readonly onMechanismCreated?: (
+    key: SceneGroupKey,
+    root: THREE.Group,
+  ) => void;
+}
+
 interface MaterialState {
   readonly material: THREE.Material;
   readonly baseOpacity: number;
@@ -82,13 +89,37 @@ function materialState(material: THREE.Material): MaterialState {
   return { material, baseOpacity: material.opacity };
 }
 
+function groupRuntime(
+  group: THREE.Group,
+  materials: readonly MaterialState[],
+  motionAmplitude: number,
+  motionPhase: number,
+  motionSpeed: number,
+): GroupRuntime {
+  return {
+    group,
+    materials,
+    baseX: 0,
+    baseY: 0,
+    baseZ: 0,
+    baseRotationX: 0,
+    baseRotationY: 0,
+    baseRotationZ: 0,
+    motionAmplitude,
+    motionPhase,
+    motionSpeed,
+  };
+}
+
 function addLineSegments(
   group: THREE.Group,
   positions: readonly number[],
   material: THREE.LineBasicMaterial,
   name: string,
+  geometries: Set<THREE.BufferGeometry>,
 ): THREE.LineSegments {
   const geometry = new THREE.BufferGeometry();
+  geometries.add(geometry);
   geometry.setAttribute(
     "position",
     new THREE.Float32BufferAttribute(positions, 3),
@@ -99,6 +130,18 @@ function addLineSegments(
   return lines;
 }
 
+function disposeTrackedResources(
+  geometries: Set<THREE.BufferGeometry>,
+  materials: Set<THREE.Material>,
+): void {
+  for (const geometry of geometries) {
+    geometry.dispose();
+  }
+  for (const material of materials) {
+    material.dispose();
+  }
+}
+
 function createHorizon(
   group: THREE.Group,
   count: number,
@@ -106,6 +149,7 @@ function createHorizon(
   materials: Set<THREE.Material>,
 ): readonly MaterialState[] {
   const beaconGeometry = new THREE.CylinderGeometry(0.045, 0.11, 1, 6);
+  geometries.add(beaconGeometry);
   const beaconMaterial = new THREE.MeshBasicMaterial({
     color: ATLAS.sand,
     depthWrite: false,
@@ -113,6 +157,7 @@ function createHorizon(
     opacity: 0.58,
     transparent: true,
   });
+  materials.add(beaconMaterial);
   const beacons = new THREE.InstancedMesh(
     beaconGeometry,
     beaconMaterial,
@@ -137,8 +182,6 @@ function createHorizon(
   beacons.instanceMatrix.needsUpdate = true;
   beacons.name = "horizon-beacons";
   group.add(beacons);
-  geometries.add(beaconGeometry);
-  materials.add(beaconMaterial);
 
   const horizonMaterial = new THREE.LineBasicMaterial({
     color: ATLAS.steel,
@@ -147,19 +190,19 @@ function createHorizon(
     opacity: 0.15,
     transparent: true,
   });
+  materials.add(horizonMaterial);
   const horizonPositions: number[] = [];
   for (let index = 0; index < 7; index += 1) {
     const z = -8 - index * 7;
     horizonPositions.push(-24, 0, z, 24, 0, z);
   }
-  const horizonLines = addLineSegments(
+  addLineSegments(
     group,
     horizonPositions,
     horizonMaterial,
     "horizon-depth-lines",
+    geometries,
   );
-  geometries.add(horizonLines.geometry);
-  materials.add(horizonMaterial);
 
   return [materialState(beaconMaterial), materialState(horizonMaterial)];
 }
@@ -184,11 +227,13 @@ function createSignals(
     opacity: 0.62,
     transparent: true,
   });
-  const rails = addLineSegments(
+  materials.add(railMaterial);
+  addLineSegments(
     group,
     railPositions,
     railMaterial,
     "signal-rails",
+    geometries,
   );
 
   const particlePositions = new Float32Array(count * 3);
@@ -202,6 +247,7 @@ function createSignals(
     particlePositions[index * 3 + 2] = 4 - depthProgress * 36;
   }
   const particleGeometry = new THREE.BufferGeometry();
+  geometries.add(particleGeometry);
   particleGeometry.setAttribute(
     "position",
     new THREE.BufferAttribute(particlePositions, 3),
@@ -215,14 +261,10 @@ function createSignals(
     sizeAttenuation: true,
     transparent: true,
   });
+  materials.add(particleMaterial);
   const particles = new THREE.Points(particleGeometry, particleMaterial);
   particles.name = "signal-packets";
   group.add(particles);
-
-  geometries.add(rails.geometry);
-  geometries.add(particleGeometry);
-  materials.add(railMaterial);
-  materials.add(particleMaterial);
 
   return [materialState(railMaterial), materialState(particleMaterial)];
 }
@@ -234,6 +276,7 @@ function createVoice(
   materials: Set<THREE.Material>,
 ): readonly MaterialState[] {
   const ringGeometry = new THREE.TorusGeometry(1.8, 0.025, 4, 28);
+  geometries.add(ringGeometry);
   const ringMaterial = new THREE.MeshBasicMaterial({
     color: ATLAS.voiceAtmosphere,
     depthWrite: false,
@@ -241,6 +284,7 @@ function createVoice(
     opacity: 0.5,
     transparent: true,
   });
+  materials.add(ringMaterial);
   const rings = new THREE.InstancedMesh(ringGeometry, ringMaterial, count);
   const matrix = new THREE.Object3D();
 
@@ -278,17 +322,14 @@ function createVoice(
     opacity: 0.72,
     transparent: true,
   });
-  const waveform = addLineSegments(
+  materials.add(waveformMaterial);
+  addLineSegments(
     group,
     waveformPositions,
     waveformMaterial,
     "voice-waveform",
+    geometries,
   );
-
-  geometries.add(ringGeometry);
-  geometries.add(waveform.geometry);
-  materials.add(ringMaterial);
-  materials.add(waveformMaterial);
 
   return [materialState(ringMaterial), materialState(waveformMaterial)];
 }
@@ -300,6 +341,7 @@ function createDocument(
   materials: Set<THREE.Material>,
 ): readonly MaterialState[] {
   const documentGeometry = new THREE.PlaneGeometry(1.05, 1.4, 1, 1);
+  geometries.add(documentGeometry);
   const documentMaterial = new THREE.MeshBasicMaterial({
     color: ATLAS.paper,
     depthWrite: false,
@@ -309,6 +351,7 @@ function createDocument(
     transparent: true,
     wireframe: true,
   });
+  materials.add(documentMaterial);
   const documents = new THREE.InstancedMesh(
     documentGeometry,
     documentMaterial,
@@ -348,23 +391,20 @@ function createDocument(
     opacity: 0.54,
     transparent: true,
   });
+  materials.add(queueMaterial);
   const queuePositions = [
     -3.1, 0.35, -8, -3.1, 0.35, -34,
     0, 0.35, -8, 0, 0.35, -34,
     3.1, 0.35, -8, 3.1, 0.35, -34,
     -3.1, 0.35, -34, 3.1, 0.35, -34,
   ];
-  const queue = addLineSegments(
+  addLineSegments(
     group,
     queuePositions,
     queueMaterial,
     "document-queue",
+    geometries,
   );
-
-  geometries.add(documentGeometry);
-  geometries.add(queue.geometry);
-  materials.add(documentMaterial);
-  materials.add(queueMaterial);
 
   return [materialState(documentMaterial), materialState(queueMaterial)];
 }
@@ -376,6 +416,7 @@ function createOrchestration(
   materials: Set<THREE.Material>,
 ): readonly MaterialState[] {
   const nodeGeometry = new THREE.IcosahedronGeometry(0.18, 1);
+  geometries.add(nodeGeometry);
   const nodeMaterial = new THREE.MeshBasicMaterial({
     color: ATLAS.sand,
     depthWrite: false,
@@ -383,6 +424,7 @@ function createOrchestration(
     opacity: 0.72,
     transparent: true,
   });
+  materials.add(nodeMaterial);
   const nodes = new THREE.InstancedMesh(nodeGeometry, nodeMaterial, count);
   const nodePositions = new Float32Array(count * 3);
   const matrix = new THREE.Object3D();
@@ -423,7 +465,9 @@ function createOrchestration(
     opacity: 0.2,
     transparent: true,
   });
+  materials.add(edgeMaterial);
   const edgeGeometry = new THREE.BufferGeometry();
+  geometries.add(edgeGeometry);
   edgeGeometry.setAttribute(
     "position",
     new THREE.BufferAttribute(edgePositions, 3),
@@ -439,6 +483,7 @@ function createOrchestration(
     opacity: 0.68,
     transparent: true,
   });
+  materials.add(traceMaterial);
   const tracePositions: number[] = [];
   const traceCount = Math.min(count, 8);
   for (let index = 0; index < traceCount - 1; index += 1) {
@@ -453,19 +498,13 @@ function createOrchestration(
       nodePositions[next * 3 + 2],
     );
   }
-  const trace = addLineSegments(
+  addLineSegments(
     group,
     tracePositions,
     traceMaterial,
     "orchestration-routed-trace",
+    geometries,
   );
-
-  geometries.add(nodeGeometry);
-  geometries.add(edgeGeometry);
-  geometries.add(trace.geometry);
-  materials.add(nodeMaterial);
-  materials.add(edgeMaterial);
-  materials.add(traceMaterial);
 
   return [
     materialState(nodeMaterial),
@@ -500,6 +539,7 @@ function createSplats(
   }
 
   const splatGeometry = new THREE.BufferGeometry();
+  geometries.add(splatGeometry);
   splatGeometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
   splatGeometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
   const splatMaterial = new THREE.PointsMaterial({
@@ -511,12 +551,10 @@ function createSplats(
     transparent: true,
     vertexColors: true,
   });
+  materials.add(splatMaterial);
   const splats = new THREE.Points(splatGeometry, splatMaterial);
   splats.name = "ink-depth-points";
   group.add(splats);
-
-  geometries.add(splatGeometry);
-  materials.add(splatMaterial);
 
   return [materialState(splatMaterial)];
 }
@@ -547,11 +585,13 @@ function createMeasurement(
     opacity: 0.2,
     transparent: true,
   });
-  const grid = addLineSegments(
+  materials.add(gridMaterial);
+  addLineSegments(
     group,
     gridPositions,
     gridMaterial,
     "measurement-coordinate-grid",
+    geometries,
   );
 
   const ledgerPositions: number[] = [];
@@ -569,17 +609,14 @@ function createMeasurement(
     opacity: 0.62,
     transparent: true,
   });
-  const ledger = addLineSegments(
+  materials.add(ledgerMaterial);
+  addLineSegments(
     group,
     ledgerPositions,
     ledgerMaterial,
     "measurement-latency-ledger",
+    geometries,
   );
-
-  geometries.add(grid.geometry);
-  geometries.add(ledger.geometry);
-  materials.add(gridMaterial);
-  materials.add(ledgerMaterial);
 
   return [materialState(gridMaterial), materialState(ledgerMaterial)];
 }
@@ -598,12 +635,19 @@ function countsFromBudgets(budgets: SceneGroupBudgets): SceneGroupCounts {
 
 export function createSceneGroups(
   tuning: ThreeSceneTuning,
+  options: SceneGroupBuildOptions = {},
 ): ImmersiveSceneGroups {
   const root = new THREE.Group();
   root.name = "atlas-immersive-world";
   const geometries = new Set<THREE.BufferGeometry>();
   const materials = new Set<THREE.Material>();
   const counts = countsFromBudgets(tuning.groupBudgets);
+  let disposed = false;
+  const disposeResources = () => {
+    if (disposed) return;
+    disposed = true;
+    disposeTrackedResources(geometries, materials);
+  };
 
   const groups: Record<SceneGroupKey, THREE.Group> = {
     horizon: new THREE.Group(),
@@ -615,7 +659,8 @@ export function createSceneGroups(
     measurement: new THREE.Group(),
   };
 
-  for (const key of GROUP_KEYS) {
+  for (let index = 0; index < GROUP_KEYS.length; index += 1) {
+    const key = GROUP_KEYS[index];
     const group = groups[key];
     group.name = `immersive-${key}`;
     group.userData.mechanism = MECHANISM_NAMES[key];
@@ -624,136 +669,131 @@ export function createSceneGroups(
     root.add(group);
   }
 
-  const runtimes: Record<SceneGroupKey, GroupRuntime> = {
-    horizon: {
-      group: groups.horizon,
-      materials: createHorizon(
-        groups.horizon,
-        counts.horizon,
-        geometries,
-        materials,
-      ),
-      baseX: 0,
-      baseY: 0,
-      baseZ: 0,
-      baseRotationX: 0,
-      baseRotationY: 0,
-      baseRotationZ: 0,
-      motionAmplitude: 0.035,
-      motionPhase: 0.3,
-      motionSpeed: 0.22,
-    },
-    signals: {
-      group: groups.signals,
-      materials: createSignals(
-        groups.signals,
-        counts.signals,
-        geometries,
-        materials,
-      ),
-      baseX: 0,
-      baseY: 0,
-      baseZ: 0,
-      baseRotationX: 0,
-      baseRotationY: 0,
-      baseRotationZ: 0,
-      motionAmplitude: 0.14,
-      motionPhase: 1.1,
-      motionSpeed: 0.55,
-    },
-    voice: {
-      group: groups.voice,
-      materials: createVoice(
-        groups.voice,
-        counts.voice,
-        geometries,
-        materials,
-      ),
-      baseX: 0,
-      baseY: 0,
-      baseZ: 0,
-      baseRotationX: 0,
-      baseRotationY: 0,
-      baseRotationZ: 0,
-      motionAmplitude: 0.11,
-      motionPhase: 2.4,
-      motionSpeed: 0.7,
-    },
-    document: {
-      group: groups.document,
-      materials: createDocument(
-        groups.document,
-        counts.document,
-        geometries,
-        materials,
-      ),
-      baseX: 0,
-      baseY: 0,
-      baseZ: 0,
-      baseRotationX: 0,
-      baseRotationY: 0,
-      baseRotationZ: 0,
-      motionAmplitude: 0.09,
-      motionPhase: 3.2,
-      motionSpeed: 0.38,
-    },
-    orchestration: {
-      group: groups.orchestration,
-      materials: createOrchestration(
-        groups.orchestration,
-        counts.orchestration,
-        geometries,
-        materials,
-      ),
-      baseX: 0,
-      baseY: 0,
-      baseZ: 0,
-      baseRotationX: 0,
-      baseRotationY: 0,
-      baseRotationZ: 0,
-      motionAmplitude: 0.075,
-      motionPhase: 4.4,
-      motionSpeed: 0.24,
-    },
-    splats: {
-      group: groups.splats,
-      materials: createSplats(
-        groups.splats,
-        counts.splats,
-        geometries,
-        materials,
-      ),
-      baseX: 0,
-      baseY: 0,
-      baseZ: 0,
-      baseRotationX: 0,
-      baseRotationY: 0,
-      baseRotationZ: 0,
-      motionAmplitude: 0.12,
-      motionPhase: 5.1,
-      motionSpeed: 0.2,
-    },
-    measurement: {
-      group: groups.measurement,
-      materials: createMeasurement(
-        groups.measurement,
-        counts.measurement,
-        geometries,
-        materials,
-      ),
-      baseX: 0,
-      baseY: 0,
-      baseZ: 0,
-      baseRotationX: 0,
-      baseRotationY: 0,
-      baseRotationZ: 0,
-      motionAmplitude: 0.025,
-      motionPhase: 5.8,
-      motionSpeed: 0.16,
-    },
+  const finishMechanism = <T extends readonly MaterialState[]>(
+    key: SceneGroupKey,
+    states: T,
+  ): T => {
+    options.onMechanismCreated?.(key, root);
+    return states;
   };
 
-  let disposed = false;
+  let runtimes: Record<SceneGroupKey, GroupRuntime>;
+  try {
+    runtimes = {
+      horizon: groupRuntime(
+        groups.horizon,
+        finishMechanism(
+          "horizon",
+          createHorizon(
+            groups.horizon,
+            counts.horizon,
+            geometries,
+            materials,
+          ),
+        ),
+        0.035,
+        0.3,
+        0.22,
+      ),
+      signals: groupRuntime(
+        groups.signals,
+        finishMechanism(
+          "signals",
+          createSignals(
+            groups.signals,
+            counts.signals,
+            geometries,
+            materials,
+          ),
+        ),
+        0.14,
+        1.1,
+        0.55,
+      ),
+      voice: groupRuntime(
+        groups.voice,
+        finishMechanism(
+          "voice",
+          createVoice(
+            groups.voice,
+            counts.voice,
+            geometries,
+            materials,
+          ),
+        ),
+        0.11,
+        2.4,
+        0.7,
+      ),
+      document: groupRuntime(
+        groups.document,
+        finishMechanism(
+          "document",
+          createDocument(
+            groups.document,
+            counts.document,
+            geometries,
+            materials,
+          ),
+        ),
+        0.09,
+        3.2,
+        0.38,
+      ),
+      orchestration: groupRuntime(
+        groups.orchestration,
+        finishMechanism(
+          "orchestration",
+          createOrchestration(
+            groups.orchestration,
+            counts.orchestration,
+            geometries,
+            materials,
+          ),
+        ),
+        0.075,
+        4.4,
+        0.24,
+      ),
+      splats: groupRuntime(
+        groups.splats,
+        finishMechanism(
+          "splats",
+          createSplats(
+            groups.splats,
+            counts.splats,
+            geometries,
+            materials,
+          ),
+        ),
+        0.12,
+        5.1,
+        0.2,
+      ),
+      measurement: groupRuntime(
+        groups.measurement,
+        finishMechanism(
+          "measurement",
+          createMeasurement(
+            groups.measurement,
+            counts.measurement,
+            geometries,
+            materials,
+          ),
+        ),
+        0.025,
+        5.8,
+        0.16,
+      ),
+    };
+  } catch (error) {
+    for (let index = 0; index < GROUP_KEYS.length; index += 1) {
+      groups[GROUP_KEYS[index]].clear();
+    }
+    root.clear();
+    disposeResources();
+    throw error;
+  }
 
   return {
     root,
@@ -767,7 +807,8 @@ export function createSceneGroups(
       let strongestWeight = -1;
       let secondWeight = -1;
 
-      for (const key of GROUP_KEYS) {
+      for (let index = 0; index < GROUP_KEYS.length; index += 1) {
+        const key = GROUP_KEYS[index];
         const weight = clamp01(weights[key]);
         if (weight > strongestWeight) {
           secondStrongest = strongest;
@@ -780,7 +821,8 @@ export function createSceneGroups(
         }
       }
 
-      for (const key of GROUP_KEYS) {
+      for (let index = 0; index < GROUP_KEYS.length; index += 1) {
+        const key = GROUP_KEYS[index];
         const runtime = runtimes[key];
         const weight = clamp01(weights[key]);
         const opacity = clamp01(weight * 1.55);
@@ -808,21 +850,18 @@ export function createSceneGroups(
         );
         runtime.group.scale.setScalar(0.94 + weight * 0.06);
 
-        for (const state of runtime.materials) {
+        for (
+          let materialIndex = 0;
+          materialIndex < runtime.materials.length;
+          materialIndex += 1
+        ) {
+          const state = runtime.materials[materialIndex];
           state.material.opacity = state.baseOpacity * opacity;
         }
       }
     },
     dispose() {
-      if (disposed) return;
-      disposed = true;
-
-      for (const geometry of geometries) {
-        geometry.dispose();
-      }
-      for (const material of materials) {
-        material.dispose();
-      }
+      disposeResources();
     },
   };
 }

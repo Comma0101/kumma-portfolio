@@ -246,6 +246,43 @@ describe("createSceneGroups", () => {
     assert.ok([...calls.values()].every((count) => count === 1));
   });
 
+  it("cleans every partially constructed resource once before rethrowing", () => {
+    const failure = new Error("injected voice construction failure");
+    const completed: SceneGroupKey[] = [];
+    const calls = new Map<
+      ThreeTypes.BufferGeometry | ThreeTypes.Material,
+      number
+    >();
+    let partialRoot: ThreeTypes.Group | null = null;
+
+    assert.throws(
+      () =>
+        createSceneGroups(desktopTuning, {
+          onMechanismCreated(key, root) {
+            completed.push(key);
+            if (key !== "voice") return;
+
+            partialRoot = root;
+            const { geometries, materials } = collectResources(root);
+            for (const resource of [...geometries, ...materials]) {
+              calls.set(resource, 0);
+              resource.dispose = () => {
+                calls.set(resource, (calls.get(resource) ?? 0) + 1);
+              };
+            }
+            throw failure;
+          },
+        }),
+      failure,
+    );
+
+    assert.deepEqual(completed, ["horizon", "signals", "voice"]);
+    assert.ok(partialRoot);
+    assert.equal((partialRoot as ThreeTypes.Group).children.length, 0);
+    assert.ok(calls.size > 0);
+    assert.ok([...calls.values()].every((count) => count === 1));
+  });
+
   it("constructs procedurally without random placement or runtime assets", () => {
     const source = readFileSync(
       path.resolve(process.cwd(), "components/immersive/createSceneGroups.ts"),

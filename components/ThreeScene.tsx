@@ -4,7 +4,12 @@ import { useCallback, useEffect, useRef } from "react";
 import * as THREE from "three";
 import styles from "../styles/home.module.css";
 import { createSceneGroups } from "./immersive/createSceneGroups";
+import type { ImmersiveSceneGroups } from "./immersive/createSceneGroups";
 import { sampleImmersiveJourney } from "./immersive/immersiveStages";
+import {
+  createResourceCandidateBundle,
+  swapResourceCandidate,
+} from "./immersive/resourceTransaction";
 import {
   copySceneGroupWeights,
   createMutableSceneGroupWeights,
@@ -152,6 +157,13 @@ interface TerrainResources {
   readonly geometry: THREE.PlaneGeometry;
   readonly material: THREE.ShaderMaterial;
   readonly mesh: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>;
+  disposed: boolean;
+}
+
+interface SceneWorldResources {
+  readonly terrain: TerrainResources;
+  readonly groups: ImmersiveSceneGroups;
+  readonly tuning: ThreeSceneTuning;
 }
 
 function createTerrainResources(
@@ -164,25 +176,83 @@ function createTerrainResources(
     tuning.segmentX,
     tuning.segmentZ,
   );
-  const material = new THREE.ShaderMaterial({
-    depthWrite: true,
-    fragmentShader: FRAG,
-    side: THREE.DoubleSide,
-    transparent: true,
-    uniforms,
-    vertexShader: VERT(tuning.noiseOctaves),
-  });
-  const mesh = new THREE.Mesh(geometry, material);
-  mesh.name = "atlas-shared-terrain";
-  mesh.renderOrder = -1;
+  let material: THREE.ShaderMaterial | null = null;
 
-  return { geometry, material, mesh };
+  try {
+    material = new THREE.ShaderMaterial({
+      depthWrite: true,
+      fragmentShader: FRAG,
+      side: THREE.DoubleSide,
+      transparent: true,
+      uniforms,
+      vertexShader: VERT(tuning.noiseOctaves),
+    });
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.name = "atlas-shared-terrain";
+    mesh.renderOrder = -1;
+
+    return { disposed: false, geometry, material, mesh };
+  } catch (error) {
+    material?.dispose();
+    geometry.dispose();
+    throw error;
+  }
 }
 
 function disposeTerrainResources(resources: TerrainResources): void {
+  if (resources.disposed) return;
+  resources.disposed = true;
   resources.mesh.removeFromParent();
   resources.geometry.dispose();
   resources.material.dispose();
+}
+
+function createSceneWorldResources(
+  tuning: ThreeSceneTuning,
+  uniforms: TerrainUniforms,
+): SceneWorldResources {
+  const resources = createResourceCandidateBundle({
+    createTerrain: () => createTerrainResources(tuning, uniforms),
+    createGroups: () => createSceneGroups(tuning),
+    disposeTerrain: disposeTerrainResources,
+  });
+  return { ...resources, tuning };
+}
+
+function attachSceneWorldResources(
+  scene: THREE.Scene,
+  resources: SceneWorldResources,
+): void {
+  scene.add(resources.terrain.mesh);
+  scene.add(resources.groups.root);
+}
+
+function detachSceneWorldResources(resources: SceneWorldResources): void {
+  resources.terrain.mesh.removeFromParent();
+  resources.groups.root.removeFromParent();
+}
+
+function retireContextLostSceneWorld(resources: SceneWorldResources): void {
+  // The context already destroyed these GPU handles. Dispatching Three.js
+  // dispose events would try to delete pre-loss handles from the new context.
+  detachSceneWorldResources(resources);
+}
+
+function disposeSceneWorldResources(resources: SceneWorldResources): void {
+  detachSceneWorldResources(resources);
+  resources.groups.dispose();
+  disposeTerrainResources(resources.terrain);
+}
+
+function disposeRendererResources(
+  renderer: THREE.WebGLRenderer,
+  mount: HTMLDivElement,
+): void {
+  renderer.dispose();
+  renderer.forceContextLoss();
+  if (mount.contains(renderer.domElement)) {
+    mount.removeChild(renderer.domElement);
+  }
 }
 
 export default function ThreeScene() {
@@ -288,9 +358,6 @@ export default function ThreeScene() {
     renderer.domElement.dataset.immersiveCanvas = "true";
     renderer.domElement.style.width = "100%";
     renderer.domElement.style.height = "100%";
-    mount.appendChild(renderer.domElement);
-    mount.dataset.webglState = "ready";
-    webglReady = true;
 
     const scene = new THREE.Scene();
     const sceneFog = new THREE.FogExp2(
@@ -327,12 +394,32 @@ export default function ThreeScene() {
       uFogColor: { value: sceneFog.color },
       uFogDensity: { value: initialSample.fog.density },
     };
-    let activeTuning = initialTuning;
-    let terrainResources = createTerrainResources(initialTuning, uniforms);
-    scene.add(terrainResources.mesh);
+    let initialWorldResources: SceneWorldResources;
+    try {
+      initialWorldResources = createSceneWorldResources(
+        initialTuning,
+        uniforms,
+      );
+    } catch (error) {
+      disposeRendererResources(renderer, mount);
+      markWebglUnavailable(error);
+      return () => {
+        if (sceneWakeRef.current === syncJourneyState) {
+          sceneWakeRef.current = null;
+        }
+      };
+    }
 
-    let sceneGroups = createSceneGroups(initialTuning);
+    let liveWorldResources = initialWorldResources;
+    let activeTuning = initialTuning;
+    let terrainResources = liveWorldResources.terrain;
+    let sceneGroups = liveWorldResources.groups;
+    scene.add(terrainResources.mesh);
     scene.add(sceneGroups.root);
+    mount.appendChild(renderer.domElement);
+    mount.dataset.webglState = "ready";
+    webglReady = true;
+
     const currentGroupWeights = createMutableSceneGroupWeights(
       initialSample.groups,
     );
@@ -357,6 +444,38 @@ export default function ThreeScene() {
       my = event.clientY / Math.max(1, window.innerHeight) - 0.5;
     };
 
+    let warnedAboutResourceSwap = false;
+    const createPreparedSceneWorldResources = (
+      nextTuning: ThreeSceneTuning,
+    ): SceneWorldResources => {
+      const candidate = createSceneWorldResources(nextTuning, uniforms);
+      const sample = currentSample();
+      try {
+        candidate.groups.update(
+          currentGroupWeights,
+          uniforms.uTime.value,
+          isReducedMotion()
+            ? 0
+            : motionScaleForTransition(
+                sample.transition.toId,
+                sample.transition.easedProgress,
+              ),
+        );
+        return candidate;
+      } catch (error) {
+        disposeSceneWorldResources(candidate);
+        throw error;
+      }
+    };
+    const warnAboutResourceSwap = (error: unknown) => {
+      if (warnedAboutResourceSwap) return;
+      warnedAboutResourceSwap = true;
+      console.warn(
+        "Immersive scene quality change failed; keeping the current world.",
+        error,
+      );
+    };
+
     const syncSceneResources = (nextTuning: ThreeSceneTuning): boolean => {
       if (
         !shouldRebuildSceneResources(
@@ -367,28 +486,51 @@ export default function ThreeScene() {
         return false;
       }
 
-      sceneGroups.root.removeFromParent();
-      sceneGroups.dispose();
-      disposeTerrainResources(terrainResources);
+      const swapResult = swapResourceCandidate(liveWorldResources, {
+        createCandidate: () =>
+          createPreparedSceneWorldResources(nextTuning),
+        attachCandidate: (candidate) =>
+          attachSceneWorldResources(scene, candidate),
+        detachCurrent: detachSceneWorldResources,
+        disposeResource: disposeSceneWorldResources,
+      });
 
-      terrainResources = createTerrainResources(nextTuning, uniforms);
-      scene.add(terrainResources.mesh);
-      sceneGroups = createSceneGroups(nextTuning);
-      scene.add(sceneGroups.root);
+      if (!swapResult.replaced) {
+        warnAboutResourceSwap(swapResult.error);
+        return false;
+      }
+
+      liveWorldResources = swapResult.current;
+      terrainResources = liveWorldResources.terrain;
+      sceneGroups = liveWorldResources.groups;
       activeTuning = nextTuning;
       mount.dataset.sceneProfile = nextTuning.profile;
+      return true;
+    };
 
-      const sample = currentSample();
-      sceneGroups.update(
-        currentGroupWeights,
-        uniforms.uTime.value,
-        isReducedMotion()
-          ? 0
-          : motionScaleForTransition(
-              sample.transition.toId,
-              sample.transition.easedProgress,
-            ),
-      );
+    const rebuildSceneResourcesAfterContextRestore = (
+      nextTuning: ThreeSceneTuning,
+    ): boolean => {
+      const swapResult = swapResourceCandidate(liveWorldResources, {
+        createCandidate: () =>
+          createPreparedSceneWorldResources(nextTuning),
+        attachCandidate: (candidate) =>
+          attachSceneWorldResources(scene, candidate),
+        detachCurrent: detachSceneWorldResources,
+        disposeResource: disposeSceneWorldResources,
+        retireCurrent: retireContextLostSceneWorld,
+      });
+
+      if (!swapResult.replaced) {
+        warnAboutResourceSwap(swapResult.error);
+        return false;
+      }
+
+      liveWorldResources = swapResult.current;
+      terrainResources = liveWorldResources.terrain;
+      sceneGroups = liveWorldResources.groups;
+      activeTuning = nextTuning;
+      mount.dataset.sceneProfile = nextTuning.profile;
       return true;
     };
 
@@ -722,7 +864,37 @@ export default function ThreeScene() {
       stopLoop();
       markWebglUnavailable("WebGL context lost");
     };
+    const handleContextRestored = () => {
+      const restoredTuning = getThreeSceneTuning({
+        deviceMemory: nav.deviceMemory,
+        devicePixelRatio: window.devicePixelRatio,
+        hardwareConcurrency: navigator.hardwareConcurrency,
+        isCoarsePointer: !finePointerAvailable,
+        reducedMotion: isReducedMotion(),
+        viewportWidth: window.innerWidth,
+      });
+      if (!rebuildSceneResourcesAfterContextRestore(restoredTuning)) {
+        markWebglUnavailable("WebGL restoration resource rebuild failed");
+        return;
+      }
+
+      webglReady = true;
+      mount.dataset.webglState = "ready";
+      syncSceneQualityForViewport();
+
+      const width = Math.max(1, window.innerWidth);
+      const height = Math.max(1, window.innerHeight);
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height, false);
+      renderStaticFrame();
+      wakeScene();
+    };
     renderer.domElement.addEventListener("webglcontextlost", handleContextLost);
+    renderer.domElement.addEventListener(
+      "webglcontextrestored",
+      handleContextRestored,
+    );
 
     renderStaticFrame();
     startLoop();
@@ -738,17 +910,15 @@ export default function ThreeScene() {
         "webglcontextlost",
         handleContextLost,
       );
+      renderer.domElement.removeEventListener(
+        "webglcontextrestored",
+        handleContextRestored,
+      );
       sceneWakeRef.current = null;
       webglReady = false;
       stopLoop();
-      sceneGroups.root.removeFromParent();
-      sceneGroups.dispose();
-      disposeTerrainResources(terrainResources);
-      renderer.dispose();
-      renderer.forceContextLoss();
-      if (mount.contains(renderer.domElement)) {
-        mount.removeChild(renderer.domElement);
-      }
+      disposeSceneWorldResources(liveWorldResources);
+      disposeRendererResources(renderer, mount);
     };
   }, []);
 

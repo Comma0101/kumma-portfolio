@@ -489,7 +489,7 @@ describe("homepage immersive scroll source contract", () => {
       source,
       /import\s*\{\s*createSceneGroups\s*\}\s*from\s*["']\.\/immersive\/createSceneGroups["']/,
     );
-    assert.equal(source.match(/createSceneGroups\(/g)?.length, 2);
+    assert.equal(source.match(/createSceneGroups\(/g)?.length, 1);
     assert.match(source, /scene\.add\(sceneGroups\.root\)/);
     assert.match(
       source,
@@ -652,7 +652,7 @@ describe("homepage immersive scroll source contract", () => {
     assert.match(resizeHandler, /getThreeSceneTuning\(/);
   });
 
-  it("swaps bounded terrain and group resources only when the profile changes", () => {
+  it("builds profile candidates transactionally before retiring the live world", () => {
     const source = readSource("components/ThreeScene.tsx");
     const syncResources = source.slice(
       source.indexOf("const syncSceneResources"),
@@ -672,31 +672,103 @@ describe("homepage immersive scroll source contract", () => {
     );
 
     assert.match(source, /function createTerrainResources/);
+    assert.match(source, /function createSceneWorldResources/);
+    assert.match(source, /swapResourceCandidate/);
     assert.match(source, /let terrainResources\s*=/);
     assert.match(source, /let sceneGroups\s*=/);
+    assert.match(source, /let liveWorldResources\s*=/);
     assert.match(source, /let activeTuning\s*=/);
     assert.match(
       syncResources,
       /shouldRebuildSceneResources\(\s*activeTuning\.profile,\s*nextTuning\.profile/,
     );
     assert.match(syncResources, /return false/);
-    const groupDisposal = syncResources.indexOf("sceneGroups.dispose()");
-    const terrainDisposal = syncResources.indexOf("disposeTerrainResources(");
-    const groupReplacement = syncResources.indexOf(
-      "sceneGroups = createSceneGroups(nextTuning)",
+    assert.match(
+      syncResources,
+      /swapResourceCandidate\(\s*liveWorldResources/,
     );
-    const terrainReplacement = syncResources.indexOf(
-      "terrainResources = createTerrainResources(nextTuning",
+    assert.match(
+      syncResources,
+      /createCandidate:[\s\S]*createPreparedSceneWorldResources/,
     );
-    assert.ok(groupDisposal >= 0 && groupDisposal < groupReplacement);
-    assert.ok(terrainDisposal >= 0 && terrainDisposal < terrainReplacement);
+    assert.match(
+      source,
+      /const createPreparedSceneWorldResources[\s\S]*createSceneWorldResources\(nextTuning,\s*uniforms\)/,
+    );
+    assert.match(syncResources, /attachCandidate:[\s\S]*attachSceneWorldResources/);
+    assert.match(syncResources, /detachCurrent:[\s\S]*detachSceneWorldResources/);
+    assert.match(syncResources, /disposeResource:\s*disposeSceneWorldResources/);
+    assert.match(
+      syncResources,
+      /if\s*\(!swapResult\.replaced\)[\s\S]*return false/,
+    );
+    assert.match(
+      syncResources,
+      /liveWorldResources\s*=\s*swapResult\.current/,
+    );
+    assert.doesNotMatch(
+      syncResources.slice(0, syncResources.indexOf("swapResourceCandidate")),
+      /sceneGroups\.dispose|disposeTerrainResources/,
+    );
     assert.match(syncResources, /dataset\.sceneProfile\s*=\s*nextTuning\.profile/);
-    assert.match(syncResources, /sceneGroups\.update\(\s*currentGroupWeights,/);
+    assert.match(source, /candidate\.groups\.update\(\s*currentGroupWeights,/);
     assert.match(wakeScene, /syncSceneQualityForViewport\(\)/);
     assert.match(finePointerChange, /syncSceneQualityForViewport\(\)/);
     assert.match(resize, /syncSceneResources\(resizeTuning\)/);
     assert.equal(source.match(/new THREE\.WebGLRenderer/g)?.length, 1);
     assert.equal(source.match(/new THREE\.PerspectiveCamera/g)?.length, 1);
+  });
+
+  it("tears down renderer setup if the initial world cannot be constructed", () => {
+    const source = readSource("components/ThreeScene.tsx");
+    const initialSetup = source.slice(
+      source.indexOf("let initialWorldResources"),
+      source.indexOf("let finePointerAvailable"),
+    );
+
+    assert.match(
+      initialSetup,
+      /try\s*\{[\s\S]*createSceneWorldResources\(\s*initialTuning,\s*uniforms/,
+    );
+    assert.ok(
+      initialSetup.indexOf("createSceneWorldResources") <
+        initialSetup.indexOf("mount.appendChild(renderer.domElement)"),
+    );
+    assert.match(
+      initialSetup,
+      /catch\s*\(error\)[\s\S]*disposeRendererResources\(renderer,\s*mount\)[\s\S]*markWebglUnavailable\(error\)/,
+    );
+    assert.match(initialSetup, /sceneWakeRef\.current\s*===\s*syncJourneyState/);
+  });
+
+  it("restores the existing WebGL renderer, canvas, profile, and current sample", () => {
+    const source = readSource("components/ThreeScene.tsx");
+    const contextLost = source.slice(
+      source.indexOf("const handleContextLost"),
+      source.indexOf("const handleContextRestored"),
+    );
+    const contextRestored = source.slice(
+      source.indexOf("const handleContextRestored"),
+      source.indexOf("renderStaticFrame();", source.indexOf("const handleContextRestored")) +
+        "renderStaticFrame();".length,
+    );
+    const cleanup = source.slice(source.indexOf("return () => {", source.indexOf("renderStaticFrame();")));
+
+    assert.match(contextLost, /event\.preventDefault\(\)/);
+    assert.match(contextLost, /markWebglUnavailable\(["']WebGL context lost["']\)/);
+    assert.match(contextRestored, /webglReady\s*=\s*true/);
+    assert.match(contextRestored, /dataset\.webglState\s*=\s*["']ready["']/);
+    assert.match(
+      contextRestored,
+      /rebuildSceneResourcesAfterContextRestore\(/,
+    );
+    assert.match(contextRestored, /syncSceneQualityForViewport\(\)/);
+    assert.match(contextRestored, /renderer\.setSize\(/);
+    assert.match(contextRestored, /renderStaticFrame\(\)/);
+    assert.match(source, /addEventListener\(\s*["']webglcontextrestored["']/);
+    assert.match(cleanup, /removeEventListener\(\s*["']webglcontextrestored["']/);
+    assert.match(source, /retireCurrent:[\s\S]*retireContextLostSceneWorld/);
+    assert.equal(source.match(/new THREE\.WebGLRenderer/g)?.length, 1);
   });
 
   it("fades the fixed world outside the pure journey range and restores it on re-entry", () => {
@@ -728,7 +800,7 @@ describe("homepage immersive scroll source contract", () => {
     assert.match(source, /dataset\.webglState\s*=\s*["']ready["']/);
     assert.match(source, /dataset\.webglState\s*=\s*["']unavailable["']/);
     assert.match(source, /webglcontextlost/);
-    assert.match(source, /sceneGroups\.dispose\(\)/);
+    assert.match(source, /resources\.groups\.dispose\(\)/);
     assert.match(source, /geometry\.dispose\(\)/);
     assert.match(source, /material\.dispose\(\)/);
     assert.match(source, /renderer\.dispose\(\)/);
