@@ -41,7 +41,13 @@ export const workCollectionLd = {
   url: "https://kumma.me/work",
   description:
     "Production AI work and case studies spanning real-time voice, agent orchestration, production TTS, AI-to-3D research, real-time graphics, and data-correctness systems.",
-  author: { "@id": "https://kumma.me/#person" },
+  author: {
+    "@type": "Person",
+    "@id": "https://kumma.me/#person",
+    name: "Kumma",
+    alternateName: "Yang Wu",
+    url: "https://kumma.me",
+  },
   mainEntity: {
     "@type": "ItemList",
     itemListElement: workProjects.map((project, index) => ({

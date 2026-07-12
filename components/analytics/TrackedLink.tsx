@@ -3,8 +3,7 @@
 import Link from "next/link";
 import type { ComponentProps } from "react";
 import {
-  createConversionEvent,
-  dispatchConversionEvent,
+  safeTrackConversion,
   type ConversionEventName,
 } from "./conversionEvents";
 
@@ -24,11 +23,7 @@ export default function TrackedLink({
     <Link
       {...linkProps}
       onClick={(clickEvent) => {
-        try {
-          dispatchConversionEvent(createConversionEvent(event, { source }));
-        } catch {
-          // Analytics must never break navigation.
-        }
+        safeTrackConversion(event, source);
         onClick?.(clickEvent);
       }}
     >

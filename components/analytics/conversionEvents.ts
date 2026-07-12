@@ -31,6 +31,58 @@ export function createConversionEvent(
   return { event: name, source };
 }
 
+export interface ConversionTrackingTargets {
+  readonly umami?: {
+    readonly track?: (event: string, data?: Record<string, string>) => void;
+  };
+  readonly gtag?: (
+    command: "event",
+    name: string,
+    params?: Record<string, string>,
+  ) => void;
+}
+
+export function forwardConversionDetail(
+  detail: unknown,
+  tracking: ConversionTrackingTargets,
+): "umami" | "gtag" | null {
+  if (detail === null || typeof detail !== "object") return null;
+
+  const candidate = detail as { event?: unknown; source?: unknown };
+  if (
+    typeof candidate.event !== "string" ||
+    typeof candidate.source !== "string" ||
+    !conversionEventNames.some((allowed) => allowed === candidate.event)
+  ) {
+    return null;
+  }
+
+  // Rebuild the payload so only the source ever reaches a vendor.
+  const payload = { source: candidate.source };
+  if (typeof tracking.umami?.track === "function") {
+    tracking.umami.track(candidate.event, payload);
+    return "umami";
+  }
+  if (typeof tracking.gtag === "function") {
+    tracking.gtag("event", candidate.event, payload);
+    return "gtag";
+  }
+  return null;
+}
+
+export function safeTrackConversion(
+  name: ConversionEventName,
+  source: string,
+): boolean {
+  try {
+    dispatchConversionEvent(createConversionEvent(name, { source }));
+    return true;
+  } catch {
+    // Analytics must never break navigation or the caller.
+    return false;
+  }
+}
+
 export function dispatchConversionEvent(event: ConversionEvent): void {
   if (
     typeof window === "undefined" ||

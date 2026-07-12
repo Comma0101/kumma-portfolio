@@ -440,6 +440,8 @@
   .outcome,
   .contextColumns p,
   .mechanismLead,
+  .stage p,
+  .flow dd,
   .limitList li,
   .artifact > div > p,
   .relatedNote {

@@ -7,6 +7,8 @@ import {
   conversionEventNames,
   createConversionEvent,
   dispatchConversionEvent,
+  forwardConversionDetail,
+  safeTrackConversion,
 } from "./conversionEvents";
 
 function readSource(file: string): string {
@@ -67,23 +69,99 @@ describe("conversion event contract", () => {
   });
 });
 
+describe("conversion forwarding runtime behavior", () => {
+  function trackingStub() {
+    const calls: Array<{ via: string; event: string; payload: unknown }> = [];
+    return {
+      calls,
+      umami: {
+        track: (event: string, payload?: Record<string, string>) =>
+          calls.push({ via: "umami", event, payload }),
+      },
+      gtag: (
+        _command: "event",
+        event: string,
+        payload?: Record<string, string>,
+      ) => calls.push({ via: "gtag", event, payload }),
+    };
+  }
+
+  it("forwards allow-listed events with a rebuilt source-only payload", () => {
+    const stub = trackingStub();
+    const via = forwardConversionDetail(
+      {
+        event: "mailto_submit",
+        source: "contact",
+        email: "leak@example.com",
+        name: "Leaky",
+      },
+      stub,
+    );
+
+    assert.equal(via, "umami");
+    assert.equal(stub.calls.length, 1);
+    assert.deepEqual(stub.calls[0].payload, { source: "contact" });
+    assert.ok(!JSON.stringify(stub.calls[0]).includes("leak@example.com"));
+  });
+
+  it("prefers umami and falls back to gtag", () => {
+    const stub = trackingStub();
+    const viaGtag = forwardConversionDetail(
+      { event: "demo_open", source: "hero" },
+      { gtag: stub.gtag },
+    );
+
+    assert.equal(viaGtag, "gtag");
+    assert.deepEqual(stub.calls[0].payload, { source: "hero" });
+  });
+
+  it("drops unknown events and malformed details without forwarding", () => {
+    const stub = trackingStub();
+
+    assert.equal(
+      forwardConversionDetail({ event: "not_allowed", source: "hero" }, stub),
+      null,
+    );
+    assert.equal(forwardConversionDetail({ event: "demo_open" }, stub), null);
+    assert.equal(forwardConversionDetail(null, stub), null);
+    assert.equal(forwardConversionDetail("demo_open", stub), null);
+    assert.equal(stub.calls.length, 0);
+  });
+
+  it("is a no-op when no tracking vendor exists", () => {
+    assert.equal(
+      forwardConversionDetail({ event: "demo_open", source: "hero" }, {}),
+      null,
+    );
+  });
+});
+
+describe("safe click-side tracking", () => {
+  it("never throws for invalid input and reports failure", () => {
+    assert.equal(safeTrackConversion("unknown" as never, "hero"), false);
+    assert.equal(safeTrackConversion("demo_open", "  "), false);
+  });
+
+  it("reports success for valid events even without a window", () => {
+    assert.equal(safeTrackConversion("demo_open", "hero"), true);
+  });
+});
+
 describe("conversion instrumentation source contracts", () => {
   it("keeps TrackedLink an ordinary link with a pre-navigation event", () => {
     const source = readSource("components/analytics/TrackedLink.tsx");
 
     assert.match(source, /["']use client["']/);
-    assert.match(source, /dispatchConversionEvent/);
-    assert.match(source, /createConversionEvent/);
+    assert.match(source, /safeTrackConversion/);
     assert.doesNotMatch(source, /preventDefault/);
   });
 
-  it("forwards only allow-listed events with a source-only payload", () => {
+  it("forwards only allow-listed events through the tested pure helper", () => {
     const source = readSource("components/analytics/ConversionListener.tsx");
 
     assert.match(source, /["']use client["']/);
     assert.match(source, /CONVERSION_EVENT_CHANNEL/);
-    assert.match(source, /conversionEventNames/);
-    assert.match(source, /\{\s*source:/);
+    assert.match(source, /forwardConversionDetail/);
     assert.doesNotMatch(source, /email|formData|detail\.name/);
   });
 
