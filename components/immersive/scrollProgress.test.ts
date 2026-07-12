@@ -142,37 +142,60 @@ describe("journey geometry", () => {
     );
   });
 
-  it("keeps contact active while reading, then exits as the footer substantially enters", () => {
+  it("keeps contact active until one quarter of the footer viewport enters", () => {
     const anchors = makeAnchors(
       [0, 914, 3082, 3697, 4237, 5554, 6308, 12488],
       [914, 551, 594, 521, 1297, 610, 2387, 1083],
     );
     const contact = anchors.at(-1)!;
+    const viewportHeight = 900;
+    const footerEntryLine =
+      viewportHeight * (1 - JOURNEY_EXIT_VIEWPORT_RATIO);
     const exitAt =
-      contact.top +
-      contact.height -
-      900 * JOURNEY_EXIT_VIEWPORT_RATIO;
+      contact.top + contact.height - footerEntryLine;
 
-    assert.equal(resolveJourneyState(anchors, contact.top, 900).inJourney, true);
-    assert.equal(resolveJourneyState(anchors, exitAt - 1, 900).inJourney, true);
-    assert.equal(resolveJourneyState(anchors, exitAt + 1, 900).inJourney, false);
+    assert.equal(
+      resolveJourneyState(anchors, contact.top, viewportHeight).inJourney,
+      true,
+    );
+    assert.equal(
+      resolveJourneyState(anchors, exitAt - 1, viewportHeight).inJourney,
+      true,
+    );
+    assert.equal(
+      resolveJourneyState(anchors, exitAt + 1, viewportHeight).inJourney,
+      false,
+    );
   });
 
-  it("makes the real max-scroll footer state inactive and re-enters in reverse", () => {
+  it("matches 1280x720 page geometry and re-enters when scrolling in reverse", () => {
     const anchors = makeAnchors(
-      [0, 914, 3082, 3697, 4237, 5554, 6308, 12488],
-      [914, 551, 594, 521, 1297, 610, 2387, 1083],
+      [0, 874, 1393, 2211, 6044, 8215, 9816, 11674],
+      [874, 519, 818, 3833, 2171, 1602, 1858, 1048],
     );
-    const viewportHeight = 900;
-    const pageHeight = 14411;
+    const viewportHeight = 720;
+    const pageHeight = 13533;
     const maxScroll = pageHeight - viewportHeight;
+    const contactBottom = 11674 + 1048;
+    const exitAt =
+      contactBottom -
+      viewportHeight * (1 - JOURNEY_EXIT_VIEWPORT_RATIO);
+    const beforeExit = exitAt - 1;
+    const afterExit = exitAt + 1;
+
+    assert.ok(contactBottom - beforeExit > viewportHeight * 0.75);
+    assert.ok(contactBottom - afterExit < viewportHeight * 0.75);
+    assert.equal(
+      resolveJourneyState(anchors, afterExit, viewportHeight).inJourney,
+      false,
+    );
 
     assert.equal(
       resolveJourneyState(anchors, maxScroll, viewportHeight).inJourney,
       false,
     );
     assert.equal(
-      resolveJourneyState(anchors, maxScroll - 300, viewportHeight).inJourney,
+      resolveJourneyState(anchors, beforeExit, viewportHeight).inJourney,
       true,
     );
   });

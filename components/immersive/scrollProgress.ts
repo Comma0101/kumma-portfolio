@@ -217,9 +217,11 @@ export function resolveJourneyState(
     finalTransitionEnd = Math.max(start, desiredWindow.end);
   }
   const finalAnchorBottom = safeAdd(lastAnchor.top, lastAnchor.height);
+  const footerTopExitLine =
+    viewport * (1 - JOURNEY_EXIT_VIEWPORT_RATIO);
   const journeyEnd = Math.max(
     finalTransitionEnd,
-    finalAnchorBottom - viewport * JOURNEY_EXIT_VIEWPORT_RATIO,
+    finalAnchorBottom - footerTopExitLine,
   );
   const inJourney = scroll >= journeyStart && scroll <= journeyEnd;
 
