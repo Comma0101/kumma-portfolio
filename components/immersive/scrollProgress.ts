@@ -3,6 +3,7 @@ import type { ImmersiveStageId } from "./types";
 
 export const JOURNEY_ENTRY_VIEWPORT_RATIO = 0.82;
 export const JOURNEY_SETTLE_VIEWPORT_RATIO = 0.42;
+export const JOURNEY_EXIT_VIEWPORT_RATIO = 0.25;
 
 const MAX_GEOMETRY_VALUE = Number.MAX_SAFE_INTEGER / 4;
 
@@ -202,9 +203,23 @@ export function resolveJourneyState(
   const firstAnchor = normalizedAnchors[0];
   const lastAnchor = normalizedAnchors.at(-1) ?? firstAnchor;
   const journeyStart = Math.max(0, firstAnchor.top - viewport);
-  const journeyEnd = safeAdd(
-    lastAnchor.top,
-    Math.max(lastAnchor.height, viewport),
+  let finalTransitionEnd = 0;
+  for (
+    let intervalIndex = 0;
+    intervalIndex < immersiveStageIds.length - 1;
+    intervalIndex += 1
+  ) {
+    const desiredWindow = transitionWindowForAnchor(
+      normalizedAnchors[intervalIndex + 1],
+      viewport,
+    );
+    const start = Math.max(finalTransitionEnd, desiredWindow.start);
+    finalTransitionEnd = Math.max(start, desiredWindow.end);
+  }
+  const finalAnchorBottom = safeAdd(lastAnchor.top, lastAnchor.height);
+  const journeyEnd = Math.max(
+    finalTransitionEnd,
+    finalAnchorBottom - viewport * JOURNEY_EXIT_VIEWPORT_RATIO,
   );
   const inJourney = scroll >= journeyStart && scroll <= journeyEnd;
 

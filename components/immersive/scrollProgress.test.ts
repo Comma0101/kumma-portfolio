@@ -5,6 +5,7 @@ import { describe, it } from "node:test";
 import { immersiveStageIds } from "./immersiveStages";
 import {
   JOURNEY_ENTRY_VIEWPORT_RATIO,
+  JOURNEY_EXIT_VIEWPORT_RATIO,
   JOURNEY_SETTLE_VIEWPORT_RATIO,
   resolveJourneyProgress,
   resolveJourneyState,
@@ -124,6 +125,8 @@ describe("journey geometry", () => {
     assert.ok(JOURNEY_ENTRY_VIEWPORT_RATIO < 1);
     assert.ok(JOURNEY_SETTLE_VIEWPORT_RATIO > 0);
     assert.ok(JOURNEY_SETTLE_VIEWPORT_RATIO < 0.5);
+    assert.ok(JOURNEY_EXIT_VIEWPORT_RATIO > 0);
+    assert.ok(JOURNEY_EXIT_VIEWPORT_RATIO <= 0.25);
 
     const window = transitionWindowForAnchor(
       { top: 1000, height: 600 },
@@ -137,6 +140,63 @@ describe("journey geometry", () => {
       window.end,
       1000 - VIEWPORT_HEIGHT * JOURNEY_SETTLE_VIEWPORT_RATIO,
     );
+  });
+
+  it("keeps contact active while reading, then exits as the footer substantially enters", () => {
+    const anchors = makeAnchors(
+      [0, 914, 3082, 3697, 4237, 5554, 6308, 12488],
+      [914, 551, 594, 521, 1297, 610, 2387, 1083],
+    );
+    const contact = anchors.at(-1)!;
+    const exitAt =
+      contact.top +
+      contact.height -
+      900 * JOURNEY_EXIT_VIEWPORT_RATIO;
+
+    assert.equal(resolveJourneyState(anchors, contact.top, 900).inJourney, true);
+    assert.equal(resolveJourneyState(anchors, exitAt - 1, 900).inJourney, true);
+    assert.equal(resolveJourneyState(anchors, exitAt + 1, 900).inJourney, false);
+  });
+
+  it("makes the real max-scroll footer state inactive and re-enters in reverse", () => {
+    const anchors = makeAnchors(
+      [0, 914, 3082, 3697, 4237, 5554, 6308, 12488],
+      [914, 551, 594, 521, 1297, 610, 2387, 1083],
+    );
+    const viewportHeight = 900;
+    const pageHeight = 14411;
+    const maxScroll = pageHeight - viewportHeight;
+
+    assert.equal(
+      resolveJourneyState(anchors, maxScroll, viewportHeight).inJourney,
+      false,
+    );
+    assert.equal(
+      resolveJourneyState(anchors, maxScroll - 300, viewportHeight).inJourney,
+      true,
+    );
+  });
+
+  it("never exits before contact settles for zero, short, or malformed anchors", () => {
+    for (const height of [0, 1, 120, Number.NaN, Number.NEGATIVE_INFINITY]) {
+      const anchors = makeAnchors(
+        [0, 900, 2700, 3100, 5200, 6100, 8200, 11800],
+        [0, 1, 0, 900, 20, 0, 1400, height],
+      );
+      const settleAt = transitionWindowForAnchor(
+        anchors.at(-1)!,
+        VIEWPORT_HEIGHT,
+      ).end;
+
+      assert.equal(
+        resolveJourneyState(anchors, settleAt, VIEWPORT_HEIGHT).inJourney,
+        true,
+      );
+      assert.equal(
+        resolveJourneyState(anchors, settleAt, VIEWPORT_HEIGHT).journeyProgress,
+        1,
+      );
+    }
   });
 
   it("holds, transitions, and settles around the next anchor", () => {
@@ -406,13 +466,20 @@ describe("homepage immersive scroll source contract", () => {
       source,
       /import\s*\{\s*createSceneGroups\s*\}\s*from\s*["']\.\/immersive\/createSceneGroups["']/,
     );
-    assert.equal(source.match(/createSceneGroups\(/g)?.length, 1);
+    assert.equal(source.match(/createSceneGroups\(/g)?.length, 2);
     assert.match(source, /scene\.add\(sceneGroups\.root\)/);
     assert.match(
       source,
       /immersiveScrollSnapshotRef\.current\?\.sample\s*\?\?\s*initialSample/,
     );
-    assert.match(source, /sceneGroups\.update\(\s*sample\.groups,/);
+    assert.match(
+      source,
+      /sceneGroups\.update\(\s*currentGroupWeights,/,
+    );
+    assert.doesNotMatch(
+      source,
+      /sceneGroups\.update\(\s*sample\.groups,/,
+    );
     assert.equal(source.match(/requestAnimationFrame\(loop\)/g)?.length, 2);
     assert.doesNotMatch(source, /scene\.traverse\(|root\.traverse\(/);
   });
@@ -429,6 +496,18 @@ describe("homepage immersive scroll source contract", () => {
     assert.match(source, /sample\.terrain\.roughness/);
     assert.match(source, /sample\.terrain\.visibility/);
     assert.match(source, /THREE\.MathUtils\.damp/);
+    assert.match(
+      source,
+      /createMutableSceneGroupWeights\(\s*initialSample\.groups/,
+    );
+    assert.match(
+      source,
+      /copySceneGroupWeights\(currentGroupWeights,\s*sample\.groups\)/,
+    );
+    assert.match(
+      source,
+      /dampSceneGroupWeights\([\s\S]*currentGroupWeights,[\s\S]*sample\.groups/,
+    );
     for (const uniform of [
       "uElevation",
       "uRoughness",
@@ -541,9 +620,80 @@ describe("homepage immersive scroll source contract", () => {
     assert.match(pointerHandler, /isReducedMotion\(\)/);
     assert.match(pointerHandler, /profile\s*===\s*["']mobile["']/);
     assert.match(source, /matchMedia\(["']\(pointer: fine\)["']\)/);
-    assert.match(source, /function motionScaleForSample[\s\S]*["']contact["']/);
-    assert.match(source, /pointerScale[\s\S]*motionScaleForSample\(sample\)/);
+    assert.doesNotMatch(source, /function motionScaleForSample/);
+    assert.match(
+      source,
+      /motionScaleForTransition\(\s*sample\.transition\.toId,\s*sample\.transition\.easedProgress/,
+    );
+    assert.match(source, /pointerScale[\s\S]*motionScaleForTransition/);
     assert.match(resizeHandler, /getThreeSceneTuning\(/);
+  });
+
+  it("swaps bounded terrain and group resources only when the profile changes", () => {
+    const source = readSource("components/ThreeScene.tsx");
+    const syncResources = source.slice(
+      source.indexOf("const syncSceneResources"),
+      source.indexOf("const syncSceneQualityForViewport"),
+    );
+    const wakeScene = source.slice(
+      source.indexOf("const wakeScene"),
+      source.indexOf("sceneWakeRef.current = wakeScene"),
+    );
+    const finePointerChange = source.slice(
+      source.indexOf("const handleFinePointerChange"),
+      source.indexOf("syncPointerListener();"),
+    );
+    const resize = source.slice(
+      source.indexOf("const handleResize"),
+      source.indexOf('window.addEventListener("resize"'),
+    );
+
+    assert.match(source, /function createTerrainResources/);
+    assert.match(source, /let terrainResources\s*=/);
+    assert.match(source, /let sceneGroups\s*=/);
+    assert.match(source, /let activeTuning\s*=/);
+    assert.match(
+      syncResources,
+      /shouldRebuildSceneResources\(\s*activeTuning\.profile,\s*nextTuning\.profile/,
+    );
+    assert.match(syncResources, /return false/);
+    const groupDisposal = syncResources.indexOf("sceneGroups.dispose()");
+    const terrainDisposal = syncResources.indexOf("disposeTerrainResources(");
+    const groupReplacement = syncResources.indexOf(
+      "sceneGroups = createSceneGroups(nextTuning)",
+    );
+    const terrainReplacement = syncResources.indexOf(
+      "terrainResources = createTerrainResources(nextTuning",
+    );
+    assert.ok(groupDisposal >= 0 && groupDisposal < groupReplacement);
+    assert.ok(terrainDisposal >= 0 && terrainDisposal < terrainReplacement);
+    assert.match(syncResources, /dataset\.sceneProfile\s*=\s*nextTuning\.profile/);
+    assert.match(syncResources, /sceneGroups\.update\(\s*currentGroupWeights,/);
+    assert.match(wakeScene, /syncSceneQualityForViewport\(\)/);
+    assert.match(finePointerChange, /syncSceneQualityForViewport\(\)/);
+    assert.match(resize, /syncSceneResources\(resizeTuning\)/);
+    assert.equal(source.match(/new THREE\.WebGLRenderer/g)?.length, 1);
+    assert.equal(source.match(/new THREE\.PerspectiveCamera/g)?.length, 1);
+  });
+
+  it("fades the fixed world outside the pure journey range and restores it on re-entry", () => {
+    const source = readSource("components/ThreeScene.tsx");
+    const css = readSource("styles/home.module.css");
+    const syncJourney = source.slice(
+      source.indexOf("const syncJourneyState"),
+      source.indexOf("const renderScene"),
+    );
+
+    assert.match(source, /data-journey-state=["']active["']/);
+    assert.match(syncJourney, /journeyStateFor\(isSceneInJourney\(\)\)/);
+    assert.match(syncJourney, /mount\.dataset\.journeyState\s*!==\s*nextState/);
+    assert.match(syncJourney, /mount\.dataset\.journeyState\s*=\s*nextState/);
+    assert.match(source, /const wakeScene[\s\S]*syncJourneyState\(\)/);
+    assert.match(
+      css,
+      /\.immersiveScene\[data-journey-state=["']inactive["']\]\s*\{[^}]*opacity:\s*0/s,
+    );
+    assert.match(css, /transition:[^;]*opacity/);
   });
 
   it("exposes a stable CSS fallback and fully cleans renderer resources", () => {
@@ -551,6 +701,7 @@ describe("homepage immersive scroll source contract", () => {
     const css = readSource("styles/home.module.css");
 
     assert.match(source, /data-webgl-state=["']pending["']/);
+    assert.match(source, /data-scene-profile=["']pending["']/);
     assert.match(source, /dataset\.webglState\s*=\s*["']ready["']/);
     assert.match(source, /dataset\.webglState\s*=\s*["']unavailable["']/);
     assert.match(source, /webglcontextlost/);

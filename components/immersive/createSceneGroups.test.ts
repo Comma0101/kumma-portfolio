@@ -170,6 +170,23 @@ describe("createSceneGroups", () => {
     second.dispose();
   });
 
+  it("keeps transparent mechanisms from occluding stronger crossfaded groups", () => {
+    const world = createSceneGroups(desktopTuning);
+    const { materials } = collectResources(world.root);
+
+    assert.ok(materials.size > 0);
+    for (const material of materials) {
+      assert.equal(material.transparent, true);
+      assert.equal(
+        material.depthWrite,
+        false,
+        `${material.type} must not write depth while crossfading`,
+      );
+    }
+
+    world.dispose();
+  });
+
   it("moves at most the two strongest mechanisms and freezes at zero motion", () => {
     const world = createSceneGroups(desktopTuning);
     const weights: SceneGroupWeights = {

@@ -5,9 +5,15 @@
   width: 100%;
   height: 100dvh;
   overflow: hidden;
+  opacity: 1;
   pointer-events: none;
   background: var(--canvas);
   contain: strict;
+  transition: opacity 320ms var(--ease);
+}
+
+.immersiveScene[data-journey-state="inactive"] {
+  opacity: 0;
 }
 
 .immersiveScene::before,

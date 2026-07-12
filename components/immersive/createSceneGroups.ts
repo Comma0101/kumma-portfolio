@@ -108,6 +108,7 @@ function createHorizon(
   const beaconGeometry = new THREE.CylinderGeometry(0.045, 0.11, 1, 6);
   const beaconMaterial = new THREE.MeshBasicMaterial({
     color: ATLAS.sand,
+    depthWrite: false,
     fog: true,
     opacity: 0.58,
     transparent: true,
@@ -141,6 +142,7 @@ function createHorizon(
 
   const horizonMaterial = new THREE.LineBasicMaterial({
     color: ATLAS.steel,
+    depthWrite: false,
     fog: true,
     opacity: 0.15,
     transparent: true,
@@ -177,6 +179,7 @@ function createSignals(
   }
   const railMaterial = new THREE.LineBasicMaterial({
     color: ATLAS.signal,
+    depthWrite: false,
     fog: true,
     opacity: 0.62,
     transparent: true,
@@ -205,6 +208,7 @@ function createSignals(
   );
   const particleMaterial = new THREE.PointsMaterial({
     color: ATLAS.paper,
+    depthWrite: false,
     fog: true,
     opacity: 0.52,
     size: 0.09,
@@ -232,6 +236,7 @@ function createVoice(
   const ringGeometry = new THREE.TorusGeometry(1.8, 0.025, 4, 28);
   const ringMaterial = new THREE.MeshBasicMaterial({
     color: ATLAS.voiceAtmosphere,
+    depthWrite: false,
     fog: true,
     opacity: 0.5,
     transparent: true,
@@ -268,6 +273,7 @@ function createVoice(
   }
   const waveformMaterial = new THREE.LineBasicMaterial({
     color: ATLAS.signal,
+    depthWrite: false,
     fog: true,
     opacity: 0.72,
     transparent: true,
@@ -296,6 +302,7 @@ function createDocument(
   const documentGeometry = new THREE.PlaneGeometry(1.05, 1.4, 1, 1);
   const documentMaterial = new THREE.MeshBasicMaterial({
     color: ATLAS.paper,
+    depthWrite: false,
     fog: true,
     opacity: 0.36,
     side: THREE.DoubleSide,
@@ -336,6 +343,7 @@ function createDocument(
 
   const queueMaterial = new THREE.LineBasicMaterial({
     color: ATLAS.signal,
+    depthWrite: false,
     fog: true,
     opacity: 0.54,
     transparent: true,
@@ -370,6 +378,7 @@ function createOrchestration(
   const nodeGeometry = new THREE.IcosahedronGeometry(0.18, 1);
   const nodeMaterial = new THREE.MeshBasicMaterial({
     color: ATLAS.sand,
+    depthWrite: false,
     fog: true,
     opacity: 0.72,
     transparent: true,
@@ -409,6 +418,7 @@ function createOrchestration(
   }
   const edgeMaterial = new THREE.LineBasicMaterial({
     color: ATLAS.steel,
+    depthWrite: false,
     fog: true,
     opacity: 0.2,
     transparent: true,
@@ -424,6 +434,7 @@ function createOrchestration(
 
   const traceMaterial = new THREE.LineBasicMaterial({
     color: ATLAS.signal,
+    depthWrite: false,
     fog: true,
     opacity: 0.68,
     transparent: true,
@@ -492,6 +503,7 @@ function createSplats(
   splatGeometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
   splatGeometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
   const splatMaterial = new THREE.PointsMaterial({
+    depthWrite: false,
     fog: true,
     opacity: 0.58,
     size: 0.18,
@@ -530,6 +542,7 @@ function createMeasurement(
 
   const gridMaterial = new THREE.LineBasicMaterial({
     color: ATLAS.steel,
+    depthWrite: false,
     fog: true,
     opacity: 0.2,
     transparent: true,
@@ -551,6 +564,7 @@ function createMeasurement(
   }
   const ledgerMaterial = new THREE.LineBasicMaterial({
     color: ATLAS.signal,
+    depthWrite: false,
     fog: true,
     opacity: 0.62,
     transparent: true,

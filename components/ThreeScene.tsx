@@ -6,7 +6,13 @@ import styles from "../styles/home.module.css";
 import { createSceneGroups } from "./immersive/createSceneGroups";
 import { sampleImmersiveJourney } from "./immersive/immersiveStages";
 import {
+  copySceneGroupWeights,
+  createMutableSceneGroupWeights,
+  dampSceneGroupWeights,
+  journeyStateFor,
+  motionScaleForTransition,
   shouldAnimateScene,
+  shouldRebuildSceneResources,
   shouldRenderScene,
 } from "./immersive/sceneLifecycle";
 import type {
@@ -17,7 +23,10 @@ import {
   useImmersiveScroll,
   type ImmersiveScrollSnapshot,
 } from "./immersive/useImmersiveScroll";
-import { getThreeSceneTuning } from "./threeSceneTuning";
+import {
+  getThreeSceneTuning,
+  type ThreeSceneTuning,
+} from "./threeSceneTuning";
 
 function shouldWakeScene(
   previous: ImmersiveScrollSnapshot | null,
@@ -30,18 +39,6 @@ function shouldWakeScene(
     previous.inJourney !== next.inJourney ||
     previous.anchorsValid !== next.anchorsValid
   );
-}
-
-function motionScaleForSample(sample: ImmersiveSceneSample): number {
-  if (sample.transition.dominantStageId === "contact") {
-    return 0.02;
-  }
-
-  if (sample.transition.toId === "contact") {
-    return Math.max(0.02, 1 - sample.transition.easedProgress * 0.98);
-  }
-
-  return 1;
 }
 
 const SNOISE = /* glsl */ `
@@ -141,6 +138,53 @@ const CAMERA_DAMPING = 5.8;
 const TREATMENT_DAMPING = 5.2;
 const POINTER_DAMPING = 7.5;
 
+interface TerrainUniforms {
+  readonly [uniform: string]: THREE.IUniform;
+  readonly uTime: THREE.IUniform<number>;
+  readonly uElevation: THREE.IUniform<number>;
+  readonly uRoughness: THREE.IUniform<number>;
+  readonly uVisibility: THREE.IUniform<number>;
+  readonly uFogColor: THREE.IUniform<THREE.Color>;
+  readonly uFogDensity: THREE.IUniform<number>;
+}
+
+interface TerrainResources {
+  readonly geometry: THREE.PlaneGeometry;
+  readonly material: THREE.ShaderMaterial;
+  readonly mesh: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>;
+}
+
+function createTerrainResources(
+  tuning: ThreeSceneTuning,
+  uniforms: TerrainUniforms,
+): TerrainResources {
+  const geometry = new THREE.PlaneGeometry(
+    96,
+    126,
+    tuning.segmentX,
+    tuning.segmentZ,
+  );
+  const material = new THREE.ShaderMaterial({
+    depthWrite: true,
+    fragmentShader: FRAG,
+    side: THREE.DoubleSide,
+    transparent: true,
+    uniforms,
+    vertexShader: VERT(tuning.noiseOctaves),
+  });
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.name = "atlas-shared-terrain";
+  mesh.renderOrder = -1;
+
+  return { geometry, material, mesh };
+}
+
+function disposeTerrainResources(resources: TerrainResources): void {
+  resources.mesh.removeFromParent();
+  resources.geometry.dispose();
+  resources.material.dispose();
+}
+
 export default function ThreeScene() {
   const mountRef = useRef<HTMLDivElement>(null);
   const immersiveScrollSnapshotRef =
@@ -183,6 +227,24 @@ export default function ThreeScene() {
         ? "mobile"
         : "desktop";
     const initialSample = sampleImmersiveJourney(0, initialProfile);
+    const isSceneInJourney = () =>
+      immersiveScrollSnapshotRef.current?.inJourney ?? true;
+    const isReducedMotion = () => {
+      const profile = immersiveScrollSnapshotRef.current?.profile;
+      return profile ? profile === "reduced" : initialReducedMotion;
+    };
+    const currentSample = () =>
+      immersiveScrollSnapshotRef.current?.sample ?? initialSample;
+    const syncJourneyState = () => {
+      const nextState = journeyStateFor(isSceneInJourney());
+      if (mount.dataset.journeyState !== nextState) {
+        mount.dataset.journeyState = nextState;
+      }
+    };
+
+    mount.dataset.sceneProfile = initialTuning.profile;
+    syncJourneyState();
+    sceneWakeRef.current = syncJourneyState;
 
     let renderer: THREE.WebGLRenderer | null = null;
     let webglReady = false;
@@ -208,7 +270,11 @@ export default function ThreeScene() {
       });
     } catch (error) {
       markWebglUnavailable(error);
-      return;
+      return () => {
+        if (sceneWakeRef.current === syncJourneyState) {
+          sceneWakeRef.current = null;
+        }
+      };
     }
 
     renderer.setClearColor(0x0a0a0b, 0);
@@ -253,13 +319,7 @@ export default function ThreeScene() {
     camera.position.copy(cameraBasePosition);
     camera.lookAt(lookTarget);
 
-    const geometry = new THREE.PlaneGeometry(
-      96,
-      126,
-      initialTuning.segmentX,
-      initialTuning.segmentZ,
-    );
-    const uniforms = {
+    const uniforms: TerrainUniforms = {
       uTime: { value: 5 },
       uElevation: { value: initialSample.terrain.elevation },
       uRoughness: { value: initialSample.terrain.roughness },
@@ -267,30 +327,15 @@ export default function ThreeScene() {
       uFogColor: { value: sceneFog.color },
       uFogDensity: { value: initialSample.fog.density },
     };
-    const material = new THREE.ShaderMaterial({
-      depthWrite: true,
-      fragmentShader: FRAG,
-      side: THREE.DoubleSide,
-      transparent: true,
-      uniforms,
-      vertexShader: VERT(initialTuning.noiseOctaves),
-    });
-    const terrain = new THREE.Mesh(geometry, material);
-    terrain.name = "atlas-shared-terrain";
-    terrain.renderOrder = -1;
-    scene.add(terrain);
+    let activeTuning = initialTuning;
+    let terrainResources = createTerrainResources(initialTuning, uniforms);
+    scene.add(terrainResources.mesh);
 
-    const sceneGroups = createSceneGroups(initialTuning);
+    let sceneGroups = createSceneGroups(initialTuning);
     scene.add(sceneGroups.root);
-
-    const isSceneInJourney = () =>
-      immersiveScrollSnapshotRef.current?.inJourney ?? true;
-    const isReducedMotion = () => {
-      const profile = immersiveScrollSnapshotRef.current?.profile;
-      return profile ? profile === "reduced" : initialReducedMotion;
-    };
-    const currentSample = () =>
-      immersiveScrollSnapshotRef.current?.sample ?? initialSample;
+    const currentGroupWeights = createMutableSceneGroupWeights(
+      initialSample.groups,
+    );
 
     let finePointerAvailable = finePointerQuery.matches;
     let pointerListening = false;
@@ -310,6 +355,54 @@ export default function ThreeScene() {
       }
       mx = event.clientX / Math.max(1, window.innerWidth) - 0.5;
       my = event.clientY / Math.max(1, window.innerHeight) - 0.5;
+    };
+
+    const syncSceneResources = (nextTuning: ThreeSceneTuning): boolean => {
+      if (
+        !shouldRebuildSceneResources(
+          activeTuning.profile,
+          nextTuning.profile,
+        )
+      ) {
+        return false;
+      }
+
+      sceneGroups.root.removeFromParent();
+      sceneGroups.dispose();
+      disposeTerrainResources(terrainResources);
+
+      terrainResources = createTerrainResources(nextTuning, uniforms);
+      scene.add(terrainResources.mesh);
+      sceneGroups = createSceneGroups(nextTuning);
+      scene.add(sceneGroups.root);
+      activeTuning = nextTuning;
+      mount.dataset.sceneProfile = nextTuning.profile;
+
+      const sample = currentSample();
+      sceneGroups.update(
+        currentGroupWeights,
+        uniforms.uTime.value,
+        isReducedMotion()
+          ? 0
+          : motionScaleForTransition(
+              sample.transition.toId,
+              sample.transition.easedProgress,
+            ),
+      );
+      return true;
+    };
+
+    const syncSceneQualityForViewport = (): boolean => {
+      const nextTuning = getThreeSceneTuning({
+        deviceMemory: nav.deviceMemory,
+        devicePixelRatio: window.devicePixelRatio,
+        hardwareConcurrency: navigator.hardwareConcurrency,
+        isCoarsePointer: !finePointerAvailable,
+        reducedMotion: isReducedMotion(),
+        viewportWidth: window.innerWidth,
+      });
+      renderer.setPixelRatio(nextTuning.pixelRatio);
+      return syncSceneResources(nextTuning);
     };
 
     const renderScene = () => {
@@ -346,6 +439,7 @@ export default function ThreeScene() {
         uniforms.uRoughness.value = sample.terrain.roughness;
         uniforms.uVisibility.value = sample.terrain.visibility;
         uniforms.uFogDensity.value = sample.fog.density;
+        copySceneGroupWeights(currentGroupWeights, sample.groups);
       } else {
         cameraBasePosition.x = THREE.MathUtils.damp(
           cameraBasePosition.x,
@@ -424,11 +518,21 @@ export default function ThreeScene() {
           TREATMENT_DAMPING,
           deltaSeconds,
         );
+        dampSceneGroupWeights(
+          currentGroupWeights,
+          sample.groups,
+          TREATMENT_DAMPING,
+          deltaSeconds,
+        );
       }
 
+      const motionScale = motionScaleForTransition(
+        sample.transition.toId,
+        sample.transition.easedProgress,
+      );
       const pointerScale =
         !immediate && finePointerAvailable && sample.profile === "desktop"
-          ? motionScaleForSample(sample)
+          ? motionScale
           : 0;
       tx = immediate
         ? 0
@@ -454,9 +558,9 @@ export default function ThreeScene() {
       camera.lookAt(lookTarget);
       camera.updateProjectionMatrix();
       sceneGroups.update(
-        sample.groups,
+        currentGroupWeights,
         uniforms.uTime.value,
-        immediate ? 0 : motionScaleForSample(sample),
+        immediate ? 0 : motionScale,
       );
     };
 
@@ -481,7 +585,12 @@ export default function ThreeScene() {
           : Math.min(Math.max((frameTime - previousFrameTime) / 1000, 0), 0.1);
       previousFrameTime = frameTime;
       const sample = currentSample();
-      uniforms.uTime.value += deltaSeconds * motionScaleForSample(sample);
+      uniforms.uTime.value +=
+        deltaSeconds *
+        motionScaleForTransition(
+          sample.transition.toId,
+          sample.transition.easedProgress,
+        );
       applySceneSample(sample, deltaSeconds, false);
       renderScene();
     };
@@ -527,6 +636,8 @@ export default function ThreeScene() {
     };
 
     const wakeScene = () => {
+      syncJourneyState();
+      syncSceneQualityForViewport();
       if (
         shouldAnimateScene({
           hidden: document.hidden,
@@ -563,6 +674,8 @@ export default function ThreeScene() {
       }
     };
     const handleFinePointerChange = () => {
+      finePointerAvailable = finePointerQuery.matches;
+      syncSceneQualityForViewport();
       syncPointerListener();
     };
     syncPointerListener();
@@ -579,6 +692,7 @@ export default function ThreeScene() {
         reducedMotion: isReducedMotion(),
         viewportWidth: width,
       });
+      syncSceneResources(resizeTuning);
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
       renderer.setPixelRatio(resizeTuning.pixelRatio);
@@ -627,9 +741,9 @@ export default function ThreeScene() {
       sceneWakeRef.current = null;
       webglReady = false;
       stopLoop();
+      sceneGroups.root.removeFromParent();
       sceneGroups.dispose();
-      geometry.dispose();
-      material.dispose();
+      disposeTerrainResources(terrainResources);
       renderer.dispose();
       renderer.forceContextLoss();
       if (mount.contains(renderer.domElement)) {
@@ -643,6 +757,8 @@ export default function ThreeScene() {
       ref={mountRef}
       aria-hidden="true"
       className={styles.immersiveScene}
+      data-journey-state="active"
+      data-scene-profile="pending"
       data-webgl-state="pending"
     />
   );

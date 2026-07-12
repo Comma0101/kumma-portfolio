@@ -102,10 +102,24 @@ describe("getThreeSceneTuning", () => {
       viewportWidth: 390,
     });
 
-    assert.equal(tuning.profile, "reduced");
-    assert.equal(tuning.quality, "static");
-    assert.equal(tuning.noiseOctaves, 3);
-    assert.equal(tuning.pixelRatio, 1);
+    assert.deepEqual(tuning, {
+      antialias: false,
+      groupBudgets: {
+        beacons: 5,
+        signals: 24,
+        voice: 7,
+        document: 9,
+        orchestration: 11,
+        splats: 48,
+        measurement: 18,
+      },
+      noiseOctaves: 2,
+      pixelRatio: 1,
+      profile: "reduced",
+      quality: "static",
+      segmentX: 56,
+      segmentZ: 44,
+    });
   });
 
   it("uses a static reduced-motion profile without desktop-density geometry", () => {
@@ -120,21 +134,49 @@ describe("getThreeSceneTuning", () => {
     assert.deepEqual(tuning, {
       antialias: false,
       groupBudgets: {
-        beacons: 7,
-        signals: 36,
-        voice: 10,
-        document: 14,
-        orchestration: 16,
-        splats: 72,
-        measurement: 30,
+        beacons: 5,
+        signals: 24,
+        voice: 7,
+        document: 9,
+        orchestration: 11,
+        splats: 48,
+        measurement: 18,
       },
-      noiseOctaves: 3,
+      noiseOctaves: 2,
       pixelRatio: 1,
       profile: "reduced",
       quality: "static",
-      segmentX: 120,
-      segmentZ: 96,
+      segmentX: 56,
+      segmentZ: 44,
     });
+  });
+
+  it("keeps every reduced/static construction bound at or below mobile", () => {
+    const mobile = getThreeSceneTuning({
+      deviceMemory: 8,
+      devicePixelRatio: 2,
+      hardwareConcurrency: 8,
+      isCoarsePointer: true,
+      reducedMotion: false,
+      viewportWidth: 390,
+    });
+    const reduced = getThreeSceneTuning({
+      deviceMemory: 8,
+      devicePixelRatio: 2,
+      hardwareConcurrency: 8,
+      isCoarsePointer: true,
+      reducedMotion: true,
+      viewportWidth: 390,
+    });
+
+    for (const key of Object.keys(mobile.groupBudgets) as Array<
+      keyof typeof mobile.groupBudgets
+    >) {
+      assert.ok(reduced.groupBudgets[key] <= mobile.groupBudgets[key]);
+    }
+    assert.ok(reduced.segmentX <= mobile.segmentX);
+    assert.ok(reduced.segmentZ <= mobile.segmentZ);
+    assert.ok(reduced.noiseOctaves <= mobile.noiseOctaves);
   });
 
   it("normalizes invalid browser device hints without producing invalid tuning", () => {
