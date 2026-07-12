@@ -161,7 +161,8 @@
   font-family: var(--font-mono);
   font-size: 0.67rem;
   line-height: 1.45;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 
 .links {
