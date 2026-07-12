@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { JsonLd, workCollectionLd } from "@/components/seo/JsonLd";
 import WorkIndex from "@/components/work/WorkIndex";
 
 const title = "Production AI systems — work and case studies";
@@ -14,9 +15,21 @@ export const metadata: Metadata = {
     description,
     url: "https://kumma.me/work",
     type: "website",
+    images: ["/og/work.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${title} | Kumma`,
+    description,
+    images: ["/og/work.png"],
   },
 };
 
 export default function WorkPage() {
-  return <WorkIndex />;
+  return (
+    <>
+      <JsonLd data={workCollectionLd} />
+      <WorkIndex />
+    </>
+  );
 }

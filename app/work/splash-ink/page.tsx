@@ -13,12 +13,14 @@ export const metadata: Metadata = {
       "A research pipeline lifting classical ink paintings into explorable Gaussian-splat scenes, with the mechanism, architecture, and failure modes documented honestly.",
     url: "https://kumma.me/work/splash-ink",
     type: "article",
+    images: ["/og/work-splash-ink.png"],
   },
   twitter: {
     card: "summary_large_image",
     title: "Splash Ink — single-image 3D Gaussian Splatting | Kumma",
     description:
       "One painting in, an explorable splat scene out: mechanism, architecture, and honest limits of an active R&D prototype.",
+    images: ["/og/work-splash-ink.png"],
   },
 };
 

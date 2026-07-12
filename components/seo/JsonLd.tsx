@@ -1,3 +1,5 @@
+import { workProjects } from "@/data/workProjects";
+
 export function JsonLd({ data }: { data: Record<string, unknown> }) {
   return (
     <script
@@ -29,6 +31,27 @@ export const personLd = {
     "Decision-quality systems",
   ],
   sameAs,
+};
+
+export const workCollectionLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "@id": "https://kumma.me/work#collection",
+  name: "Production AI systems — work and case studies",
+  url: "https://kumma.me/work",
+  description:
+    "Production AI work and case studies spanning real-time voice, agent orchestration, production TTS, AI-to-3D research, real-time graphics, and data-correctness systems.",
+  author: { "@id": "https://kumma.me/#person" },
+  mainEntity: {
+    "@type": "ItemList",
+    itemListElement: workProjects.map((project, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      url: `https://kumma.me${project.href}`,
+      name: project.title,
+      description: project.summary,
+    })),
+  },
 };
 
 export const homeLd = {

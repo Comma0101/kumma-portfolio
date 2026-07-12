@@ -13,12 +13,14 @@ export const metadata: Metadata = {
       "Web Audio analysis driving terrain, pillars, particles, and flight in the browser — mechanism, architecture, and failure modes documented honestly.",
     url: "https://kumma.me/work/spectral-world",
     type: "article",
+    images: ["/og/work-spectral-world.png"],
   },
   twitter: {
     card: "summary_large_image",
     title: "Spectral World Player — audio-reactive Three.js | Kumma",
     description:
       "Local audio in, a living 3D world out: FFT interpretation, beat and onset detection, and honest limits of an active R&D build.",
+    images: ["/og/work-spectral-world.png"],
   },
 };
 

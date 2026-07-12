@@ -57,17 +57,23 @@ async function card(key, title, kicker, sub) {
   fs.writeFileSync(path.join(OUT, `${key}.png`), png);
 }
 
-const projects = [
-  { slug: "kota", title: "KOTA", sub: "Voice agent for restaurant operations" },
-  { slug: "archon", title: "ARCHON", sub: "Orchestrates Claude, GPT, and Gemini" },
-  { slug: "market-systems", title: "Market Systems", sub: "Decision architecture under uncertainty" },
+// Keep in sync with data/workProjects.ts; data/discoveryRoutes.test.ts
+// enforces that every catalog slug appears here.
+const workCards = [
+  { slug: "kota", title: "KOTA", sub: "Real-time voice ordering that survives messy speech" },
+  { slug: "audiobook", title: "Audiobook AI", sub: "Production TTS pipeline from document to audiobook" },
+  { slug: "archon", title: "ARCHON", sub: "Multi-model agent orchestration control plane" },
+  { slug: "splash-ink", title: "Splash Ink", sub: "Single-image 3D Gaussian Splatting research" },
+  { slug: "spectral-world", title: "Spectral World Player", sub: "Web Audio analysis driving a living 3D world" },
+  { slug: "robinhood-dashboard", title: "Robinhood Data Correctness", sub: "Messy brokerage CSV to inspectable ledger" },
 ];
 
 async function run() {
-  await card("default", "Intelligent systems for the real world.", "Kumma", "Real-time AI, voice agents, agent orchestration");
-  await card("home", "I build intelligent systems for the real world.", "Kumma", "KOTA, ARCHON, and real-time AI systems");
-  for (const p of projects) {
-    await card(`projects-${p.slug}`, p.title, "Selected work", p.sub);
+  await card("default", "Production AI systems that survive real inputs.", "Kumma", "Audits, builds, and advisory for production AI");
+  await card("home", "Production AI systems that survive real inputs.", "Kumma", "Real-time voice, agent orchestration, and reliable pipelines");
+  await card("work", "Production AI systems — work and case studies", "Kumma", "Voice, orchestration, TTS, 3D research, data correctness");
+  for (const p of workCards) {
+    await card(`work-${p.slug}`, p.title, "Work / case study", p.sub);
   }
 
   const seen = new Set();
