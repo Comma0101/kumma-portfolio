@@ -16,6 +16,16 @@ export interface SceneGroupBudgets {
   readonly measurement: number;
 }
 
+export interface FacilityBudgets {
+  readonly terrainSegments: number;
+  readonly ribs: number;
+  readonly slabs: number;
+  readonly bridges: number;
+  readonly depthSamples: number;
+  readonly calibrationMarks: number;
+  readonly drawCallTarget: number;
+}
+
 export interface ThreeSceneTuningInput {
   deviceMemory?: number;
   devicePixelRatio: number;
@@ -27,6 +37,7 @@ export interface ThreeSceneTuningInput {
 
 export interface ThreeSceneTuning {
   antialias: boolean;
+  facilityBudgets: FacilityBudgets;
   groupBudgets: SceneGroupBudgets;
   noiseOctaves: number;
   pixelRatio: number;
@@ -44,6 +55,15 @@ const TUNING_BY_PROFILE: Record<
 > = {
   desktop: {
     antialias: true,
+    facilityBudgets: Object.freeze({
+      terrainSegments: 32000,
+      ribs: 36,
+      slabs: 28,
+      bridges: 18,
+      depthSamples: 320,
+      calibrationMarks: 36,
+      drawCallTarget: 45,
+    }),
     groupBudgets: Object.freeze({
       beacons: 14,
       signals: 84,
@@ -61,6 +81,15 @@ const TUNING_BY_PROFILE: Record<
   },
   constrained: {
     antialias: false,
+    facilityBudgets: Object.freeze({
+      terrainSegments: 11520,
+      ribs: 28,
+      slabs: 20,
+      bridges: 14,
+      depthSamples: 220,
+      calibrationMarks: 28,
+      drawCallTarget: 32,
+    }),
     groupBudgets: Object.freeze({
       beacons: 9,
       signals: 48,
@@ -78,6 +107,15 @@ const TUNING_BY_PROFILE: Record<
   },
   mobile: {
     antialias: false,
+    facilityBudgets: Object.freeze({
+      terrainSegments: 4032,
+      ribs: 18,
+      slabs: 14,
+      bridges: 10,
+      depthSamples: 120,
+      calibrationMarks: 18,
+      drawCallTarget: 22,
+    }),
     groupBudgets: Object.freeze({
       beacons: 6,
       signals: 30,
@@ -95,6 +133,15 @@ const TUNING_BY_PROFILE: Record<
   },
   reduced: {
     antialias: false,
+    facilityBudgets: Object.freeze({
+      terrainSegments: 2464,
+      ribs: 12,
+      slabs: 10,
+      bridges: 7,
+      depthSamples: 72,
+      calibrationMarks: 12,
+      drawCallTarget: 16,
+    }),
     groupBudgets: Object.freeze({
       beacons: 5,
       signals: 24,
@@ -151,6 +198,7 @@ export function getThreeSceneTuning(
 
   return {
     antialias: tuning.antialias,
+    facilityBudgets: tuning.facilityBudgets,
     groupBudgets: tuning.groupBudgets,
     noiseOctaves: tuning.noiseOctaves,
     pixelRatio: Math.min(devicePixelRatio, tuning.pixelRatioCap),

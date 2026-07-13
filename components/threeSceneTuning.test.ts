@@ -14,6 +14,15 @@ describe("getThreeSceneTuning", () => {
 
     assert.deepEqual(tuning, {
       antialias: true,
+      facilityBudgets: {
+        terrainSegments: 32000,
+        ribs: 36,
+        slabs: 28,
+        bridges: 18,
+        depthSamples: 320,
+        calibrationMarks: 36,
+        drawCallTarget: 45,
+      },
       groupBudgets: {
         beacons: 14,
         signals: 84,
@@ -44,6 +53,15 @@ describe("getThreeSceneTuning", () => {
 
     assert.deepEqual(tuning, {
       antialias: false,
+      facilityBudgets: {
+        terrainSegments: 11520,
+        ribs: 28,
+        slabs: 20,
+        bridges: 14,
+        depthSamples: 220,
+        calibrationMarks: 28,
+        drawCallTarget: 32,
+      },
       groupBudgets: {
         beacons: 9,
         signals: 48,
@@ -74,6 +92,15 @@ describe("getThreeSceneTuning", () => {
 
     assert.deepEqual(tuning, {
       antialias: false,
+      facilityBudgets: {
+        terrainSegments: 4032,
+        ribs: 18,
+        slabs: 14,
+        bridges: 10,
+        depthSamples: 120,
+        calibrationMarks: 18,
+        drawCallTarget: 22,
+      },
       groupBudgets: {
         beacons: 6,
         signals: 30,
@@ -104,6 +131,15 @@ describe("getThreeSceneTuning", () => {
 
     assert.deepEqual(tuning, {
       antialias: false,
+      facilityBudgets: {
+        terrainSegments: 2464,
+        ribs: 12,
+        slabs: 10,
+        bridges: 7,
+        depthSamples: 72,
+        calibrationMarks: 12,
+        drawCallTarget: 16,
+      },
       groupBudgets: {
         beacons: 5,
         signals: 24,
@@ -133,6 +169,15 @@ describe("getThreeSceneTuning", () => {
 
     assert.deepEqual(tuning, {
       antialias: false,
+      facilityBudgets: {
+        terrainSegments: 2464,
+        ribs: 12,
+        slabs: 10,
+        bridges: 7,
+        depthSamples: 72,
+        calibrationMarks: 12,
+        drawCallTarget: 16,
+      },
       groupBudgets: {
         beacons: 5,
         signals: 24,
@@ -177,6 +222,24 @@ describe("getThreeSceneTuning", () => {
     assert.ok(reduced.segmentX <= mobile.segmentX);
     assert.ok(reduced.segmentZ <= mobile.segmentZ);
     assert.ok(reduced.noiseOctaves <= mobile.noiseOctaves);
+  });
+
+  it("decreases every facility construction budget by quality profile", () => {
+    const inputs = [
+      { deviceMemory: 8, hardwareConcurrency: 12, isCoarsePointer: false, reducedMotion: false, viewportWidth: 1440 },
+      { deviceMemory: 4, hardwareConcurrency: 4, isCoarsePointer: false, reducedMotion: false, viewportWidth: 1280 },
+      { deviceMemory: 8, hardwareConcurrency: 8, isCoarsePointer: true, reducedMotion: false, viewportWidth: 390 },
+      { deviceMemory: 8, hardwareConcurrency: 8, isCoarsePointer: true, reducedMotion: true, viewportWidth: 390 },
+    ].map((input) => getThreeSceneTuning({ ...input, devicePixelRatio: 2 }));
+
+    for (let profileIndex = 1; profileIndex < inputs.length; profileIndex += 1) {
+      const previous = inputs[profileIndex - 1].facilityBudgets;
+      const current = inputs[profileIndex].facilityBudgets;
+      for (const key of Object.keys(previous) as Array<keyof typeof previous>) {
+        assert.ok(current[key] <= previous[key], `${String(key)} must not increase`);
+        assert.ok(Number.isInteger(current[key]) && current[key] > 0);
+      }
+    }
   });
 
   it("normalizes invalid browser device hints without producing invalid tuning", () => {
