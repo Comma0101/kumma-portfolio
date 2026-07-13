@@ -311,7 +311,7 @@
   }
 }
 
-@media (max-width: 760px) {
+@media (max-width: 800px) {
   .section {
     padding-top: clamp(4.5rem, 16vw, 6rem);
     padding-bottom: clamp(4.5rem, 16vw, 6rem);

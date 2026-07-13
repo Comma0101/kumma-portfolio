@@ -324,6 +324,62 @@ describe("homepage terrain and reduced motion", () => {
   });
 });
 
+describe("homepage facility composition", () => {
+  it("keeps project evidence semantic and both CTA routes data-driven", () => {
+    const source = readCss("components/home/ChapterIndex.tsx");
+
+    assert.match(source, /<dl\b[^>]*className=\{styles\.evidenceFlow\}/);
+    assert.match(source, /<dt>\{item\.label\}<\/dt>/);
+    assert.match(source, /<dd>\{item\.value\}<\/dd>/);
+    assert.match(source, /href=\{project\.href\}/);
+    assert.match(source, /Read the case study →/);
+    assert.match(source, /href=\{project\.primaryAction\.href\}/);
+    assert.match(source, /\{project\.primaryAction\.label\}/);
+  });
+
+  it("does not mount an unrelated project visualization beside the facility", () => {
+    const source = readCss("components/home/ChapterIndex.tsx");
+
+    assert.doesNotMatch(source, /SystemViz|visualKey/);
+  });
+
+  it("uses normal-flow project chapters without pinned or parallax copy", () => {
+    const source = readCss("components/home/ChapterIndex.tsx");
+    const css = readCss("components/home/ChapterIndex.module.css");
+
+    assert.doesNotMatch(source, /ScrollTrigger|useScroll|scrollY|parallax|pin:/i);
+    assert.doesNotMatch(css, /position:\s*(?:fixed|sticky)\s*;/);
+    assert.match(blockFor(css, ".row"), /min-height:\s*min\(96svh,\s*64rem\);/);
+  });
+
+  it("switches project evidence to an opaque one-column tablet flow", () => {
+    const css = readCss("components/home/ChapterIndex.module.css");
+
+    assert.match(
+      css,
+      /@media \(max-width: 800px\)[\s\S]*?\.row,[\s\S]*?background:\s*rgba\(10,\s*10,\s*11,\s*0\.95\);/,
+    );
+    assert.match(
+      css,
+      /@media \(max-width: 800px\)[\s\S]*?\.evidenceFlow\s*\{[^}]*grid-template-columns:\s*1fr;/,
+    );
+  });
+
+  it("removes foreground reveal motion when reduced motion is requested", () => {
+    const chapterCss = readCss("components/home/ChapterIndex.module.css");
+    const contactCss = readCss("components/home/ContactSection.module.css");
+
+    assert.match(
+      chapterCss,
+      /@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.row,[\s\S]*?transition:\s*none;/,
+    );
+    assert.match(
+      contactCss,
+      /@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.contactIntro,[\s\S]*?transition:\s*none;/,
+    );
+  });
+});
+
 describe("homepage structured data", () => {
   it("exports the named value consumed by the homepage", () => {
     const homepage = readCss("app/page.tsx");
