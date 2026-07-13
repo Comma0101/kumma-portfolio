@@ -29,7 +29,7 @@ function worldPosition(object: ThreeTypes.Object3D): ThreeTypes.Vector3 {
 }
 
 describe("facility world", () => {
-  it("builds six persistent zones at distinct forward depths", () => {
+  it("builds seven persistent zones at distinct forward depths", () => {
     const world = createFacilityWorld(desktopTuning);
     assert.deepEqual(Object.keys(world.zones), [
       "exterior-ridge",
@@ -38,6 +38,7 @@ describe("facility world", () => {
       "voice-chamber",
       "document-foundry",
       "orchestration-atrium",
+      "dissolution-observatory",
     ]);
     assert.ok(world.root.getObjectByName("facility-distant-entrance"));
     assert.ok(world.root.getObjectByName("facility-reliability-spine"));
@@ -48,6 +49,7 @@ describe("facility world", () => {
       world.root.getObjectByName("facility-orchestration-coordinator-core"),
     );
     assert.ok(world.root.getObjectByName("facility-orchestration-safety-gate"));
+    assert.ok(world.root.getObjectByName("facility-dissolution-surface"));
 
     const bounds = Object.values(world.zones).map(
       (zone) => zone.userData.bounds as { zMin: number; zMax: number },
@@ -59,12 +61,19 @@ describe("facility world", () => {
     world.dispose();
   });
 
-  it("uses substantial mesh geometry rather than signature lines or point clouds", () => {
+  it("reserves the one signature point surface for coherent ink dissolution", () => {
     const world = createFacilityWorld(desktopTuning);
     let signatures = 0;
+    let pointSurfaces = 0;
     world.root.traverse((object) => {
       if (object.userData.signature !== true) return;
       signatures += 1;
+      if (object instanceof THREE.Points) {
+        pointSurfaces += 1;
+        assert.equal(object.name, "facility-dissolution-surface");
+        assert.ok(object.material instanceof THREE.ShaderMaterial);
+        return;
+      }
       assert.ok(object instanceof THREE.Mesh || object instanceof THREE.InstancedMesh);
       const renderable = object as ThreeTypes.Mesh;
       const materials = Array.isArray(renderable.material)
@@ -76,6 +85,7 @@ describe("facility world", () => {
       }
     });
     assert.ok(signatures >= 12);
+    assert.equal(pointSurfaces, 1);
     world.dispose();
   });
 
