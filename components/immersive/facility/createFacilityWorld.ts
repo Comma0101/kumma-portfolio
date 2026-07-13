@@ -3,6 +3,7 @@ import type { ThreeSceneTuning } from "../../threeSceneTuning";
 import { createFacilityMaterials } from "./materials";
 import { createResourceTracker } from "./resourceTracker";
 import type { FacilityNarrativeSample } from "./types";
+import { createCalibrationFacilityZones } from "./zones/calibration";
 import { createDissolutionFacilityZone } from "./zones/dissolution";
 import { createDocumentFacilityZone } from "./zones/document";
 import { createExteriorFacilityZones } from "./zones/exterior";
@@ -17,7 +18,9 @@ export type FacilityGreyboxZoneId =
   | "voice-chamber"
   | "document-foundry"
   | "orchestration-atrium"
-  | "dissolution-observatory";
+  | "dissolution-observatory"
+  | "calibration-deck"
+  | "quiet-horizon";
 
 export interface FacilityWorld {
   readonly root: THREE.Group;
@@ -58,6 +61,7 @@ export function createFacilityWorld(tuning: ThreeSceneTuning): FacilityWorld {
     const document = createDocumentFacilityZone(context);
     const orchestration = createOrchestrationFacilityZone(context);
     const dissolution = createDissolutionFacilityZone(context);
+    const calibration = createCalibrationFacilityZones(context);
     const zones: Readonly<Record<FacilityGreyboxZoneId, THREE.Group>> =
       Object.freeze({
         "exterior-ridge": exterior.exterior,
@@ -67,6 +71,8 @@ export function createFacilityWorld(tuning: ThreeSceneTuning): FacilityWorld {
         "document-foundry": document.root,
         "orchestration-atrium": orchestration.root,
         "dissolution-observatory": dissolution.root,
+        "calibration-deck": calibration.calibration,
+        "quiet-horizon": calibration.horizon,
       });
 
     Object.values(zones).forEach((zone) => root.add(zone));
@@ -85,6 +91,7 @@ export function createFacilityWorld(tuning: ThreeSceneTuning): FacilityWorld {
         document.update(sample);
         orchestration.update(sample);
         dissolution.update(sample);
+        calibration.update(sample);
       },
       dispose() {
         if (disposed) return;

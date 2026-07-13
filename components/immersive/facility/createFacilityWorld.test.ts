@@ -29,7 +29,7 @@ function worldPosition(object: ThreeTypes.Object3D): ThreeTypes.Vector3 {
 }
 
 describe("facility world", () => {
-  it("builds seven persistent zones at distinct forward depths", () => {
+  it("builds the complete persistent journey at distinct forward depths", () => {
     const world = createFacilityWorld(desktopTuning);
     assert.deepEqual(Object.keys(world.zones), [
       "exterior-ridge",
@@ -39,6 +39,8 @@ describe("facility world", () => {
       "document-foundry",
       "orchestration-atrium",
       "dissolution-observatory",
+      "calibration-deck",
+      "quiet-horizon",
     ]);
     assert.ok(world.root.getObjectByName("facility-distant-entrance"));
     assert.ok(world.root.getObjectByName("facility-reliability-spine"));
@@ -50,6 +52,8 @@ describe("facility world", () => {
     );
     assert.ok(world.root.getObjectByName("facility-orchestration-safety-gate"));
     assert.ok(world.root.getObjectByName("facility-dissolution-surface"));
+    assert.ok(world.root.getObjectByName("facility-calibration-surface-marks"));
+    assert.ok(world.root.getObjectByName("facility-calibration-stable-signal"));
 
     const bounds = Object.values(world.zones).map(
       (zone) => zone.userData.bounds as { zMin: number; zMax: number },

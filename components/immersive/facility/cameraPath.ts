@@ -89,6 +89,10 @@ function routeTarget(
     const reveal = smoothstep((routeProgress - 0.07) / 0.09);
     target = entrance.lerp(target, reveal);
   }
+  if (routeProgress > 0.86) {
+    const horizonReveal = smoothstep((routeProgress - 0.86) / 0.14);
+    target.lerp(new THREE.Vector3(0, 3.1, -153), horizonReveal);
+  }
   return target;
 }
 
