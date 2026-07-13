@@ -1,7 +1,9 @@
 # Carved Systems Facility Greybox Checkpoint
 
-Date: 2026-07-13  
-Branch: `feature/carved-systems-facility`  
+Date: 2026-07-13
+
+Branch: `feature/carved-systems-facility`
+
 Server: Next.js development server on `127.0.0.1:4242`
 
 ## Scope
