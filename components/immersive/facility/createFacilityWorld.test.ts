@@ -28,19 +28,21 @@ function worldPosition(object: ThreeTypes.Object3D): ThreeTypes.Vector3 {
   return object.getWorldPosition(new THREE.Vector3());
 }
 
-describe("facility greybox world", () => {
-  it("builds four persistent zones at distinct forward depths", () => {
+describe("facility world", () => {
+  it("builds five persistent zones at distinct forward depths", () => {
     const world = createFacilityWorld(desktopTuning);
     assert.deepEqual(Object.keys(world.zones), [
       "exterior-ridge",
       "reliability-spine",
       "fissure-threshold",
       "voice-chamber",
+      "document-foundry",
     ]);
     assert.ok(world.root.getObjectByName("facility-distant-entrance"));
     assert.ok(world.root.getObjectByName("facility-reliability-spine"));
     assert.ok(world.root.getObjectByName("facility-threshold-occluder"));
     assert.ok(world.root.getObjectByName("facility-voice-ambiguity-gate"));
+    assert.ok(world.root.getObjectByName("facility-document-segments"));
 
     const bounds = Object.values(world.zones).map(
       (zone) => zone.userData.bounds as { zMin: number; zMax: number },
