@@ -6,6 +6,7 @@ import {
   sampleImmersiveJourney,
 } from "./immersiveStages";
 import {
+  resolveFacilityRouteProgress,
   resolveJourneyState,
   type ImmersiveAnchorRect,
   type JourneyPhase,
@@ -36,6 +37,7 @@ export interface ImmersiveScrollSnapshot {
   readonly sample: ImmersiveSceneSample;
   readonly profile: ImmersiveProfile;
   readonly journeyProgress: number;
+  readonly routeProgress: number;
   readonly activeStageId: ImmersiveStageId;
   readonly phase: JourneyPhase;
   readonly inJourney: boolean;
@@ -116,6 +118,11 @@ export function useImmersiveScroll(onSample: ImmersiveScrollListener): void {
           sample,
           profile,
           journeyProgress: resolution.journeyProgress,
+          routeProgress: resolveFacilityRouteProgress(
+            cachedAnchors,
+            scrollY,
+            window.innerHeight,
+          ),
           activeStageId: resolution.activeStageId,
           phase: resolution.phase,
           inJourney: resolution.inJourney,

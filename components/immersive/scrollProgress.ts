@@ -4,6 +4,7 @@ import type { ImmersiveStageId } from "./types";
 export const JOURNEY_ENTRY_VIEWPORT_RATIO = 0.82;
 export const JOURNEY_SETTLE_VIEWPORT_RATIO = 0.42;
 export const JOURNEY_EXIT_VIEWPORT_RATIO = 0.25;
+export const FACILITY_ROUTE_VIEWPORT_RATIO = 0.5;
 
 const MAX_GEOMETRY_VALUE = Number.MAX_SAFE_INTEGER / 4;
 
@@ -270,4 +271,38 @@ export function resolveJourneyProgress(
   viewportHeight: number,
 ): number {
   return resolveJourneyState(anchors, scrollY, viewportHeight).journeyProgress;
+}
+
+export function resolveFacilityRouteProgress(
+  anchors: readonly ImmersiveAnchorRect[],
+  scrollY: number,
+  viewportHeight: number,
+): number {
+  if (!validateImmersiveAnchorOrder(anchors)) return 0;
+
+  const viewport = normalizeViewportHeight(viewportHeight);
+  const scroll = normalizeGeometry(scrollY);
+  const triggerLines = anchors.reduce<number[]>((result, anchor) => {
+    const previous = result.at(-1) ?? 0;
+    const desired = Math.max(
+      0,
+      normalizeGeometry(anchor.top) -
+        viewport * FACILITY_ROUTE_VIEWPORT_RATIO,
+    );
+    result.push(Math.max(previous, desired));
+    return result;
+  }, []);
+
+  if (scroll <= triggerLines[0]) return 0;
+
+  const intervalCount = triggerLines.length - 1;
+  for (let index = 0; index < intervalCount; index += 1) {
+    const start = triggerLines[index];
+    const end = Math.max(start, triggerLines[index + 1]);
+    if (scroll < end) {
+      return clamp01((index + progressAcross(scroll, start, end)) / intervalCount);
+    }
+  }
+
+  return 1;
 }

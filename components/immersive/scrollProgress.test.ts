@@ -7,6 +7,7 @@ import {
   JOURNEY_ENTRY_VIEWPORT_RATIO,
   JOURNEY_EXIT_VIEWPORT_RATIO,
   JOURNEY_SETTLE_VIEWPORT_RATIO,
+  resolveFacilityRouteProgress,
   resolveJourneyProgress,
   resolveJourneyState,
   sectionProgress,
@@ -330,6 +331,58 @@ describe("journey geometry", () => {
   });
 });
 
+describe("continuous facility route geometry", () => {
+  it("maps the full scroll distance monotonically across the route", () => {
+    const anchors = makeAnchors(
+      immersiveStageIds.map((_, index) => index * 1000),
+      immersiveStageIds.map(() => 900),
+    );
+
+    const start = resolveFacilityRouteProgress(anchors, 0, 1000);
+    const middle = resolveFacilityRouteProgress(anchors, 3500, 1000);
+    const end = resolveFacilityRouteProgress(anchors, 7000, 1000);
+
+    assert.equal(start, 0);
+    assert.ok(middle > 0.4 && middle < 0.6);
+    assert.equal(end, 1);
+  });
+
+  it("keeps moving inside long chapters instead of holding the camera", () => {
+    const anchors = makeAnchors(
+      [0, 900, 4200, 5200, 6200, 7200, 8200, 9200],
+      immersiveStageIds.map(() => 900),
+    );
+    const before = resolveFacilityRouteProgress(anchors, 2000, 1000);
+    const after = resolveFacilityRouteProgress(anchors, 2025, 1000);
+
+    assert.ok(after > before);
+  });
+
+  it("stays finite and monotonic for repeated or malformed geometry", () => {
+    const invalid = makeAnchors().slice(0, -1);
+    assert.equal(resolveFacilityRouteProgress(invalid, 2000, 1000), 0);
+
+    const anchors = makeAnchors([
+      0,
+      1000,
+      1000,
+      Number.NaN,
+      3400,
+      3400,
+      Number.POSITIVE_INFINITY,
+      7000,
+    ]);
+    const samples = Array.from({ length: 81 }, (_, index) =>
+      resolveFacilityRouteProgress(anchors, index * 100, 0),
+    );
+    for (let index = 0; index < samples.length; index += 1) {
+      assert.ok(Number.isFinite(samples[index]));
+      assert.ok(samples[index] >= 0 && samples[index] <= 1);
+      if (index > 0) assert.ok(samples[index] >= samples[index - 1]);
+    }
+  });
+});
+
 describe("homepage immersive scroll source contract", () => {
   it("adds the eight spatial anchors without changing semantic stages", () => {
     const roots = [
@@ -384,6 +437,7 @@ describe("homepage immersive scroll source contract", () => {
     assert.match(source, /requestAnimationFrame/);
     assert.match(source, /getBoundingClientRect/);
     assert.match(source, /sampleImmersiveJourney/);
+    assert.match(source, /resolveFacilityRouteProgress/);
     assert.match(source, /getImmersiveProfile/);
     assert.match(source, /querySelectorAll[\s\S]*data-immersive-anchor/);
     assert.doesNotMatch(source, /\buseState\b|\buseReducer\b|createContext/);
@@ -405,6 +459,16 @@ describe("homepage immersive scroll source contract", () => {
     );
     assert.doesNotMatch(nativeHandler, /window\.scrollY/);
     assert.doesNotMatch(resizeHandler, /window\.scrollY/);
+  });
+
+  it("publishes continuous route progress beside semantic journey state", () => {
+    const source = readSource("components/immersive/useImmersiveScroll.ts");
+
+    assert.match(source, /readonly routeProgress:\s*number/);
+    assert.match(
+      source,
+      /routeProgress:\s*resolveFacilityRouteProgress\(/,
+    );
   });
 
   it("uses existing Lenis or passive native scroll and cleans up every lifecycle handle", () => {
