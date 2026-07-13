@@ -1,0 +1,139 @@
+import assert from "node:assert/strict";
+import path from "node:path";
+import { describe, it } from "node:test";
+import type * as ThreeTypes from "three";
+import { getThreeSceneTuning } from "../../threeSceneTuning";
+import { sampleFacilityNarrative } from "./narrative";
+
+process.env.NODE_PATH = path.resolve(process.cwd(), "node_modules");
+const nodeModule = require("node:module") as {
+  readonly Module: { _initPaths(): void };
+};
+nodeModule.Module._initPaths();
+const THREE = require("three") as typeof ThreeTypes;
+const { sampleFacilityCamera } = require("./cameraPath") as typeof import("./cameraPath");
+const { createFacilityWorld } = require("./createFacilityWorld") as typeof import("./createFacilityWorld");
+
+const desktopTuning = getThreeSceneTuning({
+  deviceMemory: 8,
+  devicePixelRatio: 2,
+  hardwareConcurrency: 12,
+  isCoarsePointer: false,
+  reducedMotion: false,
+  viewportWidth: 1440,
+});
+
+function worldPosition(object: ThreeTypes.Object3D): ThreeTypes.Vector3 {
+  object.updateWorldMatrix(true, false);
+  return object.getWorldPosition(new THREE.Vector3());
+}
+
+describe("facility greybox world", () => {
+  it("builds four persistent zones at distinct forward depths", () => {
+    const world = createFacilityWorld(desktopTuning);
+    assert.deepEqual(Object.keys(world.zones), [
+      "exterior-ridge",
+      "reliability-spine",
+      "fissure-threshold",
+      "voice-chamber",
+    ]);
+    assert.ok(world.root.getObjectByName("facility-distant-entrance"));
+    assert.ok(world.root.getObjectByName("facility-reliability-spine"));
+    assert.ok(world.root.getObjectByName("facility-threshold-occluder"));
+    assert.ok(world.root.getObjectByName("facility-voice-ambiguity-gate"));
+
+    const bounds = Object.values(world.zones).map(
+      (zone) => zone.userData.bounds as { zMin: number; zMax: number },
+    );
+    for (let index = 1; index < bounds.length; index += 1) {
+      assert.ok(bounds[index].zMax <= bounds[index - 1].zMax);
+      assert.ok(bounds[index].zMin < bounds[index - 1].zMin);
+    }
+    world.dispose();
+  });
+
+  it("uses substantial mesh geometry rather than signature lines or point clouds", () => {
+    const world = createFacilityWorld(desktopTuning);
+    let signatures = 0;
+    world.root.traverse((object) => {
+      if (object.userData.signature !== true) return;
+      signatures += 1;
+      assert.ok(object instanceof THREE.Mesh || object instanceof THREE.InstancedMesh);
+      const renderable = object as ThreeTypes.Mesh;
+      const materials = Array.isArray(renderable.material)
+        ? renderable.material
+        : [renderable.material];
+      for (const material of materials) {
+        assert.equal(material instanceof THREE.LineBasicMaterial, false);
+        assert.equal(material instanceof THREE.PointsMaterial, false);
+      }
+    });
+    assert.ok(signatures >= 12);
+    world.dispose();
+  });
+
+  it("places the distant entrance inside the authored hero view", () => {
+    const world = createFacilityWorld(desktopTuning);
+    const entrance = world.root.getObjectByName("facility-distant-entrance")!;
+    const sample = sampleFacilityCamera(0, "desktop");
+    const camera = new THREE.PerspectiveCamera(sample.fov, 1.44, 0.1, 220);
+    camera.position.set(sample.position.x, sample.position.y, sample.position.z);
+    camera.lookAt(sample.target.x, sample.target.y, sample.target.z);
+    camera.updateMatrixWorld(true);
+    camera.updateProjectionMatrix();
+    const matrix = new THREE.Matrix4().multiplyMatrices(
+      camera.projectionMatrix,
+      camera.matrixWorldInverse,
+    );
+    const frustum = new THREE.Frustum().setFromProjectionMatrix(matrix);
+
+    assert.equal(frustum.containsPoint(worldPosition(entrance)), true);
+    world.dispose();
+  });
+
+  it("updates only the voice mechanism deterministically", () => {
+    const world = createFacilityWorld(desktopTuning);
+    const exterior = world.root.getObjectByName("facility-distant-entrance")!;
+    const signal = world.root.getObjectByName("facility-voice-clarified-signal")!;
+    const exteriorBefore = exterior.matrix.clone();
+    const sample = sampleFacilityNarrative(0.39, "desktop");
+
+    world.update(sample, 12, 0.8);
+    const first = signal.position.clone();
+    world.update(sample, 12, 0.8);
+    assert.deepEqual(signal.position.toArray(), first.toArray());
+    assert.deepEqual(exterior.matrix.toArray(), exteriorBefore.toArray());
+
+    world.update(sampleFacilityNarrative(0.42, "desktop"), 14, 1);
+    assert.notDeepEqual(signal.position.toArray(), first.toArray());
+    world.dispose();
+  });
+
+  it("disposes every owned geometry and material once", () => {
+    const world = createFacilityWorld(desktopTuning);
+    const geometries = new Set<ThreeTypes.BufferGeometry>();
+    const materials = new Set<ThreeTypes.Material>();
+    world.root.traverse((object) => {
+      const renderable = object as ThreeTypes.Mesh;
+      if (renderable.geometry) geometries.add(renderable.geometry);
+      if (renderable.material) {
+        const owned = Array.isArray(renderable.material)
+          ? renderable.material
+          : [renderable.material];
+        owned.forEach((material) => materials.add(material));
+      }
+    });
+    let disposals = 0;
+    geometries.forEach((geometry) =>
+      geometry.addEventListener("dispose", () => (disposals += 1)),
+    );
+    materials.forEach((material) =>
+      material.addEventListener("dispose", () => (disposals += 1)),
+    );
+
+    world.dispose();
+    world.dispose();
+    assert.equal(disposals, geometries.size + materials.size);
+    assert.equal(world.root.parent, null);
+  });
+});
