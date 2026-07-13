@@ -30,6 +30,15 @@ describe("facility Atlas materials", () => {
     }
     assert.ok(resources.materials.signal.emissiveIntensity > 0);
     assert.ok(resources.materials.signal.emissiveIntensity < 1);
+    const shellHsl = { h: 0, s: 0, l: 0 };
+    const steelHsl = { h: 0, s: 0, l: 0 };
+    resources.materials.shell.color.getHSL(shellHsl);
+    resources.materials.steel.color.getHSL(steelHsl);
+    assert.ok(shellHsl.l >= 0.018, "shell silhouettes must survive dark fog");
+    assert.ok(
+      steelHsl.l - shellHsl.l >= 0.06,
+      "structure needs readable separation from the carved shell",
+    );
     resources.dispose();
   });
 

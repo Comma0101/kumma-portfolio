@@ -45,19 +45,19 @@ export function createVoiceFacilityZone(
   root.add(createArchRibs(context, "facility-voice-ribs", -25, -44, 9.2, 6.4));
 
   const incomingPoints = [
-    new THREE.Vector3(0, 1.1, -24),
-    new THREE.Vector3(0, 1.2, -31),
+    new THREE.Vector3(0, 0.2, -24),
+    new THREE.Vector3(0, 0.22, -31),
   ];
   const unsafePoints = [
     incomingPoints[1],
-    new THREE.Vector3(-3.2, 1.25, -34.5),
-    new THREE.Vector3(-3.2, 1.25, -37),
+    new THREE.Vector3(-3.2, 0.24, -34.5),
+    new THREE.Vector3(-3.2, 0.24, -37),
   ];
   const clarifiedPoints = [
     incomingPoints[1],
-    new THREE.Vector3(3.1, 1.55, -35),
-    new THREE.Vector3(2.2, 1.5, -39),
-    new THREE.Vector3(0, 1.45, -43),
+    new THREE.Vector3(3.1, 0.34, -35),
+    new THREE.Vector3(2.2, 0.3, -39),
+    new THREE.Vector3(0, 0.28, -43),
   ];
 
   root.add(
@@ -66,35 +66,35 @@ export function createVoiceFacilityZone(
       "facility-voice-input-conduit",
       context.materials.signal,
       incomingPoints,
-      0.16,
+      0.1,
     ),
     createSignatureTube(
       context,
       "facility-voice-unsafe-branch",
       context.materials.guide,
       unsafePoints,
-      0.12,
+      0.08,
     ),
     createSignatureTube(
       context,
       "facility-voice-clarified-branch",
       context.materials.signal,
       clarifiedPoints,
-      0.16,
+      0.1,
     ),
     createSignatureBox(
       context,
       "facility-voice-ambiguity-gate",
       context.materials.steel,
-      [-1.65, 2.6, -31.2],
-      [2.7, 4.8, 0.55],
+      [-3, 2.6, -31.2],
+      [2.4, 4.8, 0.55],
     ),
     createSignatureBox(
       context,
       "facility-voice-ambiguity-gate-right",
       context.materials.steel,
-      [1.65, 2.6, -31.2],
-      [2.7, 4.8, 0.55],
+      [3, 2.6, -31.2],
+      [2.4, 4.8, 0.55],
     ),
     createSignatureBox(
       context,
@@ -144,8 +144,8 @@ export function createVoiceFacilityZone(
       clarifiedSignal.position,
     );
     const gateTravel = state.clarifiedProgress * 0.72;
-    leftGate.position.x = -1.65 - gateTravel;
-    rightGate.position.x = 1.65 + gateTravel;
+    leftGate.position.x = -3 - gateTravel;
+    rightGate.position.x = 3 + gateTravel;
     orderPlane.scale.x = THREE.MathUtils.lerp(0.8, 6.4, state.orderProgress);
     orderPlane.userData.progress = state.orderProgress;
     root.userData.eventProgress = eventProgressFor(sample, "clarify-route");

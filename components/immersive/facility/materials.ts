@@ -35,8 +35,8 @@ export function createFacilityMaterials(): FacilityMaterialResources {
 
     const materials: FacilityMaterials = Object.freeze({
       terrain: material(0x111817, 0.96, 0.03),
-      shell: material(0x090d0d, 0.88, 0.08, { flatShading: true }),
-      steel: material(0x39423f, 0.58, 0.42),
+      shell: material(0x202b28, 0.88, 0.08, { flatShading: true }),
+      steel: material(0x56635e, 0.58, 0.42),
       paper: material(0xcbbf9d, 0.82, 0.04),
       signal: material(0x91c99d, 0.48, 0.12, {
         emissive: 0x477a56,

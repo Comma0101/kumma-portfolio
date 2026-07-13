@@ -436,7 +436,7 @@ describe("homepage immersive scroll source contract", () => {
 
     assert.match(source, /requestAnimationFrame/);
     assert.match(source, /getBoundingClientRect/);
-    assert.match(source, /sampleImmersiveJourney/);
+    assert.match(source, /sampleFacilityNarrative/);
     assert.match(source, /resolveFacilityRouteProgress/);
     assert.match(source, /getImmersiveProfile/);
     assert.match(source, /querySelectorAll[\s\S]*data-immersive-anchor/);
@@ -465,10 +465,9 @@ describe("homepage immersive scroll source contract", () => {
     const source = readSource("components/immersive/useImmersiveScroll.ts");
 
     assert.match(source, /readonly routeProgress:\s*number/);
-    assert.match(
-      source,
-      /routeProgress:\s*resolveFacilityRouteProgress\(/,
-    );
+    assert.match(source, /const routeProgress\s*=\s*resolveFacilityRouteProgress\(/);
+    assert.match(source, /sampleFacilityNarrative\(routeProgress,\s*profile\)/);
+    assert.match(source, /routeProgress,/);
   });
 
   it("uses existing Lenis or passive native scroll and cleans up every lifecycle handle", () => {
@@ -549,52 +548,37 @@ describe("homepage immersive scroll source contract", () => {
 
     assert.equal(source.match(/new THREE\.WebGLRenderer/g)?.length, 1);
     assert.equal(source.match(/new THREE\.PerspectiveCamera/g)?.length, 1);
+    assert.match(source, /createFacilityWorld/);
+    assert.equal(source.match(/createFacilityWorld\(/g)?.length, 1);
+    assert.doesNotMatch(source, /createSceneGroups|sampleImmersiveJourney/);
     assert.match(
       source,
-      /import\s*\{\s*createSceneGroups\s*\}\s*from\s*["']\.\/immersive\/createSceneGroups["']/,
-    );
-    assert.equal(source.match(/createSceneGroups\(/g)?.length, 1);
-    assert.match(source, /scene\.add\(sceneGroups\.root\)/);
-    assert.match(
-      source,
-      /immersiveScrollSnapshotRef\.current\?\.sample\s*\?\?\s*initialSample/,
+      /scene\.add\(resources\.terrain\.mesh,\s*resources\.facility\.root\)/,
     );
     assert.match(
       source,
-      /sceneGroups\.update\(\s*currentGroupWeights,/,
+      /immersiveScrollSnapshotRef\.current\?\.sample\s*\?\?\s*initialNarrative/,
     );
-    assert.doesNotMatch(
-      source,
-      /sceneGroups\.update\(\s*sample\.groups,/,
-    );
+    assert.match(source, /facilityWorld\.update\(/);
     assert.equal(source.match(/requestAnimationFrame\(loop\)/g)?.length, 2);
     assert.doesNotMatch(source, /scene\.traverse\(|root\.traverse\(/);
   });
 
-  it("drives authored camera, fog, terrain, and group weights from the sampled stage", () => {
+  it("drives authored camera, atmosphere, and facility state from route progress", () => {
     const source = readSource("components/ThreeScene.tsx");
+    const terrain = readSource("components/immersive/facility/terrain.ts");
 
-    assert.match(source, /sample\.camera\.position\.x/);
-    assert.match(source, /sample\.camera\.target\.z/);
-    assert.match(source, /sample\.camera\.fov/);
-    assert.match(source, /sample\.fog\.density/);
-    assert.match(source, /sample\.fog\.color/);
-    assert.match(source, /sample\.terrain\.elevation/);
-    assert.match(source, /sample\.terrain\.roughness/);
-    assert.match(source, /sample\.terrain\.visibility/);
+    assert.match(source, /sampleFacilityCamera\(currentRouteProgress\(\),\s*currentProfile\(\)\)/);
+    assert.match(source, /cameraSample\.position\.x/);
+    assert.match(source, /cameraSample\.target\.z/);
+    assert.match(source, /cameraSample\.fov/);
+    assert.match(source, /cameraSample\.roll/);
+    assert.match(source, /narrative\.atmosphere\.fogDensity/);
+    assert.match(source, /narrative\.atmosphere\.fogColor/);
+    assert.match(source, /narrative\.atmosphere\.exposure/);
+    assert.match(source, /facilityWorld\.update\(/);
     assert.match(source, /THREE\.MathUtils\.damp/);
-    assert.match(
-      source,
-      /createMutableSceneGroupWeights\(\s*initialSample\.groups/,
-    );
-    assert.match(
-      source,
-      /copySceneGroupWeights\(currentGroupWeights,\s*sample\.groups\)/,
-    );
-    assert.match(
-      source,
-      /dampSceneGroupWeights\([\s\S]*currentGroupWeights,[\s\S]*sample\.groups/,
-    );
+    assert.doesNotMatch(source, /SceneGroupWeights|dampSceneGroupWeights/);
     for (const uniform of [
       "uElevation",
       "uRoughness",
@@ -602,7 +586,7 @@ describe("homepage immersive scroll source contract", () => {
       "uFogColor",
       "uFogDensity",
     ]) {
-      assert.match(source, new RegExp(uniform));
+      assert.match(`${source}\n${terrain}`, new RegExp(uniform));
     }
   });
 
@@ -631,7 +615,7 @@ describe("homepage immersive scroll source contract", () => {
     const source = readSource("components/ThreeScene.tsx");
     const helper = source.slice(
       source.indexOf("function shouldWakeScene"),
-      source.indexOf("const SNOISE"),
+      source.indexOf("function createSceneWorldResources"),
     );
     const store = source.slice(
       source.indexOf("const storeImmersiveSnapshot"),
@@ -640,6 +624,7 @@ describe("homepage immersive scroll source contract", () => {
 
     assert.match(helper, /previous\s*===\s*null/);
     assert.match(helper, /previous\.profile\s*!==\s*next\.profile/);
+    assert.match(helper, /previous\.routeProgress\s*!==\s*next\.routeProgress/);
     assert.match(
       helper,
       /previous\.activeStageId\s*!==\s*next\.activeStageId/,
@@ -656,7 +641,7 @@ describe("homepage immersive scroll source contract", () => {
     );
   });
 
-  it("applies reduced samples exactly and advances time only in the RAF loop", () => {
+  it("applies reduced samples exactly without time-driven terrain drift", () => {
     const source = readSource("components/ThreeScene.tsx");
     const staticFrame = source.slice(
       source.indexOf("const renderStaticFrame"),
@@ -680,19 +665,21 @@ describe("homepage immersive scroll source contract", () => {
     assert.match(staticFrame, /my\s*=\s*0/);
     assert.match(staticFrame, /tx\s*=\s*0/);
     assert.match(staticFrame, /ty\s*=\s*0/);
-    assert.match(staticFrame, /applySceneSample\(sample,\s*0,\s*true\)/);
+    assert.match(
+      staticFrame,
+      /applyFacilitySample\(narrative,\s*cameraSample,\s*0,\s*true\)/,
+    );
     assert.match(animatedFrame, /frameTime/);
-    assert.match(animatedFrame, /uniforms\.uTime\.value\s*\+=/);
     assert.match(
       animatedFrame,
-      /applySceneSample\(sample,\s*deltaSeconds,\s*false\)/,
+      /applyFacilitySample\(narrative,\s*cameraSample,\s*deltaSeconds,\s*false\)/,
     );
     assert.match(loop, /renderAnimatedFrame\(/);
     assert.doesNotMatch(loop, /renderStaticFrame\(\)/);
-    assert.equal(source.match(/uniforms\.uTime\.value\s*\+=/g)?.length, 1);
+    assert.doesNotMatch(source, /uniforms\.uTime\.value\s*\+=/);
   });
 
-  it("keeps pointer parallax secondary, live-profile gated, and quiet at contact", () => {
+  it("keeps pointer parallax secondary and limited to the exterior ridge", () => {
     const source = readSource("components/ThreeScene.tsx");
     const pointerHandler = source.slice(
       source.indexOf("const onPointer"),
@@ -708,11 +695,9 @@ describe("homepage immersive scroll source contract", () => {
     assert.match(pointerHandler, /profile\s*===\s*["']mobile["']/);
     assert.match(source, /matchMedia\(["']\(pointer: fine\)["']\)/);
     assert.doesNotMatch(source, /function motionScaleForSample/);
-    assert.match(
-      source,
-      /motionScaleForTransition\(\s*sample\.transition\.toId,\s*sample\.transition\.easedProgress/,
-    );
-    assert.match(source, /pointerScale[\s\S]*motionScaleForTransition/);
+    assert.match(pointerHandler, /sample\.zone\s*!==\s*["']exterior-ridge["']/);
+    assert.match(source, /pointerScale[\s\S]*narrative\.zone\s*===\s*["']exterior-ridge["']/);
+    assert.doesNotMatch(source, /motionScaleForTransition/);
     assert.match(resizeHandler, /getThreeSceneTuning\(/);
   });
 
@@ -735,11 +720,10 @@ describe("homepage immersive scroll source contract", () => {
       source.indexOf('window.addEventListener("resize"'),
     );
 
-    assert.match(source, /function createTerrainResources/);
+    assert.match(source, /createFacilityTerrain/);
     assert.match(source, /function createSceneWorldResources/);
     assert.match(source, /swapResourceCandidate/);
-    assert.match(source, /let terrainResources\s*=/);
-    assert.match(source, /let sceneGroups\s*=/);
+    assert.match(source, /let facilityWorld\s*=/);
     assert.match(source, /let liveWorldResources\s*=/);
     assert.match(source, /let activeTuning\s*=/);
     assert.match(
@@ -766,16 +750,13 @@ describe("homepage immersive scroll source contract", () => {
       syncResources,
       /if\s*\(!swapResult\.replaced\)[\s\S]*return false/,
     );
-    assert.match(
-      syncResources,
-      /liveWorldResources\s*=\s*swapResult\.current/,
-    );
+    assert.match(syncResources, /adoptWorldResources\(swapResult\.current,\s*nextTuning\)/);
     assert.doesNotMatch(
       syncResources.slice(0, syncResources.indexOf("swapResourceCandidate")),
-      /sceneGroups\.dispose|disposeTerrainResources/,
+      /facilityWorld\.dispose|terrain\.dispose/,
     );
-    assert.match(syncResources, /dataset\.sceneProfile\s*=\s*nextTuning\.profile/);
-    assert.match(source, /candidate\.groups\.update\(\s*currentGroupWeights,/);
+    assert.match(source, /dataset\.sceneProfile\s*=\s*nextTuning\.profile/);
+    assert.match(source, /candidate\.facility\.update\(currentNarrative\(\),\s*elapsedSeconds,\s*0\)/);
     assert.match(wakeScene, /syncSceneQualityForViewport\(\)/);
     assert.match(finePointerChange, /syncSceneQualityForViewport\(\)/);
     assert.match(resize, /syncSceneResources\(resizeTuning\)/);
@@ -857,6 +838,10 @@ describe("homepage immersive scroll source contract", () => {
 
   it("exposes a stable CSS fallback and fully cleans renderer resources", () => {
     const source = readSource("components/ThreeScene.tsx");
+    const terrain = readSource("components/immersive/facility/terrain.ts");
+    const tracker = readSource(
+      "components/immersive/facility/resourceTracker.ts",
+    );
     const css = readSource("styles/home.module.css");
 
     assert.match(source, /data-webgl-state=["']pending["']/);
@@ -864,9 +849,9 @@ describe("homepage immersive scroll source contract", () => {
     assert.match(source, /dataset\.webglState\s*=\s*["']ready["']/);
     assert.match(source, /dataset\.webglState\s*=\s*["']unavailable["']/);
     assert.match(source, /webglcontextlost/);
-    assert.match(source, /resources\.groups\.dispose\(\)/);
-    assert.match(source, /geometry\.dispose\(\)/);
-    assert.match(source, /material\.dispose\(\)/);
+    assert.match(source, /resources\.facility\.dispose\(\)/);
+    assert.match(source, /resources\.terrain\.dispose\(\)/);
+    assert.match(`${terrain}\n${tracker}`, /\.dispose\(\)/);
     assert.match(source, /renderer\.dispose\(\)/);
     assert.match(source, /renderer\.forceContextLoss\(\)/);
     assert.match(css, /\.immersiveScene\s*\{/);

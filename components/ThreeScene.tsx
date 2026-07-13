@@ -3,27 +3,30 @@
 import { useCallback, useEffect, useRef } from "react";
 import * as THREE from "three";
 import styles from "../styles/home.module.css";
-import { createSceneGroups } from "./immersive/createSceneGroups";
-import type { ImmersiveSceneGroups } from "./immersive/createSceneGroups";
-import { sampleImmersiveJourney } from "./immersive/immersiveStages";
+import { sampleFacilityCamera } from "./immersive/facility/cameraPath";
 import {
-  createResourceCandidateBundle,
-  swapResourceCandidate,
-} from "./immersive/resourceTransaction";
+  createFacilityWorld,
+  type FacilityWorld,
+} from "./immersive/facility/createFacilityWorld";
+import { sampleFacilityNarrative } from "./immersive/facility/narrative";
 import {
-  copySceneGroupWeights,
-  createMutableSceneGroupWeights,
-  dampSceneGroupWeights,
+  createFacilityTerrain,
+  createFacilityTerrainUniforms,
+  type FacilityTerrainResources,
+  type FacilityTerrainUniforms,
+} from "./immersive/facility/terrain";
+import type {
+  FacilityCameraSample,
+  FacilityNarrativeSample,
+} from "./immersive/facility/types";
+import { swapResourceCandidate } from "./immersive/resourceTransaction";
+import {
   journeyStateFor,
-  motionScaleForTransition,
   shouldAnimateScene,
   shouldRebuildSceneResources,
   shouldRenderScene,
 } from "./immersive/sceneLifecycle";
-import type {
-  ImmersiveProfile,
-  ImmersiveSceneSample,
-} from "./immersive/types";
+import type { ImmersiveProfile } from "./immersive/types";
 import {
   useImmersiveScroll,
   type ImmersiveScrollSnapshot,
@@ -33,6 +36,18 @@ import {
   type ThreeSceneTuning,
 } from "./threeSceneTuning";
 
+const CAMERA_DAMPING = 7.2;
+const TREATMENT_DAMPING = 5.4;
+const POINTER_DAMPING = 8.5;
+const TERRAIN_ELEVATION = 0.68;
+const TERRAIN_ROUGHNESS = 0.72;
+
+interface SceneWorldResources {
+  readonly terrain: FacilityTerrainResources;
+  readonly facility: FacilityWorld;
+  readonly tuning: ThreeSceneTuning;
+}
+
 function shouldWakeScene(
   previous: ImmersiveScrollSnapshot | null,
   next: ImmersiveScrollSnapshot,
@@ -40,208 +55,53 @@ function shouldWakeScene(
   return (
     previous === null ||
     previous.profile !== next.profile ||
+    previous.routeProgress !== next.routeProgress ||
     previous.activeStageId !== next.activeStageId ||
     previous.inJourney !== next.inJourney ||
     previous.anchorsValid !== next.anchorsValid
   );
 }
 
-const SNOISE = /* glsl */ `
-  vec3 mod289(vec3 x){return x - floor(x*(1.0/289.0))*289.0;}
-  vec2 mod289(vec2 x){return x - floor(x*(1.0/289.0))*289.0;}
-  vec3 permute(vec3 x){return mod289(((x*34.0)+1.0)*x);}
-  float snoise(vec2 v){
-    const vec4 C = vec4(0.211324865405187,0.366025403784439,-0.577350269189626,0.024390243902439);
-    vec2 i = floor(v + dot(v, C.yy));
-    vec2 x0 = v - i + dot(i, C.xx);
-    vec2 i1 = (x0.x > x0.y) ? vec2(1.0,0.0) : vec2(0.0,1.0);
-    vec4 x12 = x0.xyxy + C.xxzz; x12.xy -= i1;
-    i = mod289(i);
-    vec3 p = permute(permute(i.y + vec3(0.0, i1.y, 1.0)) + i.x + vec3(0.0, i1.x, 1.0));
-    vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
-    m = m*m; m = m*m;
-    vec3 x = 2.0 * fract(p * C.www) - 1.0;
-    vec3 h = abs(x) - 0.5;
-    vec3 ox = floor(x + 0.5);
-    vec3 a0 = x - ox;
-    m *= 1.79284291400159 - 0.85373472095314 * (a0*a0 + h*h);
-    vec3 g;
-    g.x = a0.x * x0.x + h.x * x0.y;
-    g.yz = a0.yz * x12.xz + h.yz * x12.yw;
-    return 130.0 * dot(m, g);
-  }
-`;
-
-const VERT = (octaves: number) => /* glsl */ `
-  precision highp float;
-  uniform float uTime;
-  uniform float uElevation;
-  uniform float uRoughness;
-  varying float vHeight;
-  varying vec3 vNormal;
-  varying float vDistance;
-  ${SNOISE}
-  float fbm(vec2 p){
-    float sum = 0.0;
-    float amplitude = 0.5;
-    for (int octave = 0; octave < ${octaves}; octave++){
-      sum += amplitude * snoise(p);
-      p *= 2.0;
-      amplitude *= 0.5;
-    }
-    return sum;
-  }
-  float terrain(vec2 point){
-    float frequency = mix(0.022, 0.058, uRoughness);
-    return fbm(point * frequency + vec2(0.0, uTime * 0.018));
-  }
-  void main(){
-    const float epsilon = 0.28;
-    vec2 point = position.xy;
-    float amplitude = mix(1.2, 5.4, uElevation);
-    float height = terrain(point);
-    float heightX = terrain(point + vec2(epsilon, 0.0));
-    float heightZ = terrain(point + vec2(0.0, epsilon));
-    vec3 displaced = vec3(point.x, height * amplitude - 0.6, point.y);
-    vHeight = height;
-    vNormal = normalize(vec3(
-      (height - heightX) * amplitude,
-      epsilon,
-      (height - heightZ) * amplitude
-    ));
-    vec4 viewPosition = modelViewMatrix * vec4(displaced, 1.0);
-    vDistance = max(0.0, -viewPosition.z);
-    gl_Position = projectionMatrix * viewPosition;
-  }
-`;
-
-const FRAG = /* glsl */ `
-  precision highp float;
-  uniform vec3 uFogColor;
-  uniform float uFogDensity;
-  uniform float uVisibility;
-  varying float vHeight;
-  varying vec3 vNormal;
-  varying float vDistance;
-  void main(){
-    float terrainMix = smoothstep(-0.28, 0.62, vHeight);
-    vec3 valley = vec3(0.038, 0.043, 0.042);
-    vec3 peak = vec3(0.32, 0.39, 0.35);
-    vec3 base = mix(valley, peak, terrainMix);
-    vec3 lightDirection = normalize(vec3(-0.42, 0.84, 0.25));
-    float diffuse = clamp(dot(normalize(vNormal), lightDirection), 0.0, 1.0);
-    vec3 shaded = base * (0.34 + diffuse * 0.72);
-    float fogFactor = 1.0 - exp(
-      -uFogDensity * uFogDensity * vDistance * vDistance
-    );
-    vec3 color = mix(shaded, uFogColor, clamp(fogFactor, 0.0, 1.0));
-    gl_FragColor = vec4(color, uVisibility * 0.88);
-  }
-`;
-
-const CAMERA_DAMPING = 5.8;
-const TREATMENT_DAMPING = 5.2;
-const POINTER_DAMPING = 7.5;
-
-interface TerrainUniforms {
-  readonly [uniform: string]: THREE.IUniform;
-  readonly uTime: THREE.IUniform<number>;
-  readonly uElevation: THREE.IUniform<number>;
-  readonly uRoughness: THREE.IUniform<number>;
-  readonly uVisibility: THREE.IUniform<number>;
-  readonly uFogColor: THREE.IUniform<THREE.Color>;
-  readonly uFogDensity: THREE.IUniform<number>;
-}
-
-interface TerrainResources {
-  readonly geometry: THREE.PlaneGeometry;
-  readonly material: THREE.ShaderMaterial;
-  readonly mesh: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>;
-  disposed: boolean;
-}
-
-interface SceneWorldResources {
-  readonly terrain: TerrainResources;
-  readonly groups: ImmersiveSceneGroups;
-  readonly tuning: ThreeSceneTuning;
-}
-
-function createTerrainResources(
-  tuning: ThreeSceneTuning,
-  uniforms: TerrainUniforms,
-): TerrainResources {
-  const geometry = new THREE.PlaneGeometry(
-    96,
-    126,
-    tuning.segmentX,
-    tuning.segmentZ,
-  );
-  let material: THREE.ShaderMaterial | null = null;
-
-  try {
-    material = new THREE.ShaderMaterial({
-      depthWrite: true,
-      fragmentShader: FRAG,
-      side: THREE.DoubleSide,
-      transparent: true,
-      uniforms,
-      vertexShader: VERT(tuning.noiseOctaves),
-    });
-    const mesh = new THREE.Mesh(geometry, material);
-    mesh.name = "atlas-shared-terrain";
-    mesh.renderOrder = -1;
-
-    return { disposed: false, geometry, material, mesh };
-  } catch (error) {
-    material?.dispose();
-    geometry.dispose();
-    throw error;
-  }
-}
-
-function disposeTerrainResources(resources: TerrainResources): void {
-  if (resources.disposed) return;
-  resources.disposed = true;
-  resources.mesh.removeFromParent();
-  resources.geometry.dispose();
-  resources.material.dispose();
-}
-
 function createSceneWorldResources(
   tuning: ThreeSceneTuning,
-  uniforms: TerrainUniforms,
+  uniforms: FacilityTerrainUniforms,
 ): SceneWorldResources {
-  const resources = createResourceCandidateBundle({
-    createTerrain: () => createTerrainResources(tuning, uniforms),
-    createGroups: () => createSceneGroups(tuning),
-    disposeTerrain: disposeTerrainResources,
-  });
-  return { ...resources, tuning };
+  const terrain = createFacilityTerrain(tuning, uniforms);
+
+  try {
+    return {
+      terrain,
+      facility: createFacilityWorld(tuning),
+      tuning,
+    };
+  } catch (error) {
+    terrain.dispose();
+    throw error;
+  }
 }
 
 function attachSceneWorldResources(
   scene: THREE.Scene,
   resources: SceneWorldResources,
 ): void {
-  scene.add(resources.terrain.mesh);
-  scene.add(resources.groups.root);
+  scene.add(resources.terrain.mesh, resources.facility.root);
 }
 
 function detachSceneWorldResources(resources: SceneWorldResources): void {
   resources.terrain.mesh.removeFromParent();
-  resources.groups.root.removeFromParent();
+  resources.facility.root.removeFromParent();
 }
 
 function retireContextLostSceneWorld(resources: SceneWorldResources): void {
-  // The context already destroyed these GPU handles. Dispatching Three.js
-  // dispose events would try to delete pre-loss handles from the new context.
+  // The browser already destroyed these GPU handles. Disposing them against the
+  // restored context would target stale handles, so detach and let them be GC'd.
   detachSceneWorldResources(resources);
 }
 
 function disposeSceneWorldResources(resources: SceneWorldResources): void {
   detachSceneWorldResources(resources);
-  resources.groups.dispose();
-  disposeTerrainResources(resources.terrain);
+  resources.facility.dispose();
+  resources.terrain.dispose();
 }
 
 function disposeRendererResources(
@@ -253,6 +113,14 @@ function disposeRendererResources(
   if (mount.contains(renderer.domElement)) {
     mount.removeChild(renderer.domElement);
   }
+}
+
+function immersiveProfileForViewport(
+  reducedMotion: boolean,
+  width: number,
+): ImmersiveProfile {
+  if (reducedMotion) return "reduced";
+  return width < 768 ? "mobile" : "desktop";
 }
 
 export default function ThreeScene() {
@@ -283,6 +151,10 @@ export default function ThreeScene() {
     const finePointerQuery = window.matchMedia("(pointer: fine)");
     const nav = navigator as Navigator & { deviceMemory?: number };
     const initialReducedMotion = reducedMotionQuery.matches;
+    const initialProfile = immersiveProfileForViewport(
+      initialReducedMotion,
+      window.innerWidth,
+    );
     const initialTuning = getThreeSceneTuning({
       deviceMemory: nav.deviceMemory,
       devicePixelRatio: window.devicePixelRatio,
@@ -291,20 +163,22 @@ export default function ThreeScene() {
       reducedMotion: initialReducedMotion,
       viewportWidth: window.innerWidth,
     });
-    const initialProfile: ImmersiveProfile = initialReducedMotion
-      ? "reduced"
-      : window.innerWidth < 768
-        ? "mobile"
-        : "desktop";
-    const initialSample = sampleImmersiveJourney(0, initialProfile);
+    const initialNarrative = sampleFacilityNarrative(0, initialProfile);
+    const initialCamera = sampleFacilityCamera(0, initialProfile);
     const isSceneInJourney = () =>
       immersiveScrollSnapshotRef.current?.inJourney ?? true;
     const isReducedMotion = () => {
       const profile = immersiveScrollSnapshotRef.current?.profile;
       return profile ? profile === "reduced" : initialReducedMotion;
     };
-    const currentSample = () =>
-      immersiveScrollSnapshotRef.current?.sample ?? initialSample;
+    const currentProfile = () =>
+      immersiveScrollSnapshotRef.current?.profile ?? initialProfile;
+    const currentRouteProgress = () =>
+      immersiveScrollSnapshotRef.current?.routeProgress ?? 0;
+    const currentNarrative = () =>
+      immersiveScrollSnapshotRef.current?.sample ?? initialNarrative;
+    const currentCamera = () =>
+      sampleFacilityCamera(currentRouteProgress(), currentProfile());
     const syncJourneyState = () => {
       const nextState = journeyStateFor(isSceneInJourney());
       if (mount.dataset.journeyState !== nextState) {
@@ -316,7 +190,6 @@ export default function ThreeScene() {
     syncJourneyState();
     sceneWakeRef.current = syncJourneyState;
 
-    let renderer: THREE.WebGLRenderer | null = null;
     let webglReady = false;
     let warnedAboutWebgl = false;
     const markWebglUnavailable = (reason: unknown) => {
@@ -331,6 +204,7 @@ export default function ThreeScene() {
       }
     };
 
+    let renderer: THREE.WebGLRenderer;
     try {
       renderer = new THREE.WebGLRenderer({
         alpha: true,
@@ -355,45 +229,50 @@ export default function ThreeScene() {
       false,
     );
     renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = initialNarrative.atmosphere.exposure;
     renderer.domElement.dataset.immersiveCanvas = "true";
     renderer.domElement.style.width = "100%";
     renderer.domElement.style.height = "100%";
 
     const scene = new THREE.Scene();
     const sceneFog = new THREE.FogExp2(
-      initialSample.fog.color,
-      initialSample.fog.density,
+      initialNarrative.atmosphere.fogColor,
+      initialNarrative.atmosphere.fogDensity,
     );
     scene.fog = sceneFog;
 
     const camera = new THREE.PerspectiveCamera(
-      initialSample.camera.fov,
+      initialCamera.fov,
       Math.max(1, window.innerWidth) / Math.max(1, window.innerHeight),
       0.1,
-      220,
+      260,
     );
     const cameraBasePosition = new THREE.Vector3(
-      initialSample.camera.position.x,
-      initialSample.camera.position.y,
-      initialSample.camera.position.z,
+      initialCamera.position.x,
+      initialCamera.position.y,
+      initialCamera.position.z,
     );
     const lookTarget = new THREE.Vector3(
-      initialSample.camera.target.x,
-      initialSample.camera.target.y,
-      initialSample.camera.target.z,
+      initialCamera.target.x,
+      initialCamera.target.y,
+      initialCamera.target.z,
     );
-    const fogTarget = new THREE.Color(initialSample.fog.color);
+    const fogTarget = new THREE.Color(initialNarrative.atmosphere.fogColor);
+    let cameraRoll = initialCamera.roll;
     camera.position.copy(cameraBasePosition);
     camera.lookAt(lookTarget);
+    camera.rotateZ(cameraRoll);
 
-    const uniforms: TerrainUniforms = {
-      uTime: { value: 5 },
-      uElevation: { value: initialSample.terrain.elevation },
-      uRoughness: { value: initialSample.terrain.roughness },
-      uVisibility: { value: initialSample.terrain.visibility },
-      uFogColor: { value: sceneFog.color },
-      uFogDensity: { value: initialSample.fog.density },
-    };
+    const uniforms = createFacilityTerrainUniforms({
+      elevation: TERRAIN_ELEVATION,
+      roughness: TERRAIN_ROUGHNESS,
+      visibility: 1,
+      fogColor: sceneFog.color,
+      fogDensity: initialNarrative.atmosphere.fogDensity,
+      carveStrength: 1,
+    });
+
     let initialWorldResources: SceneWorldResources;
     try {
       initialWorldResources = createSceneWorldResources(
@@ -412,17 +291,11 @@ export default function ThreeScene() {
 
     let liveWorldResources = initialWorldResources;
     let activeTuning = initialTuning;
-    let terrainResources = liveWorldResources.terrain;
-    let sceneGroups = liveWorldResources.groups;
-    scene.add(terrainResources.mesh);
-    scene.add(sceneGroups.root);
+    let facilityWorld = liveWorldResources.facility;
+    attachSceneWorldResources(scene, liveWorldResources);
     mount.appendChild(renderer.domElement);
     mount.dataset.webglState = "ready";
     webglReady = true;
-
-    const currentGroupWeights = createMutableSceneGroupWeights(
-      initialSample.groups,
-    );
 
     let finePointerAvailable = finePointerQuery.matches;
     let pointerListening = false;
@@ -431,12 +304,13 @@ export default function ThreeScene() {
     let my = 0;
     let ty = 0;
     const onPointer = (event: PointerEvent) => {
-      const profile =
-        immersiveScrollSnapshotRef.current?.profile ?? initialProfile;
+      const sample = currentNarrative();
+      const profile = currentProfile();
       if (
         !finePointerAvailable ||
         isReducedMotion() ||
-        profile === "mobile"
+        profile === "mobile" ||
+        sample.zone !== "exterior-ridge"
       ) {
         return;
       }
@@ -444,23 +318,15 @@ export default function ThreeScene() {
       my = event.clientY / Math.max(1, window.innerHeight) - 0.5;
     };
 
+    let elapsedSeconds = 0;
+    let lastAppliedRouteProgress = currentRouteProgress();
     let warnedAboutResourceSwap = false;
     const createPreparedSceneWorldResources = (
       nextTuning: ThreeSceneTuning,
     ): SceneWorldResources => {
       const candidate = createSceneWorldResources(nextTuning, uniforms);
-      const sample = currentSample();
       try {
-        candidate.groups.update(
-          currentGroupWeights,
-          uniforms.uTime.value,
-          isReducedMotion()
-            ? 0
-            : motionScaleForTransition(
-                sample.transition.toId,
-                sample.transition.easedProgress,
-              ),
-        );
+        candidate.facility.update(currentNarrative(), elapsedSeconds, 0);
         return candidate;
       } catch (error) {
         disposeSceneWorldResources(candidate);
@@ -476,6 +342,16 @@ export default function ThreeScene() {
       );
     };
 
+    const adoptWorldResources = (
+      resources: SceneWorldResources,
+      nextTuning: ThreeSceneTuning,
+    ) => {
+      liveWorldResources = resources;
+      facilityWorld = resources.facility;
+      activeTuning = nextTuning;
+      mount.dataset.sceneProfile = nextTuning.profile;
+    };
+
     const syncSceneResources = (nextTuning: ThreeSceneTuning): boolean => {
       if (
         !shouldRebuildSceneResources(
@@ -487,8 +363,7 @@ export default function ThreeScene() {
       }
 
       const swapResult = swapResourceCandidate(liveWorldResources, {
-        createCandidate: () =>
-          createPreparedSceneWorldResources(nextTuning),
+        createCandidate: () => createPreparedSceneWorldResources(nextTuning),
         attachCandidate: (candidate) =>
           attachSceneWorldResources(scene, candidate),
         detachCurrent: detachSceneWorldResources,
@@ -500,11 +375,7 @@ export default function ThreeScene() {
         return false;
       }
 
-      liveWorldResources = swapResult.current;
-      terrainResources = liveWorldResources.terrain;
-      sceneGroups = liveWorldResources.groups;
-      activeTuning = nextTuning;
-      mount.dataset.sceneProfile = nextTuning.profile;
+      adoptWorldResources(swapResult.current, nextTuning);
       return true;
     };
 
@@ -512,8 +383,7 @@ export default function ThreeScene() {
       nextTuning: ThreeSceneTuning,
     ): boolean => {
       const swapResult = swapResourceCandidate(liveWorldResources, {
-        createCandidate: () =>
-          createPreparedSceneWorldResources(nextTuning),
+        createCandidate: () => createPreparedSceneWorldResources(nextTuning),
         attachCandidate: (candidate) =>
           attachSceneWorldResources(scene, candidate),
         detachCurrent: detachSceneWorldResources,
@@ -526,11 +396,7 @@ export default function ThreeScene() {
         return false;
       }
 
-      liveWorldResources = swapResult.current;
-      terrainResources = liveWorldResources.terrain;
-      sceneGroups = liveWorldResources.groups;
-      activeTuning = nextTuning;
-      mount.dataset.sceneProfile = nextTuning.profile;
+      adoptWorldResources(swapResult.current, nextTuning);
       return true;
     };
 
@@ -558,123 +424,114 @@ export default function ThreeScene() {
       }
     };
 
-    const applySceneSample = (
-      sample: ImmersiveSceneSample,
+    const applyFacilitySample = (
+      narrative: FacilityNarrativeSample,
+      cameraSample: FacilityCameraSample,
       deltaSeconds: number,
       immediate: boolean,
     ) => {
       if (immediate) {
         cameraBasePosition.set(
-          sample.camera.position.x,
-          sample.camera.position.y,
-          sample.camera.position.z,
+          cameraSample.position.x,
+          cameraSample.position.y,
+          cameraSample.position.z,
         );
         lookTarget.set(
-          sample.camera.target.x,
-          sample.camera.target.y,
-          sample.camera.target.z,
+          cameraSample.target.x,
+          cameraSample.target.y,
+          cameraSample.target.z,
         );
-        camera.fov = sample.camera.fov;
-        sceneFog.density = sample.fog.density;
-        sceneFog.color.set(sample.fog.color);
-        uniforms.uElevation.value = sample.terrain.elevation;
-        uniforms.uRoughness.value = sample.terrain.roughness;
-        uniforms.uVisibility.value = sample.terrain.visibility;
-        uniforms.uFogDensity.value = sample.fog.density;
-        copySceneGroupWeights(currentGroupWeights, sample.groups);
+        camera.fov = cameraSample.fov;
+        cameraRoll = cameraSample.roll;
+        sceneFog.density = narrative.atmosphere.fogDensity;
+        sceneFog.color.set(narrative.atmosphere.fogColor);
+        uniforms.uFogDensity.value = narrative.atmosphere.fogDensity;
+        renderer.toneMappingExposure = narrative.atmosphere.exposure;
       } else {
         cameraBasePosition.x = THREE.MathUtils.damp(
           cameraBasePosition.x,
-          sample.camera.position.x,
+          cameraSample.position.x,
           CAMERA_DAMPING,
           deltaSeconds,
         );
         cameraBasePosition.y = THREE.MathUtils.damp(
           cameraBasePosition.y,
-          sample.camera.position.y,
+          cameraSample.position.y,
           CAMERA_DAMPING,
           deltaSeconds,
         );
         cameraBasePosition.z = THREE.MathUtils.damp(
           cameraBasePosition.z,
-          sample.camera.position.z,
+          cameraSample.position.z,
           CAMERA_DAMPING,
           deltaSeconds,
         );
         lookTarget.x = THREE.MathUtils.damp(
           lookTarget.x,
-          sample.camera.target.x,
+          cameraSample.target.x,
           CAMERA_DAMPING,
           deltaSeconds,
         );
         lookTarget.y = THREE.MathUtils.damp(
           lookTarget.y,
-          sample.camera.target.y,
+          cameraSample.target.y,
           CAMERA_DAMPING,
           deltaSeconds,
         );
         lookTarget.z = THREE.MathUtils.damp(
           lookTarget.z,
-          sample.camera.target.z,
+          cameraSample.target.z,
           CAMERA_DAMPING,
           deltaSeconds,
         );
         camera.fov = THREE.MathUtils.damp(
           camera.fov,
-          sample.camera.fov,
+          cameraSample.fov,
+          CAMERA_DAMPING,
+          deltaSeconds,
+        );
+        cameraRoll = THREE.MathUtils.damp(
+          cameraRoll,
+          cameraSample.roll,
           CAMERA_DAMPING,
           deltaSeconds,
         );
         sceneFog.density = THREE.MathUtils.damp(
           sceneFog.density,
-          sample.fog.density,
+          narrative.atmosphere.fogDensity,
           TREATMENT_DAMPING,
           deltaSeconds,
         );
-        fogTarget.set(sample.fog.color);
+        fogTarget.set(narrative.atmosphere.fogColor);
         sceneFog.color.lerp(
           fogTarget,
           1 - Math.exp(-TREATMENT_DAMPING * deltaSeconds),
         );
-        uniforms.uElevation.value = THREE.MathUtils.damp(
-          uniforms.uElevation.value,
-          sample.terrain.elevation,
-          TREATMENT_DAMPING,
-          deltaSeconds,
-        );
-        uniforms.uRoughness.value = THREE.MathUtils.damp(
-          uniforms.uRoughness.value,
-          sample.terrain.roughness,
-          TREATMENT_DAMPING,
-          deltaSeconds,
-        );
-        uniforms.uVisibility.value = THREE.MathUtils.damp(
-          uniforms.uVisibility.value,
-          sample.terrain.visibility,
-          TREATMENT_DAMPING,
-          deltaSeconds,
-        );
         uniforms.uFogDensity.value = THREE.MathUtils.damp(
           uniforms.uFogDensity.value,
-          sample.fog.density,
+          narrative.atmosphere.fogDensity,
           TREATMENT_DAMPING,
           deltaSeconds,
         );
-        dampSceneGroupWeights(
-          currentGroupWeights,
-          sample.groups,
+        renderer.toneMappingExposure = THREE.MathUtils.damp(
+          renderer.toneMappingExposure,
+          narrative.atmosphere.exposure,
           TREATMENT_DAMPING,
           deltaSeconds,
         );
       }
 
-      const motionScale = motionScaleForTransition(
-        sample.transition.toId,
-        sample.transition.easedProgress,
+      const routeVelocity = Math.min(
+        1,
+        Math.abs(narrative.routeProgress - lastAppliedRouteProgress) /
+          Math.max(deltaSeconds, 1 / 60),
       );
       const pointerScale =
-        !immediate && finePointerAvailable && sample.profile === "desktop"
-          ? motionScale
+        !immediate &&
+        finePointerAvailable &&
+        narrative.profile === "desktop" &&
+        narrative.zone === "exterior-ridge"
+          ? 1 - Math.min(1, narrative.routeProgress / 0.16)
           : 0;
       tx = immediate
         ? 0
@@ -693,30 +550,33 @@ export default function ThreeScene() {
             deltaSeconds,
           );
       camera.position.set(
-        cameraBasePosition.x + tx * 0.9,
-        cameraBasePosition.y - ty * 0.34,
+        cameraBasePosition.x + tx * 0.55,
+        cameraBasePosition.y - ty * 0.22,
         cameraBasePosition.z,
       );
       camera.lookAt(lookTarget);
+      camera.rotateZ(cameraRoll);
       camera.updateProjectionMatrix();
-      sceneGroups.update(
-        currentGroupWeights,
-        uniforms.uTime.value,
-        immediate ? 0 : motionScale,
+      facilityWorld.update(
+        narrative,
+        elapsedSeconds,
+        immediate ? 0 : routeVelocity,
       );
+      lastAppliedRouteProgress = narrative.routeProgress;
     };
 
     let animationFrame = 0;
     let previousFrameTime: number | null = null;
 
     const renderStaticFrame = () => {
-      const sample = currentSample();
+      const narrative = currentNarrative();
+      const cameraSample = currentCamera();
       mx = 0;
       my = 0;
       tx = 0;
       ty = 0;
       previousFrameTime = null;
-      applySceneSample(sample, 0, true);
+      applyFacilitySample(narrative, cameraSample, 0, true);
       renderScene();
     };
 
@@ -726,14 +586,10 @@ export default function ThreeScene() {
           ? 1 / 60
           : Math.min(Math.max((frameTime - previousFrameTime) / 1000, 0), 0.1);
       previousFrameTime = frameTime;
-      const sample = currentSample();
-      uniforms.uTime.value +=
-        deltaSeconds *
-        motionScaleForTransition(
-          sample.transition.toId,
-          sample.transition.easedProgress,
-        );
-      applySceneSample(sample, deltaSeconds, false);
+      elapsedSeconds += deltaSeconds;
+      const narrative = currentNarrative();
+      const cameraSample = currentCamera();
+      applyFacilitySample(narrative, cameraSample, deltaSeconds, false);
       renderScene();
     };
 

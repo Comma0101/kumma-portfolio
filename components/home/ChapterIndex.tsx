@@ -3,25 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import TrackedLink from "@/components/analytics/TrackedLink";
 import SectionHeader from "@/components/system/SectionHeader";
-import SystemViz from "@/components/system/SystemViz";
-import { vizBySlug } from "@/components/viz/registry";
 import { featuredWork } from "@/data/workProjects";
 import styles from "./ChapterIndex.module.css";
-
-interface StaticMechanismProps {
-  readonly input: string;
-  readonly output: string;
-}
-
-function StaticMechanism({ input, output }: StaticMechanismProps) {
-  return (
-    <div className={styles.mechanismFallback} aria-hidden="true">
-      <span>{input}</span>
-      <span className={styles.mechanismArrow}>→</span>
-      <span>{output}</span>
-    </div>
-  );
-}
 
 export default function ChapterIndex() {
   const ref = useRef<HTMLElement>(null);
@@ -88,7 +71,6 @@ export default function ChapterIndex() {
       />
       <div className={`${styles.rows} ${revealReady ? styles.jsReveal : ""}`}>
         {featuredWork.map((project) => {
-          const Visualization = vizBySlug[project.visualKey];
           const evidence = [
             { label: "Input", value: project.evidence.input },
             { label: "Transform", value: project.evidence.transform },
@@ -150,21 +132,6 @@ export default function ChapterIndex() {
                   )}
                 </div>
               </div>
-
-              <SystemViz
-                label={`${project.no} / ${project.title}`}
-                live={project.status === "live"}
-                className={styles.viz}
-              >
-                {Visualization ? (
-                  <Visualization size="teaser" />
-                ) : (
-                  <StaticMechanism
-                    input={project.evidence.input}
-                    output={project.evidence.output}
-                  />
-                )}
-              </SystemViz>
             </article>
           );
         })}

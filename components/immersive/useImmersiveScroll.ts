@@ -1,10 +1,9 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import {
-  getImmersiveProfile,
-  sampleImmersiveJourney,
-} from "./immersiveStages";
+import { getImmersiveProfile } from "./immersiveStages";
+import { sampleFacilityNarrative } from "./facility/narrative";
+import type { FacilityNarrativeSample } from "./facility/types";
 import {
   resolveFacilityRouteProgress,
   resolveJourneyState,
@@ -13,7 +12,6 @@ import {
 } from "./scrollProgress";
 import type {
   ImmersiveProfile,
-  ImmersiveSceneSample,
   ImmersiveStageId,
 } from "./types";
 
@@ -34,7 +32,7 @@ interface ImmersiveWindow extends Window {
 }
 
 export interface ImmersiveScrollSnapshot {
-  readonly sample: ImmersiveSceneSample;
+  readonly sample: FacilityNarrativeSample;
   readonly profile: ImmersiveProfile;
   readonly journeyProgress: number;
   readonly routeProgress: number;
@@ -110,19 +108,17 @@ export function useImmersiveScroll(onSample: ImmersiveScrollListener): void {
           reducedMotion: reducedMotionQuery?.matches ?? false,
           width: window.innerWidth,
         });
-        const sample = sampleImmersiveJourney(
-          resolution.journeyProgress,
-          profile,
+        const routeProgress = resolveFacilityRouteProgress(
+          cachedAnchors,
+          scrollY,
+          window.innerHeight,
         );
+        const sample = sampleFacilityNarrative(routeProgress, profile);
         const snapshot: ImmersiveScrollSnapshot = Object.freeze({
           sample,
           profile,
           journeyProgress: resolution.journeyProgress,
-          routeProgress: resolveFacilityRouteProgress(
-            cachedAnchors,
-            scrollY,
-            window.innerHeight,
-          ),
+          routeProgress,
           activeStageId: resolution.activeStageId,
           phase: resolution.phase,
           inJourney: resolution.inJourney,

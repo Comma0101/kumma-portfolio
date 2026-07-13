@@ -109,6 +109,39 @@ describe("facility greybox world", () => {
     world.dispose();
   });
 
+  it("keeps the KOTA camera clear of the threshold, gate, and floor conduits", () => {
+    const world = createFacilityWorld(desktopTuning);
+    const sample = sampleFacilityNarrative(0.39, "desktop");
+    world.update(sample, 0, 0);
+
+    const camera = sampleFacilityCamera(0.39, "desktop");
+    const threshold = world.root.getObjectByName("facility-fissure-east")!;
+    const leftGate = world.root.getObjectByName(
+      "facility-voice-ambiguity-gate",
+    )!;
+    const rightGate = world.root.getObjectByName(
+      "facility-voice-ambiguity-gate-right",
+    )!;
+    const thresholdBack = threshold.position.z - threshold.scale.z * 0.5;
+    const leftInnerEdge = leftGate.position.x + leftGate.scale.x * 0.5;
+    const rightInnerEdge = rightGate.position.x - rightGate.scale.x * 0.5;
+
+    assert.ok(camera.position.z < thresholdBack - 1);
+    assert.ok(camera.position.x > leftInnerEdge + 0.3);
+    assert.ok(camera.position.x < rightInnerEdge - 0.3);
+
+    for (const name of [
+      "facility-voice-input-conduit",
+      "facility-voice-unsafe-branch",
+      "facility-voice-clarified-branch",
+    ]) {
+      const conduit = world.root.getObjectByName(name) as ThreeTypes.Mesh;
+      conduit.geometry.computeBoundingBox();
+      assert.ok((conduit.geometry.boundingBox?.max.y ?? Infinity) <= 0.72);
+    }
+    world.dispose();
+  });
+
   it("disposes every owned geometry and material once", () => {
     const world = createFacilityWorld(desktopTuning);
     const geometries = new Set<ThreeTypes.BufferGeometry>();

@@ -151,13 +151,15 @@ describe("homepage production AI source contracts", () => {
     ]);
   });
 
-  it("renders featured work directly from the catalog and never leaves an empty visual", () => {
+  it("renders featured work directly from the catalog with complete semantic evidence", () => {
     const source = readSource("components/home/ChapterIndex.tsx");
 
     assert.match(source, /featuredWork/);
-    assert.match(source, /project\.visualKey/);
     assert.match(source, /project\.evidence\.input/);
+    assert.match(source, /project\.evidence\.transform/);
     assert.match(source, /project\.evidence\.output/);
+    assert.match(source, /project\.evidence\.guardrail/);
+    assert.doesNotMatch(source, /SystemViz|vizBySlug|project\.visualKey/);
     assert.doesNotMatch(source, /data\/projectData|\bprojects\b|\bchapters\b/);
     assert.doesNotMatch(source, /vizField/);
   });

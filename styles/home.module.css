@@ -42,12 +42,18 @@
 
 .immersiveScene::after {
   opacity: 0.34;
-  background-image:
-    linear-gradient(rgba(240, 237, 232, 0.055) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(240, 237, 232, 0.055) 1px, transparent 1px);
-  background-position: center;
-  background-size: 52px 52px;
-  mask-image: linear-gradient(to bottom, transparent, #000 24%, #000 78%, transparent);
+  background-image: repeating-linear-gradient(
+    168deg,
+    transparent 0 27px,
+    rgba(240, 237, 232, 0.055) 28px,
+    transparent 30px 56px
+  );
+  mask-image: radial-gradient(
+    ellipse at 62% 48%,
+    #000 0%,
+    rgba(0, 0, 0, 0.68) 44%,
+    transparent 82%
+  );
 }
 
 .immersiveScene[data-webgl-state="ready"]::before,
@@ -113,10 +119,6 @@
 }
 
 @media (max-width: 768px) {
-  .immersiveScene::after {
-    background-size: 40px 40px;
-  }
-
   .cuboidsIntro {
     padding: 2.2rem 6% 0;
   }

@@ -100,7 +100,7 @@ export function createExteriorFacilityZones(
       "facility-fissure-west",
       context.materials.shell,
       [-5.8, 2.5, -18],
-      [4.6, 7, 20],
+      [4.6, 7, 16],
       [0, 0, -0.08],
     ),
     createSignatureBox(
@@ -108,7 +108,7 @@ export function createExteriorFacilityZones(
       "facility-fissure-east",
       context.materials.shell,
       [5.8, 2.5, -18],
-      [4.6, 7, 20],
+      [4.6, 7, 16],
       [0, 0, 0.08],
     ),
     createSignatureBox(
@@ -116,7 +116,7 @@ export function createExteriorFacilityZones(
       "facility-threshold-occluder",
       context.materials.shell,
       [0, 6, -17],
-      [10, 2.5, 12],
+      [10, 2.5, 9],
     ),
     createArchRibs(context, "facility-threshold-ribs", -10, -27, 7.2, 5.4),
     createSignatureTube(
