@@ -145,9 +145,10 @@ export function documentStateAt(
 export function createDocumentFacilityZone(
   context: FacilityZoneContext,
 ): DocumentFacilityZone {
+  const simplified = context.tuning.profile !== "desktop";
   const root = setZoneBounds(new THREE.Group(), -72, -43);
   root.name = "facility-document-foundry-zone";
-  root.add(
+  const foundryStructure = [
     createArchRibs(context, "facility-document-foundry-ribs", -46, -70, 11, 7),
     createSignatureBox(
       context,
@@ -155,20 +156,6 @@ export function createDocumentFacilityZone(
       context.materials.steel,
       [0, 6.8, -50],
       [9.4, 0.26, 0.34],
-    ),
-    createSignatureBox(
-      context,
-      "facility-document-source-frame-left",
-      context.materials.steel,
-      [-4.7, 4.25, -50],
-      [0.24, 5.3, 0.34],
-    ),
-    createSignatureBox(
-      context,
-      "facility-document-source-frame-right",
-      context.materials.steel,
-      [4.7, 4.25, -50],
-      [0.24, 5.3, 0.34],
     ),
     createSignatureBox(
       context,
@@ -184,9 +171,29 @@ export function createDocumentFacilityZone(
       [0, 8.85, -68],
       [9, 0.28, 1.25],
     ),
-  );
+  ];
+  if (!simplified) {
+    foundryStructure.push(
+      createSignatureBox(
+        context,
+        "facility-document-source-frame-left",
+        context.materials.steel,
+        [-4.7, 4.25, -50],
+        [0.24, 5.3, 0.34],
+      ),
+      createSignatureBox(
+        context,
+        "facility-document-source-frame-right",
+        context.materials.steel,
+        [4.7, 4.25, -50],
+        [0.24, 5.3, 0.34],
+      ),
+    );
+  }
+  root.add(...foundryStructure);
 
   for (const [index, x] of [-3.2, 0, 3.2].entries()) {
+    if (simplified && index !== 1) continue;
     root.add(
       createSignatureTube(
         context,

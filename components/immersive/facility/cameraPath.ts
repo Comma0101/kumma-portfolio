@@ -4,6 +4,12 @@ import { sampleFacilityNarrative } from "./narrative";
 import type { FacilityCameraSample } from "./types";
 
 export const FACILITY_CAMERA_ROLL_LIMIT = 0.025;
+export const FACILITY_CAMERA_FAR_PLANES = Object.freeze({
+  desktop: 80,
+  constrained: 60,
+  mobile: 32,
+  reduced: 24,
+});
 
 function deepFreeze<T>(value: T): T {
   if (value === null || typeof value !== "object" || Object.isFrozen(value)) {

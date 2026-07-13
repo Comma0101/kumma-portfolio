@@ -9,6 +9,7 @@ const nodeModule = require("node:module") as {
 };
 nodeModule.Module._initPaths();
 const {
+  FACILITY_CAMERA_FAR_PLANES,
   FACILITY_CAMERA_ROLL_LIMIT,
   facilityCameraControlPoints,
   facilityEntrancePosition,
@@ -34,6 +35,16 @@ function travel(profile: ImmersiveProfile): number {
 }
 
 describe("facility camera path", () => {
+  it("culls fully fogged distant rooms without clipping the next destination", () => {
+    assert.deepEqual(FACILITY_CAMERA_FAR_PLANES, {
+      desktop: 80,
+      constrained: 60,
+      mobile: 32,
+      reduced: 24,
+    });
+    assert.equal(Object.isFrozen(FACILITY_CAMERA_FAR_PLANES), true);
+  });
+
   it("moves continuously forward through finite authored poses", () => {
     const samples = Array.from({ length: 101 }, (_, index) =>
       sampleFacilityCamera(index / 100, "desktop"),

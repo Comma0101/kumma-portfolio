@@ -675,7 +675,11 @@ describe("homepage immersive scroll source contract", () => {
       /applyFacilitySample\(narrative,\s*cameraSample,\s*deltaSeconds,\s*false\)/,
     );
     assert.match(loop, /renderAnimatedFrame\(/);
-    assert.doesNotMatch(loop, /renderStaticFrame\(\)/);
+    assert.equal(loop.match(/renderStaticFrame\(\)/g)?.length, 1);
+    assert.match(
+      loop,
+      /if\s*\(settlement\.shouldContinue\)[\s\S]*else\s*\{\s*renderStaticFrame\(\);\s*stopLoop\(["']settled["']\);/,
+    );
     assert.doesNotMatch(source, /uniforms\.uTime\.value\s*\+=/);
   });
 

@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { getThreeSceneTuning } from "./threeSceneTuning";
+import {
+  getThreeSceneTuning,
+  isSoftwareRendererLabel,
+} from "./threeSceneTuning";
 
 describe("getThreeSceneTuning", () => {
   it("keeps desktop at full terrain quality", () => {
@@ -62,6 +65,39 @@ describe("getThreeSceneTuning", () => {
     });
   });
 
+  it("recognizes common software WebGL rasterizers without misclassifying GPUs", () => {
+    assert.equal(
+      isSoftwareRendererLabel(
+        "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero)))",
+      ),
+      true,
+    );
+    assert.equal(isSoftwareRendererLabel("llvmpipe (LLVM 18.1.8)"), true);
+    assert.equal(isSoftwareRendererLabel("Mesa Softpipe"), true);
+    assert.equal(
+      isSoftwareRendererLabel("ANGLE (NVIDIA GeForce RTX 4080 Direct3D11)"),
+      false,
+    );
+    assert.equal(isSoftwareRendererLabel(undefined), false);
+  });
+
+  it("uses balanced budgets when a desktop browser is software-rendered", () => {
+    const tuning = getThreeSceneTuning({
+      deviceMemory: 16,
+      devicePixelRatio: 2,
+      hardwareConcurrency: 16,
+      isCoarsePointer: false,
+      isSoftwareRenderer: true,
+      reducedMotion: false,
+      viewportWidth: 1440,
+    });
+
+    assert.equal(tuning.profile, "constrained");
+    assert.equal(tuning.quality, "balanced");
+    assert.equal(tuning.pixelRatio, 1);
+    assert.equal(tuning.facilityBudgets.drawCallTarget, 32);
+  });
+
   it("uses a smaller mobile profile on coarse-pointer devices", () => {
     const tuning = getThreeSceneTuning({
       deviceMemory: 8,
@@ -111,7 +147,7 @@ describe("getThreeSceneTuning", () => {
         bridges: 7,
         depthSamples: 72,
         calibrationMarks: 12,
-        drawCallTarget: 16,
+        drawCallTarget: 20,
       },
       noiseOctaves: 2,
       pixelRatio: 1,
@@ -140,7 +176,7 @@ describe("getThreeSceneTuning", () => {
         bridges: 7,
         depthSamples: 72,
         calibrationMarks: 12,
-        drawCallTarget: 16,
+        drawCallTarget: 20,
       },
       noiseOctaves: 2,
       pixelRatio: 1,

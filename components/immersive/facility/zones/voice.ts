@@ -40,6 +40,7 @@ export function clarificationStateAt(progress: number): VoiceClarificationState 
 export function createVoiceFacilityZone(
   context: FacilityZoneContext,
 ): VoiceFacilityZone {
+  const simplified = context.tuning.profile !== "desktop";
   const root = setZoneBounds(new THREE.Group(), -46, -23);
   root.name = "facility-voice-chamber-zone";
   root.add(createArchRibs(context, "facility-voice-ribs", -25, -44, 9.2, 6.4));
@@ -60,7 +61,7 @@ export function createVoiceFacilityZone(
     new THREE.Vector3(0, 0.28, -43),
   ];
 
-  root.add(
+  const chamberStructure = [
     createSignatureTube(
       context,
       "facility-voice-input-conduit",
@@ -96,14 +97,19 @@ export function createVoiceFacilityZone(
       [3, 2.6, -31.2],
       [2.4, 4.8, 0.55],
     ),
-    createSignatureBox(
-      context,
-      "facility-voice-unsafe-stop",
-      context.materials.shell,
-      [-3.2, 1.9, -37.4],
-      [2.1, 3.8, 0.7],
-    ),
-  );
+  ];
+  if (!simplified) {
+    chamberStructure.push(
+      createSignatureBox(
+        context,
+        "facility-voice-unsafe-stop",
+        context.materials.shell,
+        [-3.2, 1.9, -37.4],
+        [2.1, 3.8, 0.7],
+      ),
+    );
+  }
+  root.add(...chamberStructure);
 
   const orderPlane = createSignatureBox(
     context,
@@ -124,7 +130,8 @@ export function createVoiceFacilityZone(
   );
   clarifiedSignal.name = "facility-voice-clarified-signal";
   clarifiedSignal.userData.signature = true;
-  root.add(orderPlane, unsafeSignal, clarifiedSignal);
+  root.add(orderPlane, clarifiedSignal);
+  if (!simplified) root.add(unsafeSignal);
 
   const leftGate = root.getObjectByName("facility-voice-ambiguity-gate")!;
   const rightGate = root.getObjectByName("facility-voice-ambiguity-gate-right")!;

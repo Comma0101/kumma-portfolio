@@ -21,6 +21,7 @@ export interface ThreeSceneTuningInput {
   devicePixelRatio: number;
   hardwareConcurrency?: number;
   isCoarsePointer: boolean;
+  isSoftwareRenderer?: boolean;
   reducedMotion: boolean;
   viewportWidth: number;
 }
@@ -102,7 +103,7 @@ const TUNING_BY_PROFILE: Record<
       bridges: 7,
       depthSamples: 72,
       calibrationMarks: 12,
-      drawCallTarget: 16,
+      drawCallTarget: 20,
     }),
     noiseOctaves: 2,
     pixelRatioCap: 1,
@@ -111,6 +112,15 @@ const TUNING_BY_PROFILE: Record<
     segmentZ: 44,
   },
 };
+
+export function isSoftwareRendererLabel(label: unknown): boolean {
+  return (
+    typeof label === "string" &&
+    /swiftshader|llvmpipe|softpipe|software (?:rasterizer|renderer)/i.test(
+      label,
+    )
+  );
+}
 
 export function getThreeSceneTuning(
   input: ThreeSceneTuningInput,
@@ -137,7 +147,9 @@ export function getThreeSceneTuning(
       : 8;
   const mobileViewport = viewportWidth <= 767;
   const constrainedHardware =
-    deviceMemory <= 4 || hardwareConcurrency <= 4;
+    input.isSoftwareRenderer === true ||
+    deviceMemory <= 4 ||
+    hardwareConcurrency <= 4;
 
   const profile: ThreeSceneProfile =
     input.reducedMotion

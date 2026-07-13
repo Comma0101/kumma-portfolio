@@ -23,6 +23,15 @@ const desktopTuning = getThreeSceneTuning({
   viewportWidth: 1440,
 });
 
+const mobileTuning = getThreeSceneTuning({
+  deviceMemory: 8,
+  devicePixelRatio: 2,
+  hardwareConcurrency: 8,
+  isCoarsePointer: true,
+  reducedMotion: false,
+  viewportWidth: 390,
+});
+
 function worldPosition(object: ThreeTypes.Object3D): ThreeTypes.Vector3 {
   object.updateWorldMatrix(true, false);
   return object.getWorldPosition(new THREE.Vector3());
@@ -91,6 +100,34 @@ describe("facility world", () => {
     assert.ok(signatures >= 12);
     assert.equal(pointSurfaces, 1);
     world.dispose();
+  });
+
+  it("removes secondary chamber trim in the mobile construction profile", () => {
+    const desktop = createFacilityWorld(desktopTuning);
+    const mobile = createFacilityWorld(mobileTuning);
+
+    for (const name of [
+      "facility-voice-unsafe-stop",
+      "facility-voice-unsafe-signal",
+      "facility-document-source-frame-left",
+      "facility-document-source-frame-right",
+      "facility-document-queue-lane-0",
+      "facility-document-queue-lane-2",
+    ]) {
+      assert.ok(desktop.root.getObjectByName(name), `${name} belongs on desktop`);
+      assert.equal(
+        Boolean(mobile.root.getObjectByName(name)),
+        false,
+        `${name} is secondary mobile trim`,
+      );
+    }
+
+    assert.ok(mobile.root.getObjectByName("facility-voice-unsafe-branch"));
+    assert.ok(mobile.root.getObjectByName("facility-voice-ambiguity-gate"));
+    assert.ok(mobile.root.getObjectByName("facility-document-queue-lane-1"));
+    assert.ok(mobile.root.getObjectByName("facility-document-segments"));
+    desktop.dispose();
+    mobile.dispose();
   });
 
   it("places the distant entrance inside the authored hero view", () => {

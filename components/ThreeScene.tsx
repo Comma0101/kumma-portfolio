@@ -3,7 +3,10 @@
 import { useCallback, useEffect, useRef } from "react";
 import * as THREE from "three";
 import styles from "../styles/home.module.css";
-import { sampleFacilityCamera } from "./immersive/facility/cameraPath";
+import {
+  FACILITY_CAMERA_FAR_PLANES,
+  sampleFacilityCamera,
+} from "./immersive/facility/cameraPath";
 import {
   createFacilityWorld,
   type FacilityWorld,
@@ -37,6 +40,7 @@ import {
 } from "./immersive/useImmersiveScroll";
 import {
   getThreeSceneTuning,
+  isSoftwareRendererLabel,
   type ThreeSceneTuning,
 } from "./threeSceneTuning";
 
@@ -127,6 +131,17 @@ function immersiveProfileForViewport(
   return width < 768 ? "mobile" : "desktop";
 }
 
+function rendererUsesSoftwareRasterizer(
+  renderer: THREE.WebGLRenderer,
+): boolean {
+  const context = renderer.getContext();
+  const debugInfo = context.getExtension("WEBGL_debug_renderer_info");
+  const rendererLabel = debugInfo
+    ? context.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL)
+    : context.getParameter(context.RENDERER);
+  return isSoftwareRendererLabel(rendererLabel);
+}
+
 export default function ThreeScene() {
   const mountRef = useRef<HTMLDivElement>(null);
   const immersiveScrollSnapshotRef =
@@ -137,6 +152,13 @@ export default function ThreeScene() {
       const previousSnapshot = immersiveScrollSnapshotRef.current;
       const shouldWake = shouldWakeScene(previousSnapshot, snapshot);
       immersiveScrollSnapshotRef.current = snapshot;
+      const mount = mountRef.current;
+      if (mount) {
+        mount.dataset.activeStage = snapshot.activeStageId;
+        mount.dataset.facilityZone = snapshot.sample.zone;
+        mount.dataset.facilityEvent = snapshot.sample.event.id;
+        mount.dataset.routeProgress = snapshot.routeProgress.toFixed(4);
+      }
       if (shouldWake) {
         sceneWakeRef.current?.();
       }
@@ -159,7 +181,7 @@ export default function ThreeScene() {
       initialReducedMotion,
       window.innerWidth,
     );
-    const initialTuning = getThreeSceneTuning({
+    const requestedTuning = getThreeSceneTuning({
       deviceMemory: nav.deviceMemory,
       devicePixelRatio: window.devicePixelRatio,
       hardwareConcurrency: navigator.hardwareConcurrency,
@@ -190,7 +212,10 @@ export default function ThreeScene() {
       }
     };
 
-    mount.dataset.sceneProfile = initialTuning.profile;
+    mount.dataset.sceneProfile = requestedTuning.profile;
+    mount.dataset.drawCallTarget = String(
+      requestedTuning.facilityBudgets.drawCallTarget,
+    );
     syncJourneyState();
     sceneWakeRef.current = syncJourneyState;
 
@@ -212,9 +237,11 @@ export default function ThreeScene() {
     try {
       renderer = new THREE.WebGLRenderer({
         alpha: true,
-        antialias: initialTuning.antialias,
+        antialias: requestedTuning.antialias,
         powerPreference:
-          initialTuning.quality === "full" ? "high-performance" : "low-power",
+          requestedTuning.quality === "full"
+            ? "high-performance"
+            : "low-power",
       });
     } catch (error) {
       markWebglUnavailable(error);
@@ -224,6 +251,22 @@ export default function ThreeScene() {
         }
       };
     }
+
+    const softwareRenderer = rendererUsesSoftwareRasterizer(renderer);
+    const initialTuning = getThreeSceneTuning({
+      deviceMemory: nav.deviceMemory,
+      devicePixelRatio: window.devicePixelRatio,
+      hardwareConcurrency: navigator.hardwareConcurrency,
+      isCoarsePointer: !finePointerQuery.matches,
+      isSoftwareRenderer: softwareRenderer,
+      reducedMotion: initialReducedMotion,
+      viewportWidth: window.innerWidth,
+    });
+    mount.dataset.rendererClass = softwareRenderer ? "software" : "hardware";
+    mount.dataset.sceneProfile = initialTuning.profile;
+    mount.dataset.drawCallTarget = String(
+      initialTuning.facilityBudgets.drawCallTarget,
+    );
 
     renderer.setClearColor(0x0a0a0b, 0);
     renderer.setPixelRatio(initialTuning.pixelRatio);
@@ -250,7 +293,7 @@ export default function ThreeScene() {
       initialCamera.fov,
       Math.max(1, window.innerWidth) / Math.max(1, window.innerHeight),
       0.1,
-      260,
+      FACILITY_CAMERA_FAR_PLANES[initialTuning.profile],
     );
     const cameraBasePosition = new THREE.Vector3(
       initialCamera.position.x,
@@ -357,6 +400,11 @@ export default function ThreeScene() {
       facilityWorld = resources.facility;
       activeTuning = nextTuning;
       mount.dataset.sceneProfile = nextTuning.profile;
+      camera.far = FACILITY_CAMERA_FAR_PLANES[nextTuning.profile];
+      camera.updateProjectionMatrix();
+      mount.dataset.drawCallTarget = String(
+        nextTuning.facilityBudgets.drawCallTarget,
+      );
     };
 
     const syncSceneResources = (nextTuning: ThreeSceneTuning): boolean => {
@@ -413,6 +461,7 @@ export default function ThreeScene() {
         devicePixelRatio: window.devicePixelRatio,
         hardwareConcurrency: navigator.hardwareConcurrency,
         isCoarsePointer: !finePointerAvailable,
+        isSoftwareRenderer: softwareRenderer,
         reducedMotion: isReducedMotion(),
         viewportWidth: window.innerWidth,
       });
@@ -428,6 +477,11 @@ export default function ThreeScene() {
         })
       ) {
         renderer.render(scene, camera);
+        const renderInfo = renderer.info.render;
+        mount.dataset.renderCalls = String(renderInfo.calls);
+        mount.dataset.renderTriangles = String(renderInfo.triangles);
+        mount.dataset.renderPoints = String(renderInfo.points);
+        mount.dataset.renderLines = String(renderInfo.lines);
       }
     };
 
@@ -673,6 +727,7 @@ export default function ThreeScene() {
       if (settlement.shouldContinue) {
         animationFrame = window.requestAnimationFrame(loop);
       } else {
+        renderStaticFrame();
         stopLoop("settled");
       }
     };
@@ -748,6 +803,7 @@ export default function ThreeScene() {
         devicePixelRatio: window.devicePixelRatio,
         hardwareConcurrency: navigator.hardwareConcurrency,
         isCoarsePointer: !finePointerAvailable,
+        isSoftwareRenderer: softwareRenderer,
         reducedMotion: isReducedMotion(),
         viewportWidth: width,
       });
@@ -788,6 +844,7 @@ export default function ThreeScene() {
         devicePixelRatio: window.devicePixelRatio,
         hardwareConcurrency: navigator.hardwareConcurrency,
         isCoarsePointer: !finePointerAvailable,
+        isSoftwareRenderer: softwareRenderer,
         reducedMotion: isReducedMotion(),
         viewportWidth: window.innerWidth,
       });

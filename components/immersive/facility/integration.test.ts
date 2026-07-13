@@ -29,6 +29,18 @@ describe("carved facility production integration", () => {
     assert.match(source, /createFacilityWorld/);
     assert.match(source, /sampleFacilityNarrative/);
     assert.match(source, /sampleFacilityCamera/);
+    assert.match(source, /rendererUsesSoftwareRasterizer/);
+    assert.match(source, /isSoftwareRenderer:/);
+    assert.match(source, /dataset\.rendererClass/);
+    assert.match(source, /FACILITY_CAMERA_FAR_PLANES/);
+    assert.match(
+      source,
+      /new THREE\.PerspectiveCamera\([\s\S]*?FACILITY_CAMERA_FAR_PLANES\[\s*initialTuning\.profile\s*\],\s*\)/,
+    );
+    assert.match(
+      source,
+      /camera\.far = FACILITY_CAMERA_FAR_PLANES\[nextTuning\.profile\]/,
+    );
     assert.doesNotMatch(source, /createSceneGroups|sampleImmersiveJourney/);
     assert.equal(source.match(/new THREE\.WebGLRenderer/g)?.length, 1);
     assert.equal(source.match(/new THREE\.PerspectiveCamera/g)?.length, 1);
@@ -78,6 +90,10 @@ describe("carved facility production integration", () => {
     assert.doesNotMatch(source, /uniforms\.uTime\.value\s*\+=/);
     assert.doesNotMatch(source, /sceneFog\.color\.distanceTo/);
     assert.match(source, /sceneFog\.color\.r\s*-\s*fogTarget\.r/);
+    assert.match(
+      loop,
+      /else\s*\{\s*renderStaticFrame\(\);\s*stopLoop\(["']settled["']\);\s*\}/,
+    );
   });
 
   it("keeps context restoration candidate-first", () => {
@@ -93,6 +109,24 @@ describe("carved facility production integration", () => {
       restored.indexOf("rebuildSceneResourcesAfterContextRestore") <
         restored.indexOf("renderStaticFrame"),
     );
+  });
+
+  it("exposes renderer budgets for browser QA after each rendered frame", () => {
+    const source = readSource("components/ThreeScene.tsx");
+
+    assert.match(source, /const renderInfo = renderer\.info\.render/);
+    assert.match(source, /dataset\.renderCalls = String\(renderInfo\.calls\)/);
+    assert.match(
+      source,
+      /dataset\.renderTriangles = String\(renderInfo\.triangles\)/,
+    );
+    assert.match(source, /dataset\.renderPoints = String\(renderInfo\.points\)/);
+    assert.match(source, /dataset\.renderLines = String\(renderInfo\.lines\)/);
+    assert.match(source, /dataset\.drawCallTarget/);
+    assert.match(source, /dataset\.activeStage = snapshot\.activeStageId/);
+    assert.match(source, /dataset\.facilityZone = snapshot\.sample\.zone/);
+    assert.match(source, /dataset\.facilityEvent = snapshot\.sample\.event\.id/);
+    assert.match(source, /dataset\.routeProgress/);
   });
 
   it("opens the project chapters instead of duplicating scene graphics", () => {
