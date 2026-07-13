@@ -6,16 +6,6 @@ import {
 
 export type ThreeSceneProfile = SceneRuntimeProfile;
 
-export interface SceneGroupBudgets {
-  readonly beacons: number;
-  readonly signals: number;
-  readonly voice: number;
-  readonly document: number;
-  readonly orchestration: number;
-  readonly splats: number;
-  readonly measurement: number;
-}
-
 export interface FacilityBudgets {
   readonly terrainSegments: number;
   readonly ribs: number;
@@ -38,7 +28,6 @@ export interface ThreeSceneTuningInput {
 export interface ThreeSceneTuning {
   antialias: boolean;
   facilityBudgets: FacilityBudgets;
-  groupBudgets: SceneGroupBudgets;
   noiseOctaves: number;
   pixelRatio: number;
   profile: ThreeSceneProfile;
@@ -64,15 +53,6 @@ const TUNING_BY_PROFILE: Record<
       calibrationMarks: 36,
       drawCallTarget: 45,
     }),
-    groupBudgets: Object.freeze({
-      beacons: 14,
-      signals: 84,
-      voice: 18,
-      document: 24,
-      orchestration: 30,
-      splats: 180,
-      measurement: 54,
-    }),
     noiseOctaves: 4,
     pixelRatioCap: 1.5,
     profile: "desktop",
@@ -89,15 +69,6 @@ const TUNING_BY_PROFILE: Record<
       depthSamples: 220,
       calibrationMarks: 28,
       drawCallTarget: 32,
-    }),
-    groupBudgets: Object.freeze({
-      beacons: 9,
-      signals: 48,
-      voice: 12,
-      document: 16,
-      orchestration: 20,
-      splats: 96,
-      measurement: 36,
     }),
     noiseOctaves: 3,
     pixelRatioCap: 1,
@@ -116,15 +87,6 @@ const TUNING_BY_PROFILE: Record<
       calibrationMarks: 18,
       drawCallTarget: 22,
     }),
-    groupBudgets: Object.freeze({
-      beacons: 6,
-      signals: 30,
-      voice: 9,
-      document: 12,
-      orchestration: 14,
-      splats: 64,
-      measurement: 24,
-    }),
     noiseOctaves: 2,
     pixelRatioCap: 1,
     profile: "mobile",
@@ -141,15 +103,6 @@ const TUNING_BY_PROFILE: Record<
       depthSamples: 72,
       calibrationMarks: 12,
       drawCallTarget: 16,
-    }),
-    groupBudgets: Object.freeze({
-      beacons: 5,
-      signals: 24,
-      voice: 7,
-      document: 9,
-      orchestration: 11,
-      splats: 48,
-      measurement: 18,
     }),
     noiseOctaves: 2,
     pixelRatioCap: 1,
@@ -199,7 +152,6 @@ export function getThreeSceneTuning(
   return {
     antialias: tuning.antialias,
     facilityBudgets: tuning.facilityBudgets,
-    groupBudgets: tuning.groupBudgets,
     noiseOctaves: tuning.noiseOctaves,
     pixelRatio: Math.min(devicePixelRatio, tuning.pixelRatioCap),
     profile: tuning.profile,

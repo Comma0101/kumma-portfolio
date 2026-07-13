@@ -23,15 +23,6 @@ describe("getThreeSceneTuning", () => {
         calibrationMarks: 36,
         drawCallTarget: 45,
       },
-      groupBudgets: {
-        beacons: 14,
-        signals: 84,
-        voice: 18,
-        document: 24,
-        orchestration: 30,
-        splats: 180,
-        measurement: 54,
-      },
       noiseOctaves: 4,
       pixelRatio: 1.5,
       profile: "desktop",
@@ -61,15 +52,6 @@ describe("getThreeSceneTuning", () => {
         depthSamples: 220,
         calibrationMarks: 28,
         drawCallTarget: 32,
-      },
-      groupBudgets: {
-        beacons: 9,
-        signals: 48,
-        voice: 12,
-        document: 16,
-        orchestration: 20,
-        splats: 96,
-        measurement: 36,
       },
       noiseOctaves: 3,
       pixelRatio: 1,
@@ -101,15 +83,6 @@ describe("getThreeSceneTuning", () => {
         calibrationMarks: 18,
         drawCallTarget: 22,
       },
-      groupBudgets: {
-        beacons: 6,
-        signals: 30,
-        voice: 9,
-        document: 12,
-        orchestration: 14,
-        splats: 64,
-        measurement: 24,
-      },
       noiseOctaves: 2,
       pixelRatio: 1,
       profile: "mobile",
@@ -140,15 +113,6 @@ describe("getThreeSceneTuning", () => {
         calibrationMarks: 12,
         drawCallTarget: 16,
       },
-      groupBudgets: {
-        beacons: 5,
-        signals: 24,
-        voice: 7,
-        document: 9,
-        orchestration: 11,
-        splats: 48,
-        measurement: 18,
-      },
       noiseOctaves: 2,
       pixelRatio: 1,
       profile: "reduced",
@@ -178,15 +142,6 @@ describe("getThreeSceneTuning", () => {
         calibrationMarks: 12,
         drawCallTarget: 16,
       },
-      groupBudgets: {
-        beacons: 5,
-        signals: 24,
-        voice: 7,
-        document: 9,
-        orchestration: 11,
-        splats: 48,
-        measurement: 18,
-      },
       noiseOctaves: 2,
       pixelRatio: 1,
       profile: "reduced",
@@ -214,10 +169,10 @@ describe("getThreeSceneTuning", () => {
       viewportWidth: 390,
     });
 
-    for (const key of Object.keys(mobile.groupBudgets) as Array<
-      keyof typeof mobile.groupBudgets
+    for (const key of Object.keys(mobile.facilityBudgets) as Array<
+      keyof typeof mobile.facilityBudgets
     >) {
-      assert.ok(reduced.groupBudgets[key] <= mobile.groupBudgets[key]);
+      assert.ok(reduced.facilityBudgets[key] <= mobile.facilityBudgets[key]);
     }
     assert.ok(reduced.segmentX <= mobile.segmentX);
     assert.ok(reduced.segmentZ <= mobile.segmentZ);
@@ -255,7 +210,9 @@ describe("getThreeSceneTuning", () => {
     assert.equal(tuning.profile, "desktop");
     assert.equal(tuning.pixelRatio, 1);
     assert.equal(tuning.quality, "full");
-    assert.ok(Object.values(tuning.groupBudgets).every(Number.isInteger));
-    assert.ok(Object.values(tuning.groupBudgets).every((count) => count > 0));
+    assert.ok(Object.values(tuning.facilityBudgets).every(Number.isInteger));
+    assert.ok(
+      Object.values(tuning.facilityBudgets).every((count) => count > 0),
+    );
   });
 });

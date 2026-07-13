@@ -11,7 +11,7 @@ import { createOrchestrationFacilityZone } from "./zones/orchestration";
 import type { FacilityZoneContext } from "./zones/shared";
 import { createVoiceFacilityZone } from "./zones/voice";
 
-export type FacilityGreyboxZoneId =
+export type FacilityWorldZoneId =
   | "exterior-ridge"
   | "reliability-spine"
   | "fissure-threshold"
@@ -24,7 +24,7 @@ export type FacilityGreyboxZoneId =
 
 export interface FacilityWorld {
   readonly root: THREE.Group;
-  readonly zones: Readonly<Record<FacilityGreyboxZoneId, THREE.Group>>;
+  readonly zones: Readonly<Record<FacilityWorldZoneId, THREE.Group>>;
   update(
     sample: FacilityNarrativeSample,
     elapsedSeconds: number,
@@ -62,7 +62,7 @@ export function createFacilityWorld(tuning: ThreeSceneTuning): FacilityWorld {
     const orchestration = createOrchestrationFacilityZone(context);
     const dissolution = createDissolutionFacilityZone(context);
     const calibration = createCalibrationFacilityZones(context);
-    const zones: Readonly<Record<FacilityGreyboxZoneId, THREE.Group>> =
+    const zones: Readonly<Record<FacilityWorldZoneId, THREE.Group>> =
       Object.freeze({
         "exterior-ridge": exterior.exterior,
         "reliability-spine": exterior.reliability,

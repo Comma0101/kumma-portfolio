@@ -1,9 +1,25 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
+import path from "node:path";
 import { describe, it } from "node:test";
+import { immersiveStageIds } from "../immersiveStages";
+import { facilityChapters } from "./narrative";
 
 function readSource(relativePath: string): string {
   return readFileSync(relativePath, "utf8");
+}
+
+function readProductionSources(directory: string): string {
+  return readdirSync(directory, { withFileTypes: true })
+    .flatMap((entry) => {
+      const entryPath = path.join(directory, entry.name);
+      if (entry.isDirectory()) return readProductionSources(entryPath);
+      if (!/\.(?:ts|tsx)$/.test(entry.name) || entry.name.endsWith(".test.ts")) {
+        return [];
+      }
+      return [readFileSync(entryPath, "utf8")];
+    })
+    .join("\n");
 }
 
 describe("carved facility production integration", () => {
@@ -87,5 +103,34 @@ describe("carved facility production integration", () => {
     assert.match(source, /project\.evidence\.transform/);
     assert.match(source, /project\.evidence\.output/);
     assert.match(source, /project\.evidence\.guardrail/);
+  });
+
+  it("uses the facility narrative as the single ordered stage contract", () => {
+    assert.deepEqual(
+      immersiveStageIds,
+      facilityChapters.map((chapter) => chapter.stageId),
+    );
+  });
+
+  it("keeps obsolete abstract pattern APIs out of production", () => {
+    const productionImmersiveSource = [
+      readProductionSources("components/immersive"),
+      readSource("components/ThreeScene.tsx"),
+      readSource("components/threeSceneTuning.ts"),
+    ].join("\n");
+
+    for (const forbidden of [
+      "createSceneGroups",
+      "SceneGroupKey",
+      "SceneGroupWeights",
+      "dampSceneGroupWeights",
+      "groupBudgets",
+      "voice-tunnel-rings",
+      "orchestration-nodes",
+      "measurement-coordinate-grid",
+      "FacilityGreyboxZoneId",
+    ]) {
+      assert.doesNotMatch(productionImmersiveSource, new RegExp(forbidden));
+    }
   });
 });
