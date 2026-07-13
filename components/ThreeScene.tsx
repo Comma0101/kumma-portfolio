@@ -10,6 +10,10 @@ import {
 } from "./immersive/facility/createFacilityWorld";
 import { sampleFacilityNarrative } from "./immersive/facility/narrative";
 import {
+  nextFrameSettlement,
+  nextMotionEnergy,
+} from "./immersive/facility/motionEnergy";
+import {
   createFacilityTerrain,
   createFacilityTerrainUniforms,
   type FacilityTerrainResources,
@@ -316,10 +320,13 @@ export default function ThreeScene() {
       }
       mx = event.clientX / Math.max(1, window.innerWidth) - 0.5;
       my = event.clientY / Math.max(1, window.innerHeight) - 0.5;
+      sceneWakeRef.current?.();
     };
 
     let elapsedSeconds = 0;
     let lastAppliedRouteProgress = currentRouteProgress();
+    let motionEnergy = 0;
+    let stableFrameCount = 0;
     let warnedAboutResourceSwap = false;
     const createPreparedSceneWorldResources = (
       nextTuning: ThreeSceneTuning,
@@ -429,7 +436,7 @@ export default function ThreeScene() {
       cameraSample: FacilityCameraSample,
       deltaSeconds: number,
       immediate: boolean,
-    ) => {
+    ): { readonly maxError: number; readonly motionEnergy: number } => {
       if (immediate) {
         cameraBasePosition.set(
           cameraSample.position.x,
@@ -521,11 +528,17 @@ export default function ThreeScene() {
         );
       }
 
-      const routeVelocity = Math.min(
-        1,
-        Math.abs(narrative.routeProgress - lastAppliedRouteProgress) /
-          Math.max(deltaSeconds, 1 / 60),
-      );
+      motionEnergy = immediate
+        ? 0
+        : nextMotionEnergy({
+            active: isSceneInJourney() && webglReady,
+            hidden: document.hidden,
+            reducedMotion: isReducedMotion(),
+            previousEnergy: motionEnergy,
+            previousProgress: lastAppliedRouteProgress,
+            nextProgress: narrative.routeProgress,
+            deltaSeconds,
+          });
       const pointerScale =
         !immediate &&
         finePointerAvailable &&
@@ -560,9 +573,39 @@ export default function ThreeScene() {
       facilityWorld.update(
         narrative,
         elapsedSeconds,
-        immediate ? 0 : routeVelocity,
+        motionEnergy,
       );
       lastAppliedRouteProgress = narrative.routeProgress;
+      const maxError = immediate
+        ? 0
+        : Math.max(
+            Math.hypot(
+              cameraSample.position.x - cameraBasePosition.x,
+              cameraSample.position.y - cameraBasePosition.y,
+              cameraSample.position.z - cameraBasePosition.z,
+            ),
+            Math.hypot(
+              cameraSample.target.x - lookTarget.x,
+              cameraSample.target.y - lookTarget.y,
+              cameraSample.target.z - lookTarget.z,
+            ),
+            Math.abs(cameraSample.fov - camera.fov) * 0.05,
+            Math.abs(cameraSample.roll - cameraRoll) * 8,
+            Math.abs(
+              narrative.atmosphere.fogDensity - sceneFog.density,
+            ) * 24,
+            Math.hypot(
+              sceneFog.color.r - fogTarget.r,
+              sceneFog.color.g - fogTarget.g,
+              sceneFog.color.b - fogTarget.b,
+            ),
+            Math.abs(
+              narrative.atmosphere.exposure - renderer.toneMappingExposure,
+            ),
+            Math.abs(tx - mx * pointerScale),
+            Math.abs(ty - my * pointerScale),
+          );
+      return { maxError, motionEnergy };
     };
 
     let animationFrame = 0;
@@ -578,6 +621,7 @@ export default function ThreeScene() {
       previousFrameTime = null;
       applyFacilitySample(narrative, cameraSample, 0, true);
       renderScene();
+      mount.dataset.frameState = "static";
     };
 
     const renderAnimatedFrame = (frameTime: number) => {
@@ -589,16 +633,20 @@ export default function ThreeScene() {
       elapsedSeconds += deltaSeconds;
       const narrative = currentNarrative();
       const cameraSample = currentCamera();
-      applyFacilitySample(narrative, cameraSample, deltaSeconds, false);
+      const frameState = applyFacilitySample(narrative, cameraSample, deltaSeconds, false);
       renderScene();
+      return frameState;
     };
 
-    const stopLoop = () => {
+    const stopLoop = (frameState: "settled" | "suspended" = "suspended") => {
       previousFrameTime = null;
+      motionEnergy = 0;
+      stableFrameCount = 0;
       if (animationFrame) {
         window.cancelAnimationFrame(animationFrame);
         animationFrame = 0;
       }
+      mount.dataset.frameState = frameState;
     };
 
     const loop = (frameTime: number) => {
@@ -611,14 +659,27 @@ export default function ThreeScene() {
           webglReady,
         })
       ) {
-        previousFrameTime = null;
+        stopLoop("suspended");
         return;
       }
-      renderAnimatedFrame(frameTime);
-      animationFrame = window.requestAnimationFrame(loop);
+      const frameState = renderAnimatedFrame(frameTime);
+      const settlement = nextFrameSettlement({
+        eligible: true,
+        maxError: frameState.maxError,
+        motionEnergy: frameState.motionEnergy,
+        stableFrames: stableFrameCount,
+      });
+      stableFrameCount = settlement.stableFrames;
+      if (settlement.shouldContinue) {
+        animationFrame = window.requestAnimationFrame(loop);
+      } else {
+        stopLoop("settled");
+      }
     };
 
     const startLoop = () => {
+      stableFrameCount = 0;
+      mount.dataset.frameState = "running";
       if (
         animationFrame ||
         !shouldAnimateScene({
@@ -701,6 +762,7 @@ export default function ThreeScene() {
           renderStaticFrame();
         } else {
           renderScene();
+          startLoop();
         }
       }
     };

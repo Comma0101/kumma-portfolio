@@ -45,6 +45,25 @@ describe("carved facility production integration", () => {
     assert.doesNotMatch(staticFrame, /uTime\.value\s*\+=/);
   });
 
+  it("decays scroll energy and stops requesting frames after convergence", () => {
+    const source = readSource("components/ThreeScene.tsx");
+    const loop = source.slice(
+      source.indexOf("const loop"),
+      source.indexOf("const startLoop"),
+    );
+
+    assert.match(source, /nextMotionEnergy/);
+    assert.match(source, /nextFrameSettlement/);
+    assert.match(source, /motionEnergy/);
+    assert.match(source, /stableFrameCount/);
+    assert.match(loop, /settlement\.shouldContinue/);
+    assert.match(loop, /requestAnimationFrame\(loop\)/);
+    assert.match(source, /stopLoop\(["']settled["']\)/);
+    assert.doesNotMatch(source, /uniforms\.uTime\.value\s*\+=/);
+    assert.doesNotMatch(source, /sceneFog\.color\.distanceTo/);
+    assert.match(source, /sceneFog\.color\.r\s*-\s*fogTarget\.r/);
+  });
+
   it("keeps context restoration candidate-first", () => {
     const source = readSource("components/ThreeScene.tsx");
     const restored = source.slice(
