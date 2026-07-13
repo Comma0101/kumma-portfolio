@@ -29,7 +29,7 @@ function worldPosition(object: ThreeTypes.Object3D): ThreeTypes.Vector3 {
 }
 
 describe("facility world", () => {
-  it("builds five persistent zones at distinct forward depths", () => {
+  it("builds six persistent zones at distinct forward depths", () => {
     const world = createFacilityWorld(desktopTuning);
     assert.deepEqual(Object.keys(world.zones), [
       "exterior-ridge",
@@ -37,12 +37,17 @@ describe("facility world", () => {
       "fissure-threshold",
       "voice-chamber",
       "document-foundry",
+      "orchestration-atrium",
     ]);
     assert.ok(world.root.getObjectByName("facility-distant-entrance"));
     assert.ok(world.root.getObjectByName("facility-reliability-spine"));
     assert.ok(world.root.getObjectByName("facility-threshold-occluder"));
     assert.ok(world.root.getObjectByName("facility-voice-ambiguity-gate"));
     assert.ok(world.root.getObjectByName("facility-document-segments"));
+    assert.ok(
+      world.root.getObjectByName("facility-orchestration-coordinator-core"),
+    );
+    assert.ok(world.root.getObjectByName("facility-orchestration-safety-gate"));
 
     const bounds = Object.values(world.zones).map(
       (zone) => zone.userData.bounds as { zMin: number; zMax: number },
@@ -140,6 +145,58 @@ describe("facility world", () => {
       const conduit = world.root.getObjectByName(name) as ThreeTypes.Mesh;
       conduit.geometry.computeBoundingBox();
       assert.ok((conduit.geometry.boundingBox?.max.y ?? Infinity) <= 0.72);
+    }
+    world.dispose();
+  });
+
+  it("keeps the ARCHON camera corridor clear of opaque atrium structure", () => {
+    const world = createFacilityWorld(desktopTuning);
+    const cameraSamples = Array.from({ length: 25 }, (_, index) =>
+      sampleFacilityCamera(0.55 + (index / 24) * 0.14, "desktop"),
+    );
+    const clearance = 0.42;
+
+    for (const name of [
+      "facility-orchestration-tool-wing",
+      "facility-orchestration-memory-wing",
+      "facility-orchestration-safety-gate",
+      "facility-orchestration-safety-lintel",
+      "facility-orchestration-coordinator-core",
+    ]) {
+      const structure = world.root.getObjectByName(name)!;
+      const bounds = new THREE.Box3().setFromObject(structure).expandByScalar(clearance);
+      for (const sample of cameraSamples) {
+        const position = new THREE.Vector3(
+          sample.position.x,
+          sample.position.y,
+          sample.position.z,
+        );
+        assert.equal(bounds.containsPoint(position), false, `${name} blocks camera`);
+      }
+    }
+
+    const unitBounds = new THREE.Box3(
+      new THREE.Vector3(-0.5, -0.5, -0.5),
+      new THREE.Vector3(0.5, 0.5, 0.5),
+    );
+    for (const name of [
+      "facility-orchestration-atrium-frames",
+      "facility-orchestration-bridge-spans",
+    ]) {
+      const instances = world.root.getObjectByName(name) as ThreeTypes.InstancedMesh;
+      const matrix = new THREE.Matrix4();
+      for (let index = 0; index < instances.count; index += 1) {
+        instances.getMatrixAt(index, matrix);
+        const bounds = unitBounds.clone().applyMatrix4(matrix).expandByScalar(clearance);
+        for (const sample of cameraSamples) {
+          const position = new THREE.Vector3(
+            sample.position.x,
+            sample.position.y,
+            sample.position.z,
+          );
+          assert.equal(bounds.containsPoint(position), false, `${name} blocks camera`);
+        }
+      }
     }
     world.dispose();
   });

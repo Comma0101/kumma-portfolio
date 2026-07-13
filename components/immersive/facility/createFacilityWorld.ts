@@ -5,6 +5,7 @@ import { createResourceTracker } from "./resourceTracker";
 import type { FacilityNarrativeSample } from "./types";
 import { createDocumentFacilityZone } from "./zones/document";
 import { createExteriorFacilityZones } from "./zones/exterior";
+import { createOrchestrationFacilityZone } from "./zones/orchestration";
 import type { FacilityZoneContext } from "./zones/shared";
 import { createVoiceFacilityZone } from "./zones/voice";
 
@@ -13,7 +14,8 @@ export type FacilityGreyboxZoneId =
   | "reliability-spine"
   | "fissure-threshold"
   | "voice-chamber"
-  | "document-foundry";
+  | "document-foundry"
+  | "orchestration-atrium";
 
 export interface FacilityWorld {
   readonly root: THREE.Group;
@@ -52,6 +54,7 @@ export function createFacilityWorld(tuning: ThreeSceneTuning): FacilityWorld {
     const exterior = createExteriorFacilityZones(context);
     const voice = createVoiceFacilityZone(context);
     const document = createDocumentFacilityZone(context);
+    const orchestration = createOrchestrationFacilityZone(context);
     const zones: Readonly<Record<FacilityGreyboxZoneId, THREE.Group>> =
       Object.freeze({
         "exterior-ridge": exterior.exterior,
@@ -59,6 +62,7 @@ export function createFacilityWorld(tuning: ThreeSceneTuning): FacilityWorld {
         "fissure-threshold": exterior.threshold,
         "voice-chamber": voice.root,
         "document-foundry": document.root,
+        "orchestration-atrium": orchestration.root,
       });
 
     Object.values(zones).forEach((zone) => root.add(zone));
@@ -75,6 +79,7 @@ export function createFacilityWorld(tuning: ThreeSceneTuning): FacilityWorld {
       update(sample, _elapsedSeconds, _motionEnergy) {
         voice.update(sample);
         document.update(sample);
+        orchestration.update(sample);
       },
       dispose() {
         if (disposed) return;
