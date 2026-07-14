@@ -9,6 +9,11 @@ export interface FacilityMaterials {
   readonly signal: THREE.MeshStandardMaterial;
   readonly ink: THREE.MeshStandardMaterial;
   readonly guide: THREE.MeshStandardMaterial;
+  readonly mountain: THREE.MeshToonMaterial;
+  readonly stone: THREE.MeshToonMaterial;
+  readonly bamboo: THREE.MeshToonMaterial;
+  readonly water: THREE.MeshStandardMaterial;
+  readonly cinnabar: THREE.MeshStandardMaterial;
 }
 
 export interface FacilityMaterialResources {
@@ -18,6 +23,20 @@ export interface FacilityMaterialResources {
 
 export function createFacilityMaterials(): FacilityMaterialResources {
   return withTrackedResources((tracker) => {
+    const gradientMap = tracker.track(
+      new THREE.DataTexture(
+        new Uint8Array([
+          32, 48, 64, 80, 96, 112, 128, 144, 160, 176, 196, 220,
+        ]),
+        12,
+        1,
+        THREE.RedFormat,
+      ),
+    );
+    gradientMap.minFilter = THREE.NearestFilter;
+    gradientMap.magFilter = THREE.NearestFilter;
+    gradientMap.needsUpdate = true;
+
     const material = (
       color: THREE.ColorRepresentation,
       roughness: number,
@@ -33,17 +52,40 @@ export function createFacilityMaterials(): FacilityMaterialResources {
         }),
       );
 
+    const inkValueMaterial = (
+      color: THREE.ColorRepresentation,
+      options: Partial<THREE.MeshToonMaterialParameters> = {},
+    ) =>
+      tracker.track(
+        new THREE.MeshToonMaterial({
+          color,
+          gradientMap,
+          ...options,
+        }),
+      );
+
     const materials: FacilityMaterials = Object.freeze({
-      terrain: material(0x111817, 0.96, 0.03),
-      shell: material(0x202b28, 0.88, 0.08, { flatShading: true }),
-      steel: material(0x56635e, 0.58, 0.42),
-      paper: material(0xcbbf9d, 0.82, 0.04),
-      signal: material(0x91c99d, 0.48, 0.12, {
-        emissive: 0x477a56,
-        emissiveIntensity: 0.42,
+      terrain: material(0x171f1c, 0.98, 0.01),
+      shell: material(0x303a35, 0.96, 0.01),
+      steel: material(0x626b64, 0.9, 0.03),
+      paper: material(0xd7ccb0, 0.94, 0.01),
+      signal: material(0x789681, 0.82, 0.02, {
+        emissive: 0x2e4d3c,
+        emissiveIntensity: 0.18,
       }),
-      ink: material(0x4b3745, 0.76, 0.08),
-      guide: material(0x65716d, 0.72, 0.2),
+      ink: material(0x332d31, 0.97, 0.01),
+      guide: material(0x6a756d, 0.92, 0.01),
+      mountain: inkValueMaterial(0x435149),
+      stone: inkValueMaterial(0x77796f),
+      bamboo: inkValueMaterial(0x3c6851, { side: THREE.DoubleSide }),
+      water: material(0x385a5b, 0.9, 0.03, {
+        emissive: 0x1d3635,
+        emissiveIntensity: 0.12,
+      }),
+      cinnabar: material(0x9f4435, 0.78, 0.02, {
+        emissive: 0x4f160f,
+        emissiveIntensity: 0.2,
+      }),
     });
 
     return {

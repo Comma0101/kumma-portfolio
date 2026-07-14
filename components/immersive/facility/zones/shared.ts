@@ -2,6 +2,7 @@ import * as THREE from "three";
 import type { ThreeSceneTuning } from "../../../threeSceneTuning";
 import type { FacilityMaterials } from "../materials";
 import type { ResourceTracker } from "../resourceTracker";
+import type { ShanshuiGeometryKit } from "../shanshuiPrimitives";
 import type {
   FacilityEventId,
   FacilityNarrativeSample,
@@ -13,6 +14,7 @@ export interface FacilityZoneContext {
   readonly tracker: ResourceTracker;
   readonly unitBox: THREE.BoxGeometry;
   readonly signalSphere: THREE.SphereGeometry;
+  readonly shanshuiGeometry: ShanshuiGeometryKit;
 }
 
 const eventOrder: readonly FacilityEventId[] = [

@@ -2,6 +2,11 @@ import * as THREE from "three";
 import type { ThreeSceneTuning } from "../../threeSceneTuning";
 import { createFacilityMaterials } from "./materials";
 import { createResourceTracker } from "./resourceTracker";
+import { sampleBoatJourney } from "./shanshuiJourney";
+import {
+  createShanshuiGeometryKit,
+  createTravelerBoat,
+} from "./shanshuiPrimitives";
 import type { FacilityNarrativeSample } from "./types";
 import { createCalibrationFacilityZones } from "./zones/calibration";
 import { createDissolutionFacilityZone } from "./zones/dissolution";
@@ -37,7 +42,7 @@ export function createFacilityWorld(tuning: ThreeSceneTuning): FacilityWorld {
   const materialResources = createFacilityMaterials();
   const tracker = createResourceTracker();
   const root = new THREE.Group();
-  root.name = "carved-systems-facility";
+  root.name = "living-shanshui-handscroll";
   let disposed = false;
 
   try {
@@ -49,12 +54,14 @@ export function createFacilityWorld(tuning: ThreeSceneTuning): FacilityWorld {
         tuning.profile === "desktop" ? 10 : 8,
       ),
     );
+    const shanshuiGeometry = createShanshuiGeometryKit(tracker);
     const context: FacilityZoneContext = {
       tuning,
       materials: materialResources.materials,
       tracker,
       unitBox,
       signalSphere,
+      shanshuiGeometry,
     };
     const exterior = createExteriorFacilityZones(context);
     const voice = createVoiceFacilityZone(context);
@@ -62,6 +69,7 @@ export function createFacilityWorld(tuning: ThreeSceneTuning): FacilityWorld {
     const orchestration = createOrchestrationFacilityZone(context);
     const dissolution = createDissolutionFacilityZone(context);
     const calibration = createCalibrationFacilityZones(context);
+    const travelerBoat = createTravelerBoat(context);
     const zones: Readonly<Record<FacilityWorldZoneId, THREE.Group>> =
       Object.freeze({
         "exterior-ridge": exterior.exterior,
@@ -76,29 +84,76 @@ export function createFacilityWorld(tuning: ThreeSceneTuning): FacilityWorld {
       });
 
     Object.values(zones).forEach((zone) => root.add(zone));
-    const hemisphere = new THREE.HemisphereLight(0x9cae9f, 0x080b0b, 1.35);
-    hemisphere.name = "facility-atmospheric-fill";
-    const key = new THREE.DirectionalLight(0xd4cfb8, 2.1);
-    key.name = "facility-exterior-key";
-    key.position.set(-9, 15, 12);
-    root.add(hemisphere, key);
+    root.add(travelerBoat.root);
+
+    const setChapterVisibility = (rawProgress: number) => {
+      const progress = Number.isFinite(rawProgress)
+        ? THREE.MathUtils.clamp(rawProgress, 0, 1)
+        : 0;
+      exterior.exterior.visible = progress <= 0.135;
+      exterior.reliability.visible = progress >= 0.055 && progress <= 0.235;
+      exterior.threshold.visible = progress >= 0.115 && progress <= 0.335;
+      voice.root.visible = progress >= 0.2 && progress <= 0.42;
+      document.root.visible = progress >= 0.405 && progress <= 0.6;
+      orchestration.root.visible = progress >= 0.52 && progress <= 0.73;
+      dissolution.root.visible = progress >= 0.66 && progress <= 0.84;
+      calibration.calibration.visible = progress >= 0.8 && progress <= 0.95;
+      calibration.horizon.visible = progress >= 0.925;
+    };
+    setChapterVisibility(0);
+    const hemisphere = new THREE.HemisphereLight(0xb8c3b5, 0x080b0a, 1.3);
+    hemisphere.name = "shanshui-atmospheric-fill";
+    const key = new THREE.DirectionalLight(0xe4dcc5, 1.72);
+    key.name = "shanshui-paper-key";
+    key.position.set(-11, 18, 14);
+    const mineralFill = new THREE.DirectionalLight(0x78988f, 0.54);
+    mineralFill.name = "shanshui-mineral-fill";
+    mineralFill.position.set(13, 8, -28);
+    root.add(hemisphere, key, mineralFill);
 
     return {
       root,
       zones,
-      update(sample, _elapsedSeconds, _motionEnergy) {
-        voice.update(sample);
-        document.update(sample);
-        orchestration.update(sample);
-        dissolution.update(sample);
-        calibration.update(sample);
+      update(sample, elapsedSeconds, motionEnergy) {
+        setChapterVisibility(sample.journeyProgress);
+        travelerBoat.update(sampleBoatJourney(sample.routeProgress));
+        if (
+          exterior.exterior.visible ||
+          exterior.reliability.visible ||
+          exterior.threshold.visible
+        ) {
+          exterior.update(sample, elapsedSeconds, motionEnergy);
+        }
+        if (voice.root.visible) {
+          voice.update(sample, elapsedSeconds, motionEnergy);
+        }
+        if (document.root.visible) document.update(sample);
+        if (orchestration.root.visible) {
+          orchestration.update(sample, elapsedSeconds, motionEnergy);
+        } else {
+          const birds = orchestration.root.getObjectByName(
+            "shanshui-archon-ink-bird-flock",
+          );
+          if (birds) birds.visible = false;
+        }
+        if (dissolution.root.visible) {
+          dissolution.update(sample, elapsedSeconds, motionEnergy);
+        } else {
+          dissolution.deactivate();
+        }
+        if (calibration.calibration.visible || calibration.horizon.visible) {
+          calibration.update(sample);
+        }
       },
       dispose() {
         if (disposed) return;
         disposed = true;
         root.removeFromParent();
-        tracker.dispose();
-        materialResources.dispose();
+        try {
+          tracker.dispose();
+        } finally {
+          materialResources.dispose();
+        }
       },
     };
   } catch (error) {

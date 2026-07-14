@@ -11,8 +11,8 @@ nodeModule.Module._initPaths();
 const THREE = require("three") as typeof ThreeTypes;
 const { createFacilityMaterials } = require("./materials") as typeof import("./materials");
 
-describe("facility Atlas materials", () => {
-  it("uses restrained lit surfaces for every signature material", () => {
+describe("living Shanshui materials", () => {
+  it("uses the exact opaque, lit material vocabulary for the handscroll", () => {
     const resources = createFacilityMaterials();
     assert.deepEqual(Object.keys(resources.materials), [
       "terrain",
@@ -22,36 +22,88 @@ describe("facility Atlas materials", () => {
       "signal",
       "ink",
       "guide",
+      "mountain",
+      "stone",
+      "bamboo",
+      "water",
+      "cinnabar",
     ]);
+
+    const standardMaterialKeys = [
+      "terrain",
+      "shell",
+      "steel",
+      "paper",
+      "signal",
+      "ink",
+      "guide",
+      "water",
+      "cinnabar",
+    ] as const;
+    const toonMaterialKeys = ["mountain", "stone", "bamboo"] as const;
+
+    for (const key of standardMaterialKeys) {
+      assert.ok(
+        resources.materials[key] instanceof THREE.MeshStandardMaterial,
+        `${key} must remain a physically lit MeshStandardMaterial`,
+      );
+    }
+    for (const key of toonMaterialKeys) {
+      assert.ok(
+        resources.materials[key] instanceof THREE.MeshToonMaterial,
+        `${key} must use ink-value toon banding`,
+      );
+    }
     for (const material of Object.values(resources.materials)) {
-      assert.ok(material instanceof THREE.MeshStandardMaterial);
       assert.equal(material instanceof THREE.MeshBasicMaterial, false);
       assert.equal(material.transparent, false);
     }
+
+    const gradientMap = resources.materials.mountain.gradientMap;
+    assert.ok(gradientMap instanceof THREE.DataTexture);
+    assert.equal(resources.materials.stone.gradientMap, gradientMap);
+    assert.equal(resources.materials.bamboo.gradientMap, gradientMap);
+    assert.equal(gradientMap.image.width, 12);
+    assert.equal(gradientMap.image.height, 1);
+    assert.deepEqual(Array.from(gradientMap.image.data as Uint8Array), [
+      32, 48, 64, 80, 96, 112, 128, 144, 160, 176, 196, 220,
+    ]);
+    assert.equal(gradientMap.minFilter, THREE.NearestFilter);
+    assert.equal(gradientMap.magFilter, THREE.NearestFilter);
+
     assert.ok(resources.materials.signal.emissiveIntensity > 0);
     assert.ok(resources.materials.signal.emissiveIntensity < 1);
-    const shellHsl = { h: 0, s: 0, l: 0 };
-    const steelHsl = { h: 0, s: 0, l: 0 };
-    resources.materials.shell.color.getHSL(shellHsl);
-    resources.materials.steel.color.getHSL(steelHsl);
-    assert.ok(shellHsl.l >= 0.018, "shell silhouettes must survive dark fog");
+    assert.ok(resources.materials.cinnabar.emissiveIntensity > 0);
+    assert.ok(resources.materials.cinnabar.emissiveIntensity < 1);
+    const mountainHsl = { h: 0, s: 0, l: 0 };
+    const paperHsl = { h: 0, s: 0, l: 0 };
+    resources.materials.mountain.color.getHSL(mountainHsl);
+    resources.materials.paper.color.getHSL(paperHsl);
     assert.ok(
-      steelHsl.l - shellHsl.l >= 0.06,
-      "structure needs readable separation from the carved shell",
+      paperHsl.l - mountainHsl.l >= 0.45,
+      "paper forms need clear value separation from ink mountains",
     );
     resources.dispose();
   });
 
-  it("disposes shared materials exactly once", () => {
+  it("disposes shared materials and the shared toon gradient exactly once", () => {
     const resources = createFacilityMaterials();
-    let disposals = 0;
+    let materialDisposals = 0;
+    let gradientDisposals = 0;
     for (const material of Object.values(resources.materials)) {
       material.addEventListener("dispose", () => {
-        disposals += 1;
+        materialDisposals += 1;
       });
     }
+    resources.materials.mountain.gradientMap?.addEventListener("dispose", () => {
+      gradientDisposals += 1;
+    });
     resources.dispose();
     resources.dispose();
-    assert.equal(disposals, Object.keys(resources.materials).length);
+    assert.equal(
+      materialDisposals,
+      Object.keys(resources.materials).length,
+    );
+    assert.equal(gradientDisposals, 1);
   });
 });

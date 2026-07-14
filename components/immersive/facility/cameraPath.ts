@@ -99,6 +99,22 @@ function routeTarget(
     const horizonReveal = smoothstep((routeProgress - 0.86) / 0.14);
     target.lerp(new THREE.Vector3(0, 3.1, -153), horizonReveal);
   }
+  const audiobookFocus =
+    smoothstep((routeProgress - 0.36) / 0.07) *
+    (1 - smoothstep((routeProgress - 0.56) / 0.06));
+  const archonFocus =
+    smoothstep((routeProgress - 0.5) / 0.08) *
+    (1 - smoothstep((routeProgress - 0.7) / 0.06));
+  const splashFocus =
+    smoothstep((routeProgress - 0.68) / 0.07) *
+    (1 - smoothstep((routeProgress - 0.83) / 0.06));
+  const surveyFocus =
+    smoothstep((routeProgress - 0.81) / 0.06) *
+    (1 - smoothstep((routeProgress - 0.95) / 0.04));
+  target.lerp(new THREE.Vector3(-5.6, 3.1, -57), audiobookFocus * 0.8);
+  target.lerp(new THREE.Vector3(4.2, 2.7, -84.5), archonFocus * 0.82);
+  target.lerp(new THREE.Vector3(4.2, 5.2, -112.5), splashFocus * 0.84);
+  target.lerp(new THREE.Vector3(0, 2.8, -137), surveyFocus * 0.76);
   return target;
 }
 

@@ -15,8 +15,8 @@ const {
   createFacilityTerrainUniforms,
 } = require("./terrain") as typeof import("./terrain");
 
-describe("carved facility terrain", () => {
-  it("covers the complete route with a deterministic physical spine mask", () => {
+describe("living Shanshui ink terrain", () => {
+  it("covers the complete route with deterministic river and mountain-pass semantics", () => {
     const tuning = getThreeSceneTuning({
       deviceMemory: 8,
       devicePixelRatio: 2,
@@ -34,13 +34,21 @@ describe("carved facility terrain", () => {
     });
     const terrain = createFacilityTerrain(tuning, uniforms);
 
-    assert.equal(terrain.mesh.name, "facility-carved-terrain");
+    assert.equal(terrain.mesh.name, "shanshui-ink-terrain");
     assert.ok(terrain.geometry.parameters.width >= 110);
     assert.ok(terrain.geometry.parameters.height >= 190);
     assert.ok(terrain.mesh.position.z < 0);
-    assert.match(terrain.material.vertexShader, /reliabilitySpine/);
-    assert.match(terrain.material.vertexShader, /fissureMask/);
+    assert.match(terrain.material.vertexShader, /riverChannel/);
+    assert.match(terrain.material.vertexShader, /mountainPassMask/);
+    assert.match(terrain.material.vertexShader, /routeCenter/);
+    assert.match(terrain.material.vertexShader, /vRiver/);
+    assert.match(terrain.material.fragmentShader, /paperGrain/);
+    assert.match(terrain.material.fragmentShader, /inkValue/);
+    assert.match(terrain.material.fragmentShader, /mineralStone/);
+    assert.match(terrain.material.fragmentShader, /vRiver/);
     assert.doesNotMatch(terrain.material.vertexShader, /Math\.random/);
+    assert.doesNotMatch(terrain.material.fragmentShader, /Math\.random/);
+    assert.equal(terrain.material.uniforms.uTime.value, 5);
     terrain.dispose();
   });
 

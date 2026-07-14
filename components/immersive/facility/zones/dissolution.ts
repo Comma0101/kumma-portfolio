@@ -1,9 +1,14 @@
 import * as THREE from "three";
+import { sampleLivingWorldMotion } from "../shanshuiJourney";
+import {
+  createFishSchool,
+  createMountainCluster,
+  createRiverRibbon,
+  createStoneCluster,
+} from "../shanshuiPrimitives";
 import type { FacilityNarrativeSample } from "../types";
 import {
   clamp01,
-  createSignatureBox,
-  createSignatureTube,
   eventProgressFor,
   setZoneBounds,
   type FacilityZoneContext,
@@ -22,7 +27,12 @@ export interface DissolutionState {
 
 export interface DissolutionFacilityZone {
   readonly root: THREE.Group;
-  update(sample: FacilityNarrativeSample): void;
+  update(
+    sample: FacilityNarrativeSample,
+    elapsedSeconds?: number,
+    motionEnergy?: number,
+  ): void;
+  deactivate(): void;
 }
 
 const SURFACE_ORIGIN = Object.freeze({ x: 6, y: 6.2, z: -109 });
@@ -138,14 +148,13 @@ function writeSurfaceDepth(
     );
   }
   positions.needsUpdate = true;
-  geometry.computeVertexNormals();
 }
 
 export function createDissolutionFacilityZone(
   context: FacilityZoneContext,
 ): DissolutionFacilityZone {
   const root = setZoneBounds(new THREE.Group(), -127, -101);
-  root.name = "facility-dissolution-observatory-zone";
+  root.name = "shanshui-splash-inkfall-zone";
 
   const surfaceSegmentsX = Math.max(
     12,
@@ -161,14 +170,41 @@ export function createDissolutionFacilityZone(
   (sourceGeometry.getAttribute("position") as THREE.BufferAttribute).setUsage(
     THREE.DynamicDrawUsage,
   );
-  const sourceMaterial = context.tracker.track(context.materials.ink.clone());
-  sourceMaterial.transparent = true;
-  sourceMaterial.opacity = 0.76;
-  sourceMaterial.side = THREE.DoubleSide;
-  sourceMaterial.emissive.setHex(0x241720);
-  sourceMaterial.emissiveIntensity = 0.34;
+  const sourceMaterial = context.tracker.track(
+    new THREE.ShaderMaterial({
+      uniforms: {
+        uOpacity: { value: 0.44 },
+      },
+      vertexShader: /* glsl */ `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: /* glsl */ `
+        precision highp float;
+        uniform float uOpacity;
+        varying vec2 vUv;
+        void main() {
+          float edge = smoothstep(0.0, 0.1, vUv.x) *
+            smoothstep(0.0, 0.1, vUv.y) *
+            smoothstep(0.0, 0.1, 1.0 - vUv.x) *
+            smoothstep(0.0, 0.1, 1.0 - vUv.y);
+          vec2 cell = floor(vUv * vec2(17.0, 11.0));
+          float grain = fract(sin(dot(cell, vec2(12.9898, 78.233))) * 43758.5453);
+          float wash = 0.78 + sin(vUv.x * 9.0 + vUv.y * 5.0) * 0.08;
+          vec3 ink = mix(vec3(0.075, 0.055, 0.066), vec3(0.17, 0.11, 0.14), grain * 0.28);
+          gl_FragColor = vec4(ink, edge * wash * uOpacity);
+        }
+      `,
+      transparent: true,
+      depthWrite: false,
+      side: THREE.DoubleSide,
+    }),
+  );
   const sourcePlane = new THREE.Mesh(sourceGeometry, sourceMaterial);
-  sourcePlane.name = "facility-dissolution-source-aperture";
+  sourcePlane.name = "shanshui-splash-flat-ink-plane";
   sourcePlane.position.set(
     SURFACE_ORIGIN.x,
     SURFACE_ORIGIN.y,
@@ -176,53 +212,43 @@ export function createDissolutionFacilityZone(
   );
   sourcePlane.userData.signature = true;
 
+  const basinGeometry = context.tracker.track(new THREE.CircleGeometry(7.2, 48));
+  const basin = new THREE.Mesh(basinGeometry, context.materials.water);
+  basin.name = "shanshui-splash-ink-basin";
+  basin.position.set(4.2, -0.5, -117);
+  basin.rotation.x = -Math.PI * 0.5;
+  basin.scale.set(1.35, 1, 1);
+  basin.userData.signature = true;
+
   root.add(
-    createSignatureBox(
+    createMountainCluster(context, "shanshui-splash-inkfall-peaks", "tall", [
+      { position: [-19.4, -1.45, -109], scale: [5.1, 13.4, 5.4], rotationY: 0.32 },
+      { position: [22.7, -1.42, -112], scale: [5.4, 14.2, 5.7], rotationY: -0.38 },
+      { position: [-21.8, -1.38, -121], scale: [5.8, 10.8, 6.1], rotationY: -0.5 },
+      { position: [23.8, -1.38, -124], scale: [5.9, 11.4, 6.2], rotationY: 0.56 },
+    ]),
+    createMountainCluster(
       context,
-      "facility-dissolution-observatory-deck",
-      context.materials.shell,
-      [3.5, 0.3, -113.5],
-      [29, 0.6, 27],
-    ),
-    createSignatureBox(
-      context,
-      "facility-dissolution-aperture-left",
-      context.materials.steel,
-      [-1.25, 6.2, -109],
-      [0.34, 12.8, 0.65],
-    ),
-    createSignatureBox(
-      context,
-      "facility-dissolution-aperture-right",
-      context.materials.steel,
-      [13.25, 6.2, -109],
-      [0.34, 12.8, 0.65],
-    ),
-    createSignatureBox(
-      context,
-      "facility-dissolution-aperture-lintel",
-      context.materials.steel,
-      [6, 12.6, -109],
-      [14.8, 0.34, 0.65],
-    ),
-    createSignatureBox(
-      context,
-      "facility-dissolution-depth-bench",
-      context.materials.paper,
-      [9.4, 1.2, -115.8],
-      [7.2, 1.8, 2.6],
-    ),
-    createSignatureTube(
-      context,
-      "facility-dissolution-incoming-route",
-      context.materials.guide,
+      "shanshui-splash-basin-ridges",
+      "broad",
       [
-        new THREE.Vector3(6.2, 5.2, -97.2),
-        new THREE.Vector3(5.4, 5.8, -103),
-        new THREE.Vector3(6, 6.2, -108.6),
+        { position: [-16.5, -1.3, -116], scale: [6.2, 5.2, 6.6], rotationY: 0.44 },
+        { position: [18.5, -1.3, -119], scale: [6.5, 5.5, 6.7], rotationY: -0.42 },
       ],
-      0.12,
+      context.materials.shell,
     ),
+    createStoneCluster(context, "shanshui-splash-water-stones", [
+      { position: [-1.8, -0.72, -114], scale: [1.5, 1.15, 1.7], rotationY: 0.36 },
+      { position: [9.8, -0.72, -119], scale: [1.8, 1.25, 1.6], rotationY: -0.48 },
+      { position: [0.4, -0.7, -123], scale: [1.1, 0.75, 1.35], rotationY: 0.72 },
+    ]),
+    createRiverRibbon(context, "shanshui-splash-arrival-current", [
+      { x: -5.5, y: -0.53, z: -101.5, width: 1.7 },
+      { x: -1, y: -0.52, z: -106, width: 1.9 },
+      { x: 3.4, y: -0.51, z: -111, width: 2.2 },
+      { x: 4.2, y: -0.5, z: -116, width: 3.1 },
+    ]),
+    basin,
     sourcePlane,
   );
 
@@ -262,7 +288,7 @@ export function createDissolutionFacilityZone(
           float radius = dot(centered, centered);
           if (radius > 0.25) discard;
           float edge = 1.0 - smoothstep(0.12, 0.25, radius);
-          gl_FragColor = vec4(vec3(0.47, 0.31, 0.42), edge * uOpacity);
+          gl_FragColor = vec4(vec3(0.52, 0.60, 0.52), edge * uOpacity);
         }
       `,
       transparent: true,
@@ -270,26 +296,39 @@ export function createDissolutionFacilityZone(
     }),
   );
   const points = new THREE.Points(pointGeometry, pointMaterial);
-  points.name = "facility-dissolution-surface";
+  points.name = "shanshui-splash-spatial-ink-surface";
   points.position.set(SURFACE_ORIGIN.x, SURFACE_ORIGIN.y, SURFACE_ORIGIN.z);
   points.userData.signature = true;
 
   const depthProbe = new THREE.Mesh(
     context.signalSphere,
-    context.materials.signal,
+    context.materials.cinnabar,
   );
-  depthProbe.name = "facility-dissolution-depth-probe";
-  depthProbe.scale.setScalar(0.72);
+  depthProbe.name = "shanshui-splash-depth-seal";
+  depthProbe.scale.setScalar(0.46);
   depthProbe.userData.signature = true;
   root.add(points, depthProbe);
 
-  const observatoryLight = new THREE.PointLight(0xb18aa0, 5.4, 27, 2);
-  observatoryLight.name = "facility-dissolution-surface-light";
+  const fish = createFishSchool(context, "shanshui-splash-fish-shadows", {
+    count: context.tuning.profile === "desktop" ? 9 : 5,
+    center: [4.2, -0.42, -117],
+    width: 9.8,
+    depth: 10.5,
+    seed: 1979,
+  });
+  root.add(fish.mesh);
+
+  const observatoryLight = new THREE.PointLight(0x9db6a5, 3.2, 25, 2);
+  observatoryLight.name = "shanshui-splash-inkfall-light";
   observatoryLight.position.set(1.5, 11, -101.5);
   root.add(observatoryLight);
 
   const probePoint = surface[Math.floor(surface.length * 0.72)];
-  const update = (sample: FacilityNarrativeSample) => {
+  const update = (
+    sample: FacilityNarrativeSample,
+    elapsedSeconds = 0,
+    motionEnergy = 0,
+  ) => {
     const progress = eventProgressFor(sample, "reconstruct-depth");
     const apertureProgress = writeDissolutionPositions(
       progress,
@@ -298,8 +337,19 @@ export function createDissolutionFacilityZone(
     );
     writeSurfaceDepth(sourceGeometry, progress, 1979);
     positionAttribute.needsUpdate = true;
-    sourceMaterial.opacity = 0.76 - apertureProgress * 0.28;
+    sourceMaterial.uniforms.uOpacity.value = 0.44 - apertureProgress * 0.2;
     pointMaterial.uniforms.uOpacity.value = 0.2 + apertureProgress * 0.7;
+    const living = sampleLivingWorldMotion(
+      sample.journeyProgress,
+      elapsedSeconds,
+      motionEnergy,
+      context.tuning.profile,
+    );
+    fish.mesh.visible = living.fishReveal > 0.015;
+    fish.update(
+      living.fishReveal,
+      sample.journeyProgress * Math.PI * 2 + elapsedSeconds * motionEnergy * 0.16,
+    );
     depthProbe.position.set(
       SURFACE_ORIGIN.x + probePoint.x,
       SURFACE_ORIGIN.y + probePoint.y,
@@ -309,5 +359,13 @@ export function createDissolutionFacilityZone(
     root.userData.eventProgress = progress;
   };
 
-  return { root, update };
+  return {
+    root,
+    update,
+    deactivate() {
+      if (!fish.mesh.visible) return;
+      fish.update(0, 0);
+      fish.mesh.visible = false;
+    },
+  };
 }

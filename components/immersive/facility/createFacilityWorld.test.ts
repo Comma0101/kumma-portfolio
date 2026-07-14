@@ -14,6 +14,8 @@ const THREE = require("three") as typeof ThreeTypes;
 const { sampleFacilityCamera } = require("./cameraPath") as typeof import("./cameraPath");
 const { createFacilityWorld } = require("./createFacilityWorld") as typeof import("./createFacilityWorld");
 
+type FacilityWorld = ReturnType<typeof createFacilityWorld>;
+
 const desktopTuning = getThreeSceneTuning({
   deviceMemory: 8,
   devicePixelRatio: 2,
@@ -32,251 +34,431 @@ const mobileTuning = getThreeSceneTuning({
   viewportWidth: 390,
 });
 
+const expectedZones = [
+  ["exterior-ridge", { zMin: -4, zMax: 24 }],
+  ["reliability-spine", { zMin: -11, zMax: 18 }],
+  ["fissure-threshold", { zMin: -27, zMax: -8 }],
+  ["voice-chamber", { zMin: -46, zMax: -23 }],
+  ["document-foundry", { zMin: -72, zMax: -43 }],
+  ["orchestration-atrium", { zMin: -101, zMax: -69 }],
+  ["dissolution-observatory", { zMin: -127, zMax: -101 }],
+  ["calibration-deck", { zMin: -149, zMax: -126 }],
+  ["quiet-horizon", { zMin: -160, zMax: -148 }],
+] as const;
+
+function objectNamed(
+  world: FacilityWorld,
+  name: string,
+): ThreeTypes.Object3D {
+  const object = world.root.getObjectByName(name);
+  assert.ok(object, `${name} belongs to the living handscroll`);
+  return object;
+}
+
+function instancedNamed(
+  world: FacilityWorld,
+  name: string,
+): ThreeTypes.InstancedMesh {
+  const object = objectNamed(world, name);
+  assert.ok(object instanceof THREE.InstancedMesh, `${name} is instanced`);
+  return object;
+}
+
 function worldPosition(object: ThreeTypes.Object3D): ThreeTypes.Vector3 {
   object.updateWorldMatrix(true, false);
   return object.getWorldPosition(new THREE.Vector3());
 }
 
-describe("facility world", () => {
-  it("builds the complete persistent journey at distinct forward depths", () => {
-    const world = createFacilityWorld(desktopTuning);
-    assert.deepEqual(Object.keys(world.zones), [
-      "exterior-ridge",
-      "reliability-spine",
-      "fissure-threshold",
-      "voice-chamber",
-      "document-foundry",
-      "orchestration-atrium",
-      "dissolution-observatory",
-      "calibration-deck",
-      "quiet-horizon",
-    ]);
-    assert.ok(world.root.getObjectByName("facility-distant-entrance"));
-    assert.ok(world.root.getObjectByName("facility-reliability-spine"));
-    assert.ok(world.root.getObjectByName("facility-threshold-occluder"));
-    assert.ok(world.root.getObjectByName("facility-voice-ambiguity-gate"));
-    assert.ok(world.root.getObjectByName("facility-document-segments"));
-    assert.ok(
-      world.root.getObjectByName("facility-orchestration-coordinator-core"),
-    );
-    assert.ok(world.root.getObjectByName("facility-orchestration-safety-gate"));
-    assert.ok(world.root.getObjectByName("facility-dissolution-surface"));
-    assert.ok(world.root.getObjectByName("facility-calibration-surface-marks"));
-    assert.ok(world.root.getObjectByName("facility-calibration-stable-signal"));
+function authoredFrustum(progress: number): ThreeTypes.Frustum {
+  const sample = sampleFacilityCamera(progress, "desktop");
+  const camera = new THREE.PerspectiveCamera(sample.fov, 1.44, 0.1, 220);
+  camera.position.set(sample.position.x, sample.position.y, sample.position.z);
+  camera.lookAt(sample.target.x, sample.target.y, sample.target.z);
+  camera.updateMatrixWorld(true);
+  camera.updateProjectionMatrix();
+  const matrix = new THREE.Matrix4().multiplyMatrices(
+    camera.projectionMatrix,
+    camera.matrixWorldInverse,
+  );
+  return new THREE.Frustum().setFromProjectionMatrix(matrix);
+}
 
-    const bounds = Object.values(world.zones).map(
-      (zone) => zone.userData.bounds as { zMin: number; zMax: number },
-    );
-    for (let index = 1; index < bounds.length; index += 1) {
-      assert.ok(bounds[index].zMax <= bounds[index - 1].zMax);
-      assert.ok(bounds[index].zMin < bounds[index - 1].zMin);
-    }
-    world.dispose();
-  });
+interface NamedCollisionBox {
+  readonly label: string;
+  readonly bounds: ThreeTypes.Box3;
+}
 
-  it("reserves the one signature point surface for coherent ink dissolution", () => {
-    const world = createFacilityWorld(desktopTuning);
-    let signatures = 0;
-    let pointSurfaces = 0;
-    world.root.traverse((object) => {
-      if (object.userData.signature !== true) return;
-      signatures += 1;
-      if (object instanceof THREE.Points) {
-        pointSurfaces += 1;
-        assert.equal(object.name, "facility-dissolution-surface");
-        assert.ok(object.material instanceof THREE.ShaderMaterial);
-        return;
-      }
-      assert.ok(object instanceof THREE.Mesh || object instanceof THREE.InstancedMesh);
-      const renderable = object as ThreeTypes.Mesh;
-      const materials = Array.isArray(renderable.material)
-        ? renderable.material
-        : [renderable.material];
-      for (const material of materials) {
-        assert.equal(material instanceof THREE.LineBasicMaterial, false);
-        assert.equal(material instanceof THREE.PointsMaterial, false);
-      }
+function collisionBoxesFor(
+  object: ThreeTypes.Object3D,
+  clearance: number,
+): NamedCollisionBox[] {
+  object.updateWorldMatrix(true, true);
+  if (object instanceof THREE.InstancedMesh) {
+    object.geometry.computeBoundingBox();
+    const geometryBounds = object.geometry.boundingBox;
+    assert.ok(geometryBounds, `${object.name} has collision bounds`);
+    const instanceMatrix = new THREE.Matrix4();
+    const worldMatrix = new THREE.Matrix4();
+    return Array.from({ length: object.count }, (_, index) => {
+      object.getMatrixAt(index, instanceMatrix);
+      worldMatrix.multiplyMatrices(object.matrixWorld, instanceMatrix);
+      return {
+        label: `${object.name}[${index}]`,
+        bounds: geometryBounds
+          .clone()
+          .applyMatrix4(worldMatrix)
+          .expandByScalar(clearance),
+      };
     });
-    assert.ok(signatures >= 12);
-    assert.equal(pointSurfaces, 1);
+  }
+
+  return [
+    {
+      label: object.name,
+      bounds: new THREE.Box3().setFromObject(object).expandByScalar(clearance),
+    },
+  ];
+}
+
+function assertCameraCorridorClear(
+  world: FacilityWorld,
+  obstacleNames: readonly string[],
+  journeyStart: number,
+  journeyEnd: number,
+  clearance: number,
+): void {
+  const obstacles = obstacleNames.flatMap((name) =>
+    collisionBoxesFor(objectNamed(world, name), clearance),
+  );
+
+  for (let index = 0; index <= 40; index += 1) {
+    const progress =
+      journeyStart + ((journeyEnd - journeyStart) * index) / 40;
+    const camera = sampleFacilityCamera(progress, "desktop");
+    const position = new THREE.Vector3(
+      camera.position.x,
+      camera.position.y,
+      camera.position.z,
+    );
+    for (const obstacle of obstacles) {
+      assert.equal(
+        obstacle.bounds.containsPoint(position),
+        false,
+        `${obstacle.label} blocks the camera at journey ${progress.toFixed(3)}`,
+      );
+    }
+  }
+}
+
+function instanceIsRenderable(mesh: ThreeTypes.InstancedMesh): boolean {
+  const matrix = new THREE.Matrix4();
+  for (let index = 0; index < mesh.count; index += 1) {
+    mesh.getMatrixAt(index, matrix);
+    if (Math.abs(matrix.determinant()) > 1e-8) return true;
+  }
+  return false;
+}
+
+describe("living shanshui facility world", () => {
+  it("builds all nine ordered landscape zones with their authored bounds", () => {
+    const world = createFacilityWorld(desktopTuning);
+    assert.equal(world.root.name, "living-shanshui-handscroll");
+    assert.deepEqual(
+      Object.keys(world.zones),
+      expectedZones.map(([zoneId]) => zoneId),
+    );
+
+    expectedZones.forEach(([zoneId, expectedBounds]) => {
+      const zone = world.zones[zoneId];
+      assert.equal(zone.parent, world.root);
+      assert.deepEqual(zone.userData.bounds, expectedBounds);
+      assert.equal(Object.isFrozen(zone.userData.bounds), true);
+    });
     world.dispose();
   });
 
-  it("removes secondary chamber trim in the mobile construction profile", () => {
+  it("reserves one signature Points surface for the Splash Ink depth reveal", () => {
+    const world = createFacilityWorld(desktopTuning);
+    const pointSurfaces: ThreeTypes.Points[] = [];
+    world.root.traverse((object) => {
+      if (object instanceof THREE.Points) pointSurfaces.push(object);
+    });
+
+    assert.equal(pointSurfaces.length, 1);
+    const [surface] = pointSurfaces;
+    assert.equal(surface.name, "shanshui-splash-spatial-ink-surface");
+    assert.equal(surface.userData.signature, true);
+    assert.ok(surface.material instanceof THREE.ShaderMaterial);
+    assert.equal(
+      world.zones["dissolution-observatory"].getObjectByName(surface.name),
+      surface,
+    );
+    world.dispose();
+  });
+
+  it("places the river and persistent traveller boat inside the authored hero view", () => {
+    const world = createFacilityWorld(desktopTuning);
+    world.update(sampleFacilityNarrative(0, "desktop"), 0, 0);
+    const frustum = authoredFrustum(0);
+    const river = objectNamed(world, "shanshui-hero-river");
+    const boat = objectNamed(world, "shanshui-traveler-boat");
+
+    assert.equal(
+      frustum.intersectsBox(new THREE.Box3().setFromObject(river)),
+      true,
+    );
+    assert.equal(frustum.containsPoint(worldPosition(boat)), true);
+    world.dispose();
+  });
+
+  it("updates the boat and KOTA clarification deterministically while static peaks stay fixed", () => {
+    const world = createFacilityWorld(desktopTuning);
+    const boat = objectNamed(world, "shanshui-traveler-boat");
+    const ripple = objectNamed(world, "shanshui-kota-clarified-ripple");
+    const peaks = instancedNamed(world, "shanshui-hero-distant-peaks");
+    const staticInstances = Array.from(peaks.instanceMatrix.array);
+    const staticVertices = Array.from(
+      peaks.geometry.getAttribute("position").array,
+    );
+    const sample = sampleFacilityNarrative(0.39, "desktop");
+
+    world.update(sample, 12, 0.8);
+    const firstBoat = {
+      position: boat.position.toArray(),
+      heading: boat.rotation.y,
+    };
+    const firstRipple = {
+      position: ripple.position.toArray(),
+      scale: ripple.scale.toArray(),
+      visible: ripple.visible,
+    };
+
+    world.update(sample, 12, 0.8);
+    assert.deepEqual(
+      { position: boat.position.toArray(), heading: boat.rotation.y },
+      firstBoat,
+    );
+    assert.deepEqual(
+      {
+        position: ripple.position.toArray(),
+        scale: ripple.scale.toArray(),
+        visible: ripple.visible,
+      },
+      firstRipple,
+    );
+    assert.deepEqual(Array.from(peaks.instanceMatrix.array), staticInstances);
+    assert.deepEqual(
+      Array.from(peaks.geometry.getAttribute("position").array),
+      staticVertices,
+    );
+
+    world.update(sampleFacilityNarrative(0.42, "desktop"), 14, 1);
+    assert.notDeepEqual(boat.position.toArray(), firstBoat.position);
+    assert.notDeepEqual(ripple.position.toArray(), firstRipple.position);
+    assert.deepEqual(Array.from(peaks.instanceMatrix.array), staticInstances);
+    world.dispose();
+  });
+
+  it("keeps the KOTA gorge camera clear of authored mountains and listening stones", () => {
+    const world = createFacilityWorld(desktopTuning);
+    assertCameraCorridorClear(
+      world,
+      [
+        "shanshui-threshold-standing-stones",
+        "shanshui-kota-gorge-walls",
+        "shanshui-kota-ambiguity-stone-left",
+        "shanshui-kota-ambiguity-stone-right",
+        "shanshui-kota-blocked-channel-stones",
+      ],
+      0.2,
+      0.44,
+      0.42,
+    );
+    world.dispose();
+  });
+
+  it("keeps the ARCHON mountain-pass camera clear of peaks, summit, and bridges", () => {
+    const world = createFacilityWorld(desktopTuning);
+    assertCameraCorridorClear(
+      world,
+      [
+        "shanshui-archon-vertical-pass",
+        "shanshui-archon-coordinator-summit",
+        "shanshui-archon-coordinator-stone",
+        "shanshui-archon-stone-bridge-network",
+        "shanshui-archon-blocked-route-cairn",
+      ],
+      0.5,
+      0.7,
+      0.42,
+    );
+    world.dispose();
+  });
+
+  it("uses smaller mobile bamboo, bird, and paper budgets without losing primary motifs", () => {
     const desktop = createFacilityWorld(desktopTuning);
     const mobile = createFacilityWorld(mobileTuning);
 
-    for (const name of [
-      "facility-voice-unsafe-stop",
-      "facility-voice-unsafe-signal",
-      "facility-document-source-frame-left",
-      "facility-document-source-frame-right",
-      "facility-document-queue-lane-0",
-      "facility-document-queue-lane-2",
+    for (const secondaryName of [
+      "shanshui-kota-blocked-channel-stones",
+      "shanshui-kota-unsafe-ripple",
+      "shanshui-audiobook-river-stones",
     ]) {
-      assert.ok(desktop.root.getObjectByName(name), `${name} belongs on desktop`);
+      assert.ok(
+        desktop.root.getObjectByName(secondaryName),
+        `${secondaryName} belongs to the desktop composition`,
+      );
       assert.equal(
-        Boolean(mobile.root.getObjectByName(name)),
+        Boolean(mobile.root.getObjectByName(secondaryName)),
         false,
-        `${name} is secondary mobile trim`,
+        `${secondaryName} is removed from the mobile composition`,
       );
     }
 
-    assert.ok(mobile.root.getObjectByName("facility-voice-unsafe-branch"));
-    assert.ok(mobile.root.getObjectByName("facility-voice-ambiguity-gate"));
-    assert.ok(mobile.root.getObjectByName("facility-document-queue-lane-1"));
-    assert.ok(mobile.root.getObjectByName("facility-document-segments"));
+    for (const primaryName of [
+      "shanshui-kota-ambiguity-stone-left",
+      "shanshui-kota-clarified-ripple",
+      "shanshui-audiobook-scroll-river",
+      "shanshui-audiobook-deckled-sheets",
+      "shanshui-archon-coordinator-summit",
+      "shanshui-archon-ink-bird-flock",
+      "shanshui-splash-fish-shadows",
+      "shanshui-traveler-boat",
+    ]) {
+      assert.ok(
+        mobile.root.getObjectByName(primaryName),
+        `${primaryName} remains legible on mobile`,
+      );
+    }
+
+    for (const bambooName of [
+      "shanshui-threshold-bamboo-stalks",
+      "shanshui-threshold-bamboo-leaves",
+      "shanshui-kota-listening-bamboo-stalks",
+      "shanshui-kota-listening-bamboo-leaves",
+    ]) {
+      assert.ok(
+        instancedNamed(mobile, bambooName).count <
+          instancedNamed(desktop, bambooName).count,
+        `${bambooName} has a strictly smaller mobile budget`,
+      );
+    }
+
+    const desktopPaper =
+      instancedNamed(desktop, "shanshui-audiobook-layered-paper-terraces")
+        .count +
+      instancedNamed(desktop, "shanshui-audiobook-deckled-sheets").count;
+    const mobilePaper =
+      instancedNamed(mobile, "shanshui-audiobook-layered-paper-terraces")
+        .count +
+      instancedNamed(mobile, "shanshui-audiobook-deckled-sheets").count;
+    assert.ok(mobilePaper < desktopPaper);
+    assert.ok(
+      instancedNamed(mobile, "shanshui-archon-ink-bird-flock").count <
+        instancedNamed(desktop, "shanshui-archon-ink-bird-flock").count,
+    );
+    assert.ok(
+      instancedNamed(mobile, "shanshui-splash-fish-shadows").count <
+        instancedNamed(desktop, "shanshui-splash-fish-shadows").count,
+    );
+
     desktop.dispose();
     mobile.dispose();
   });
 
-  it("places the distant entrance inside the authored hero view", () => {
+  it("keeps one boat for the full journey and confines wildlife to its semantic chapter", () => {
     const world = createFacilityWorld(desktopTuning);
-    const entrance = world.root.getObjectByName("facility-distant-entrance")!;
-    const sample = sampleFacilityCamera(0, "desktop");
-    const camera = new THREE.PerspectiveCamera(sample.fov, 1.44, 0.1, 220);
-    camera.position.set(sample.position.x, sample.position.y, sample.position.z);
-    camera.lookAt(sample.target.x, sample.target.y, sample.target.z);
-    camera.updateMatrixWorld(true);
-    camera.updateProjectionMatrix();
-    const matrix = new THREE.Matrix4().multiplyMatrices(
-      camera.projectionMatrix,
-      camera.matrixWorldInverse,
+    const boats: ThreeTypes.Object3D[] = [];
+    const birds: ThreeTypes.Object3D[] = [];
+    const fish: ThreeTypes.Object3D[] = [];
+    world.root.traverse((object) => {
+      if (object.name === "shanshui-traveler-boat") boats.push(object);
+      if (/bird/i.test(object.name)) birds.push(object);
+      if (/fish/i.test(object.name)) fish.push(object);
+    });
+
+    assert.equal(boats.length, 1);
+    assert.deepEqual(
+      birds.map((object) => object.name),
+      ["shanshui-archon-ink-bird-flock"],
     );
-    const frustum = new THREE.Frustum().setFromProjectionMatrix(matrix);
-
-    assert.equal(frustum.containsPoint(worldPosition(entrance)), true);
-    world.dispose();
-  });
-
-  it("updates only the voice mechanism deterministically", () => {
-    const world = createFacilityWorld(desktopTuning);
-    const exterior = world.root.getObjectByName("facility-distant-entrance")!;
-    const signal = world.root.getObjectByName("facility-voice-clarified-signal")!;
-    const exteriorBefore = exterior.matrix.clone();
-    const sample = sampleFacilityNarrative(0.39, "desktop");
-
-    world.update(sample, 12, 0.8);
-    const first = signal.position.clone();
-    world.update(sample, 12, 0.8);
-    assert.deepEqual(signal.position.toArray(), first.toArray());
-    assert.deepEqual(exterior.matrix.toArray(), exteriorBefore.toArray());
-
-    world.update(sampleFacilityNarrative(0.42, "desktop"), 14, 1);
-    assert.notDeepEqual(signal.position.toArray(), first.toArray());
-    world.dispose();
-  });
-
-  it("keeps the KOTA camera clear of the threshold, gate, and floor conduits", () => {
-    const world = createFacilityWorld(desktopTuning);
-    const sample = sampleFacilityNarrative(0.39, "desktop");
-    world.update(sample, 0, 0);
-
-    const camera = sampleFacilityCamera(0.39, "desktop");
-    const threshold = world.root.getObjectByName("facility-fissure-east")!;
-    const leftGate = world.root.getObjectByName(
-      "facility-voice-ambiguity-gate",
-    )!;
-    const rightGate = world.root.getObjectByName(
-      "facility-voice-ambiguity-gate-right",
-    )!;
-    const thresholdBack = threshold.position.z - threshold.scale.z * 0.5;
-    const leftInnerEdge = leftGate.position.x + leftGate.scale.x * 0.5;
-    const rightInnerEdge = rightGate.position.x - rightGate.scale.x * 0.5;
-
-    assert.ok(camera.position.z < thresholdBack - 1);
-    assert.ok(camera.position.x > leftInnerEdge + 0.3);
-    assert.ok(camera.position.x < rightInnerEdge - 0.3);
-
-    for (const name of [
-      "facility-voice-input-conduit",
-      "facility-voice-unsafe-branch",
-      "facility-voice-clarified-branch",
-    ]) {
-      const conduit = world.root.getObjectByName(name) as ThreeTypes.Mesh;
-      conduit.geometry.computeBoundingBox();
-      assert.ok((conduit.geometry.boundingBox?.max.y ?? Infinity) <= 0.72);
-    }
-    world.dispose();
-  });
-
-  it("keeps the ARCHON camera corridor clear of opaque atrium structure", () => {
-    const world = createFacilityWorld(desktopTuning);
-    const cameraSamples = Array.from({ length: 25 }, (_, index) =>
-      sampleFacilityCamera(0.55 + (index / 24) * 0.14, "desktop"),
+    assert.deepEqual(
+      fish.map((object) => object.name),
+      ["shanshui-splash-fish-shadows"],
     );
-    const clearance = 0.42;
+    assert.equal(
+      world.zones["orchestration-atrium"].getObjectByName(birds[0].name),
+      birds[0],
+    );
+    assert.equal(
+      world.zones["dissolution-observatory"].getObjectByName(fish[0].name),
+      fish[0],
+    );
 
-    for (const name of [
-      "facility-orchestration-tool-wing",
-      "facility-orchestration-memory-wing",
-      "facility-orchestration-safety-gate",
-      "facility-orchestration-safety-lintel",
-      "facility-orchestration-coordinator-core",
-    ]) {
-      const structure = world.root.getObjectByName(name)!;
-      const bounds = new THREE.Box3().setFromObject(structure).expandByScalar(clearance);
-      for (const sample of cameraSamples) {
-        const position = new THREE.Vector3(
-          sample.position.x,
-          sample.position.y,
-          sample.position.z,
-        );
-        assert.equal(bounds.containsPoint(position), false, `${name} blocks camera`);
-      }
+    const boat = boats[0];
+    let previousDepth = Infinity;
+    for (const progress of [0, 1 / 7, 2 / 7, 3 / 7, 4 / 7, 5 / 7, 6 / 7, 1]) {
+      world.update(sampleFacilityNarrative(progress, "desktop"), progress * 20, 0.8);
+      assert.equal(world.root.getObjectByName(boat.name), boat);
+      assert.equal(boat.parent, world.root);
+      assert.equal(boat.visible, true);
+      assert.ok(Number.isFinite(boat.position.x));
+      assert.ok(boat.position.z < previousDepth);
+      previousDepth = boat.position.z;
     }
 
-    const unitBounds = new THREE.Box3(
-      new THREE.Vector3(-0.5, -0.5, -0.5),
-      new THREE.Vector3(0.5, 0.5, 0.5),
-    );
-    for (const name of [
-      "facility-orchestration-atrium-frames",
-      "facility-orchestration-bridge-spans",
-    ]) {
-      const instances = world.root.getObjectByName(name) as ThreeTypes.InstancedMesh;
-      const matrix = new THREE.Matrix4();
-      for (let index = 0; index < instances.count; index += 1) {
-        instances.getMatrixAt(index, matrix);
-        const bounds = unitBounds.clone().applyMatrix4(matrix).expandByScalar(clearance);
-        for (const sample of cameraSamples) {
-          const position = new THREE.Vector3(
-            sample.position.x,
-            sample.position.y,
-            sample.position.z,
-          );
-          assert.equal(bounds.containsPoint(position), false, `${name} blocks camera`);
-        }
-      }
-    }
+    const birdFlock = birds[0] as ThreeTypes.InstancedMesh;
+    const fishSchool = fish[0] as ThreeTypes.InstancedMesh;
+    world.update(sampleFacilityNarrative(4 / 7, "desktop"), 8, 0.8);
+    assert.equal(birdFlock.visible, true);
+    assert.equal(instanceIsRenderable(fishSchool), false);
+    world.update(sampleFacilityNarrative(5 / 7, "desktop"), 10, 0.8);
+    assert.equal(birdFlock.visible, false);
+    assert.equal(instanceIsRenderable(fishSchool), true);
     world.dispose();
   });
 
-  it("disposes every owned geometry and material once", () => {
+  it("disposes every rendered geometry and material exactly once", () => {
     const world = createFacilityWorld(desktopTuning);
-    const geometries = new Set<ThreeTypes.BufferGeometry>();
-    const materials = new Set<ThreeTypes.Material>();
+    const host = new THREE.Group();
+    host.add(world.root);
+    const geometryDisposals = new Map<ThreeTypes.BufferGeometry, number>();
+    const materialDisposals = new Map<ThreeTypes.Material, number>();
     world.root.traverse((object) => {
       const renderable = object as ThreeTypes.Mesh;
-      if (renderable.geometry) geometries.add(renderable.geometry);
+      if (renderable.geometry && !geometryDisposals.has(renderable.geometry)) {
+        geometryDisposals.set(renderable.geometry, 0);
+        renderable.geometry.addEventListener("dispose", () => {
+          geometryDisposals.set(
+            renderable.geometry,
+            (geometryDisposals.get(renderable.geometry) ?? 0) + 1,
+          );
+        });
+      }
       if (renderable.material) {
-        const owned = Array.isArray(renderable.material)
+        const materials = Array.isArray(renderable.material)
           ? renderable.material
           : [renderable.material];
-        owned.forEach((material) => materials.add(material));
+        for (const material of materials) {
+          if (materialDisposals.has(material)) continue;
+          materialDisposals.set(material, 0);
+          material.addEventListener("dispose", () => {
+            materialDisposals.set(
+              material,
+              (materialDisposals.get(material) ?? 0) + 1,
+            );
+          });
+        }
       }
     });
-    let disposals = 0;
-    geometries.forEach((geometry) =>
-      geometry.addEventListener("dispose", () => (disposals += 1)),
-    );
-    materials.forEach((material) =>
-      material.addEventListener("dispose", () => (disposals += 1)),
-    );
 
+    assert.ok(geometryDisposals.size > 0);
+    assert.ok(materialDisposals.size > 0);
     world.dispose();
     world.dispose();
-    assert.equal(disposals, geometries.size + materials.size);
+    geometryDisposals.forEach((count) => assert.equal(count, 1));
+    materialDisposals.forEach((count) => assert.equal(count, 1));
     assert.equal(world.root.parent, null);
+    assert.equal(host.children.includes(world.root), false);
   });
 });

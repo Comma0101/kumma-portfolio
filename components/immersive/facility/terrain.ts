@@ -37,7 +37,8 @@ const vertexShader = (octaves: number) => /* glsl */ `
   varying float vHeight;
   varying vec3 vNormal;
   varying float vDistance;
-  varying float vSpine;
+  varying float vRiver;
+  varying vec2 vTerrainPoint;
   ${SNOISE}
   float fbm(vec2 p){
     float sum = 0.0;
@@ -49,12 +50,12 @@ const vertexShader = (octaves: number) => /* glsl */ `
     }
     return sum;
   }
-  float reliabilitySpine(vec2 point){
+  float riverChannel(vec2 point){
     float worldDepth = point.y - 54.0;
     float routeCenter = sin((worldDepth + 48.0) * 0.035) * 1.45;
-    return 1.0 - smoothstep(1.15, 5.4, abs(point.x - routeCenter));
+    return 1.0 - smoothstep(1.3, 5.8, abs(point.x - routeCenter));
   }
-  float fissureMask(vec2 point){
+  float mountainPassMask(vec2 point){
     float worldDepth = point.y - 54.0;
     float enter = smoothstep(-34.0, -13.0, worldDepth);
     float exit = 1.0 - smoothstep(-3.0, 11.0, worldDepth);
@@ -64,10 +65,10 @@ const vertexShader = (octaves: number) => /* glsl */ `
     float frequency = mix(0.022, 0.058, uRoughness);
     float drift = uTime * 0.0015 * (1.0 - uCarveStrength);
     float geology = fbm(point * frequency + vec2(0.0, drift));
-    float spine = reliabilitySpine(point);
-    float fissure = fissureMask(point) * spine;
-    float carved = mix(geology, -0.08, spine * 0.58);
-    return mix(carved, -0.32, fissure * 0.72) * uCarveStrength +
+    float river = riverChannel(point);
+    float pass = mountainPassMask(point) * river;
+    float carved = mix(geology, -0.1, river * 0.62);
+    return mix(carved, -0.34, pass * 0.74) * uCarveStrength +
       geology * (1.0 - uCarveStrength);
   }
   void main(){
@@ -79,7 +80,8 @@ const vertexShader = (octaves: number) => /* glsl */ `
     float heightZ = terrain(point + vec2(0.0, epsilon));
     vec3 displaced = vec3(point.x, height * amplitude - 0.8, point.y);
     vHeight = height;
-    vSpine = reliabilitySpine(point) * uCarveStrength;
+    vRiver = riverChannel(point) * uCarveStrength;
+    vTerrainPoint = point;
     vNormal = normalize(vec3(
       (height - heightX) * amplitude,
       epsilon,
@@ -99,16 +101,30 @@ const fragmentShader = /* glsl */ `
   varying float vHeight;
   varying vec3 vNormal;
   varying float vDistance;
-  varying float vSpine;
+  varying float vRiver;
+  varying vec2 vTerrainPoint;
+
+  float paperGrain(vec2 point){
+    vec2 cell = floor(point * 5.7);
+    return fract(sin(dot(cell, vec2(12.9898, 78.233))) * 43758.5453);
+  }
+
   void main(){
-    float terrainMix = smoothstep(-0.32, 0.6, vHeight);
-    vec3 valley = vec3(0.035, 0.041, 0.039);
-    vec3 peak = vec3(0.27, 0.33, 0.3);
-    vec3 base = mix(valley, peak, terrainMix);
-    base = mix(base, vec3(0.22, 0.3, 0.25), vSpine * 0.32);
+    float terrainMix = smoothstep(-0.34, 0.62, vHeight);
+    vec3 ink = vec3(0.035, 0.047, 0.043);
+    vec3 mineralStone = vec3(0.31, 0.36, 0.32);
+    vec3 water = vec3(0.20, 0.34, 0.34);
+    vec3 base = mix(ink, mineralStone, terrainMix);
+    base = mix(base, water, vRiver * 0.58);
     vec3 lightDirection = normalize(vec3(-0.42, 0.84, 0.25));
     float diffuse = clamp(dot(normalize(vNormal), lightDirection), 0.0, 1.0);
-    vec3 shaded = base * (0.34 + diffuse * 0.72);
+    float inkValue = smoothstep(0.0, 1.0, 0.16 + diffuse * 0.84);
+    float heightBand = abs(fract((vHeight + 0.42) * 5.5) - 0.5);
+    float washEdge = smoothstep(0.38, 0.49, heightBand);
+    float grain = paperGrain(vTerrainPoint);
+    vec3 shaded = base * (0.4 + inkValue * 0.76);
+    shaded *= mix(0.955, 1.0, washEdge);
+    shaded *= 0.975 + grain * 0.035;
     float fogFactor = 1.0 - exp(-uFogDensity * uFogDensity * vDistance * vDistance);
     vec3 color = mix(shaded, uFogColor, clamp(fogFactor, 0.0, 1.0));
     gl_FragColor = vec4(color, uVisibility * 0.94);
@@ -175,7 +191,7 @@ export function createFacilityTerrain(
       }),
     );
     const mesh = new THREE.Mesh(geometry, material);
-    mesh.name = "facility-carved-terrain";
+    mesh.name = "shanshui-ink-terrain";
     mesh.position.z = -54;
     mesh.renderOrder = -2;
 
