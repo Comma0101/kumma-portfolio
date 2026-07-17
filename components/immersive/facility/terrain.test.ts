@@ -43,9 +43,15 @@ describe("living Shanshui ink terrain", () => {
     assert.match(terrain.material.vertexShader, /mountainPassMask/);
     assert.match(terrain.material.vertexShader, /routeCenter/);
     assert.match(terrain.material.vertexShader, /vRiver/);
-    assert.match(terrain.material.fragmentShader, /paperGrain/);
-    assert.match(terrain.material.fragmentShader, /inkValue/);
-    assert.match(terrain.material.fragmentShader, /mineralStone/);
+    assert.match(terrain.material.fragmentShader, /uGrain/);
+    assert.match(terrain.material.fragmentShader, /cunDeposit/);
+    assert.match(terrain.material.fragmentShader, /uInkNear/);
+    assert.match(terrain.material.fragmentShader, /bankStroke/);
+    assert.ok(terrain.material.uniforms.uGrain.value.isDataTexture);
+    assert.equal(
+      terrain.material.uniforms.uPaper.value.getHexString(),
+      new THREE.Color(INK.paper).getHexString(),
+    );
     assert.match(terrain.material.fragmentShader, /vRiver/);
     assert.doesNotMatch(terrain.material.vertexShader, /Math\.random/);
     assert.doesNotMatch(terrain.material.fragmentShader, /Math\.random/);

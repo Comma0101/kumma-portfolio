@@ -1,6 +1,9 @@
 import * as THREE from "three";
 import type { ThreeSceneTuning } from "../../threeSceneTuning";
 import { withTrackedResources } from "./resourceTracker";
+import { INK } from "./ink/inkLadder";
+import { getPaperGrainTexture } from "./ink/paperGrain";
+import { CUN_FIELD_GLSL } from "./ink/strokeFields";
 
 const SNOISE = /* glsl */ `
   vec3 mod289(vec3 x){return x - floor(x*(1.0/289.0))*289.0;}
@@ -98,35 +101,39 @@ const fragmentShader = /* glsl */ `
   uniform vec3 uFogColor;
   uniform float uFogDensity;
   uniform float uVisibility;
+  uniform vec3 uPaper;
+  uniform vec3 uInkFar;
+  uniform vec3 uInkNear;
+  uniform sampler2D uGrain;
   varying float vHeight;
   varying vec3 vNormal;
   varying float vDistance;
   varying float vRiver;
   varying vec2 vTerrainPoint;
-
-  float paperGrain(vec2 point){
-    vec2 cell = floor(point * 5.7);
-    return fract(sin(dot(cell, vec2(12.9898, 78.233))) * 43758.5453);
-  }
+  ${CUN_FIELD_GLSL}
 
   void main(){
-    float terrainMix = smoothstep(-0.34, 0.62, vHeight);
-    vec3 ink = vec3(0.035, 0.047, 0.043);
-    vec3 mineralStone = vec3(0.31, 0.36, 0.32);
-    vec3 water = vec3(0.20, 0.34, 0.34);
-    vec3 base = mix(ink, mineralStone, terrainMix);
-    base = mix(base, water, vRiver * 0.58);
-    vec3 lightDirection = normalize(vec3(-0.42, 0.84, 0.25));
-    float diffuse = clamp(dot(normalize(vNormal), lightDirection), 0.0, 1.0);
-    float inkValue = smoothstep(0.0, 1.0, 0.16 + diffuse * 0.84);
-    float heightBand = abs(fract((vHeight + 0.42) * 5.5) - 0.5);
-    float washEdge = smoothstep(0.38, 0.49, heightBand);
-    float grain = paperGrain(vTerrainPoint);
-    vec3 shaded = base * (0.4 + inkValue * 0.76);
-    shaded *= mix(0.955, 1.0, washEdge);
-    shaded *= 0.975 + grain * 0.035;
+    vec3 n = normalize(vNormal);
+    float slope = clamp(1.0 - n.y, 0.0, 1.0);
+    float aspect = atan(n.x, n.z);
+    float cun = cunDeposit(vTerrainPoint * 0.5, slope, aspect, 3.1, 1.0, 0.52, 2.6);
+    float deposit = clamp(
+      slope * 0.5 + cun * 0.42 + smoothstep(0.1, 0.75, vHeight) * 0.22,
+      0.0,
+      1.0
+    );
+    float band = deposit * 3.0;
+    float banded = (floor(band) + smoothstep(0.3, 0.7, fract(band))) / 3.0;
+    vec3 color = mix(uPaper, mix(uInkFar, uInkNear, banded), banded * 0.9);
+    // River: unpainted paper with broken bank-edge strokes.
+    float bankStroke = smoothstep(0.12, 0.42, vRiver) * (1.0 - smoothstep(0.58, 0.92, vRiver));
+    float openWater = smoothstep(0.55, 0.95, vRiver);
+    color = mix(color, uInkFar, bankStroke * 0.5);
+    color = mix(color, uPaper, openWater * 0.85);
+    float grain = texture2D(uGrain, vTerrainPoint * 0.045).r;
+    color *= 0.97 + grain * 0.06;
     float fogFactor = 1.0 - exp(-uFogDensity * uFogDensity * vDistance * vDistance);
-    vec3 color = mix(shaded, uFogColor, clamp(fogFactor, 0.0, 1.0));
+    color = mix(color, uFogColor, clamp(fogFactor, 0.0, 1.0));
     gl_FragColor = vec4(color, uVisibility * 0.94);
   }
 `;
@@ -140,6 +147,10 @@ export interface FacilityTerrainUniforms {
   readonly uFogColor: THREE.IUniform<THREE.Color>;
   readonly uFogDensity: THREE.IUniform<number>;
   readonly uCarveStrength: THREE.IUniform<number>;
+  readonly uPaper: THREE.IUniform<THREE.Color>;
+  readonly uInkFar: THREE.IUniform<THREE.Color>;
+  readonly uInkNear: THREE.IUniform<THREE.Color>;
+  readonly uGrain: THREE.IUniform<THREE.DataTexture>;
 }
 
 export interface FacilityTerrainUniformInput {
@@ -169,6 +180,10 @@ export function createFacilityTerrainUniforms(
     uFogColor: { value: input.fogColor },
     uFogDensity: { value: input.fogDensity },
     uCarveStrength: { value: input.carveStrength ?? 1 },
+    uPaper: { value: new THREE.Color(INK.paper) },
+    uInkFar: { value: new THREE.Color(INK.dan) },
+    uInkNear: { value: new THREE.Color(INK.zhong) },
+    uGrain: { value: getPaperGrainTexture() },
   };
 }
 
