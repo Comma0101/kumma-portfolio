@@ -57,3 +57,7 @@
 body[data-theme="paper"] .primary {
   background: var(--accent);
 }
+
+body[data-theme="paper"] .primary:hover {
+  background: var(--accent-strong);
+}
