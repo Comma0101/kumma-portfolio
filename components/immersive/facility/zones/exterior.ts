@@ -101,21 +101,30 @@ export function createExteriorFacilityZones(
       { seed: 1042, width: 3, depth: 1.6, crestSegments: 34, rows: 12 },
       context.materials.mountainNear,
     );
-    hostPeak.position.set(0, -1.5, -36);
-    hostPeak.scale.set(11, 24, 11);
-    const mistBand = createMistPass(context, "shanshui-hero-mist-band", [-27]);
+    hostPeak.position.set(0, -1.5, -32);
+    hostPeak.scale.set(12, 26, 12);
+    // 遠山 far ridge: occludes the terrain's far dissolve from the hero camera
+    // and adds the pale distance layer behind the host peak.
+    const farRidge = createRidgeLayer(
+      context,
+      "shanshui-hero-far-ridge",
+      { seed: 733, width: 5, depth: 1.2, crestSegments: 30, rows: 6 },
+      context.materials.mountainFar,
+    );
+    farRidge.position.set(-3, -1.5, -42);
+    farRidge.scale.set(16, 6, 8);
     const waterfall = createWaterfallThread(
       context,
       "shanshui-hero-waterfall-thread",
-      { x: -6, z: -26.9, topY: 10, bottomY: -2, width: 1.2 },
+      { x: -6, z: -22.1, topY: 10, bottomY: -2, width: 0.85 },
     );
     const moss = createMossDots(context, "shanshui-hero-crest-moss", {
       count: context.tuning.profile === "desktop" ? 42 : 26,
       seed: 977,
-      center: [0, -1.5, -36],
-      span: [24, 24, 9],
+      center: [0, -1.5, -32],
+      span: [26, 26, 9],
     });
-    exterior.add(hostPeak, mistBand.root, waterfall, moss);
+    exterior.add(hostPeak, farRidge, waterfall, moss);
   }
 
   const reliability = setZoneBounds(new THREE.Group(), -11, 18);
@@ -158,10 +167,10 @@ export function createExteriorFacilityZones(
       { position: [17.4, -1.38, -25], scale: [5.1, 12.1, 5.5], rotationY: 0.46 },
     ]),
     createStoneCluster(context, "shanshui-threshold-standing-stones", [
-      { position: [-3.5, -0.8, -14], scale: [1.05, 2.7, 1.2], rotationY: 0.14 },
-      { position: [3.7, -0.8, -15], scale: [1.1, 3.1, 1.25], rotationY: -0.18 },
-      { position: [-3.9, -0.78, -24], scale: [1.35, 2.4, 1.45], rotationY: 0.5 },
-      { position: [3.6, -0.76, -25], scale: [1.25, 2.2, 1.35], rotationY: -0.44 },
+      { position: [-6.4, -0.8, -14], scale: [0.95, 1.9, 1.05], rotationY: 0.14 },
+      { position: [6.6, -0.8, -15], scale: [1, 2.1, 1.1], rotationY: -0.18 },
+      { position: [-6.9, -0.78, -24], scale: [1.15, 1.7, 1.25], rotationY: 0.5 },
+      { position: [6.5, -0.76, -25], scale: [1.05, 1.6, 1.15], rotationY: -0.44 },
     ]),
     createRiverRibbon(context, "shanshui-threshold-river", [
       riverPoint(-8, 2.25),

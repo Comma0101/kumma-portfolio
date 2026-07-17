@@ -240,30 +240,47 @@ export interface WaterfallThreadOptions {
   readonly width: number;
 }
 
-/** Waterfall as unpainted paper — a pale thread breaking the host peak's mass. */
+/** Waterfall as unpainted paper — broken pale threads breaking the host peak's mass. */
 export function createWaterfallThread(
   context: FacilityZoneContext,
   name: string,
   options: WaterfallThreadOptions,
-): THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> {
+): THREE.Group {
   const height = options.topY - options.bottomY;
-  const geometry = context.tracker.track(
-    new THREE.PlaneGeometry(options.width, height),
-  );
   const material = context.tracker.track(
     new THREE.MeshBasicMaterial({
       color: INK.paper,
       transparent: true,
-      opacity: 0.85,
+      opacity: 0.68,
       depthWrite: false,
     }),
   );
-  const thread = new THREE.Mesh(geometry, material);
-  thread.name = name;
-  thread.userData.signature = true;
-  thread.position.set(options.x, options.bottomY + height / 2, options.z);
-  thread.renderOrder = 1;
-  return thread;
+  // Dashed segments with slight offsets read as falling water, not a solid strip.
+  const dashes = [
+    { from: 0, to: 0.36, offsetX: -0.26, widthScale: 1 },
+    { from: 0.44, to: 0.7, offsetX: 0.2, widthScale: 0.68 },
+    { from: 0.78, to: 1, offsetX: -0.1, widthScale: 0.84 },
+  ];
+  const root = new THREE.Group();
+  root.name = name;
+  root.userData.signature = true;
+  root.position.set(options.x, 0, options.z);
+  dashes.forEach((dash, index) => {
+    const segmentHeight = height * (dash.to - dash.from);
+    const geometry = context.tracker.track(
+      new THREE.PlaneGeometry(options.width * dash.widthScale, segmentHeight),
+    );
+    const segment = new THREE.Mesh(geometry, material);
+    segment.name = `${name}-dash-${index + 1}`;
+    segment.position.set(
+      dash.offsetX * options.width,
+      options.bottomY + height * (dash.from + dash.to) * 0.5,
+      0,
+    );
+    segment.renderOrder = 1;
+    root.add(segment);
+  });
+  return root;
 }
 
 function createFishGeometry(): THREE.BufferGeometry {
@@ -311,10 +328,6 @@ function createBambooLeafGeometry(): THREE.BufferGeometry {
 export function createShanshuiGeometryKit(
   tracker: ResourceTracker,
 ): ShanshuiGeometryKit {
-  const stone = new THREE.IcosahedronGeometry(1, 1);
-  stone.scale(1, 0.78, 0.92);
-  stone.translate(0, 0.78, 0);
-
   return Object.freeze({
     mountainTall: tracker.track(
       createRidgeGeometry({ seed: 1979, crestSegments: 26, rows: 8 }),
@@ -322,7 +335,10 @@ export function createShanshuiGeometryKit(
     mountainBroad: tracker.track(
       createRidgeGeometry({ seed: 2018, width: 2.6, depth: 1.5, crestSegments: 22, rows: 6 }),
     ),
-    stone: tracker.track(stone),
+    // Angular stratified slab (層石) — layered rock, never a smooth ovoid.
+    stone: tracker.track(
+      createRidgeGeometry({ seed: 555, width: 1.7, depth: 1.1, crestSegments: 10, rows: 3 }),
+    ),
     bambooStalk: tracker.track(new THREE.CylinderGeometry(0.045, 0.06, 1, 7, 1)),
     bambooLeaf: tracker.track(createBambooLeafGeometry()),
     ripple: tracker.track(new THREE.RingGeometry(0.72, 1, 32)),
@@ -601,7 +617,6 @@ export function createMistPass(
           float wash = sin((vUv.x * 4.2 + uDrift) * 3.14159265) * 0.5 + 0.5;
           wash *= sin((vUv.y * 2.3 - uDrift * 0.37) * 3.14159265) * 0.18 + 0.82;
           float alpha = feather * mix(0.42, 1.0, wash) * uOpacity;
-          if (alpha < 0.006) discard;
           gl_FragColor = vec4(uColor, alpha);
         }
       `,

@@ -12,6 +12,10 @@ export interface CreateInkMaterialParams {
   readonly valueBias?: number;
   readonly cun?: CunPreset | null;
   readonly cunStrength?: number;
+  readonly strataStrength?: number;
+  readonly strataFreq?: number;
+  /** Multiplies scene fog for this material — hero forms stay dark while distance pales. */
+  readonly fogScale?: number;
   readonly fogColor: THREE.Color;
   readonly fogDensity: number;
   readonly opacity?: number;
@@ -49,6 +53,8 @@ uniform float uCunDirectionality;
 uniform float uCunThreshold;
 uniform float uCunStretch;
 uniform float uCunStrength;
+uniform float uStrataStrength;
+uniform float uStrataFreq;
 uniform sampler2D uGrain;
 uniform vec3 uFogColor;
 uniform float uFogDensity;
@@ -65,7 +71,11 @@ void main(){
   vec2 p = vWorldPos.xz + vec2(vWorldPos.y * 0.41, vWorldPos.y * 0.23);
   float cun = uCunStrength * cunDeposit(p, slope, aspect, uCunScale, uCunDirectionality, uCunThreshold, uCunStretch);
   float foot = smoothstep(0.35, 0.0, vLocalY) * 0.12;
-  float deposit = clamp(uValueBias + slope * 0.38 + cun * 0.5 + foot, 0.0, 1.0);
+  float crest = smoothstep(0.72, 1.0, vLocalY) * 0.14;
+  // Horizontal strata: ledge lines of darker ink, strongest on steep faces (Fan Kuan cliffs).
+  float ledgePhase = fract(vWorldPos.y * uStrataFreq);
+  float strata = (1.0 - smoothstep(0.0, 0.22, ledgePhase)) * uStrataStrength * (0.35 + slope * 0.65);
+  float deposit = clamp(uValueBias + slope * 0.38 + cun * 0.5 + foot + crest + strata, 0.0, 1.0);
   float band = deposit * 4.0;
   float banded = (floor(band) + smoothstep(0.3, 0.7, fract(band))) / 4.0;
   vec3 color = mix(uPaper, uInk, banded);
@@ -96,9 +106,11 @@ export function createInkMaterial(
       uCunThreshold: { value: preset?.threshold ?? 0.5 },
       uCunStretch: { value: preset?.stretch ?? 1 },
       uCunStrength: { value: params.cunStrength ?? 0 },
+      uStrataStrength: { value: params.strataStrength ?? 0 },
+      uStrataFreq: { value: params.strataFreq ?? 0.5 },
       uGrain: { value: getPaperGrainTexture() },
       uFogColor: { value: params.fogColor },
-      uFogDensity: { value: params.fogDensity },
+      uFogDensity: { value: params.fogDensity * (params.fogScale ?? 1) },
       uOpacity: { value: params.opacity ?? 1 },
     },
     side: THREE.DoubleSide,
@@ -107,6 +119,7 @@ export function createInkMaterial(
     lights: false,
   });
   material.userData.shanshuiInk = true;
+  material.userData.fogScale = params.fogScale ?? 1;
   return material;
 }
 
@@ -120,5 +133,6 @@ export function syncInkMaterialAtmosphere(
   fogDensity: number,
 ): void {
   material.uniforms.uFogColor.value.copy(fogColor);
-  material.uniforms.uFogDensity.value = fogDensity;
+  material.uniforms.uFogDensity.value =
+    fogDensity * (material.userData.fogScale ?? 1);
 }

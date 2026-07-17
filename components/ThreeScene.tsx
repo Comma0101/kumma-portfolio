@@ -93,6 +93,9 @@ function attachSceneWorldResources(
   resources: SceneWorldResources,
 ): void {
   scene.add(resources.terrain.mesh, resources.facility.root);
+  if (process.env.NODE_ENV !== "production") {
+    (window as unknown as { __scene?: THREE.Scene }).__scene = scene;
+  }
 }
 
 function detachSceneWorldResources(resources: SceneWorldResources): void {

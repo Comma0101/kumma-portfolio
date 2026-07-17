@@ -134,7 +134,11 @@ const fragmentShader = /* glsl */ `
     color *= 0.97 + grain * 0.06;
     float fogFactor = 1.0 - exp(-uFogDensity * uFogDensity * vDistance * vDistance);
     color = mix(color, uFogColor, clamp(fogFactor, 0.0, 1.0));
-    gl_FragColor = vec4(color, uVisibility * 0.94);
+    // Dissolve into paper before the far clip plane: converge color to paper
+    // first, then fade alpha — no visible boundary at any angle.
+    color = mix(color, uFogColor, smoothstep(40.0, 64.0, vDistance));
+    float farFade = 1.0 - smoothstep(52.0, 76.0, vDistance);
+    gl_FragColor = vec4(color, uVisibility * 0.94 * farFade);
   }
 `;
 
