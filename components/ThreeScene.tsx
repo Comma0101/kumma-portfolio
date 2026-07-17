@@ -268,7 +268,7 @@ export default function ThreeScene() {
       initialTuning.facilityBudgets.drawCallTarget,
     );
 
-    renderer.setClearColor(0x0a0a0b, 0);
+    renderer.setClearColor(0xf0ead9, 0); // alpha 0: transparent regions composite over the CSS paper ground
     renderer.setPixelRatio(initialTuning.pixelRatio);
     renderer.setSize(
       Math.max(1, window.innerWidth),

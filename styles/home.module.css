@@ -7,7 +7,7 @@
   overflow: hidden;
   opacity: 1;
   pointer-events: none;
-  background: var(--canvas);
+  background: #f0ead9;
   contain: strict;
   transition: opacity 320ms var(--ease);
 }
@@ -29,15 +29,15 @@
   background:
     radial-gradient(
       ellipse at 68% 36%,
-      rgba(63, 157, 127, 0.14),
+      rgba(109, 138, 122, 0.1),
       transparent 34%
     ),
     radial-gradient(
       ellipse at 34% 72%,
-      rgba(163, 181, 168, 0.1),
+      rgba(169, 138, 94, 0.08),
       transparent 44%
     ),
-    linear-gradient(150deg, #0a0a0b 12%, #101719 58%, #0a0a0b 100%);
+    linear-gradient(150deg, #f0ead9 12%, #e9e1cc 58%, #f0ead9 100%);
 }
 
 .immersiveScene::after {
@@ -45,7 +45,7 @@
   background-image: repeating-linear-gradient(
     168deg,
     transparent 0 27px,
-    rgba(240, 237, 232, 0.055) 28px,
+    rgba(42, 44, 40, 0.06) 28px,
     transparent 30px 56px
   );
   mask-image: radial-gradient(
@@ -103,7 +103,7 @@
   font-size: 0.8rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(163, 181, 168, 0.78);
+  color: rgba(71, 80, 63, 0.85);
 }
 
 .cuboidsLead {
@@ -111,7 +111,7 @@
   max-width: 34ch;
   font-size: clamp(1rem, 1.4vw, 1.2rem);
   letter-spacing: 0.01em;
-  color: rgba(220, 220, 220, 0.85);
+  color: rgba(42, 44, 40, 0.88);
 }
 
 .projectsSection {

@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { withTrackedResources } from "./resourceTracker";
+import { ACCENTS, EARTHS, INK } from "./ink/inkLadder";
 
 export interface FacilityMaterials {
   readonly terrain: THREE.MeshStandardMaterial;
@@ -65,26 +66,26 @@ export function createFacilityMaterials(): FacilityMaterialResources {
       );
 
     const materials: FacilityMaterials = Object.freeze({
-      terrain: material(0x171f1c, 0.98, 0.01),
-      shell: material(0x303a35, 0.96, 0.01),
-      steel: material(0x626b64, 0.9, 0.03),
-      paper: material(0xd7ccb0, 0.94, 0.01),
-      signal: material(0x789681, 0.82, 0.02, {
-        emissive: 0x2e4d3c,
-        emissiveIntensity: 0.18,
-      }),
-      ink: material(0x332d31, 0.97, 0.01),
-      guide: material(0x6a756d, 0.92, 0.01),
-      mountain: inkValueMaterial(0x435149),
-      stone: inkValueMaterial(0x77796f),
-      bamboo: inkValueMaterial(0x3c6851, { side: THREE.DoubleSide }),
-      water: material(0x385a5b, 0.9, 0.03, {
-        emissive: 0x1d3635,
+      terrain: material(EARTHS.paperStone, 0.98, 0.01),
+      shell: material("#bdb6a0", 0.96, 0.01),
+      steel: material(INK.zhong, 0.9, 0.03),
+      paper: material(INK.paper, 0.94, 0.01),
+      signal: material(ACCENTS.mineral, 0.82, 0.02, {
+        emissive: "#3d5445",
         emissiveIntensity: 0.12,
       }),
-      cinnabar: material(0x9f4435, 0.78, 0.02, {
-        emissive: 0x4f160f,
-        emissiveIntensity: 0.2,
+      ink: material(INK.jiao, 0.97, 0.01),
+      guide: material(INK.dan, 0.92, 0.01),
+      mountain: inkValueMaterial(INK.zhong),
+      stone: inkValueMaterial(EARTHS.stone),
+      bamboo: inkValueMaterial(EARTHS.pine, { side: THREE.DoubleSide }),
+      water: material(EARTHS.water, 0.9, 0.03, {
+        emissive: "#000000",
+        emissiveIntensity: 0,
+      }),
+      cinnabar: material(ACCENTS.cinnabar, 0.78, 0.02, {
+        emissive: "#2f0f0a",
+        emissiveIntensity: 0.1,
       }),
     });
 

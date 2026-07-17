@@ -101,12 +101,12 @@ export function createFacilityWorld(tuning: ThreeSceneTuning): FacilityWorld {
       calibration.horizon.visible = progress >= 0.925;
     };
     setChapterVisibility(0);
-    const hemisphere = new THREE.HemisphereLight(0xb8c3b5, 0x080b0a, 1.3);
+    const hemisphere = new THREE.HemisphereLight(0xf5efe0, 0x8f8a76, 1.45);
     hemisphere.name = "shanshui-atmospheric-fill";
-    const key = new THREE.DirectionalLight(0xe4dcc5, 1.72);
+    const key = new THREE.DirectionalLight(0xfff6e2, 1.55);
     key.name = "shanshui-paper-key";
     key.position.set(-11, 18, 14);
-    const mineralFill = new THREE.DirectionalLight(0x78988f, 0.54);
+    const mineralFill = new THREE.DirectionalLight(0x9db4a8, 0.5);
     mineralFill.name = "shanshui-mineral-fill";
     mineralFill.position.set(13, 8, -28);
     root.add(hemisphere, key, mineralFill);

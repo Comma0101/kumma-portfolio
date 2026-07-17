@@ -3,6 +3,7 @@ import path from "node:path";
 import { describe, it } from "node:test";
 import type * as ThreeTypes from "three";
 import { getThreeSceneTuning } from "../../threeSceneTuning";
+import { INK } from "./ink/inkLadder";
 
 process.env.NODE_PATH = path.resolve(process.cwd(), "node_modules");
 const nodeModule = require("node:module") as {
@@ -27,7 +28,7 @@ describe("living Shanshui ink terrain", () => {
     });
     const uniforms = createFacilityTerrainUniforms({
       elevation: 0.7,
-      fogColor: new THREE.Color("#10191b"),
+      fogColor: new THREE.Color(INK.paper),
       fogDensity: 0.012,
       roughness: 0.5,
       visibility: 1,
@@ -64,7 +65,7 @@ describe("living Shanshui ink terrain", () => {
       tuning,
       createFacilityTerrainUniforms({
         elevation: 0.4,
-        fogColor: new THREE.Color("#10191b"),
+        fogColor: new THREE.Color(INK.paper),
         fogDensity: 0.014,
         roughness: 0.2,
         visibility: 0.7,

@@ -4,6 +4,7 @@ import type {
   FacilityEventWindow,
   FacilityNarrativeSample,
 } from "./types";
+import { INK } from "./ink/inkLadder";
 
 function deepFreeze<T>(value: T): T {
   if (value === null || typeof value !== "object" || Object.isFrozen(value)) {
@@ -19,7 +20,7 @@ export const facilityChapters: readonly FacilityChapterDefinition[] = deepFreeze
     zone: "exterior-ridge",
     journeyProgress: 0,
     routeProgress: 0,
-    atmosphere: { fogColor: "#0c1211", fogDensity: 0.0115, exposure: 0.98 },
+    atmosphere: { fogColor: INK.paper, fogDensity: 0.0115, exposure: 0.98 },
     camera: { fov: 55, lookAhead: 0.036, roll: 0 },
   },
   {
@@ -27,7 +28,7 @@ export const facilityChapters: readonly FacilityChapterDefinition[] = deepFreeze
     zone: "reliability-spine",
     journeyProgress: 1 / 7,
     routeProgress: 0.12,
-    atmosphere: { fogColor: "#101817", fogDensity: 0.0125, exposure: 0.96 },
+    atmosphere: { fogColor: INK.paper, fogDensity: 0.0125, exposure: 0.96 },
     camera: { fov: 50, lookAhead: 0.033, roll: -0.006 },
   },
   {
@@ -35,7 +36,7 @@ export const facilityChapters: readonly FacilityChapterDefinition[] = deepFreeze
     zone: "voice-chamber",
     journeyProgress: 2 / 7,
     routeProgress: 0.29,
-    atmosphere: { fogColor: "#16211e", fogDensity: 0.026, exposure: 0.88 },
+    atmosphere: { fogColor: INK.paper, fogDensity: 0.026, exposure: 0.88 },
     camera: { fov: 46, lookAhead: 0.027, roll: 0.008 },
   },
   {
@@ -43,7 +44,7 @@ export const facilityChapters: readonly FacilityChapterDefinition[] = deepFreeze
     zone: "document-foundry",
     journeyProgress: 3 / 7,
     routeProgress: 0.43,
-    atmosphere: { fogColor: "#202219", fogDensity: 0.018, exposure: 0.9 },
+    atmosphere: { fogColor: INK.paper, fogDensity: 0.018, exposure: 0.9 },
     camera: { fov: 47, lookAhead: 0.03, roll: -0.007 },
   },
   {
@@ -51,7 +52,7 @@ export const facilityChapters: readonly FacilityChapterDefinition[] = deepFreeze
     zone: "orchestration-atrium",
     journeyProgress: 4 / 7,
     routeProgress: 0.59,
-    atmosphere: { fogColor: "#111b19", fogDensity: 0.013, exposure: 1 },
+    atmosphere: { fogColor: INK.paper, fogDensity: 0.013, exposure: 1 },
     camera: { fov: 56, lookAhead: 0.04, roll: 0.016 },
   },
   {
@@ -59,7 +60,7 @@ export const facilityChapters: readonly FacilityChapterDefinition[] = deepFreeze
     zone: "dissolution-observatory",
     journeyProgress: 5 / 7,
     routeProgress: 0.74,
-    atmosphere: { fogColor: "#252027", fogDensity: 0.016, exposure: 0.96 },
+    atmosphere: { fogColor: INK.paper, fogDensity: 0.016, exposure: 0.96 },
     camera: { fov: 52, lookAhead: 0.035, roll: -0.014 },
   },
   {
@@ -67,7 +68,7 @@ export const facilityChapters: readonly FacilityChapterDefinition[] = deepFreeze
     zone: "calibration-deck",
     journeyProgress: 6 / 7,
     routeProgress: 0.87,
-    atmosphere: { fogColor: "#1c2824", fogDensity: 0.009, exposure: 1.03 },
+    atmosphere: { fogColor: INK.paper, fogDensity: 0.009, exposure: 1.03 },
     camera: { fov: 46, lookAhead: 0.042, roll: -0.004 },
   },
   {
@@ -75,7 +76,7 @@ export const facilityChapters: readonly FacilityChapterDefinition[] = deepFreeze
     zone: "quiet-horizon",
     journeyProgress: 1,
     routeProgress: 1,
-    atmosphere: { fogColor: "#38443c", fogDensity: 0.0055, exposure: 1.08 },
+    atmosphere: { fogColor: INK.paper, fogDensity: 0.0055, exposure: 1.08 },
     camera: { fov: 49, lookAhead: 0.048, roll: 0 },
   },
 ]);
