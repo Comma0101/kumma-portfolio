@@ -53,3 +53,7 @@
     transition: none;
   }
 }
+
+body[data-theme="paper"] .primary {
+  background: var(--accent);
+}

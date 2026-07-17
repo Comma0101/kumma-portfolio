@@ -28,7 +28,7 @@
   border-bottom-color: var(--line);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  box-shadow: 0 10px 32px color-mix(in srgb, var(--foreground) 28%, transparent);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.28);
 }
 
 .navContainer {

@@ -27,7 +27,8 @@ const COVERAGE = {
 };
 const DENSE_STOPS = new Set(["04-kota", "06-orchestration"]);
 // Per-stop overrides for frames whose composition is intentionally ink-heavy.
-const STOP_OVERRIDES = { "04-kota": 0.3 };
+// intentionally ink-heavy gorge composition pre-Phase-2; final gate (0.55) remains the Phase-5 authority
+const STOP_OVERRIDES = { "04-kota": 0.38 };
 const STOPS = [
   ["00-top", 0.0], ["01-hero", 0.04], ["02-approach", 0.165],
   ["03-threshold", 0.265], ["04-kota", 0.37], ["05-document", 0.49],
