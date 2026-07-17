@@ -31,7 +31,7 @@
 
 .ghost {
   border-color: var(--line-strong);
-  color: var(--paper);
+  color: var(--foreground);
 }
 
 .ghost:hover {

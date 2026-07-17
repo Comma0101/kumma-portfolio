@@ -8,7 +8,7 @@
 .statement {
   margin: 0;
   max-width: 24ch;
-  color: var(--paper);
+  color: var(--foreground);
   font-family: var(--font-sans);
   font-weight: 500;
   font-size: clamp(1.8rem, 4vw, 3.4rem);

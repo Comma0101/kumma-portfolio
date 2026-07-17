@@ -39,14 +39,14 @@
 
 .specValue {
   margin: 0;
-  color: var(--paper);
+  color: var(--foreground);
   font-size: 0.95rem;
   line-height: 1.6;
 }
 
 .specValue b {
   font-weight: 600;
-  color: var(--paper);
+  color: var(--foreground);
 }
 
 /* reports index — empty / awaiting state */
@@ -85,7 +85,7 @@
   font-weight: 600;
   letter-spacing: -0.02em;
   font-size: clamp(1.15rem, 2.4vw, 1.45rem);
-  color: var(--paper);
+  color: var(--foreground);
 }
 
 .awaitingBody {

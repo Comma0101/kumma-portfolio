@@ -19,7 +19,7 @@
 }
 
 .wordmark {
-  color: var(--paper);
+  color: var(--foreground);
   font-family: var(--font-editorial);
   font-size: clamp(4.5rem, 14vw, 14rem);
   font-weight: 650;

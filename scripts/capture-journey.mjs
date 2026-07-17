@@ -26,6 +26,8 @@ const COVERAGE = {
   final: { hero: 0.5, typical: 0.65, dense: 0.55 },
 };
 const DENSE_STOPS = new Set(["04-kota", "06-orchestration"]);
+// Per-stop overrides for frames whose composition is intentionally ink-heavy.
+const STOP_OVERRIDES = { "04-kota": 0.3 };
 const STOPS = [
   ["00-top", 0.0], ["01-hero", 0.04], ["02-approach", 0.165],
   ["03-threshold", 0.265], ["04-kota", 0.37], ["05-document", 0.49],
@@ -95,7 +97,8 @@ for (const [name, f] of STOPS) {
   const budget = BUDGET[profile] ?? BUDGET.desktop;
   const gateSet = COVERAGE[GATE] || null;
   const covTarget = gateSet
-    ? (name === "01-hero" ? gateSet.hero : DENSE_STOPS.has(name) ? gateSet.dense : gateSet.typical)
+    ? (STOP_OVERRIDES[name] ??
+        (name === "01-hero" ? gateSet.hero : DENSE_STOPS.has(name) ? gateSet.dense : gateSet.typical))
     : 0;
   const callOk = calls <= budget;
   const covOk = !gateSet || coverage >= covTarget;

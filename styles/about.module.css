@@ -6,7 +6,7 @@
   z-index: 1;
   min-height: 100dvh;
   padding-top: clamp(5.5rem, 9vw, 7rem);
-  color: var(--paper);
+  color: var(--foreground);
 }
 
 .wrap {
@@ -23,7 +23,7 @@
 .title {
   margin: 1.4rem 0 0;
   max-width: 22ch;
-  color: var(--paper);
+  color: var(--foreground);
   font-family: var(--font-sans);
   font-weight: 600;
   letter-spacing: -0.04em;
@@ -68,7 +68,7 @@
   font-weight: 600;
   letter-spacing: -0.03em;
   font-size: clamp(1.5rem, 3vw, 2.2rem);
-  color: var(--paper);
+  color: var(--foreground);
 }
 
 .body {

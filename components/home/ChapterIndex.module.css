@@ -22,8 +22,8 @@
   pointer-events: none;
   background: linear-gradient(
     90deg,
-    rgba(10, 10, 11, 0.96) 0%,
-    rgba(10, 10, 11, 0.78) 54%,
+    rgba(240, 234, 217, 0.96) 0%,
+    rgba(240, 234, 217, 0.78) 54%,
     transparent 100%
   );
 }
@@ -56,9 +56,9 @@
   pointer-events: none;
   background: linear-gradient(
     90deg,
-    rgba(10, 10, 11, 0.99) 0%,
-    rgba(10, 10, 11, 0.92) 55%,
-    rgba(10, 10, 11, 0.54) 78%,
+    rgba(240, 234, 217, 0.99) 0%,
+    rgba(240, 234, 217, 0.92) 55%,
+    rgba(240, 234, 217, 0.54) 78%,
     transparent 100%
   );
 }
@@ -73,8 +73,8 @@
   background: linear-gradient(
     to bottom,
     transparent,
-    rgba(63, 157, 127, 0.72) 30%,
-    rgba(212, 207, 184, 0.28) 76%,
+    rgba(159, 68, 53, 0.72) 30%,
+    rgba(117, 128, 106, 0.28) 76%,
     transparent
   );
 }
@@ -129,7 +129,7 @@
 
 .title {
   margin: 0;
-  color: var(--paper);
+  color: var(--foreground);
   font-family: var(--font-sans);
   font-size: clamp(2rem, 3.6vw, 3.6rem);
   font-weight: 600;
@@ -285,9 +285,9 @@
   left: auto;
   background: linear-gradient(
     270deg,
-    rgba(10, 10, 11, 0.99) 0%,
-    rgba(10, 10, 11, 0.92) 55%,
-    rgba(10, 10, 11, 0.54) 78%,
+    rgba(240, 234, 217, 0.99) 0%,
+    rgba(240, 234, 217, 0.92) 55%,
+    rgba(240, 234, 217, 0.54) 78%,
     transparent 100%
   );
 }
@@ -320,7 +320,7 @@
   .section > header::before {
     inset: -1.5rem -1rem;
     border-radius: var(--radius-control);
-    background: rgba(10, 10, 11, 0.92);
+    background: rgba(240, 234, 217, 0.92);
   }
 
   .section > header {
@@ -341,7 +341,7 @@
     padding: 0;
     border: 1px solid var(--line);
     border-radius: var(--radius-card);
-    background: rgba(10, 10, 11, 0.95);
+    background: rgba(240, 234, 217, 0.95);
     overflow: hidden;
   }
 

@@ -111,7 +111,7 @@
 }
 
 .cellName {
-  color: var(--paper);
+  color: var(--foreground);
   white-space: nowrap;
 }
 
@@ -130,7 +130,7 @@
 
 .totalRow th,
 .totalRow td {
-  color: var(--paper);
+  color: var(--foreground);
   background: var(--raised);
 }
 
@@ -160,7 +160,7 @@
   font-family: var(--font-sans);
   font-weight: 600;
   font-size: 1rem;
-  color: var(--paper);
+  color: var(--foreground);
 }
 
 .rubricScale {
@@ -246,7 +246,7 @@
 }
 
 .stepBody strong {
-  color: var(--paper);
+  color: var(--foreground);
   font-weight: 600;
 }
 

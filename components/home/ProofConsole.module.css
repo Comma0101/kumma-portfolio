@@ -29,7 +29,7 @@
 .title {
   max-width: 21ch;
   margin: 0;
-  color: var(--paper);
+  color: var(--foreground);
   font-family: var(--font-sans);
   font-size: clamp(1.9rem, 3.8vw, 3.7rem);
   font-weight: 560;
@@ -54,7 +54,7 @@
   color: inherit;
   text-decoration: none;
   background:
-    linear-gradient(180deg, rgba(240, 237, 232, 0.04), transparent 46%),
+    linear-gradient(180deg, rgba(42, 44, 40, 0.04), transparent 46%),
     var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius-control);
@@ -65,14 +65,14 @@
 }
 
 .card:hover {
-  border-color: rgba(63, 157, 127, 0.4);
+  border-color: rgba(159, 68, 53, 0.4);
   background-color: var(--raised);
   transform: translateY(-2px);
 }
 
 .card strong {
   min-width: 0;
-  color: var(--paper);
+  color: var(--foreground);
   font-family: var(--font-sans);
   font-size: clamp(1.05rem, 1.4vw, 1.24rem);
   font-weight: 600;

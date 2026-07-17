@@ -2,7 +2,7 @@
 
 .page {
   min-height: 100vh;
-  color: var(--paper);
+  color: var(--foreground);
   padding: clamp(7rem, 10vw, 10rem) 5% clamp(4rem, 6vw, 6rem);
   max-width: 1180px;
   margin: 0 auto;
@@ -39,7 +39,7 @@
   font-weight: 600;
   letter-spacing: -0.02em;
   line-height: 1.08;
-  color: var(--paper);
+  color: var(--foreground);
   hyphens: manual;
 }
 
@@ -99,7 +99,7 @@
   font-size: clamp(3.4rem, 8vw, 7rem);
   line-height: 0.92;
   letter-spacing: -0.02em;
-  color: var(--paper);
+  color: var(--foreground);
   font-weight: 600;
 }
 

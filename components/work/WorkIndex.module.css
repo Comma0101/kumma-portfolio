@@ -2,7 +2,7 @@
   min-width: 0;
   overflow: clip;
   background: var(--canvas);
-  color: var(--paper);
+  color: var(--foreground);
 }
 
 .shell {
@@ -130,7 +130,7 @@
   border: 1px solid var(--line);
   border-radius: var(--radius-card);
   background: var(--surface);
-  color: var(--paper);
+  color: var(--foreground);
   text-decoration: none;
   touch-action: manipulation;
   transition:
@@ -207,7 +207,7 @@
 }
 
 .status {
-  color: var(--paper);
+  color: var(--foreground);
 }
 
 .artifact {
@@ -288,7 +288,7 @@
 
 .mechanismValue {
   display: block;
-  color: var(--paper);
+  color: var(--foreground);
   font-size: 0.9rem;
   line-height: 1.45;
   overflow-wrap: anywhere;
@@ -326,7 +326,7 @@
 
 .evidence dd {
   margin: 0.55rem 0 0;
-  color: var(--paper);
+  color: var(--foreground);
   font-size: 0.94rem;
   line-height: 1.5;
   overflow-wrap: anywhere;

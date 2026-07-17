@@ -357,7 +357,7 @@ describe("homepage facility composition", () => {
 
     assert.match(
       css,
-      /@media \(max-width: 800px\)[\s\S]*?\.row,[\s\S]*?background:\s*rgba\(10,\s*10,\s*11,\s*0\.95\);/,
+      /@media \(max-width: 800px\)[\s\S]*?\.row,[\s\S]*?background:\s*rgba\(240,\s*234,\s*217,\s*0\.95\);/,
     );
     assert.match(
       css,

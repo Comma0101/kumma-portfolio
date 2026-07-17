@@ -24,11 +24,11 @@
 }
 
 .pageNav {
-  background: rgba(11, 11, 13, 0.82);
+  background: color-mix(in srgb, var(--canvas) 82%, transparent);
   border-bottom-color: var(--line);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.28);
+  box-shadow: 0 10px 32px color-mix(in srgb, var(--foreground) 28%, transparent);
 }
 
 .navContainer {
@@ -51,7 +51,7 @@
 
 .logoWordmark {
   font-size: clamp(1.3rem, 1.8vw, 1.55rem);
-  color: var(--paper);
+  color: var(--foreground);
   font-family: var(--font-editorial);
   font-style: italic;
   font-weight: 650;
@@ -88,7 +88,7 @@
 }
 
 .navLink:hover {
-  color: var(--paper);
+  color: var(--foreground);
 }
 
 .underline {
@@ -141,7 +141,7 @@
   width: 16px;
   height: 1.5px;
   border-radius: 999px;
-  background: rgba(244, 244, 244, 0.9);
+  background: color-mix(in srgb, var(--foreground) 90%, transparent);
   transition: transform 0.24s ease, opacity 0.24s ease;
 }
 
@@ -163,8 +163,8 @@
   min-height: 100vh;
   min-height: 100dvh;
   background:
-    radial-gradient(circle at 10% 12%, rgba(163, 181, 168, 0.12), transparent 38%),
-    rgba(11, 11, 13, 0.97);
+    radial-gradient(circle at 10% 12%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 38%),
+    color-mix(in srgb, var(--canvas) 97%, transparent);
   transform: translateX(102%);
   opacity: 0;
   pointer-events: none;
@@ -202,7 +202,7 @@
 
 .mobileLink {
   text-decoration: none;
-  color: rgba(224, 224, 224, 0.72);
+  color: color-mix(in srgb, var(--foreground) 72%, transparent);
   font-size: clamp(1.35rem, 5vw, 2.2rem);
   letter-spacing: 0.04em;
   text-transform: uppercase;

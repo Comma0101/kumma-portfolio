@@ -16,7 +16,7 @@
   background-color: var(--raised);
   border: 1px solid var(--line);
   border-radius: 8px;
-  color: var(--paper);
+  color: var(--foreground);
   font-family: var(--font-sans);
   font-size: 0.95rem;
   cursor: pointer;
@@ -36,7 +36,7 @@
 
 /* keep option list readable on platforms that render it from these props */
 .budget option {
-  color: var(--paper);
+  color: var(--foreground);
   background: var(--surface);
 }
 

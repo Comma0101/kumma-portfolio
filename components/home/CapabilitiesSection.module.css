@@ -44,7 +44,7 @@
 
 .engagementTitle h3 {
   margin: 0;
-  color: var(--paper);
+  color: var(--foreground);
   font-family: var(--font-sans);
   font-size: clamp(1.65rem, 2.5vw, 2.7rem);
   font-weight: 560;
@@ -75,7 +75,7 @@
 
 .description {
   max-width: 52ch;
-  color: var(--paper);
+  color: var(--foreground);
 }
 
 .scope ul {

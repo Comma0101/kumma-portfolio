@@ -50,7 +50,7 @@
 .contactIntro h2 {
   max-width: 13ch;
   margin: 0;
-  color: var(--paper);
+  color: var(--foreground);
   font-size: clamp(2.8rem, 5.6vw, 5.8rem);
   font-weight: 520;
   line-height: 0.96;
@@ -102,7 +102,7 @@
 }
 
 .emailLink strong {
-  color: var(--paper);
+  color: var(--foreground);
   font-size: clamp(1.1rem, 2vw, 1.5rem);
   font-weight: 500;
   overflow-wrap: anywhere;
@@ -136,7 +136,7 @@
 
 .socialLinks a:hover {
   border-color: var(--signal);
-  color: var(--paper);
+  color: var(--foreground);
 }
 
 .socialLinks a:active {
@@ -197,7 +197,7 @@
   border-radius: var(--radius-control);
   outline: none;
   background: rgba(255, 255, 255, 0.025);
-  color: var(--paper);
+  color: var(--foreground);
   font: inherit;
   font-size: 1rem;
   line-height: 1.5;
@@ -211,7 +211,7 @@
 
 .contactForm option {
   background: var(--surface);
-  color: var(--paper);
+  color: var(--foreground);
 }
 
 .contactForm textarea {

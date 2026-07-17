@@ -12,6 +12,7 @@ import { PageTransitionProvider } from "@/components/PageTransition";
 import IntroOverlay from "../components/IntroOverlay";
 import Analytics from "../components/Analytics";
 import AgentAwareness from "../components/AgentAwareness";
+import BodyTheme from "../components/BodyTheme";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -70,9 +71,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
+        data-theme="paper"
         className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} ${cormorant.variable}`}
         suppressHydrationWarning
       >
+        <BodyTheme />
         <a className="skip-link" href="#main-content">
           Skip to content
         </a>

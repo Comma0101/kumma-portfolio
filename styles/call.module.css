@@ -5,7 +5,7 @@
   z-index: 1;
   min-height: 100dvh;
   overflow-x: clip;
-  color: var(--paper);
+  color: var(--foreground);
   padding: clamp(6rem, 10vw, 9rem) 0 clamp(4rem, 6vw, 6rem);
 }
 
@@ -38,7 +38,7 @@
   letter-spacing: -0.04em;
   line-height: 1;
   font-size: clamp(2.6rem, 6vw, 4.6rem);
-  color: var(--paper);
+  color: var(--foreground);
 }
 
 .subtitle {
@@ -80,7 +80,7 @@
   font-weight: 600;
   letter-spacing: -0.03em;
   font-size: clamp(1.6rem, 3vw, 2.4rem);
-  color: var(--paper);
+  color: var(--foreground);
 }
 
 .sectionLead {
@@ -190,7 +190,7 @@
 }
 
 .ticketName {
-  color: var(--paper);
+  color: var(--foreground);
 }
 
 .ticketMods {
@@ -232,7 +232,7 @@
 }
 
 .challengeText {
-  color: var(--paper);
+  color: var(--foreground);
   font-size: clamp(0.95rem, 1.4vw, 1.08rem);
   line-height: 1.4;
 }
@@ -250,7 +250,7 @@
   margin: 0 0 1.4rem;
   font-size: clamp(1.1rem, 1.8vw, 1.4rem);
   line-height: 1.4;
-  color: var(--paper);
+  color: var(--foreground);
 }
 
 .bountyAmount {

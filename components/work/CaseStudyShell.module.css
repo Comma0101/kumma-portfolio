@@ -2,7 +2,7 @@
   min-width: 0;
   overflow: clip;
   background: var(--canvas);
-  color: var(--paper);
+  color: var(--foreground);
 }
 
 .shell {
@@ -62,7 +62,7 @@
 }
 
 .projectMeta .status {
-  color: var(--paper);
+  color: var(--foreground);
 }
 
 .hero h1 {
@@ -226,7 +226,7 @@
 
 .flow dd {
   margin: 2rem 0 0;
-  color: var(--paper);
+  color: var(--foreground);
   font-size: 1rem;
   line-height: 1.6;
   overflow-wrap: anywhere;
@@ -334,7 +334,7 @@
   border: 1px solid var(--line);
   border-radius: var(--radius-card);
   background: var(--surface);
-  color: var(--paper);
+  color: var(--foreground);
   text-decoration: none;
   transition:
     transform 200ms var(--ease),

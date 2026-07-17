@@ -7,7 +7,7 @@
 
 .title {
   margin: 0;
-  color: var(--paper);
+  color: var(--foreground);
   font-family: var(--font-sans);
   font-size: clamp(2.4rem, 5.5vw, 5rem);
   font-weight: 600;

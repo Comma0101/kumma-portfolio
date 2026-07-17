@@ -48,7 +48,7 @@
 }
 
 .x:hover {
-  color: var(--paper);
+  color: var(--foreground);
 }
 
 .pill {
@@ -79,7 +79,7 @@
 .pill:hover {
   border-color: var(--signal);
   background: rgba(19, 19, 22, 0.88);
-  color: var(--paper);
+  color: var(--foreground);
 }
 
 .pillDot {
