@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { withTrackedResources } from "./resourceTracker";
 import { ACCENTS, EARTHS, INK } from "./ink/inkLadder";
+import { createInkMaterial, isInkMaterial, syncInkMaterialAtmosphere } from "./ink/inkMaterials";
 
 export interface FacilityMaterials {
   readonly terrain: THREE.MeshStandardMaterial;
@@ -10,8 +11,8 @@ export interface FacilityMaterials {
   readonly signal: THREE.MeshStandardMaterial;
   readonly ink: THREE.MeshStandardMaterial;
   readonly guide: THREE.MeshStandardMaterial;
-  readonly mountain: THREE.MeshToonMaterial;
-  readonly stone: THREE.MeshToonMaterial;
+  readonly mountain: THREE.ShaderMaterial;
+  readonly stone: THREE.ShaderMaterial;
   readonly bamboo: THREE.MeshToonMaterial;
   readonly water: THREE.MeshStandardMaterial;
   readonly cinnabar: THREE.MeshStandardMaterial;
@@ -19,6 +20,7 @@ export interface FacilityMaterials {
 
 export interface FacilityMaterialResources {
   readonly materials: FacilityMaterials;
+  syncAtmosphere(fogColor: THREE.Color, fogDensity: number): void;
   dispose(): void;
 }
 
@@ -76,8 +78,26 @@ export function createFacilityMaterials(): FacilityMaterialResources {
       }),
       ink: material(INK.jiao, 0.97, 0.01),
       guide: material(INK.dan, 0.92, 0.01),
-      mountain: inkValueMaterial(INK.zhong),
-      stone: inkValueMaterial(EARTHS.stone),
+      mountain: tracker.track(
+        createInkMaterial({
+          inkColor: INK.zhong,
+          valueBias: 0.16,
+          cun: "hemp",
+          cunStrength: 0.85,
+          fogColor: new THREE.Color(INK.paper),
+          fogDensity: 0.012,
+        }),
+      ),
+      stone: tracker.track(
+        createInkMaterial({
+          inkColor: INK.zhong,
+          valueBias: 0.22,
+          cun: "axe",
+          cunStrength: 0.7,
+          fogColor: new THREE.Color(INK.paper),
+          fogDensity: 0.012,
+        }),
+      ),
       bamboo: inkValueMaterial(EARTHS.pine, { side: THREE.DoubleSide }),
       water: material(EARTHS.water, 0.9, 0.03, {
         emissive: "#000000",
@@ -91,6 +111,17 @@ export function createFacilityMaterials(): FacilityMaterialResources {
 
     return {
       materials,
+      syncAtmosphere(fogColor, fogDensity) {
+        for (const material of Object.values(materials)) {
+          if (isInkMaterial(material)) {
+            syncInkMaterialAtmosphere(
+              material as THREE.ShaderMaterial,
+              fogColor,
+              fogDensity,
+            );
+          }
+        }
+      },
       dispose: () => tracker.dispose(),
     };
   });

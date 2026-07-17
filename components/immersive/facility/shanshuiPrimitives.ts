@@ -93,64 +93,101 @@ function hash01(seed: number, index: number, salt = 0): number {
   return (value >>> 0) / 0x1_0000_0000;
 }
 
-function createMountainGeometry(seed: number, broadness: number): THREE.BufferGeometry {
-  const radialSegments = 24;
-  const verticalSegments = 14;
+export interface RidgeGeometryOptions {
+  readonly seed: number;
+  readonly width?: number;
+  readonly depth?: number;
+  readonly crestSegments?: number;
+  readonly rows?: number;
+}
+
+function ridgeNoise1(seed: number, x: number, salt: number): number {
+  const i = Math.floor(x);
+  const f = x - i;
+  const t = f * f * (3 - 2 * f);
+  const a = hash01(seed, i, salt);
+  const b = hash01(seed, i + 1, salt);
+  return a + (b - a) * t;
+}
+
+/**
+ * Silhouette-first ridge: an authored jagged crest line with two facet sheets
+ * falling to the base. Flat facets + sharp crest replace smooth noise domes.
+ * Normalized: y 0..1, x ±width/2, z ±depth/2; crest ends collapse to height 0.
+ */
+export function createRidgeGeometry(
+  options: RidgeGeometryOptions,
+): THREE.BufferGeometry {
+  const width = options.width ?? 2;
+  const depth = options.depth ?? 1.2;
+  const crestSegments = options.crestSegments ?? 26;
+  const rows = options.rows ?? 8;
+  const seed = options.seed;
+
+  const crest: Array<{ x: number; y: number; z: number }> = [];
+  for (let i = 0; i <= crestSegments; i += 1) {
+    const u = i / crestSegments;
+    const envelope = Math.pow(Math.sin(Math.PI * u), 0.7);
+    const ridged =
+      (1 - Math.abs(2 * ridgeNoise1(seed, u * 3.1, 0x1107) - 1)) * 0.55 +
+      (1 - Math.abs(2 * ridgeNoise1(seed, u * 7.3, 0x5a39) - 1)) * 0.3 +
+      (1 - Math.abs(2 * ridgeNoise1(seed, u * 14.9, 0x9c41) - 1)) * 0.15;
+    crest.push({
+      x: (u - 0.5) * width,
+      y: envelope * (0.55 + 0.45 * ridged),
+      z: (hash01(seed, i, 0x77b1) - 0.5) * 0.08 * depth,
+    });
+  }
+
   const positions: number[] = [];
   const indices: number[] = [];
-
-  for (let level = 0; level <= verticalSegments; level += 1) {
-    const progress = level / verticalSegments;
-    const taper = Math.pow(1 - progress, 0.78 + broadness * 0.16);
-    const shoulder = 0.92 + Math.sin(progress * Math.PI) * 0.08;
-    const centerX = (hash01(seed, level, 0x31f8) - 0.5) * progress * 0.24;
-    const centerZ = (hash01(seed, level, 0x82d4) - 0.5) * progress * 0.2;
-    for (let segment = 0; segment < radialSegments; segment += 1) {
-      const angle = (segment / radialSegments) * Math.PI * 2;
-      const ridge = Math.sin(angle * 3 + progress * 4.2) * 0.035;
-      const irregularity = 0.9 + hash01(seed, level * 29 + segment, 0x9a61) * 0.2;
-      const radius = Math.max(
-        0.025,
-        taper * shoulder * (irregularity + ridge) * broadness,
-      );
-      positions.push(
-        centerX + Math.cos(angle) * radius,
-        progress,
-        centerZ + Math.sin(angle) * radius,
-      );
+  for (const side of [1, -1]) {
+    const sheetStart = positions.length / 3;
+    for (let row = 0; row <= rows; row += 1) {
+      const t = row / rows;
+      for (let i = 0; i <= crestSegments; i += 1) {
+        const point = crest[i];
+        positions.push(
+          point.x * (1 + t * 0.35),
+          point.y * (1 - t),
+          point.z + side * t * depth * 0.5,
+        );
+      }
     }
-  }
-
-  for (let level = 0; level < verticalSegments; level += 1) {
-    for (let segment = 0; segment < radialSegments; segment += 1) {
-      const next = (segment + 1) % radialSegments;
-      const a = level * radialSegments + segment;
-      const b = level * radialSegments + next;
-      const c = (level + 1) * radialSegments + segment;
-      const d = (level + 1) * radialSegments + next;
-      indices.push(a, c, b, b, c, d);
+    for (let row = 0; row < rows; row += 1) {
+      for (let i = 0; i < crestSegments; i += 1) {
+        const a = sheetStart + row * (crestSegments + 1) + i;
+        const b = a + 1;
+        const c = a + crestSegments + 1;
+        const d = c + 1;
+        if (side > 0) {
+          indices.push(a, c, b, b, c, d);
+        } else {
+          indices.push(a, b, c, b, d, c);
+        }
+      }
     }
-  }
-
-  const baseCenter = positions.length / 3;
-  positions.push(0, 0, 0);
-  for (let segment = 0; segment < radialSegments; segment += 1) {
-    indices.push(
-      baseCenter,
-      (segment + 1) % radialSegments,
-      segment,
-    );
   }
 
   const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute(
-    "position",
-    new THREE.Float32BufferAttribute(positions, 3),
-  );
+  geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
   geometry.setIndex(indices);
   geometry.computeVertexNormals();
   geometry.computeBoundingSphere();
   return geometry;
+}
+
+export function createRidgeLayer(
+  context: FacilityZoneContext,
+  name: string,
+  options: RidgeGeometryOptions,
+  material: THREE.Material,
+): THREE.Mesh<THREE.BufferGeometry, THREE.Material> {
+  const geometry = context.tracker.track(createRidgeGeometry(options));
+  const ridge = new THREE.Mesh(geometry, material);
+  ridge.name = name;
+  ridge.userData.signature = true;
+  return ridge;
 }
 
 function createFishGeometry(): THREE.BufferGeometry {
@@ -203,8 +240,12 @@ export function createShanshuiGeometryKit(
   stone.translate(0, 0.78, 0);
 
   return Object.freeze({
-    mountainTall: tracker.track(createMountainGeometry(1979, 0.84)),
-    mountainBroad: tracker.track(createMountainGeometry(2018, 1.12)),
+    mountainTall: tracker.track(
+      createRidgeGeometry({ seed: 1979, crestSegments: 26, rows: 8 }),
+    ),
+    mountainBroad: tracker.track(
+      createRidgeGeometry({ seed: 2018, width: 2.6, depth: 1.5, crestSegments: 22, rows: 6 }),
+    ),
     stone: tracker.track(stone),
     bambooStalk: tracker.track(new THREE.CylinderGeometry(0.045, 0.06, 1, 7, 1)),
     bambooLeaf: tracker.track(createBambooLeafGeometry()),

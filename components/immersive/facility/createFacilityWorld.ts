@@ -115,6 +115,10 @@ export function createFacilityWorld(tuning: ThreeSceneTuning): FacilityWorld {
       root,
       zones,
       update(sample, elapsedSeconds, motionEnergy) {
+        materialResources.syncAtmosphere(
+          new THREE.Color(sample.atmosphere.fogColor),
+          sample.atmosphere.fogDensity,
+        );
         setChapterVisibility(sample.journeyProgress);
         travelerBoat.update(sampleBoatJourney(sample.routeProgress));
         if (

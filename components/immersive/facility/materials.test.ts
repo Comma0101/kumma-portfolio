@@ -40,7 +40,7 @@ describe("living Shanshui materials", () => {
       "water",
       "cinnabar",
     ] as const;
-    const toonMaterialKeys = ["mountain", "stone", "bamboo"] as const;
+    const toonMaterialKeys = ["bamboo"] as const;
 
     for (const key of standardMaterialKeys) {
       assert.ok(
@@ -54,15 +54,20 @@ describe("living Shanshui materials", () => {
         `${key} must use ink-value toon banding`,
       );
     }
+    for (const key of ["mountain", "stone"] as const) {
+      assert.ok(
+        resources.materials[key] instanceof THREE.ShaderMaterial,
+        `${key} must be an unlit ink ShaderMaterial`,
+      );
+      assert.equal(resources.materials[key].lights, false);
+    }
     for (const material of Object.values(resources.materials)) {
       assert.equal(material instanceof THREE.MeshBasicMaterial, false);
       assert.equal(material.transparent, false);
     }
 
-    const gradientMap = resources.materials.mountain.gradientMap;
+    const gradientMap = resources.materials.bamboo.gradientMap;
     assert.ok(gradientMap instanceof THREE.DataTexture);
-    assert.equal(resources.materials.stone.gradientMap, gradientMap);
-    assert.equal(resources.materials.bamboo.gradientMap, gradientMap);
     assert.equal(gradientMap.image.width, 12);
     assert.equal(gradientMap.image.height, 1);
     assert.deepEqual(Array.from(gradientMap.image.data as Uint8Array), [
@@ -75,9 +80,11 @@ describe("living Shanshui materials", () => {
     assert.ok(resources.materials.signal.emissiveIntensity < 1);
     assert.ok(resources.materials.cinnabar.emissiveIntensity > 0);
     assert.ok(resources.materials.cinnabar.emissiveIntensity < 1);
+    const mountainInk = resources.materials.mountain.uniforms.uInk
+      .value as InstanceType<typeof THREE.Color>;
     const mountainHsl = { h: 0, s: 0, l: 0 };
     const paperHsl = { h: 0, s: 0, l: 0 };
-    resources.materials.mountain.color.getHSL(mountainHsl);
+    mountainInk.getHSL(mountainHsl);
     resources.materials.paper.color.getHSL(paperHsl);
     assert.ok(
       paperHsl.l - mountainHsl.l >= 0.45,
@@ -95,7 +102,7 @@ describe("living Shanshui materials", () => {
         materialDisposals += 1;
       });
     }
-    resources.materials.mountain.gradientMap?.addEventListener("dispose", () => {
+    resources.materials.bamboo.gradientMap?.addEventListener("dispose", () => {
       gradientDisposals += 1;
     });
     resources.dispose();
