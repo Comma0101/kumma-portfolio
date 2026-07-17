@@ -407,8 +407,10 @@ Expected: PASS — all tests including the updated palette assertions.
 
 - [ ] **Step 7: Visual gate**
 
-Run: `node scripts/capture-journey.mjs --label scene-inversion --gate phase1`
-Expected: `GATES PASS`; every stop's `paper=` coverage at or above phase1 targets (hero ≥40%, typical ≥50%, dense ≥45%); draw calls unchanged (≤ profile budgets). Eyeball `~/kumma-qa/shots-scene-inversion/01-hero.png` — paper ground, no black voids, bamboo no longer neon.
+Run: `node scripts/capture-journey.mjs --label scene-inversion --gate none`
+Expected: draw calls unchanged (≤ profile budgets). Eyeball `~/kumma-qa/shots-scene-inversion/01-hero.png` — paper ground, no black voids, bamboo no longer neon.
+
+> **Adjudicated 2026-07-16 (controller):** the numeric `phase1` paper-coverage gate was miscalibrated for the post-Task-3 state — full-page captures still include the dark UI (nav, cards, footer; stop 09 is entirely UI because the scene goes inactive at journey end), and legitimate ink masses (jiao/zhong mountains) correctly lower the metric. The numeric gate applies from Task 4 onward, once the UI is also paper; Task 3 acceptance is budgets + the eyeball verdict.
 
 - [ ] **Step 8: Commit**
 
@@ -604,6 +606,8 @@ Expected: both `GATES PASS`; artifacts in `~/kumma-qa/shots-baseline/` and `~/ku
 - [ ] **Step 2: Write the QA note**
 
 Create `docs/qa/2026-07-16-paper-inversion-baseline.md` with: commit SHA, harness command lines, the per-stop table from both `report.json` files (stop, calls/budget, coverage/target), the known-honest-limitations list (SwiftShader software rendering; hero coverage gate is phase1-relaxed until Phase 2 ink materials land; ACES tone mapping retained; stock materials remain as pre-Phase-2 shading), and the visual review verdict for the hero and contact frames.
+
+If any stop fails the numeric phase1 gate at this point, adjudicate it in the note rather than forcing a pass: distinguish metric artifacts (legitimate jiao/zhong ink masses that correctly lower paper coverage before Phase-2 composition work) from real defects (black voids, neon greens, paper-on-paper text). Real defects get fixed in this task; metric artifacts get documented with the offending frame referenced, and the `final` gate stays the authority for Phase 5.
 
 - [ ] **Step 3: Commit**
 
