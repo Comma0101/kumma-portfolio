@@ -112,7 +112,7 @@ export function createFacilityMaterials(): FacilityMaterialResources {
       mountainNear: tracker.track(
         createInkMaterial({
           inkColor: INK.nong,
-          valueBias: 0.24,
+          valueBias: 0.34,
           cun: "raindrop",
           cunStrength: 1,
           fogColor: new THREE.Color(INK.paper),

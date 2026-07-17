@@ -26,16 +26,31 @@ All stops stay within the constrained-profile draw-call budget (32).
 
 ## Final host-peak constants
 
-Tuned in 1 capture round (initial implementation + one visual pass):
+Tuned in 4 capture rounds after the controller's visual adjudication found the
+initial composition too stone-heavy and the host peak washed out by fog:
 
-- `hostPeak.position.set(1.5, -1.5, -40)`
+- `hostPeak.position.set(0, -1.5, -36)`
 - `hostPeak.scale.set(11, 24, 11)`
 - Hero `fov: 28`
-- Waterfall `{ x: 0.9, z: -33.4, topY: 15.5, bottomY: 1.4, width: 0.55 }`
-- Moss `{ count: 42, seed: 977, center: [1.5, -1.5, -40], span: [24, 22, 8] }`
+- Waterfall `{ x: -6, z: -26.9, topY: 10, bottomY: -2, width: 1.2 }`
+  (z sits 0.3 in front of the peak's front face: -36 + 0.8·11 + 0.3 = -26.9)
+- Moss `{ count: 42, seed: 977, center: [0, -1.5, -36], span: [24, 24, 9] }`
+- River stones (shrunk to ~55 % and pushed outward):
+  - `[-5.6, -0.72, 12] scale [1.0, 0.6, 0.8]`
+  - `[5.0, -0.76, 7] scale [0.75, 0.45, 0.65]`
+  - `[-4.0, -0.73, -2] scale [0.65, 0.36, 0.9]`
+- `mountainNear.valueBias: 0.34`
 
 ## Remaining gaps vs the design
 
+- Host-peak silhouette: the procedural ridge still reads as two rounded
+  haystack-like lobes rather than the single monumental cliff face of Fan Kuan's
+  Travelers Among Mountains and Streams. Within the allowed constant-only
+  tuning, the peak has been brought forward, darkened, and centered, but the
+  underlying ridge geometry shape is unchanged.
+- Waterfall thread: visible as a pale streak on the top-of-page view, but it
+  competes with the centered headline in the hero stop and can read as a faint
+  texture rather than a deliberate unpainted cascade.
 - Bamboo strokes: threshold bamboo still uses colored toon geometry rather than
   calligraphic stroke clusters.
 - KOTA cliffs: the voice-chamber gorge is the old broad mountain geometry;
@@ -46,9 +61,10 @@ Tuned in 1 capture round (initial implementation + one visual pass):
 
 ## Verdict
 
-The hero now reads as a Fan Kuan monumental composition: the host peak fills
-roughly two-thirds of the frame height, its dark nong mass is broken by the pale
-mist band and the unpainted waterfall thread, the flanking peaks are visibly
-paler (dan ink), and the foreground remains paper-dominant. Telephoto framing
-(28° hero fov, raised camera aim) compresses depth and emphasizes the central
-mountain mass. Phase-1 gate passes across the full journey.
+The hero is substantially closer to the Fan Kuan target after four tuning
+rounds: the host peak is now the dominant dark mass, the foreground river
+stones read as small jiao accents, the flanking ridges remain paler, and the
+paper ground still dominates the foreground. Phase-1 gate passes across the
+full journey. The composition does not yet fully achieve the single
+monumental cliff silhouette and crisp waterfall thread of the reference, so
+this is a DONE_WITH_CONCERNS result.

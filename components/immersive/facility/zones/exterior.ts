@@ -84,9 +84,9 @@ export function createExteriorFacilityZones(
       },
     ], context.materials.mountain),
     createStoneCluster(context, "shanshui-hero-river-stones", [
-      { position: [-4.8, -0.72, 12], scale: [1.8, 1.1, 1.5], rotationY: 0.3 },
-      { position: [4.1, -0.76, 7], scale: [1.35, 0.8, 1.15], rotationY: -0.5 },
-      { position: [-3.2, -0.73, -2], scale: [1.2, 0.65, 1.6], rotationY: 0.8 },
+      { position: [-5.6, -0.72, 12], scale: [1.0, 0.6, 0.8], rotationY: 0.3 },
+      { position: [5.0, -0.76, 7], scale: [0.75, 0.45, 0.65], rotationY: -0.5 },
+      { position: [-4.0, -0.73, -2], scale: [0.65, 0.36, 0.9], rotationY: 0.8 },
     ]),
     heroRiver,
   );
@@ -101,19 +101,19 @@ export function createExteriorFacilityZones(
       { seed: 1042, width: 3, depth: 1.6, crestSegments: 34, rows: 12 },
       context.materials.mountainNear,
     );
-    hostPeak.position.set(1.5, -1.5, -40);
+    hostPeak.position.set(0, -1.5, -36);
     hostPeak.scale.set(11, 24, 11);
     const mistBand = createMistPass(context, "shanshui-hero-mist-band", [-27]);
     const waterfall = createWaterfallThread(
       context,
       "shanshui-hero-waterfall-thread",
-      { x: 0.9, z: -33.4, topY: 15.5, bottomY: 1.4, width: 0.55 },
+      { x: -6, z: -26.9, topY: 10, bottomY: -2, width: 1.2 },
     );
     const moss = createMossDots(context, "shanshui-hero-crest-moss", {
       count: context.tuning.profile === "desktop" ? 42 : 26,
       seed: 977,
-      center: [1.5, -1.5, -40],
-      span: [24, 22, 8],
+      center: [0, -1.5, -36],
+      span: [24, 24, 9],
     });
     exterior.add(hostPeak, mistBand.root, waterfall, moss);
   }
