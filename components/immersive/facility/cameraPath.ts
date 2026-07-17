@@ -20,7 +20,7 @@ function deepFreeze<T>(value: T): T {
 }
 
 export const facilityCameraControlPoints: readonly Vec3[] = deepFreeze([
-  { x: 0, y: 8, z: 24 },
+  { x: 0, y: 7.2, z: 30 },
   { x: -1.8, y: 5.2, z: 8 },
   { x: 0.2, y: 1.65, z: -8 },
   { x: 1.2, y: 2, z: -25 },
@@ -33,7 +33,7 @@ export const facilityCameraControlPoints: readonly Vec3[] = deepFreeze([
 
 export const facilityEntrancePosition: Vec3 = deepFreeze({
   x: 0,
-  y: 2.1,
+  y: 3.2,
   z: -10,
 });
 

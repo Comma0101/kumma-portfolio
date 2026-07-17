@@ -67,7 +67,7 @@ describe("facility calibration deck", () => {
     assert.ok(contact.atmosphere.fogDensity < deck.atmosphere.fogDensity);
     assert.equal(contact.event.intensity, 0);
     assert.equal(contact.camera.roll, 0);
-    assert.ok(contact.camera.fov > deck.camera.fov);
+    assert.ok(contact.camera.fov < deck.camera.fov);
     assert.ok(contactCamera.target.z < contactCamera.position.z);
     assert.ok(contactCamera.target.y < contactCamera.position.y - 2);
     assert.ok(contactCamera.position.y >= deckCamera.position.y);

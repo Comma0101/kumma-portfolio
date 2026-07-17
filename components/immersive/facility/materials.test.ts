@@ -27,6 +27,8 @@ describe("living Shanshui materials", () => {
       "bamboo",
       "water",
       "cinnabar",
+      "mountainNear",
+      "mountainFar",
     ]);
 
     const standardMaterialKeys = [
@@ -54,7 +56,7 @@ describe("living Shanshui materials", () => {
         `${key} must use ink-value toon banding`,
       );
     }
-    for (const key of ["mountain", "stone"] as const) {
+    for (const key of ["mountain", "stone", "mountainNear", "mountainFar"] as const) {
       assert.ok(
         resources.materials[key] instanceof THREE.ShaderMaterial,
         `${key} must be an unlit ink ShaderMaterial`,

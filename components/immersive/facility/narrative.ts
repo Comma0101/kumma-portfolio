@@ -21,7 +21,7 @@ export const facilityChapters: readonly FacilityChapterDefinition[] = deepFreeze
     journeyProgress: 0,
     routeProgress: 0,
     atmosphere: { fogColor: INK.paper, fogDensity: 0.0115, exposure: 0.98 },
-    camera: { fov: 55, lookAhead: 0.036, roll: 0 },
+    camera: { fov: 28, lookAhead: 0.036, roll: 0 },
   },
   {
     stageId: "proof",
@@ -29,7 +29,7 @@ export const facilityChapters: readonly FacilityChapterDefinition[] = deepFreeze
     journeyProgress: 1 / 7,
     routeProgress: 0.12,
     atmosphere: { fogColor: INK.paper, fogDensity: 0.0125, exposure: 0.96 },
-    camera: { fov: 50, lookAhead: 0.033, roll: -0.006 },
+    camera: { fov: 33, lookAhead: 0.033, roll: -0.006 },
   },
   {
     stageId: "kota",
@@ -37,7 +37,7 @@ export const facilityChapters: readonly FacilityChapterDefinition[] = deepFreeze
     journeyProgress: 2 / 7,
     routeProgress: 0.29,
     atmosphere: { fogColor: INK.paper, fogDensity: 0.026, exposure: 0.88 },
-    camera: { fov: 46, lookAhead: 0.027, roll: 0.008 },
+    camera: { fov: 34, lookAhead: 0.027, roll: 0.008 },
   },
   {
     stageId: "audiobook",
@@ -45,7 +45,7 @@ export const facilityChapters: readonly FacilityChapterDefinition[] = deepFreeze
     journeyProgress: 3 / 7,
     routeProgress: 0.43,
     atmosphere: { fogColor: INK.paper, fogDensity: 0.018, exposure: 0.9 },
-    camera: { fov: 47, lookAhead: 0.03, roll: -0.007 },
+    camera: { fov: 36, lookAhead: 0.03, roll: -0.007 },
   },
   {
     stageId: "archon",
@@ -53,7 +53,7 @@ export const facilityChapters: readonly FacilityChapterDefinition[] = deepFreeze
     journeyProgress: 4 / 7,
     routeProgress: 0.59,
     atmosphere: { fogColor: INK.paper, fogDensity: 0.013, exposure: 1 },
-    camera: { fov: 56, lookAhead: 0.04, roll: 0.016 },
+    camera: { fov: 40, lookAhead: 0.04, roll: 0.016 },
   },
   {
     stageId: "splash-ink",
@@ -61,7 +61,7 @@ export const facilityChapters: readonly FacilityChapterDefinition[] = deepFreeze
     journeyProgress: 5 / 7,
     routeProgress: 0.74,
     atmosphere: { fogColor: INK.paper, fogDensity: 0.016, exposure: 0.96 },
-    camera: { fov: 52, lookAhead: 0.035, roll: -0.014 },
+    camera: { fov: 36, lookAhead: 0.035, roll: -0.014 },
   },
   {
     stageId: "research-labs",
@@ -69,7 +69,7 @@ export const facilityChapters: readonly FacilityChapterDefinition[] = deepFreeze
     journeyProgress: 6 / 7,
     routeProgress: 0.87,
     atmosphere: { fogColor: INK.paper, fogDensity: 0.009, exposure: 1.03 },
-    camera: { fov: 46, lookAhead: 0.042, roll: -0.004 },
+    camera: { fov: 33, lookAhead: 0.042, roll: -0.004 },
   },
   {
     stageId: "contact",
@@ -77,7 +77,7 @@ export const facilityChapters: readonly FacilityChapterDefinition[] = deepFreeze
     journeyProgress: 1,
     routeProgress: 1,
     atmosphere: { fogColor: INK.paper, fogDensity: 0.0055, exposure: 1.08 },
-    camera: { fov: 49, lookAhead: 0.048, roll: 0 },
+    camera: { fov: 30, lookAhead: 0.048, roll: 0 },
   },
 ]);
 
@@ -171,7 +171,7 @@ function profileTreatment(
   if (profile === "desktop") return value;
   const scale = profile === "mobile" ? 0.62 : 0.35;
   return {
-    fov: lerp(49, value.fov, scale),
+    fov: lerp(36, value.fov, scale),
     lookAhead: lerp(0.03, value.lookAhead, scale),
     roll: value.roll * scale,
     fogDensity: lerp(0.014, value.fogDensity, scale),

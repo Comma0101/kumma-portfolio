@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import type { ResourceTracker } from "./resourceTracker";
+import { INK } from "./ink/inkLadder";
 import type { FacilityZoneContext } from "./zones/shared";
 
 export interface ShanshuiGeometryKit {
@@ -188,6 +189,81 @@ export function createRidgeLayer(
   ridge.name = name;
   ridge.userData.signature = true;
   return ridge;
+}
+
+export interface MossDotOptions {
+  readonly count: number;
+  readonly seed: number;
+  readonly center: readonly [number, number, number];
+  readonly span: readonly [number, number, number];
+}
+
+/** 點苔 moss dots — jiao dabs clustered near a crest. */
+export function createMossDots(
+  context: FacilityZoneContext,
+  name: string,
+  options: MossDotOptions,
+): THREE.InstancedMesh {
+  const count = Math.max(1, Math.floor(options.count));
+  const dots = new THREE.InstancedMesh(
+    context.shanshuiGeometry.stone,
+    context.materials.ink,
+    count,
+  );
+  dots.name = name;
+  dots.userData.signature = true;
+  const transform = new THREE.Object3D();
+  for (let index = 0; index < count; index += 1) {
+    const u = hash01(options.seed, index, 0x2d41);
+    const spread = hash01(options.seed, index, 0x83f7);
+    const lift = 0.72 + hash01(options.seed, index, 0x51a3) * 0.26;
+    transform.position.set(
+      options.center[0] + (u - 0.5) * options.span[0],
+      options.center[1] + lift * options.span[1],
+      options.center[2] + (spread - 0.5) * options.span[2],
+    );
+    const scale = 0.06 + hash01(options.seed, index, 0x6b1d) * 0.09;
+    transform.scale.set(scale, scale * 0.7, scale);
+    transform.rotation.set(0, hash01(options.seed, index, 0x90e5) * Math.PI, 0);
+    transform.updateMatrix();
+    dots.setMatrixAt(index, transform.matrix);
+  }
+  dots.instanceMatrix.needsUpdate = true;
+  return dots;
+}
+
+export interface WaterfallThreadOptions {
+  readonly x: number;
+  readonly z: number;
+  readonly topY: number;
+  readonly bottomY: number;
+  readonly width: number;
+}
+
+/** Waterfall as unpainted paper — a pale thread breaking the host peak's mass. */
+export function createWaterfallThread(
+  context: FacilityZoneContext,
+  name: string,
+  options: WaterfallThreadOptions,
+): THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> {
+  const height = options.topY - options.bottomY;
+  const geometry = context.tracker.track(
+    new THREE.PlaneGeometry(options.width, height),
+  );
+  const material = context.tracker.track(
+    new THREE.MeshBasicMaterial({
+      color: INK.paper,
+      transparent: true,
+      opacity: 0.85,
+      depthWrite: false,
+    }),
+  );
+  const thread = new THREE.Mesh(geometry, material);
+  thread.name = name;
+  thread.userData.signature = true;
+  thread.position.set(options.x, options.bottomY + height / 2, options.z);
+  thread.renderOrder = 1;
+  return thread;
 }
 
 function createFishGeometry(): THREE.BufferGeometry {

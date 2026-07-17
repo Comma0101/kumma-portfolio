@@ -69,7 +69,7 @@ describe("facility camera path", () => {
     assert.ok(facilityEntrancePosition.z < hero.position.z);
     assert.ok(distance(hero.position, facilityEntrancePosition) > 10);
     assert.ok(threshold.position.y < exterior.position.y);
-    assert.ok(threshold.fov < hero.fov);
+    assert.ok(threshold.fov > hero.fov);
   });
 
   it("reserves the largest vertical reveal for ARCHON and a lateral reveal for Splash Ink", () => {

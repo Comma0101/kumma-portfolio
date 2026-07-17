@@ -16,6 +16,8 @@ export interface FacilityMaterials {
   readonly bamboo: THREE.MeshToonMaterial;
   readonly water: THREE.MeshStandardMaterial;
   readonly cinnabar: THREE.MeshStandardMaterial;
+  readonly mountainNear: THREE.ShaderMaterial;
+  readonly mountainFar: THREE.ShaderMaterial;
 }
 
 export interface FacilityMaterialResources {
@@ -107,6 +109,26 @@ export function createFacilityMaterials(): FacilityMaterialResources {
         emissive: "#2f0f0a",
         emissiveIntensity: 0.1,
       }),
+      mountainNear: tracker.track(
+        createInkMaterial({
+          inkColor: INK.nong,
+          valueBias: 0.24,
+          cun: "raindrop",
+          cunStrength: 1,
+          fogColor: new THREE.Color(INK.paper),
+          fogDensity: 0.012,
+        }),
+      ),
+      mountainFar: tracker.track(
+        createInkMaterial({
+          inkColor: INK.dan,
+          valueBias: 0.1,
+          cun: "hemp",
+          cunStrength: 0.5,
+          fogColor: new THREE.Color(INK.paper),
+          fogDensity: 0.012,
+        }),
+      ),
     });
 
     return {

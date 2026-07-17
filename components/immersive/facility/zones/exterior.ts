@@ -7,9 +7,12 @@ import {
 import {
   createBambooGrove,
   createMistPass,
+  createMossDots,
   createMountainCluster,
   createRiverRibbon,
+  createRidgeLayer,
   createStoneCluster,
+  createWaterfallThread,
   type RiverRibbonPoint,
 } from "../shanshuiPrimitives";
 import { setZoneBounds, type FacilityZoneContext } from "./shared";
@@ -67,7 +70,7 @@ export function createExteriorFacilityZones(
         scale: [4.2, 7.4, 4.3],
         rotationY: 0.58,
       },
-    ]),
+    ], context.materials.mountainFar),
     createMountainCluster(context, "shanshui-hero-foothills", "broad", [
       {
         position: [-16.8, -1.15, 1.5],
@@ -79,7 +82,7 @@ export function createExteriorFacilityZones(
         scale: [4.6, 4.2, 4.7],
         rotationY: 0.2,
       },
-    ], context.materials.shell),
+    ], context.materials.mountain),
     createStoneCluster(context, "shanshui-hero-river-stones", [
       { position: [-4.8, -0.72, 12], scale: [1.8, 1.1, 1.5], rotationY: 0.3 },
       { position: [4.1, -0.76, 7], scale: [1.35, 0.8, 1.15], rotationY: -0.5 },
@@ -87,6 +90,33 @@ export function createExteriorFacilityZones(
     ]),
     heroRiver,
   );
+
+  if (
+    context.tuning.profile === "desktop" ||
+    context.tuning.profile === "constrained"
+  ) {
+    const hostPeak = createRidgeLayer(
+      context,
+      "shanshui-hero-host-peak",
+      { seed: 1042, width: 3, depth: 1.6, crestSegments: 34, rows: 12 },
+      context.materials.mountainNear,
+    );
+    hostPeak.position.set(1.5, -1.5, -40);
+    hostPeak.scale.set(11, 24, 11);
+    const mistBand = createMistPass(context, "shanshui-hero-mist-band", [-27]);
+    const waterfall = createWaterfallThread(
+      context,
+      "shanshui-hero-waterfall-thread",
+      { x: 0.9, z: -33.4, topY: 15.5, bottomY: 1.4, width: 0.55 },
+    );
+    const moss = createMossDots(context, "shanshui-hero-crest-moss", {
+      count: context.tuning.profile === "desktop" ? 42 : 26,
+      seed: 977,
+      center: [1.5, -1.5, -40],
+      span: [24, 22, 8],
+    });
+    exterior.add(hostPeak, mistBand.root, waterfall, moss);
+  }
 
   const reliability = setZoneBounds(new THREE.Group(), -11, 18);
   reliability.name = "shanshui-river-confluence-zone";
