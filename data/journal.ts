@@ -8,7 +8,9 @@ export type JournalEntry = {
   cost: number;
   exits: number[];
   plan: string;
-  outcome: string;
+  // What happened, then what I did about it.
+  fact: string;
+  admission: string;
   lesson: string;
   after?: string;
   url?: string;
@@ -22,7 +24,8 @@ export const journal: JournalEntry[] = [
     cost: 75,
     exits: [170, 197],
     plan: "One pays for the trade. The other stays on unless the low breaks.",
-    outcome: "The low did not break. I sold it anyway.",
+    fact: "The low did not break.",
+    admission: "I sold it anyway.",
     lesson: "Did not want to give the profit back.",
     after: "It later traded 388.",
   },

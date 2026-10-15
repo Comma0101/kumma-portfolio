@@ -1,18 +1,20 @@
 "use client";
 
 import { useRef } from "react";
-import Pen from "./Pen";
-import { loop } from "./pen";
-import { draw, useBeat } from "./useBeat";
+import Ink, { type Trace } from "./Ink";
+import { fitPoints, loop } from "./pen";
+import { draw, reveal, useBeat } from "./useBeat";
 import styles from "./Front.module.css";
 
-const circle = loop({ seed: 51, overshoot: 0.06 });
+// The open circle beside the sutra let go; this one closes. Discipline.
+const circle: Trace = ({ width, height }) => ({
+  points: fitPoints(loop({ seed: 51, overshoot: 0.06 }), { x: 0, y: 0, width, height }),
+});
 
 export default function Body() {
   const ref = useRef<HTMLElement>(null);
-  // One slow, unbroken stroke: a clean circle.
   useBeat(ref, (root, tl) => {
-    draw(tl, root.querySelector("[data-pen]"), 1.6, 0.2);
+    draw(tl, reveal(root, "circle"), { duration: 1.7, position: 0.2 });
   });
 
   return (
@@ -23,7 +25,7 @@ export default function Body() {
           Clean{" "}
           <span className={styles.circled}>
             circle.
-            <Pen d={circle} className={styles.circleRing} />
+            <Ink trace={circle} mark="circle" size={3} seed={51} className={styles.circleRing} />
           </span>
         </span>
       </h2>

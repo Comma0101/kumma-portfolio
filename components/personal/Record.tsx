@@ -1,179 +1,148 @@
 "use client";
 
 import { useRef } from "react";
-import Pen from "./Pen";
-import { loop } from "./pen";
-import { count, draw, useBeat } from "./useBeat";
+import Ink, { type Trace } from "./Ink";
+import { anchor, at, threadX } from "./anchors";
+import { handLine } from "./pen";
+import { draw, ease, reveal, useBeat, useScrub } from "./useBeat";
 import { X_URL } from "./links";
 import { journal, net, type JournalEntry } from "@/data/journal";
 import styles from "./Front.module.css";
 
-const ring = loop({ seed: 41, overshoot: 0.18 });
+// The margin rule of the notebook is the same red line, passing through.
+const margin: Trace = ({ height }, host) => ({
+  points: handLine([threadX(host), -2], [threadX(host), height + 2], 21, 0.5),
+});
+
+// The trade as a decision line, not a price chart: premiums and the share
+// price are different units, so there is no y-axis. The pen goes from the
+// buy to the two sells; what the plan would have held is left in pencil.
+const decision: Trace = (_, host) => {
+  const buy = anchor(host, "buy");
+  const first = anchor(host, "sell-1");
+  const second = anchor(host, "sell-2");
+  if (!buy || !first || !second) return { points: [] };
+  const start = at(buy, 0.5, 0.5);
+  const a = at(first, 0.5, 0.5);
+  const b = at(second, 0.5, 0.5);
+  return {
+    points: [...handLine(start, a, 31, 0.8), ...handLine(a, b, 32, 0.6).slice(1)],
+  };
+};
+
+const usd = (value: number) => `$${value}`;
 
 function stamp(date: string) {
   const [, month, day] = date.split("-");
   return `${month}.${day}`;
 }
 
-function Entry({ entry }: { entry: JournalEntry }) {
-  const receipt = useRef<HTMLDivElement>(null);
-  const plan = useRef<HTMLDivElement>(null);
+function Entry({ entry, index }: { entry: JournalEntry; index: number }) {
+  const confession = useRef<HTMLDivElement>(null);
+  const line = useRef<HTMLDivElement>(null);
   const result = net(entry);
 
-  // The receipt: numbers land, then get circled.
-  useBeat(receipt, (root, tl) => {
-    root.querySelectorAll("[data-count]").forEach((number, index) => {
-      count(tl, number, 0.9, index * 0.12);
-    });
-    draw(tl, root.querySelector("[data-pen]"), 0.8, ">-0.1");
-  });
-
-  // The edit: the plan gets struck, the truth is written beside it.
-  useBeat(plan, (root, tl) => {
+  // The edit: the plan is struck, the truth is written in the margin.
+  useBeat(confession, (root, tl) => {
     tl.fromTo(
       root.querySelector("[data-strike]"),
       { "--strike": "0%" },
-      { "--strike": "100%", duration: 0.7, ease: "power1.inOut" },
-      0.15,
+      { "--strike": "100%", duration: 0.7, ease: ease.hand },
+      0.1,
     );
     tl.fromTo(
       root.querySelector("[data-write]"),
-      { clipPath: "inset(0% 100% 0% 0%)" },
-      { clipPath: "inset(0% 0% 0% 0%)", duration: 1.1, ease: "power1.inOut" },
+      { clipPath: "inset(-20% 100% -20% 0%)" },
+      { clipPath: "inset(-20% 0% -20% 0%)", duration: 1, ease: ease.hand },
       ">0.05",
     );
-    tl.fromTo(
-      root.querySelectorAll("[data-fade]"),
-      { opacity: 0 },
-      { opacity: 1, duration: 0.6, stagger: 0.25 },
-      ">0.1",
-    );
   });
+
+  // The reader's scroll draws the trade.
+  useScrub(
+    line,
+    (root, tl) => {
+      draw(tl, reveal(root, "decision"), { duration: 1, ease: "none" });
+    },
+    { start: "top 85%", end: "bottom 45%" },
+  );
 
   return (
     <article className={styles.entry}>
       <p className={styles.stamp}>
+        <span>Entry {String(index + 1).padStart(2, "0")}</span>
         <time dateTime={entry.date}>{stamp(entry.date)}</time>
+        <span>{entry.contract}</span>
       </p>
       <h3 className={styles.entryTitle}>{entry.title}</h3>
 
-      <div ref={receipt} className={styles.receipt}>
-        <p className={styles.leg}>
-          <span>Bought</span>
-          <span>{entry.contract}</span>
-          <span className={styles.amount}>
-            −$<span data-count={entry.cost}>{entry.cost}</span>
-          </span>
-        </p>
-        <p className={styles.leg}>
-          <span>Sold at the open</span>
-          <span className={styles.exits}>
-            {entry.exits.map((exit, index) => (
-              <span key={index}>
-                {index > 0 && <i> · </i>}+$<span data-count={exit}>{exit}</span>
-              </span>
-            ))}
-            <Pen d={ring} className={styles.exitsRing} />
-          </span>
-        </p>
-        <p className={styles.net}>
-          {result >= 0 ? "+" : "−"}$<span data-count={Math.abs(result)}>{Math.abs(result)}</span>
-        </p>
-      </div>
-
-      <div ref={plan} className={styles.plan}>
+      <div ref={confession} className={styles.confession}>
         <p className={styles.planText}>
-          <span className={styles.label}>Plan</span>
+          <span className={styles.label}>The plan</span>
           <del className={styles.struck} data-strike>
             {entry.plan}
           </del>
         </p>
         <p className={styles.margin} data-write>
-          {entry.outcome}
+          {entry.fact}
         </p>
-        <p className={styles.lesson} data-fade>
-          {entry.lesson}
-        </p>
-        {entry.after && (
-          <p className={styles.after} data-fade>
-            {entry.after}
-          </p>
-        )}
-        <a className={styles.receiptLink} href={entry.url ?? X_URL} data-fade>
-          Receipt on X ↗
-        </a>
+        <p className={styles.admission}>{entry.admission}</p>
+        <p className={styles.lesson}>{entry.lesson}</p>
       </div>
+
+      <div ref={line} className={styles.decision}>
+        <span className={styles.event} style={{ left: "4%" }}>
+          <i className={styles.dot} data-anchor="buy" />
+          <span>Bought</span>
+          <b>−{usd(entry.cost)}</b>
+        </span>
+        {entry.exits.map((exit, i) => (
+          <span
+            key={exit}
+            className={`${styles.event} ${styles.sell} ${i > 0 ? styles.above : ""}`}
+            style={{ left: `${44 + i * 20}%` }}
+          >
+            <i className={styles.cross} data-anchor={`sell-${i + 1}`}>
+              ×
+            </i>
+            <span>{i === 0 ? "Sold one at the open" : "Sold the other"}</span>
+            <b>+{usd(exit)}</b>
+          </span>
+        ))}
+        <span className={styles.ghost} aria-hidden="true" />
+        <span className={`${styles.event} ${styles.later}`} style={{ left: "96%" }}>
+          <span>The plan would have held.</span>
+          <b>{entry.after}</b>
+        </span>
+        <Ink trace={decision} mark="decision" size={3} seed={31} className={styles.decisionInk} />
+      </div>
+
+      <p className={styles.receipt}>
+        <span>Net {result >= 0 ? "+" : "−"}{usd(Math.abs(result))}</span>
+        <span>A journal, not advice. Options are risky.</span>
+        <a href={entry.url ?? X_URL}>Receipt on X ↗</a>
+      </p>
     </article>
   );
 }
 
-function Chase() {
-  const ref = useRef<HTMLParagraphElement>(null);
-  // Price runs. The line does not.
-  useBeat(ref, (root, tl) => {
-    tl.fromTo(
-      root.querySelector("[data-price]"),
-      { xPercent: -120, left: "0%", opacity: 1 },
-      { xPercent: 0, left: "100%", duration: 1.15, ease: "power2.in" },
-      0.2,
-    ).to(root.querySelector("[data-price]"), { opacity: 0, duration: 0.2 }, ">-0.1");
-  });
-  return (
-    <p ref={ref} className={`${styles.rule} ${styles.chase}`}>
-      <span className={styles.price} data-price aria-hidden="true">
-        price →
-      </span>
-      Don’t chase.
-    </p>
-  );
-}
-
-function Small() {
-  const ref = useRef<HTMLParagraphElement>(null);
-  // Size shrinks; weight holds.
-  useBeat(ref, (root, tl) => {
-    tl.fromTo(
-      root.querySelector("[data-small]"),
-      { "--wdth": 125, scale: 1 },
-      { "--wdth": 62, scale: 0.58, duration: 1.2, ease: "expo.inOut" },
-      0.15,
-    );
-  });
-  return (
-    <p ref={ref} className={styles.rule}>
-      <span className={styles.small} data-small>
-        Stay small.
-      </span>
-    </p>
-  );
-}
-
 export default function Record() {
+  const ref = useRef<HTMLElement>(null);
+  useBeat(ref, (root, tl) => {
+    draw(tl, reveal(root, "margin"), { duration: 1.6, position: 0 });
+  });
+
   return (
-    <section className={styles.record} aria-labelledby="record">
+    <section ref={ref} className={styles.record} aria-labelledby="record">
+      <Ink trace={margin} mark="margin" size={2.2} seed={21} className={styles.thread} />
       <header className={styles.recordHead}>
         <h2 id="record">The record.</h2>
-        <p>Trades as posted, receipts on X. Wins, and the rules I broke getting them.</p>
+        <p>The plan, what I did, and what it cost. Posted on X as it happens.</p>
       </header>
 
-      {journal.map((entry) => (
-        <Entry key={entry.date + entry.contract} entry={entry} />
+      {journal.map((entry, index) => (
+        <Entry key={entry.date + entry.contract} entry={entry} index={index} />
       ))}
-
-      <div className={styles.rules} aria-label="Rules">
-        <Chase />
-        <Small />
-        <p className={styles.rule}>
-          Stay bored.
-          <span className={styles.still}>(nothing moves here.)</span>
-        </p>
-        <p className={styles.ruleCoda}>
-          There’s always another candle. You don’t need to catch all of them, just
-          the ones you know.
-        </p>
-      </div>
-
-      <p className={styles.disclaimer}>A journal, not advice. Options are risky.</p>
     </section>
   );
 }

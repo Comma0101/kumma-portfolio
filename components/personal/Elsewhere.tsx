@@ -1,6 +1,4 @@
 import Link from "next/link";
-import Pen from "./Pen";
-import { underline } from "./pen";
 import styles from "./Front.module.css";
 
 const items = [
@@ -9,26 +7,16 @@ const items = [
   { href: "/projects", title: "Systems I build", kind: "AI work" },
 ];
 
+// A quiet row, not a section: the page is about the record and the rules.
 export default function Elsewhere() {
   return (
-    <section className={styles.elsewhere} aria-labelledby="elsewhere">
-      <h2 id="elsewhere" className={styles.label}>
-        Elsewhere
-      </h2>
-      <ol>
-        {items.map((item, index) => (
-          <li key={item.href}>
-            <Link href={item.href}>
-              <span className={styles.index}>0{index + 1}</span>
-              <span className={styles.title}>
-                {item.title}
-                <Pen d={underline({ seed: 60 + index, y: 60 })} className={styles.hoverLine} />
-              </span>
-              <span className={styles.kind}>{item.kind}</span>
-            </Link>
-          </li>
-        ))}
-      </ol>
-    </section>
+    <nav className={styles.elsewhere} aria-label="Elsewhere">
+      {items.map((item) => (
+        <Link key={item.href} href={item.href}>
+          <span className={styles.kind}>{item.kind}</span>
+          <span className={styles.title}>{item.title} →</span>
+        </Link>
+      ))}
+    </nav>
   );
 }

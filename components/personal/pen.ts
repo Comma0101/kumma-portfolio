@@ -1,10 +1,11 @@
-// Ballpoint strokes as SVG path data, drawn in a 0–100 box so any
-// `viewBox="0 0 100 100" preserveAspectRatio="none"` overlay can stretch
-// them across a word. Seeded so server and client draw the same mark.
+// Ballpoint gestures as point lists. Gestures are authored in a 0–100 box
+// and fitted onto a pixel rectangle; lines between anchors are authored in
+// pixels. Seeded so server and client draw the same mark.
 
-type Point = [number, number];
+export type Point = [number, number];
+export type Box = { x: number; y: number; width: number; height: number };
 
-function random(seed: number) {
+export function random(seed: number) {
   let state = seed >>> 0 || 1;
   return () => {
     state = (state + 0x6d2b79f5) >>> 0;
@@ -15,20 +16,7 @@ function random(seed: number) {
   };
 }
 
-const fmt = (n: number) => String(Number(n.toFixed(1)));
 const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n));
-const at = ([x, y]: Point) => `${fmt(x)} ${fmt(y)}`;
-const mid = (a: Point, b: Point): Point => [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
-
-// Smooth a polyline through its midpoints: the pen passes near every point.
-function smooth(points: Point[]) {
-  if (points.length < 3) return `M ${points.map(at).join(" L ")}`;
-  let d = `M ${at(points[0])}`;
-  for (let i = 1; i < points.length - 1; i += 1) {
-    d += ` Q ${at(points[i])} ${at(mid(points[i], points[i + 1]))}`;
-  }
-  return `${d} L ${at(points[points.length - 1])}`;
-}
 
 export function scribble({
   seed,
@@ -38,7 +26,7 @@ export function scribble({
   seed: number;
   passes?: number;
   axis?: "x" | "y";
-}) {
+}): Point[] {
   const rand = random(seed);
   const points: Point[] = [];
   for (let pass = 0; pass < passes; pass += 1) {
@@ -52,46 +40,62 @@ export function scribble({
       points.push([clamp(x + (rand() - 0.5) * 10, -4, 104), clamp(y, -4, 104)]);
     }
   }
-  return smooth(axis === "y" ? points.map(([x, y]): Point => [y, x]) : points);
+  return axis === "y" ? points.map(([x, y]): Point => [y, x]) : points;
 }
 
-export function underline({ seed, y = 72 }: { seed: number; y?: number }) {
+export function underline({ seed, y = 50 }: { seed: number; y?: number }): Point[] {
   const rand = random(seed);
   const points: Point[] = [];
   for (let i = 0; i <= 5; i += 1) {
     const t = i / 5;
     points.push([t * 100, y - t * 6 + (rand() - 0.5) * 3]);
   }
-  return smooth(points);
+  return points;
 }
 
-export function loop({ seed, overshoot = 0.12 }: { seed: number; overshoot?: number }) {
+// overshoot > 0 closes past a full turn; overshoot < 0 leaves the circle open.
+export function loop({ seed, overshoot = 0.12 }: { seed: number; overshoot?: number }): Point[] {
   const rand = random(seed);
   const start = -Math.PI * (0.55 + rand() * 0.3);
   const sweep = Math.PI * 2 * (1 + overshoot);
-  const steps = 30;
+  const steps = 40;
   const points: Point[] = [];
   for (let i = 0; i <= steps; i += 1) {
     const t = i / steps;
     const angle = start + sweep * t;
     // The hand spirals in slightly, so the closing pass does not retrace.
     const shrink = 1 - 0.07 * t;
-    const wobble = 1 + (rand() - 0.5) * 0.05;
+    const wobble = 1 + (rand() - 0.5) * 0.04;
     points.push([
       50 + Math.cos(angle) * 47 * shrink * wobble,
       50 + Math.sin(angle) * 45 * shrink * wobble,
     ]);
   }
-  return smooth(points);
+  return points;
 }
 
-// Re-express a 0–100 stroke in pixel space for a box of width × height,
-// so the stroke keeps an even width and pathLength stays exact.
-export function fit(d: string, width: number, height: number) {
-  let axis = 0;
-  return d.replace(/-?\d+(\.\d+)?/g, (raw) => {
-    const value = Number(raw) * (axis % 2 === 0 ? width : height) / 100;
-    axis += 1;
-    return fmt(value);
-  });
+export function fitPoints(points: Point[], box: Box): Point[] {
+  return points.map(([x, y]) => [box.x + (x * box.width) / 100, box.y + (y * box.height) / 100]);
+}
+
+// A straight run drawn by hand: exact at both anchors, a slight bow and
+// tremor between them.
+export function handLine(from: Point, to: Point, seed: number, wobble = 1): Point[] {
+  const rand = random(seed);
+  const length = Math.hypot(to[0] - from[0], to[1] - from[1]);
+  const steps = Math.max(2, Math.ceil(length / 60));
+  const nx = length ? -(to[1] - from[1]) / length : 0;
+  const ny = length ? (to[0] - from[0]) / length : 0;
+  const bow = (rand() - 0.5) * Math.min(5, length * 0.01) * wobble;
+  const points: Point[] = [];
+  for (let i = 0; i <= steps; i += 1) {
+    const t = i / steps;
+    const edge = i === 0 || i === steps;
+    const offset = edge ? 0 : Math.sin(Math.PI * t) * bow + (rand() - 0.5) * 1.2 * wobble;
+    points.push([
+      from[0] + (to[0] - from[0]) * t + nx * offset,
+      from[1] + (to[1] - from[1]) * t + ny * offset,
+    ]);
+  }
+  return points;
 }

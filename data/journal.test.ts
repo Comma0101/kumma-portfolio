@@ -17,7 +17,7 @@ test("every entry has a cost, at least one exit, and its lesson", () => {
   for (const entry of journal) {
     assert.ok(entry.cost > 0);
     assert.ok(entry.exits.length > 0 && entry.exits.every((exit) => exit > 0));
-    assert.ok(entry.plan.trim() && entry.outcome.trim());
+    assert.ok(entry.plan.trim() && entry.fact.trim() && entry.admission.trim());
   }
 });
 

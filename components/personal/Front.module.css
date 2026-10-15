@@ -1,4 +1,5 @@
-/* Paper, ink, and one ballpoint red: the X banner as a page. */
+/* Paper, ink, and one ballpoint red: the X banner as a page. One red line
+   runs down the margin and becomes every mark. */
 
 .front {
   --paper: #f2efe8;
@@ -6,6 +7,9 @@
   --grey: #6b6760;
   --red: #a3121b;
   --gutter: max(16px, 4vw);
+  /* Matches threadX() in anchors.ts: where the red line runs. */
+  --thread: calc(var(--gutter) + 30px);
+  --indent: calc(var(--thread) + 1.8rem);
   position: relative;
   overflow-x: clip;
   background: var(--paper);
@@ -56,44 +60,38 @@
   text-transform: uppercase;
 }
 
-/* ---------- The pen ---------- */
+/* ---------- Ink ---------- */
 
-.pen {
+.ink {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
   overflow: visible;
+  color: var(--red);
   pointer-events: none;
+  mix-blend-mode: multiply;
 }
 
-.pen path {
-  fill: none;
-  stroke: var(--red);
-  stroke-width: 2.4px;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+.ink > g path,
+.ink > g circle {
+  fill: currentColor;
+  fill-opacity: 0.93;
+}
+
+.ink [data-reveal] {
   stroke-dasharray: 1 1;
   stroke-dashoffset: 0;
 }
 
 /* Before first paint, anything about to be drawn starts undrawn. */
-:global(html[data-front="motion"]) .front [data-pen] {
+:global(html[data-front="motion"]) .front .ink:not([data-still]) [data-reveal] {
   stroke-dashoffset: 1;
 }
 
-:global(html[data-front="motion"]) .front [data-ink] {
-  clip-path: inset(-6% -60% 106% -60%);
+:global(html[data-front="motion"]) .front [data-strike] {
+  --strike: 0%;
 }
 
 :global(html[data-front="motion"]) .front [data-write] {
-  clip-path: inset(0% 100% 0% 0%);
-}
-
-:global(html[data-front="motion"]) .front [data-gloss],
-:global(html[data-front="motion"]) .front [data-fade],
-:global(html[data-front="motion"]) .front [data-step] {
-  opacity: 0;
+  clip-path: inset(-20% 100% -20% 0%);
 }
 
 :global(html[data-front="motion"]) .front [data-compound] {
@@ -106,19 +104,24 @@
   transform: none;
 }
 
-:global(html[data-front="motion"]) .front [data-strike] {
-  --strike: 0%;
+:global(html[data-front="motion"]) .front [data-light],
+:global(html[data-front="motion"]) .front [data-stop] {
+  transform: scale(0);
 }
 
-:global(html[data-front="motion"]) .front [data-light] {
-  transform: scale(0);
+/* A mark that spans its whole section: the red line passing through. */
+.thread {
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
 }
 
 /* ---------- Opening ---------- */
 
 .opening {
   position: relative;
-  min-height: 92svh;
+  min-height: 94svh;
   padding: 0 var(--gutter);
 }
 
@@ -157,30 +160,11 @@
   height: 110%;
 }
 
-.nameNoise path {
-  stroke-width: 1.5px;
-}
-
-.nameLine {
-  inset: auto 0 auto 0;
-  top: 96%;
-  height: 0.12em;
-}
-
-.nameLine path {
-  stroke-width: 3.2px;
-}
-
-/* Tangle sits under the stroke when lifted, so the name stays readable. */
-.name .pen {
-  mix-blend-mode: multiply;
-}
-
 .portrait {
   position: absolute;
   right: calc(var(--gutter) + 3vw);
-  bottom: 12svh;
-  width: clamp(150px, 20vw, 290px);
+  bottom: 13svh;
+  width: clamp(150px, 19vw, 280px);
   margin: 0;
 }
 
@@ -192,17 +176,10 @@
   mix-blend-mode: multiply;
 }
 
-.portraitRing {
-  top: -13%;
-  left: -15%;
-  width: 130%;
-  height: 126%;
-}
-
 .bio {
   position: absolute;
   left: var(--gutter);
-  bottom: 12svh;
+  bottom: 13svh;
   max-width: 36rem;
   font-size: clamp(1rem, 1.35vw, 1.25rem);
 }
@@ -221,7 +198,7 @@
 
 .compound {
   display: inline-block;
-  font-weight: var(--wght, 820);
+  font-weight: var(--wght, 880);
   font-variation-settings: "wdth" var(--wdth, 125);
 }
 
@@ -233,19 +210,333 @@
   text-transform: uppercase;
 }
 
-/* ---------- The line ---------- */
+/* ---------- The record: a notebook page ---------- */
+
+.record {
+  --rule: 2.4rem;
+  position: relative;
+  padding: calc(var(--rule) * 3) var(--gutter) calc(var(--rule) * 3) var(--indent);
+  /* Ruled so that body text sits on the lines. */
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 calc(var(--rule) * 0.7 - 1px),
+    rgba(20, 20, 20, 0.08) calc(var(--rule) * 0.7 - 1px) calc(var(--rule) * 0.7),
+    transparent calc(var(--rule) * 0.7) var(--rule)
+  );
+}
+
+.recordHead h2 {
+  margin: 0;
+  font-size: clamp(3.6rem, 11vw, 11rem);
+  font-weight: 800;
+  font-variation-settings: "wdth" 62;
+  letter-spacing: -0.03em;
+  line-height: calc(var(--rule) * 3);
+  text-transform: uppercase;
+}
+
+.recordHead p {
+  max-width: 34rem;
+  margin: 0;
+  color: var(--grey);
+  font-size: 1.05rem;
+  line-height: var(--rule);
+}
+
+.entry {
+  margin-top: calc(var(--rule) * 3);
+}
+
+.stamp {
+  display: flex;
+  gap: 1.2rem;
+  margin: 0;
+  color: var(--red);
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+  line-height: var(--rule);
+  text-transform: uppercase;
+}
+
+.entryTitle {
+  margin: 0;
+  font-size: clamp(2.2rem, 5vw, 4.4rem);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: calc(var(--rule) * 2);
+}
+
+.confession {
+  max-width: 62rem;
+  margin-top: var(--rule);
+}
+
+.planText {
+  max-width: 44rem;
+  margin: 0;
+  font-size: clamp(1.1rem, 1.5vw, 1.35rem);
+  line-height: var(--rule);
+}
+
+.planText .label {
+  display: block;
+  line-height: var(--rule);
+}
+
+.struck {
+  /* A hand-drawn strike on every wrapped line, grown by --strike. */
+  color: var(--grey);
+  text-decoration: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 10' preserveAspectRatio='none'%3E%3Cpath d='M1 6.2C34 4.1 70 6.8 104 5.1S168 3.9 199 5.4' fill='none' stroke='%23a3121b' stroke-width='2.6' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") no-repeat 0 58% / var(--strike, 100%) 0.42em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.margin {
+  width: fit-content;
+  margin: var(--rule) 0 0;
+  color: var(--red);
+  font-family: var(--font-note), Georgia, serif;
+  font-size: clamp(2rem, 3.4vw, 3.2rem);
+  font-style: italic;
+  line-height: calc(var(--rule) * 1.5);
+  transform: rotate(-1.6deg);
+  transform-origin: left center;
+}
+
+.admission {
+  margin: 0;
+  font-size: clamp(3.4rem, 10vw, 10rem);
+  font-weight: 800;
+  font-variation-settings: "wdth" 112;
+  letter-spacing: -0.05em;
+  line-height: calc(var(--rule) * 4);
+}
+
+.lesson {
+  margin: 0;
+  font-size: clamp(1.15rem, 1.6vw, 1.4rem);
+  font-weight: 600;
+  line-height: var(--rule);
+}
+
+/* The trade, drawn: no axis, only decisions in order. */
+.decision {
+  position: relative;
+  height: calc(var(--rule) * 6);
+  margin-top: calc(var(--rule) * 2);
+}
+
+.decisionInk {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.event {
+  position: absolute;
+  top: 50%;
+  display: block;
+  font-size: 0.9rem;
+  line-height: 1.35;
+  white-space: nowrap;
+}
+
+.event > span,
+.event > b {
+  position: relative;
+  display: block;
+  top: 1.1rem;
+}
+
+.event > span {
+  color: var(--grey);
+}
+
+.event > b {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.dot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--red);
+  transform: translate(-50%, -50%);
+}
+
+.cross {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: var(--red);
+  font-family: var(--font-note), Georgia, serif;
+  font-size: 2.6rem;
+  font-style: normal;
+  line-height: 1;
+  transform: translate(-50%, -54%);
+}
+
+.sell > span,
+.sell > b {
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+/* The second sell writes above the line so the two never collide. */
+.above {
+  top: auto;
+  bottom: 50%;
+  padding-bottom: 1.5rem;
+}
+
+.above > span,
+.above > b {
+  top: 0;
+}
+
+.above .cross {
+  top: auto;
+  bottom: 0;
+  transform: translate(-50%, 46%);
+}
+
+/* What the plan would have held, in pencil. */
+.ghost {
+  position: absolute;
+  top: 50%;
+  left: 64%;
+  width: 32%;
+  border-top: 1.5px dashed rgba(20, 20, 20, 0.35);
+  transform: rotate(-5deg);
+  transform-origin: left center;
+}
+
+/* Above the line, one tier higher than the second sell. */
+.later {
+  top: auto;
+  bottom: 50%;
+  padding-bottom: 4rem;
+  text-align: right;
+  transform: translateX(-100%);
+}
+
+.later > span,
+.later > b {
+  top: 0;
+}
+
+.later > b {
+  color: var(--grey);
+  font-family: var(--font-note), Georgia, serif;
+  font-size: 1.35rem;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.receipt {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 2rem;
+  margin: var(--rule) 0 0;
+  color: var(--grey);
+  font-size: 0.88rem;
+  line-height: var(--rule);
+}
+
+.receipt > span:first-child {
+  color: var(--ink);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.receipt a {
+  color: var(--red) !important;
+  font-weight: 600;
+  text-underline-offset: 4px;
+}
+
+/* ---------- Rules ---------- */
+
+.rules {
+  position: relative;
+  padding: calc(var(--gutter) * 2) var(--gutter) 16svh var(--indent);
+}
+
+.chase {
+  position: relative;
+}
+
+.rule {
+  position: relative;
+  margin: 0;
+  font-size: clamp(3.6rem, 13.5vw, 14rem);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 0.95;
+}
+
+.chase .rule {
+  padding-bottom: 0.3em;
+}
+
+.price {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  margin: -1.9rem 0 0 0.4rem;
+  color: var(--red);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  opacity: 0;
+  pointer-events: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.small {
+  display: inline-block;
+  font-variation-settings: "wdth" var(--wdth, 62);
+  transform: scale(0.6);
+  transform-origin: left 70%;
+}
+
+.still {
+  margin: 1.1rem 0 0;
+  color: var(--grey);
+  font-family: var(--font-note), Georgia, serif;
+  font-size: 1.35rem;
+  font-style: italic;
+}
+
+.ruleCoda {
+  max-width: 32rem;
+  margin: 4.5rem 0 0;
+  font-size: clamp(1.2rem, 1.8vw, 1.6rem);
+  line-height: 1.3;
+}
+
+/* ---------- The reason (sutra) ---------- */
 
 .line {
   position: relative;
-  min-height: 112svh;
-  padding: 14svh var(--gutter) 12svh;
-  border-top: 1px solid rgba(20, 20, 20, 0.14);
+  min-height: 100svh;
+  padding: 12svh var(--gutter) 12svh var(--indent);
+  border-top: 1px solid rgba(20, 20, 20, 0.12);
 }
 
 .sutra {
   display: block;
   width: fit-content;
-  margin: 0 6vw 0 auto;
+  margin: 0 8vw 0 auto;
   writing-mode: vertical-rl;
   font-family: var(--font-tc), "Noto Serif TC", "Songti TC", serif;
   font-size: min(10.5svh, 17vw);
@@ -263,29 +554,34 @@
   font-weight: 700;
 }
 
-.veil {
-  top: -3%;
-  left: -24%;
-  width: 148%;
-  height: 104%;
+.stopMark {
+  position: relative;
 }
 
-.veil path {
-  stroke-width: 1.6px;
+/* The pen's point, set after the full stop — never on the text. */
+.stopDot {
+  position: absolute;
+  top: 108%;
+  left: calc(50% - 0.1em);
+  width: 0.2em;
+  height: 0.2em;
+  border-radius: 50%;
+  background: var(--red);
 }
 
 .gloss {
   position: absolute;
-  left: var(--gutter);
+  left: var(--indent);
   bottom: 12svh;
-  max-width: 26rem;
+  max-width: 24rem;
 }
 
 .gloss p {
   margin: 0 0 1rem;
-  font-size: clamp(1.15rem, 1.7vw, 1.55rem);
+  font-family: var(--font-note), Georgia, serif;
+  font-size: clamp(1.4rem, 2vw, 1.9rem);
   font-style: italic;
-  line-height: 1.3;
+  line-height: 1.2;
 }
 
 .gloss cite {
@@ -296,260 +592,11 @@
   text-transform: uppercase;
 }
 
-/* ---------- The record ---------- */
-
-.record {
-  --rule: 2.4rem;
-  --margin: calc(var(--gutter) + 4.5rem);
-  position: relative;
-  padding: 16svh var(--gutter) 14svh;
-  background-image:
-    linear-gradient(
-      to right,
-      transparent calc(var(--margin) - 1px),
-      rgba(163, 18, 27, 0.32) calc(var(--margin) - 1px),
-      rgba(163, 18, 27, 0.32) var(--margin),
-      transparent var(--margin)
-    ),
-    repeating-linear-gradient(
-      to bottom,
-      transparent 0 calc(var(--rule) - 1px),
-      rgba(20, 20, 20, 0.07) calc(var(--rule) - 1px) var(--rule)
-    );
-}
-
-.recordHead {
-  padding-left: calc(var(--margin) - var(--gutter) + 1.2rem);
-}
-
-.recordHead h2 {
-  margin: 0;
-  font-size: clamp(3.6rem, 12vw, 12rem);
-  font-weight: 800;
-  font-variation-settings: "wdth" 62;
-  letter-spacing: -0.03em;
-  line-height: 0.82;
-  text-transform: uppercase;
-}
-
-.recordHead p {
-  max-width: 30rem;
-  margin: 1.4rem 0 0;
-  color: var(--grey);
-  font-size: 1.05rem;
-}
-
-.entry {
-  display: grid;
-  grid-template-columns: calc(var(--margin) - var(--gutter)) minmax(0, 1fr) minmax(0, 1fr);
-  column-gap: 1.2rem;
-  margin-top: 12svh;
-}
-
-.stamp {
-  grid-row: 1 / span 3;
-  margin: 0.6rem 0 0;
-  color: var(--red);
-  font-size: 1.05rem;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-}
-
-.entryTitle {
-  grid-column: 2 / -1;
-  margin: 0 0 2.4rem;
-  font-size: clamp(2.6rem, 7vw, 6.5rem);
-  font-style: italic;
-  font-weight: 700;
-  letter-spacing: -0.035em;
-  line-height: 0.9;
-}
-
-.receipt {
-  grid-column: 2;
-  padding-right: 4vw;
-}
-
-.leg {
-  display: grid;
-  grid-template-columns: 9rem minmax(0, 1fr) auto;
-  gap: 1rem;
-  align-items: baseline;
-  margin: 0;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid rgba(20, 20, 20, 0.2);
-  font-size: 1.05rem;
-  font-variant-numeric: tabular-nums;
-}
-
-.leg > span:first-child {
-  color: var(--grey);
-}
-
-.amount,
-.exits {
-  justify-self: end;
-  font-weight: 700;
-}
-
-.exits {
-  position: relative;
-  grid-column: 2 / -1;
-  white-space: nowrap;
-}
-
-.exits i {
-  color: var(--grey);
-  font-style: normal;
-  font-weight: 400;
-}
-
-.exitsRing {
-  top: -70%;
-  left: -14%;
-  width: 128%;
-  height: 240%;
-}
-
-.net {
-  margin: 2.2rem 0 0;
-  font-size: clamp(4.4rem, 12vw, 11.5rem);
-  font-weight: 800;
-  font-variant-numeric: tabular-nums;
-  font-variation-settings: "wdth" 125;
-  letter-spacing: -0.05em;
-  line-height: 0.85;
-}
-
-.plan {
-  grid-column: 3;
-  padding-top: 0.4rem;
-}
-
-.planText {
-  margin: 0;
-  font-size: clamp(1.15rem, 1.6vw, 1.45rem);
-  line-height: 1.35;
-}
-
-.planText .label {
-  display: block;
-  margin-bottom: 0.4rem;
-}
-
-.struck {
-  /* A hand-drawn strike on every wrapped line, grown by --strike. */
-  color: var(--grey);
-  text-decoration: none;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 10' preserveAspectRatio='none'%3E%3Cpath d='M1 6.2C34 4.1 70 6.8 104 5.1S168 3.9 199 5.4' fill='none' stroke='%23a3121b' stroke-width='2.6' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") no-repeat 0 58% / var(--strike, 100%) 0.42em;
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
-}
-
-.margin {
-  margin: 1.8rem 0 1.6rem -0.2rem;
-  color: var(--red);
-  font-size: clamp(1.7rem, 3vw, 2.8rem);
-  font-style: italic;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1.02;
-  transform: rotate(-2.2deg);
-  transform-origin: left center;
-}
-
-.lesson {
-  margin: 0;
-  font-size: 1.25rem;
-  font-weight: 600;
-}
-
-.after {
-  margin: 0.5rem 0 0;
-  color: var(--grey);
-}
-
-.receiptLink {
-  display: inline-block;
-  margin-top: 1.6rem;
-  color: var(--red) !important;
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-underline-offset: 4px;
-}
-
-.rules {
-  margin-top: 22svh;
-  padding-left: calc(var(--margin) - var(--gutter) + 1.2rem);
-}
-
-.rule {
-  position: relative;
-  z-index: 0;
-  margin: 0;
-  overflow: hidden;
-  font-size: clamp(3.6rem, 13.5vw, 14rem);
-  font-weight: 800;
-  letter-spacing: -0.045em;
-  line-height: 0.95;
-}
-
-.chase {
-  padding-bottom: 0.22em;
-}
-
-/* Price runs along the baseline; the words above it do not move. */
-.price {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  color: var(--red);
-  font-size: 0.15em;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  line-height: 1;
-  opacity: 0;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.small {
-  display: inline-block;
-  font-variation-settings: "wdth" var(--wdth, 62);
-  transform: scale(0.58);
-  transform-origin: left 70%;
-}
-
-.still {
-  display: block;
-  margin: 0.4rem 0 0 0.3rem;
-  color: var(--grey);
-  font-size: 1rem;
-  font-style: italic;
-  font-weight: 400;
-  letter-spacing: 0;
-}
-
-.ruleCoda {
-  max-width: 32rem;
-  margin: 4.5rem 0 0;
-  font-size: clamp(1.2rem, 1.8vw, 1.6rem);
-  line-height: 1.3;
-}
-
-.disclaimer {
-  margin: 12svh 0 0;
-  padding-left: calc(var(--margin) - var(--gutter) + 1.2rem);
-  color: var(--grey);
-  font-size: 0.82rem;
-  letter-spacing: 0.06em;
-}
-
 /* ---------- Body ---------- */
 
 .body {
   display: grid;
-  min-height: 100svh;
+  min-height: 70svh;
   align-content: center;
   gap: 8svh;
   padding: 12svh var(--gutter);
@@ -567,7 +614,7 @@
 }
 
 .bodyLine > span:first-child {
-  font-weight: 300;
+  font-weight: 200;
 }
 
 .bodyLine > span:last-child {
@@ -587,10 +634,6 @@
   height: 116%;
 }
 
-.circleRing path {
-  stroke-width: 2.8px;
-}
-
 .bodyNote {
   justify-self: end;
   max-width: 24rem;
@@ -605,106 +648,24 @@
   color: var(--grey);
 }
 
-/* ---------- Elsewhere ---------- */
-
-.elsewhere {
-  padding: 10svh var(--gutter) 6svh;
-}
-
-.elsewhere ol {
-  margin: 1.6rem 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.elsewhere li {
-  border-top: 1px solid rgba(20, 20, 20, 0.85);
-}
-
-.elsewhere li:last-child {
-  border-bottom: 1px solid rgba(20, 20, 20, 0.85);
-}
-
-.elsewhere a {
-  display: grid;
-  grid-template-columns: 3.5rem minmax(0, 1fr) auto;
-  align-items: baseline;
-  padding: 1.4rem 0;
-  text-decoration: none;
-}
-
-.index {
-  color: var(--red);
-  font-size: 0.9rem;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-}
-
-.title {
-  position: relative;
-  justify-self: start;
-  font-size: clamp(2rem, 6.4vw, 5.6rem);
-  font-weight: 700;
-  font-variation-settings: "wdth" 80;
-  letter-spacing: -0.035em;
-  line-height: 1;
-}
-
-.kind {
-  color: var(--grey);
-  font-size: 0.85rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.hoverLine {
-  inset: auto 0;
-  top: 88%;
-  height: 0.16em;
-}
-
-.hoverLine path {
-  stroke-width: 3px;
-  stroke-dashoffset: 1;
-  transition: stroke-dashoffset 0.55s cubic-bezier(0.65, 0, 0.35, 1);
-}
-
-.elsewhere a:hover .hoverLine path,
-.elsewhere a:focus-visible .hoverLine path {
-  stroke-dashoffset: 0;
-}
-
 /* ---------- Close ---------- */
 
 .close {
-  padding: 18svh var(--gutter) 5svh;
+  padding: 4svh var(--gutter) 5svh;
 }
 
 .creed {
+  max-width: 22ch;
   margin: 0;
-  font-size: clamp(1.9rem, 4.6vw, 4.6rem);
-  letter-spacing: -0.03em;
-  line-height: 1.08;
-}
-
-.creedPart {
-  display: block;
-}
-
-.creedPart:nth-child(2) {
-  padding-left: 8vw;
-}
-
-.creedPart:nth-child(3) {
-  padding-left: 16vw;
-}
-
-.quiet {
   color: var(--grey);
+  font-size: clamp(1.9rem, 4vw, 4rem);
   font-weight: 300;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
 }
 
-.keyword {
+.creed b {
+  color: var(--ink);
   font-weight: 800;
 }
 
@@ -715,20 +676,19 @@
   margin-left: 0.04em;
   border-radius: 50%;
   background: var(--red);
-  box-shadow: 0 0 0.7em rgba(163, 18, 27, 0.5);
 }
 
 .followBig {
   position: relative;
   display: inline-block;
-  margin-top: 16svh;
+  margin-top: 12svh;
   font-size: clamp(3.4rem, 12.5vw, 15rem);
-  white-space: nowrap;
   font-weight: 800;
   font-variation-settings: "wdth" 125;
   letter-spacing: -0.055em;
   line-height: 0.85;
   text-decoration: none;
+  white-space: nowrap;
   transition: color 0.3s ease;
 }
 
@@ -737,20 +697,48 @@
 }
 
 .followLine {
-  inset: auto 0;
-  top: 94%;
-  height: 0.14em;
+  left: 0;
+  top: 90%;
+  width: 100%;
+  height: 0.16em;
 }
 
-.followLine path {
-  stroke-width: 3.4px;
+.elsewhere {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 3rem;
+  margin-top: 9svh;
+  padding-top: 1.4rem;
+  border-top: 1px solid rgba(20, 20, 20, 0.6);
+}
+
+.elsewhere a {
+  display: grid;
+  gap: 0.2rem;
+  text-decoration: none;
+}
+
+.kind {
+  color: var(--grey);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.title {
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.elsewhere a:hover .title {
+  color: var(--red);
 }
 
 .colophon {
   display: flex;
   flex-wrap: wrap;
   gap: 0.6rem 2rem;
-  margin: 5rem 0 0;
+  margin: 3rem 0 0;
   color: var(--grey);
   font-size: 0.82rem;
   letter-spacing: 0.12em;
@@ -760,20 +748,45 @@
 /* ---------- Phone ---------- */
 
 @media (max-width: 720px) {
+  .front {
+    --thread: calc(var(--gutter) * 0.5);
+    --indent: calc(var(--thread) + 1.2rem);
+  }
+
   .name {
     margin-top: 16svh;
     font-size: 19vw;
   }
 
   .portrait {
-    right: calc(var(--gutter) + 7vw);
-    bottom: 34svh;
-    width: 40vw;
+    right: calc(var(--gutter) + 4vw);
+    bottom: 36svh;
+    width: 36vw;
   }
 
   .bio {
     right: var(--gutter);
-    bottom: 7svh;
+    bottom: 8svh;
+  }
+
+  .record {
+    padding-right: var(--gutter);
+  }
+
+  .recordHead h2 {
+    line-height: calc(var(--rule) * 2);
+  }
+
+  .admission {
+    line-height: calc(var(--rule) * 2);
+  }
+
+  .decision {
+    height: calc(var(--rule) * 7);
+  }
+
+  .event {
+    font-size: 0.78rem;
   }
 
   .line {
@@ -790,46 +803,12 @@
 
   .gloss {
     position: static;
-  }
-
-  .record {
-    --margin: calc(var(--gutter) + 0.6rem);
-  }
-
-  .recordHead,
-  .rules,
-  .disclaimer {
-    padding-left: 1.4rem;
-  }
-
-  .entry {
-    grid-template-columns: minmax(0, 1fr);
-    padding-left: 1.4rem;
-  }
-
-  .stamp,
-  .entryTitle,
-  .receipt,
-  .plan {
-    grid-column: 1;
-    grid-row: auto;
+    margin-top: 7rem;
   }
 
   .stamp {
-    margin-bottom: 0.6rem;
-  }
-
-  .receipt {
-    padding-right: 0;
-  }
-
-  .plan {
-    margin-top: 3.4rem;
-  }
-
-  .leg {
-    grid-template-columns: 6.5rem minmax(0, 1fr) auto;
-    font-size: 0.95rem;
+    flex-wrap: wrap;
+    gap: 0 1rem;
   }
 
   .bodyLine > span:last-child {
@@ -839,14 +818,6 @@
   .bodyNote {
     justify-self: start;
   }
-
-  .elsewhere a {
-    grid-template-columns: 2.4rem minmax(0, 1fr);
-  }
-
-  .kind {
-    display: none;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -855,7 +826,6 @@
     display: none;
   }
 
-  .hoverLine path,
   .followBig {
     transition: none;
   }
