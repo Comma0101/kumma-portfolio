@@ -99,3 +99,27 @@ export function handLine(from: Point, to: Point, seed: number, wobble = 1): Poin
   }
   return points;
 }
+
+// Three steps forward, two back, until the line arrives: each advance runs
+// along a row, each retreat cuts back down-left to the next row, so the
+// walk reads as a staircase that still reaches the far side.
+export function steps({ seed, cycles = 4 }: { seed: number; cycles?: number }): Point[] {
+  const rand = random(seed);
+  const unit = 100 / (cycles + 2);
+  const row = 88 / cycles;
+  const points: Point[] = [[0, 6]];
+  let x = 0;
+  for (let i = 0; i < cycles; i += 1) {
+    const y = 6 + row * i;
+    const ahead = x + unit * 3;
+    const back = x + unit;
+    points.push([x + unit * 1.5, y + (rand() - 0.5) * 2]);
+    points.push([ahead, y]);
+    points.push([ahead + unit * 0.06, y + row * 0.12]);
+    points.push([back, y + row]);
+    x = back;
+  }
+  points.push([x + unit * 1.5, 94 + (rand() - 0.5) * 2]);
+  points.push([100, 94]);
+  return points.map(([px, py]): Point => [Math.min(100, Math.max(0, px)), py]);
+}

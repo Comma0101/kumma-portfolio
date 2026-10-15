@@ -1,64 +1,33 @@
 # kumma.me as the front face of @Comma_9fie — design
 
-Date: 2026-10-14 · Branch: `feature/personal-retro`
+Date: 2026-10-14 (revised after team review and owner feedback) · Branch: `feature/personal-retro`
 
 ## Intent
 
-- **Said by Kumma:** X (@Comma_9fie) is now the main thing. kumma.me is the front face and first impression. The typography should animate *as language* so the viewer knows the message. Artistic, not normal. Claude makes the design calls.
-- **Assumed:** most visitors arrive from the `kumma.me` link in the X bio, right after reading a trade receipt, a discipline note, or a body/mind post. Success = they recognise the same person in ~2 s, see proof and voice within one scroll, and leave toward "Follow on X". The AI-systems practice stays reachable (`/projects`, `/work`, `/blog`) but is no longer the homepage.
+- **Owner:** X (@Comma_9fie) is the main channel; kumma.me is the front face. Typography should animate as language. Artistic, not normal. Content should not be his X posts. No personal information. Claude decides.
+- **Therefore:** the page carries who he is behind the posts (ideas and practice), not the posts, and nothing private. Public material only: the X bio, name, avatar, Los Angeles, general practices and principles.
 
-## Identity (from the X banner + avatar)
+## Motion language: "One pen, one take"
 
-- Paper `#f2efe8` with fine grain, ink `#141414`, one ballpoint red `#a3121b`. Nothing else.
-- Type: Archivo variable (weight + `wdth` 62–125, so width becomes an expressive axis) for Latin; Noto Serif TC for the sutra.
-- The only ornament is the red pen: scribble, strike, circle, underline, all drawn as SVG strokes.
-- Layout is editorial and asymmetric: type bleeds off edges, the sutra is set vertically (`vertical-rl`), no cards, no grids of tiles.
+Decided by a four-role team review (motion director, creative technologist, audience strategist, award juror):
 
-## Motion grammar — the type acts its meaning
+- One red ballpoint line enters at the opening and runs down the margin, becoming each section's mark.
+- Real pen physics: variable width from pressure (pen presses into turns), ink pools at reversals, multiply into paper grain (`ink.ts`, perfect-freehand), revealed through a drawn mask centreline (`Ink.tsx`).
+- Type never flies or fades; it changes only on its own axes (weight, width, size) or by being written/struck. Every line is readable at rest.
+- Two beats follow scroll ("compounds.", "The body catches up."); everything else is triggered once and holds. Reduced motion = every final frame.
+- The pen never touches sacred text.
 
-1. Readable at rest. Every line is legible within a second; motion lands on the word that carries meaning.
-2. One verb per line.
-3. The red pen is the voice (annotation marks).
-4. Each beat plays once on entering the viewport, ~1 s, then holds. No pinning. `prefers-reduced-motion` shows the finished, annotated page.
+## Page
 
-| Beat | Line | Motion |
-|---|---|---|
-| Opening | **Kumma** | A red scribble tangles over the name, then retracts while one clean underline draws: noise → focus. |
-| Opening | Attention goes where it **compounds.** | "compounds." grows in weight and width (variable axes): compounding made visible. |
-| Opening | portrait | Black-and-white avatar; a red hand-drawn circle closes around it. |
-| The line | 凡所有相，皆是虛妄； | Column inks downward like a brush, then red scribble covers 皆是虛妄. |
-| The line | 若見諸相非相，則見如來。 | Second column inks down clean and stays sharp. English gloss arrives after (two beats). |
-| Record | Plan: the runner stays unless the low breaks. | Red strike-through; margin note writes in: "The low did not break. I sold it anyway." |
-| Record | $75 → $170 · $197 | Numbers count up; red circle around the exits. |
-| Rules | **Don't chase.** | The word "price" streaks across behind it; the line does not move. |
-| Rules | **Stay small.** | Width collapses 125→62 and size drops; weight holds. |
-| Rules | **Stay bored.** | Nothing moves, by design. Caption: "(nothing moves here.)" |
-| Body | Clean energy. Clean **circle.** | One continuous red circle draws closed around "circle." |
-| Close | presence · reason · emotion · **light.** | Words step into place; the final full stop fills red. |
-
-## Page order (`/`)
-
-1. **Opening** (one screen; next section peeks in to avoid a false floor): name, bio, portrait, Follow @Comma_9fie.
-2. **The line**: Diamond Sutra, Kumārajīva (Taishō T235, CBETA punctuation per `research_notes/.../sacred-text.md`), vertical, with gloss.
-3. **The record**: trade journal entries from `data/journal.ts` (seeded with the 2026-10-09 TSLA entry) + the three rules + "A journal, not advice. Options are risky."
-4. **Body**: clean circle.
-5. **Index**: On Emotions, Same Light, Systems I build → `/projects`.
-6. **Close**: creed, large Follow on X, Los Angeles.
-
-## Architecture
-
-- `components/personal/pen.ts`: pure, seeded generators for SVG path data (`scribble`, `strike`, `loop`, `underline`). Unit-tested with `node:test`.
-- `components/personal/useBeat.ts`: IntersectionObserver → one GSAP timeline per beat, played once; reduced motion jumps to the end state.
-- `components/personal/Front.tsx` + one small component per section; `Front.module.css`.
-- `data/journal.ts`: typed entries (date, title, legs, plan, outcome, lesson, url?). Unit-tested for shape.
-- Replaces `TypeStage.tsx` and `Portrait.module.css` (and their 27 strict-mode errors).
-- Metadata: `/og/portrait.png` (paper card: portrait, name, bio, red rule) generated by `scripts/generate-og.mjs`; `summary_large_image` on `/` only. Other pages keep `home.png`.
-- Nav, footer, intro overlay and agent banner stay hidden on `/` (already true).
-
-## Verification
-
-`tsc --noEmit` clean for touched files, `npm test` (with new pen/journal tests), `npm run build`, Playwright screenshots desktop 1440×900 and mobile 390×844, including reduced motion.
+1. **Opening** — Kumma, public bio, portrait. Red tangle pulls taut into one underline, then the line walks off down the page. "compounds." grows in weight/width with scroll.
+2. **Understanding arrives first. / The body catches up.** — outline already present; solid ink grows into it with scroll.
+3. **Three steps forward, two back.** — the line walks a staircase: forward along a row, back down-left, and still reaches the far side.
+4. **Practice** — Trade · Build (→ /projects) · Study · Draw, one line each.
+5. **Trade, in three rules** — Don't chase (price runs off the page; the words stay), Stay small (width collapses), Stay bored (ruler-flat line, nothing moves).
+6. **The reason** — Diamond Sutra (Kumārajīva, CBETA punctuation), vertical; open ensō beside, red point after 。.
+7. **無** — written by the red pen in true stroke order (Make Me a Hanzi data, Arphic PL); Daodejing 11: 三十輻，共一轂，當其無，有車之用。
+8. **Close** — Follow on X (inked underline), writing links, colophon.
 
 ## Out of scope
 
-Photos for Body (slot added when provided), higher-resolution portrait (avatar is 400 px, so it is set small with an ink treatment), merging to `master`.
+Personal history, finances, health, relationships, divination, trading results or setups.

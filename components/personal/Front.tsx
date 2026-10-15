@@ -1,9 +1,11 @@
 import { Archivo, Instrument_Serif, Noto_Serif_TC } from "next/font/google";
 import Opening from "./Opening";
-import Record from "./Record";
+import CatchUp from "./CatchUp";
+import Steps from "./Steps";
+import Practice from "./Practice";
 import Rules from "./Rules";
 import Line from "./Line";
-import Body from "./Body";
+import Wu from "./Wu";
 import Close from "./Close";
 import MotionFlag from "./MotionFlag";
 import styles from "./Front.module.css";
@@ -36,8 +38,9 @@ const notoSerifTC = Noto_Serif_TC({
 // navigations, where this script does not run.
 const motion = `try{if(!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.dataset.front="motion"}catch(e){}`;
 
-// Order: who he is, proof, the rules, the reason behind them, the body,
-// the invitation.
+// Order: who he is, how change actually happens, what he practises, the
+// rules of one practice, the reason behind them, the empty centre, the
+// invitation. Nothing private: only the public bio, ideas, and practice.
 export default function Front() {
   return (
     <div
@@ -46,10 +49,12 @@ export default function Front() {
       <script dangerouslySetInnerHTML={{ __html: motion }} />
       <MotionFlag />
       <Opening />
-      <Record />
+      <CatchUp />
+      <Steps />
+      <Practice />
       <Rules />
       <Line />
-      <Body />
+      <Wu />
       <Close />
     </div>
   );

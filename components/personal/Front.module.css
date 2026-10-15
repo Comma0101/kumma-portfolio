@@ -86,12 +86,8 @@
   stroke-dashoffset: 1;
 }
 
-:global(html[data-front="motion"]) .front [data-strike] {
-  --strike: 0%;
-}
-
-:global(html[data-front="motion"]) .front [data-write] {
-  clip-path: inset(-20% 100% -20% 0%);
+:global(html[data-front="motion"]) .front [data-body] {
+  --wght: 100;
 }
 
 :global(html[data-front="motion"]) .front [data-compound] {
@@ -104,7 +100,6 @@
   transform: none;
 }
 
-:global(html[data-front="motion"]) .front [data-light],
 :global(html[data-front="motion"]) .front [data-stop] {
   transform: scale(0);
 }
@@ -210,256 +205,169 @@
   text-transform: uppercase;
 }
 
-/* ---------- The record: a notebook page ---------- */
+/* ---------- Understanding arrives first ---------- */
 
-.record {
-  --rule: 2.4rem;
+.catchUp {
   position: relative;
-  padding: calc(var(--rule) * 3) var(--gutter) calc(var(--rule) * 3) var(--indent);
-  /* Ruled so that body text sits on the lines. */
-  background-image: repeating-linear-gradient(
-    to bottom,
-    transparent 0 calc(var(--rule) * 0.7 - 1px),
-    rgba(20, 20, 20, 0.08) calc(var(--rule) * 0.7 - 1px) calc(var(--rule) * 0.7),
-    transparent calc(var(--rule) * 0.7) var(--rule)
-  );
+  padding: 16svh var(--gutter) 18svh var(--indent);
 }
 
-.recordHead h2 {
-  margin: 0;
-  font-size: clamp(3.6rem, 11vw, 11rem);
-  font-weight: 800;
-  font-variation-settings: "wdth" 62;
-  letter-spacing: -0.03em;
-  line-height: calc(var(--rule) * 3);
-  text-transform: uppercase;
-}
-
-.recordHead p {
-  max-width: 34rem;
-  margin: 0;
+.first {
+  margin: 0 0 2.4rem;
   color: var(--grey);
-  font-size: 1.05rem;
-  line-height: var(--rule);
+  font-family: var(--font-note), Georgia, serif;
+  font-size: clamp(1.6rem, 2.6vw, 2.4rem);
+  font-style: italic;
 }
 
-.entry {
-  margin-top: calc(var(--rule) * 3);
-}
-
-.stamp {
-  display: flex;
-  gap: 1.2rem;
+.catchLine {
+  position: relative;
   margin: 0;
+  font-size: clamp(4rem, 12.5vw, 13rem);
+  font-weight: 820;
+  letter-spacing: -0.045em;
+  line-height: 0.92;
+}
+
+.catchLine > span > span {
+  display: block;
+  white-space: nowrap;
+}
+
+/* What is already understood: the outline of the sentence. */
+.outline {
+  position: absolute;
+  inset: 0;
+  color: transparent;
+  -webkit-text-stroke: 1.2px rgba(20, 20, 20, 0.5);
+  pointer-events: none;
+}
+
+/* What is lived: the ink that grows into it. */
+.bodyFill {
+  position: relative;
+  display: block;
+  font-weight: var(--wght, 820);
+}
+
+/* ---------- Three steps forward, two back ---------- */
+
+.steps {
+  position: relative;
+  padding: 8svh var(--gutter) calc(210px + 12svh) var(--indent);
+}
+
+.stepsLine {
+  max-width: 15ch;
+  margin: 0;
+  font-size: clamp(2.6rem, 6.5vw, 6.8rem);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+/* ---------- Practice ---------- */
+
+.practice {
+  position: relative;
+  padding: 8svh var(--gutter) 10svh var(--indent);
+}
+
+.practice ol {
+  margin: 1.6rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.practice li {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 0.9fr) minmax(0, 1.1fr);
+  align-items: baseline;
+  gap: 1rem;
+  padding: 1.5rem 0;
+  border-top: 1px solid rgba(20, 20, 20, 0.8);
+}
+
+.practice li:last-child {
+  border-bottom: 1px solid rgba(20, 20, 20, 0.8);
+}
+
+.index {
   color: var(--red);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.06em;
-  line-height: var(--rule);
+}
+
+.practiceWord {
+  font-size: clamp(3rem, 8vw, 8rem);
+  font-weight: 800;
+  font-variation-settings: "wdth" 62;
+  letter-spacing: -0.02em;
+  line-height: 0.9;
   text-transform: uppercase;
 }
 
-.entryTitle {
-  margin: 0;
-  font-size: clamp(2.2rem, 5vw, 4.4rem);
-  font-weight: 800;
-  letter-spacing: -0.035em;
-  line-height: calc(var(--rule) * 2);
+.practiceLine {
+  max-width: 30rem;
+  font-size: clamp(1.05rem, 1.5vw, 1.35rem);
+  line-height: 1.4;
 }
 
-.confession {
-  max-width: 62rem;
-  margin-top: var(--rule);
-}
-
-.planText {
-  max-width: 44rem;
-  margin: 0;
-  font-size: clamp(1.1rem, 1.5vw, 1.35rem);
-  line-height: var(--rule);
-}
-
-.planText .label {
+.practiceLink {
   display: block;
-  line-height: var(--rule);
-}
-
-.struck {
-  /* A hand-drawn strike on every wrapped line, grown by --strike. */
-  color: var(--grey);
-  text-decoration: none;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 10' preserveAspectRatio='none'%3E%3Cpath d='M1 6.2C34 4.1 70 6.8 104 5.1S168 3.9 199 5.4' fill='none' stroke='%23a3121b' stroke-width='2.6' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") no-repeat 0 58% / var(--strike, 100%) 0.42em;
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
-}
-
-.margin {
   width: fit-content;
-  margin: var(--rule) 0 0;
-  color: var(--red);
-  font-family: var(--font-note), Georgia, serif;
-  font-size: clamp(2rem, 3.4vw, 3.2rem);
-  font-style: italic;
-  line-height: calc(var(--rule) * 1.5);
-  transform: rotate(-1.6deg);
-  transform-origin: left center;
-}
-
-.admission {
-  margin: 0;
-  font-size: clamp(3.4rem, 10vw, 10rem);
-  font-weight: 800;
-  font-variation-settings: "wdth" 112;
-  letter-spacing: -0.05em;
-  line-height: calc(var(--rule) * 4);
-}
-
-.lesson {
-  margin: 0;
-  font-size: clamp(1.15rem, 1.6vw, 1.4rem);
+  margin-top: 0.6rem;
+  color: var(--red) !important;
+  font-size: 0.95rem;
   font-weight: 600;
-  line-height: var(--rule);
+  text-underline-offset: 4px;
 }
 
-/* The trade, drawn: no axis, only decisions in order. */
-.decision {
+/* ---------- 無 ---------- */
+
+.wu {
+  display: grid;
+  grid-template-columns: auto minmax(0, 24rem);
+  justify-content: start;
+  align-items: center;
+  gap: 4vw;
+  padding: 12svh var(--gutter) 2svh var(--indent);
+}
+
+.wuGlyph {
   position: relative;
-  height: calc(var(--rule) * 6);
-  margin-top: calc(var(--rule) * 2);
+  width: clamp(240px, 34vw, 460px);
+  aspect-ratio: 1;
+  margin: 0;
 }
 
-.decisionInk {
+.wuStroke {
   inset: 0;
   width: 100%;
   height: 100%;
 }
 
-.event {
-  position: absolute;
-  top: 50%;
-  display: block;
-  font-size: 0.9rem;
-  line-height: 1.35;
-  white-space: nowrap;
-}
-
-.event > span,
-.event > b {
-  position: relative;
-  display: block;
-  top: 1.1rem;
-}
-
-.event > span {
-  color: var(--grey);
-}
-
-.event > b {
-  font-variant-numeric: tabular-nums;
-  font-weight: 700;
-}
-
-.dot {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: var(--red);
-  transform: translate(-50%, -50%);
-}
-
-.cross {
-  position: absolute;
-  top: 0;
-  left: 0;
-  color: var(--red);
+.wuGloss p {
+  margin: 0 0 1rem;
   font-family: var(--font-note), Georgia, serif;
-  font-size: 2.6rem;
-  font-style: normal;
-  line-height: 1;
-  transform: translate(-50%, -54%);
-}
-
-.sell > span,
-.sell > b {
-  transform: translateX(-50%);
-  text-align: center;
-}
-
-/* The second sell writes above the line so the two never collide. */
-.above {
-  top: auto;
-  bottom: 50%;
-  padding-bottom: 1.5rem;
-}
-
-.above > span,
-.above > b {
-  top: 0;
-}
-
-.above .cross {
-  top: auto;
-  bottom: 0;
-  transform: translate(-50%, 46%);
-}
-
-/* What the plan would have held, in pencil. */
-.ghost {
-  position: absolute;
-  top: 50%;
-  left: 64%;
-  width: 32%;
-  border-top: 1.5px dashed rgba(20, 20, 20, 0.35);
-  transform: rotate(-5deg);
-  transform-origin: left center;
-}
-
-/* Above the line, one tier higher than the second sell. */
-.later {
-  top: auto;
-  bottom: 50%;
-  padding-bottom: 4rem;
-  text-align: right;
-  transform: translateX(-100%);
-}
-
-.later > span,
-.later > b {
-  top: 0;
-}
-
-.later > b {
-  color: var(--grey);
-  font-family: var(--font-note), Georgia, serif;
-  font-size: 1.35rem;
+  font-size: clamp(1.3rem, 1.9vw, 1.8rem);
   font-style: italic;
-  font-weight: 400;
+  line-height: 1.25;
 }
 
-.receipt {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem 2rem;
-  margin: var(--rule) 0 0;
+.wuGloss .wuSource {
+  font-family: var(--font-tc), "Noto Serif TC", serif;
+  font-style: normal;
+  letter-spacing: 0.08em;
+}
+
+.wuGloss cite {
   color: var(--grey);
-  font-size: 0.88rem;
-  line-height: var(--rule);
-}
-
-.receipt > span:first-child {
-  color: var(--ink);
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-}
-
-.receipt a {
-  color: var(--red) !important;
-  font-weight: 600;
-  text-underline-offset: 4px;
+  font-size: 0.78rem;
+  font-style: normal;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
 
 /* ---------- Rules ---------- */
@@ -592,90 +500,10 @@
   text-transform: uppercase;
 }
 
-/* ---------- Body ---------- */
-
-.body {
-  display: grid;
-  min-height: 70svh;
-  align-content: center;
-  gap: 8svh;
-  padding: 12svh var(--gutter);
-}
-
-.bodyLine {
-  margin: 0;
-  font-size: clamp(3.6rem, 13vw, 13.5rem);
-  letter-spacing: -0.05em;
-  line-height: 0.88;
-}
-
-.bodyLine > span {
-  display: block;
-}
-
-.bodyLine > span:first-child {
-  font-weight: 200;
-}
-
-.bodyLine > span:last-child {
-  padding-left: 9vw;
-  font-weight: 800;
-}
-
-.circled {
-  position: relative;
-  display: inline-block;
-}
-
-.circleRing {
-  top: -6%;
-  left: -7%;
-  width: 114%;
-  height: 116%;
-}
-
-.bodyNote {
-  justify-self: end;
-  max-width: 24rem;
-  font-size: clamp(1.05rem, 1.4vw, 1.3rem);
-}
-
-.bodyNote p {
-  margin: 0 0 0.6rem;
-}
-
-.bodyNote p:last-child {
-  color: var(--grey);
-}
-
 /* ---------- Close ---------- */
 
 .close {
-  padding: 4svh var(--gutter) 5svh;
-}
-
-.creed {
-  max-width: 22ch;
-  margin: 0;
-  color: var(--grey);
-  font-size: clamp(1.9rem, 4vw, 4rem);
-  font-weight: 300;
-  letter-spacing: -0.03em;
-  line-height: 1.1;
-}
-
-.creed b {
-  color: var(--ink);
-  font-weight: 800;
-}
-
-.stop {
-  display: inline-block;
-  width: 0.2em;
-  height: 0.2em;
-  margin-left: 0.04em;
-  border-radius: 50%;
-  background: var(--red);
+  padding: 6svh var(--gutter) 5svh;
 }
 
 .followBig {
@@ -769,26 +597,6 @@
     bottom: 8svh;
   }
 
-  .record {
-    padding-right: var(--gutter);
-  }
-
-  .recordHead h2 {
-    line-height: calc(var(--rule) * 2);
-  }
-
-  .admission {
-    line-height: calc(var(--rule) * 2);
-  }
-
-  .decision {
-    height: calc(var(--rule) * 7);
-  }
-
-  .event {
-    font-size: 0.78rem;
-  }
-
   .line {
     display: flex;
     flex-direction: column;
@@ -806,18 +614,30 @@
     margin-top: 7rem;
   }
 
-  .stamp {
-    flex-wrap: wrap;
-    gap: 0 1rem;
+  .catchLine {
+    font-size: 14.5vw;
   }
 
-  .bodyLine > span:last-child {
-    padding-left: 0;
+  .followBig {
+    font-size: 11.5vw;
   }
 
-  .bodyNote {
-    justify-self: start;
+  .practice li {
+    grid-template-columns: 2.2rem minmax(0, 1fr);
   }
+
+  .practiceLine {
+    grid-column: 2;
+  }
+
+  .wu {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .wuGlyph {
+    width: min(78vw, 360px);
+  }
+
 }
 
 @media (prefers-reduced-motion: reduce) {

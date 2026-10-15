@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { fitPoints, handLine, loop, scribble, underline, type Point } from "./pen";
+import { fitPoints, handLine, loop, scribble, steps, underline, type Point } from "./pen";
+import { wu } from "./wu";
 
 const finite = (points: Point[]) => points.every(([x, y]) => Number.isFinite(x) && Number.isFinite(y));
 
@@ -65,4 +66,25 @@ test("handLine starts and ends exactly on its anchors and wobbles between", () =
   assert.ok(points.length > 4);
   assert.ok(points.some(([, y]) => y !== 0));
   assert.ok(points.every(([, y]) => Math.abs(y) < 6));
+});
+
+test("three forward, two back: every cycle reverses, and the line still arrives", () => {
+  const points = steps({ seed: 6, cycles: 4 });
+  const xs = points.map(([x]) => x);
+  assert.ok(xs[0] <= 1);
+  assert.ok(xs[xs.length - 1] >= 99);
+  let reversals = 0;
+  for (let i = 2; i < xs.length; i += 1) {
+    if ((xs[i] - xs[i - 1]) * (xs[i - 1] - xs[i - 2]) < 0) reversals += 1;
+  }
+  assert.ok(reversals >= 7, `reversals ${reversals}`);
+  assert.ok(points.every(([x, y]) => x >= -2 && x <= 102 && y >= 0 && y <= 100));
+});
+
+test("無 is twelve strokes in a 0–100 box", () => {
+  assert.equal(wu.length, 12);
+  for (const stroke of wu) {
+    assert.ok(stroke.length >= 2);
+    assert.ok(stroke.every(([x, y]) => x >= 0 && x <= 100 && y >= 0 && y <= 100));
+  }
 });

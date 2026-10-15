@@ -92,6 +92,7 @@ export default function Rules() {
   return (
     <section ref={ref} className={styles.rules} aria-label="Rules">
       <Ink trace={margin} mark="rules-margin" size={2.2} seed={41} className={styles.thread} />
+      <p className={styles.label}>Trade, in three rules</p>
       <Chase />
       <Small />
       <p className={styles.rule} data-anchor="bored">
