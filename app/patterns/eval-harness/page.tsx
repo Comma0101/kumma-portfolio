@@ -30,8 +30,8 @@ const articleLd = {
   description:
     "Designing a harness that replays recorded calls and synthetic turns through the real pipeline, so a prompt or timer change is measured against a scoring rubric instead of guessed at.",
   url: "https://kumma.me/patterns/eval-harness",
-  author: { "@type": "Person", name: "Kumma", url: "https://kumma.me" },
-  publisher: { "@type": "Person", name: "Kumma", url: "https://kumma.me" },
+  author: { "@type": "Person", name: "Kumma Wu", url: "https://kumma.me" },
+  publisher: { "@type": "Person", name: "Kumma Wu", url: "https://kumma.me" },
   isPartOf: {
     "@type": "CollectionPage",
     name: "Patterns",

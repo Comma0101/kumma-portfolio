@@ -61,7 +61,10 @@ export const PageTransitionProvider = ({
 
     const overlay = overlayRef.current;
     if (overlay) {
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      if (
+        pathname === "/" ||
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ) {
         gsap.set(overlay, {
           clipPath: "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)",
         });

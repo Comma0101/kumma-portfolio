@@ -101,7 +101,7 @@ export default async function BlogDetailPage({
             description: post.excerpt,
             datePublished: post.publishedDate,
             inLanguage: locale,
-            author: { "@type": "Person", name: "Kumma" },
+            author: { "@type": "Person", name: "Kumma Wu" },
             url: `https://kumma.me/blog/${locale}/${params.slug}`,
           }}
         />

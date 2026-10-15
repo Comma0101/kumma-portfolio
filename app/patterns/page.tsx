@@ -106,7 +106,7 @@ const collectionLd = {
   description:
     "An engineering pattern library for building real-time voice agents that run in production.",
   url: "https://kumma.me/patterns",
-  isPartOf: { "@type": "WebSite", name: "Kumma", url: "https://kumma.me" },
+  isPartOf: { "@type": "WebSite", name: "Kumma Wu", url: "https://kumma.me" },
   hasPart: patterns
     .filter((p) => p.slug)
     .map((p) => ({

@@ -2,7 +2,7 @@
 title: "The Outsider's Truth: An Analysis of Camus's The Stranger"
 excerpt: "A deep dive into Albert Camus's The Stranger, exploring themes of authenticity, the absurd, and finding freedom in a world that demands conformity."
 date: "2025-10-25"
-author: "KUMMA"
+author: "Kumma Wu"
 tags: ["Albert Camus", "The Stranger", "Existentialism", "Philosophy", "Literature"]
 category: "Insights"
 ---

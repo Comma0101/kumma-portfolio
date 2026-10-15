@@ -2,7 +2,7 @@
 title: "关于情绪"
 excerpt: "情绪不是要被控制的，它是你的一部分，是生活在提醒你该回头看看哪儿疼了。学会和它做朋友，才是走向成熟的开始。"
 date: "2025-10-26"
-author: "Kumma"
+author: "Kumma Wu"
 category: "Insights"
 tags: ["情绪", "觉察", "自我成长", "内在平衡"]
 ---

@@ -29,8 +29,8 @@ const articleLd = {
   description:
     "Barge-in for voice agents as a state-machine problem: detect the caller talking over TTS, cancel and flush audio output, and resume with conversation context intact.",
   url: "https://kumma.me/patterns/barge-in",
-  author: { "@type": "Person", name: "Kumma", url: "https://kumma.me" },
-  publisher: { "@type": "Person", name: "Kumma", url: "https://kumma.me" },
+  author: { "@type": "Person", name: "Kumma Wu", url: "https://kumma.me" },
+  publisher: { "@type": "Person", name: "Kumma Wu", url: "https://kumma.me" },
   isPartOf: {
     "@type": "CollectionPage",
     name: "Patterns",

@@ -33,8 +33,8 @@ const caseStudyLd = {
   url: "https://kumma.me/work/kota",
   author: {
     "@type": "Person",
-    name: "Kumma",
-    alternateName: "Yang Wu",
+    name: "Kumma Wu",
+    alternateName: "Kumma",
     url: "https://kumma.me",
   },
 };

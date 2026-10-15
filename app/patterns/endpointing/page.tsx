@@ -29,8 +29,8 @@ const articleLd = {
   description:
     "Deciding when a caller has finished their turn: silence timers, the interrupt-versus-lag trade-off, short versus long endpoint timeouts, and why fixed timers fail on slow speakers.",
   url: "https://kumma.me/patterns/endpointing",
-  author: { "@type": "Person", name: "Kumma", url: "https://kumma.me" },
-  publisher: { "@type": "Person", name: "Kumma", url: "https://kumma.me" },
+  author: { "@type": "Person", name: "Kumma Wu", url: "https://kumma.me" },
+  publisher: { "@type": "Person", name: "Kumma Wu", url: "https://kumma.me" },
   isPartOf: {
     "@type": "CollectionPage",
     name: "Patterns",

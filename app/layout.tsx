@@ -36,23 +36,23 @@ const cormorant = Cormorant_Garamond({
 export const metadata: Metadata = {
   metadataBase: new URL("https://kumma.me"),
   title: {
-    default: "Kumma / Yang Wu | Independent AI systems engineer",
+    default: "Kumma Wu | Independent AI systems engineer",
     template: "%s | Kumma",
   },
   description:
-    "Kumma / Yang Wu builds production AI systems for real-time voice, agent orchestration, and decision-quality workflows.",
+    "Kumma Wu builds production AI systems for real-time voice, agent orchestration, and decision-quality workflows.",
   openGraph: {
-    title: "Kumma / Yang Wu | Independent AI systems engineer",
+    title: "Kumma Wu | Independent AI systems engineer",
     description:
       "Production AI systems for real-time voice, agent orchestration, and decision-quality workflows.",
     url: "https://kumma.me",
-    siteName: "Kumma / Yang Wu",
+    siteName: "Kumma Wu",
     type: "website",
     images: ["/og/home.png"],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Kumma / Yang Wu | Independent AI systems engineer",
+    title: "Kumma Wu | Independent AI systems engineer",
     description:
       "Production AI systems for real-time voice, agent orchestration, and decision-quality workflows.",
     images: ["/og/home.png"],

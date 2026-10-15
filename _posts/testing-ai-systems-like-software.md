@@ -2,7 +2,7 @@
 title: "Evals over vibes: testing AI systems like software"
 excerpt: "It worked when you tried it is not a test for any LLM system. Here is how to build an eval discipline that catches prompt, model, and retrieval breaks."
 date: "2026-07-08"
-author: "Kumma"
+author: "Kumma Wu"
 tags: ["Evals", "AI systems", "Reliability", "LLM"]
 category: "Engineering"
 featured: false

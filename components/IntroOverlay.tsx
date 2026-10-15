@@ -23,7 +23,7 @@ export default function IntroOverlay() {
     } catch {
       seen = false;
     }
-    if (reduced || seen || pathname === "/stories") return;
+    if (reduced || seen || pathname === "/stories" || pathname === "/") return;
     setShow(true);
   }, [pathname]);
 
@@ -100,7 +100,7 @@ export default function IntroOverlay() {
           Independent systems builder
         </p>
         <p data-intro-rise className={styles.wordmark}>
-          Kumma
+          Kumma Wu
         </p>
         <span data-intro-line className={styles.line} aria-hidden="true" />
       </div>

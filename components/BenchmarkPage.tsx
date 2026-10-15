@@ -156,7 +156,7 @@ export default function BenchmarkPage() {
     <div ref={root} className={bs.page}>
       <header className={bs.header}>
         <a href="#top" className={bs.wordmark}>
-          Kumma
+          Kumma Wu
         </a>
         <a href="#submit" className={bs.headerCta}>
           Submit scores
@@ -449,7 +449,7 @@ export default function BenchmarkPage() {
       </div>
 
       <footer className={bs.footer}>
-        <span>© {new Date().getFullYear()} Kumma — Los Angeles</span>
+        <span>© {new Date().getFullYear()} Kumma Wu — Los Angeles</span>
         <span className={s.repoTag}>Voice Agent Stress Suite v1 · repo coming</span>
       </footer>
     </div>

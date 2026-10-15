@@ -29,8 +29,8 @@ const articleLd = {
   description:
     "Accounting for the time from when the caller stops speaking to the first audio byte back: budget every pipeline stage, overlap and stream instead of running in sequence, and measure end-to-end at the phone.",
   url: "https://kumma.me/patterns/latency-budgets",
-  author: { "@type": "Person", name: "Kumma", url: "https://kumma.me" },
-  publisher: { "@type": "Person", name: "Kumma", url: "https://kumma.me" },
+  author: { "@type": "Person", name: "Kumma Wu", url: "https://kumma.me" },
+  publisher: { "@type": "Person", name: "Kumma Wu", url: "https://kumma.me" },
   isPartOf: {
     "@type": "CollectionPage",
     name: "Patterns",

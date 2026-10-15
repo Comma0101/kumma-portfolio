@@ -29,8 +29,8 @@ const articleLd = {
   description:
     "Detecting when a phone agent is out of its depth and transferring to a person: the triggers, warm versus cold transfer, and carrying the transcript and resolved intent across the boundary so the human does not restart from zero.",
   url: "https://kumma.me/patterns/human-handoff",
-  author: { "@type": "Person", name: "Kumma", url: "https://kumma.me" },
-  publisher: { "@type": "Person", name: "Kumma", url: "https://kumma.me" },
+  author: { "@type": "Person", name: "Kumma Wu", url: "https://kumma.me" },
+  publisher: { "@type": "Person", name: "Kumma Wu", url: "https://kumma.me" },
   isPartOf: {
     "@type": "CollectionPage",
     name: "Patterns",

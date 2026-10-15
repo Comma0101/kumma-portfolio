@@ -29,8 +29,8 @@ const articleLd = {
   description:
     "The failure surface a localhost voice demo never shows: one-way audio, stalled media, DTMF colliding with speech recognition, codec surprises, and leg drops — with the detection and handling move for each.",
   url: "https://kumma.me/patterns/telephony-failure-modes",
-  author: { "@type": "Person", name: "Kumma", url: "https://kumma.me" },
-  publisher: { "@type": "Person", name: "Kumma", url: "https://kumma.me" },
+  author: { "@type": "Person", name: "Kumma Wu", url: "https://kumma.me" },
+  publisher: { "@type": "Person", name: "Kumma Wu", url: "https://kumma.me" },
   isPartOf: {
     "@type": "CollectionPage",
     name: "Patterns",

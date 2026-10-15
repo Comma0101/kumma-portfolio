@@ -50,7 +50,7 @@ export default function AgentPage() {
         <dl className={styles.kv}>
           <div>
             <dt>name</dt>
-            <dd>Kumma (Yang Wu)</dd>
+            <dd>Kumma Wu</dd>
           </div>
           <div>
             <dt>role</dt>

@@ -29,8 +29,8 @@ const articleLd = {
   description:
     "Grounding a voice agent in a real menu or catalog so it resolves what the caller said to items that actually exist, using a resolver, enumerated choices, and a confidence score per match rather than inventing plausible items.",
   url: "https://kumma.me/patterns/menu-grounding",
-  author: { "@type": "Person", name: "Kumma", url: "https://kumma.me" },
-  publisher: { "@type": "Person", name: "Kumma", url: "https://kumma.me" },
+  author: { "@type": "Person", name: "Kumma Wu", url: "https://kumma.me" },
+  publisher: { "@type": "Person", name: "Kumma Wu", url: "https://kumma.me" },
   isPartOf: {
     "@type": "CollectionPage",
     name: "Patterns",

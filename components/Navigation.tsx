@@ -301,7 +301,12 @@ const Navigation = () => {
     return activeSection === href.substring(1);
   };
 
-  if (pathname === "/build" || pathname === "/build/") return null;
+  if (
+    pathname === "/" ||
+    pathname === "/build" ||
+    pathname === "/build/"
+  )
+    return null;
 
   return (
     <nav
@@ -319,7 +324,7 @@ const Navigation = () => {
           onClick={scrollToTop}
           aria-label="Kumma - Scroll to top"
         >
-          <span className={styles.logoWordmark}>Kumma</span>
+          <span className={styles.logoWordmark}>Kumma Wu</span>
           <span className={styles.logoMeta}>Independent systems builder</span>
         </a>
 

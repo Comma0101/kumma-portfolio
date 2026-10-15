@@ -29,8 +29,8 @@ const articleLd = {
   description:
     "Choosing a streaming speech-to-text path for a phone agent on the properties that matter in real time: partial-transcript stability, time-to-first-partial, endpoint signals, phone-band audio, and formatting for downstream parsing.",
   url: "https://kumma.me/patterns/streaming-stt",
-  author: { "@type": "Person", name: "Kumma", url: "https://kumma.me" },
-  publisher: { "@type": "Person", name: "Kumma", url: "https://kumma.me" },
+  author: { "@type": "Person", name: "Kumma Wu", url: "https://kumma.me" },
+  publisher: { "@type": "Person", name: "Kumma Wu", url: "https://kumma.me" },
   isPartOf: {
     "@type": "CollectionPage",
     name: "Patterns",

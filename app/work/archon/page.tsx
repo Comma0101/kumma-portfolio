@@ -34,8 +34,8 @@ const caseStudyLd = {
   codeRepository: "https://github.com/Comma0101/archon",
   author: {
     "@type": "Person",
-    name: "Kumma",
-    alternateName: "Yang Wu",
+    name: "Kumma Wu",
+    alternateName: "Kumma",
     url: "https://kumma.me",
   },
 };

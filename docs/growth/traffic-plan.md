@@ -4,7 +4,7 @@
 leads** (the `/build` funnel). Not job-hunting. Every tactic below is judged by
 "does this reach a business that can pay, or feed a channel that does."
 
-**Owner:** Kumma (Yang Wu) · **Site:** static Next.js 14 → GitHub Pages · kumma.me
+**Owner:** Kumma Wu · **Site:** static Next.js 14 → GitHub Pages · kumma.me
 
 > Companion docs: `blog-topic-backlog.md` (what to write),
 > `smb-outreach-playbook.md` (outbound/deals), `exposure-posts.md` (distribution

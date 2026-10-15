@@ -37,7 +37,7 @@ export default function Footer({ variant = "default" }: FooterProps) {
       <div className={styles.footerShell}>
         <div className={styles.footerBrand}>
           <Link href="/" className={styles.wordmark}>
-            Kumma
+            Kumma Wu
           </Link>
           <p>AI systems made operational.</p>
         </div>
@@ -71,7 +71,7 @@ export default function Footer({ variant = "default" }: FooterProps) {
         </div>
 
         <div className={styles.footerBottom}>
-          <p>© {currentYear} KUMMA</p>
+          <p>© {currentYear} Kumma Wu</p>
           <p>AI Systems / Product Engineering / Visual Practice</p>
         </div>
       </div>

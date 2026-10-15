@@ -29,8 +29,8 @@ const articleLd = {
   description:
     "Tuning voice-activity detection for phone agents: separating speech from background noise frame by frame, choosing energy-threshold versus model-based VAD, and setting the detection threshold and hangover window so soft talkers are not dropped.",
   url: "https://kumma.me/patterns/vad-tuning",
-  author: { "@type": "Person", name: "Kumma", url: "https://kumma.me" },
-  publisher: { "@type": "Person", name: "Kumma", url: "https://kumma.me" },
+  author: { "@type": "Person", name: "Kumma Wu", url: "https://kumma.me" },
+  publisher: { "@type": "Person", name: "Kumma Wu", url: "https://kumma.me" },
   isPartOf: {
     "@type": "CollectionPage",
     name: "Patterns",

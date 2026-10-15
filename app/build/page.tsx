@@ -30,8 +30,8 @@ const serviceLd = {
   areaServed: "US",
   provider: {
     "@type": "Person",
-    name: "Kumma",
-    alternateName: "Yang Wu",
+    name: "Kumma Wu",
+    alternateName: "Kumma",
     url: "https://kumma.me",
   },
   offers: { "@type": "Offer", availability: "https://schema.org/InStock" },

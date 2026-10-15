@@ -1,9 +1,9 @@
-# Kumma (Yang Wu): full context for agents
+# Kumma Wu: full context for agents
 
 > Independent AI systems engineer in Los Angeles. Real-time voice AI, agent orchestration, and operational AI products. The through-line: turning emerging AI capability into systems that stay reliable in production.
 
 ## Identity
-- Name: Kumma (professional name Yang Wu).
+- Name: Kumma Wu.
 - Location: Los Angeles.
 - Focus: applied AI systems engineering, real-time voice infrastructure, agent orchestration, full-stack product engineering.
 - Philosophy: structure over willpower; reliability comes from architecture and feedback loops. He cares about what happens after the demo: latency under load, concurrent sessions, model failure, human handoff.

@@ -2,7 +2,7 @@
 title: "The Art of Generative Design"
 excerpt: "Exploring the intersection of code and creativity to produce unique visual art through algorithms and mathematical beauty."
 date: "2025-01-15"
-author: "KUMMA"
+author: "Kumma Wu"
 tags: ["Generative Art", "Creative Coding", "Three.js", "WebGL"]
 category: "Design"
 ---

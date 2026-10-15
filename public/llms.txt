@@ -1,4 +1,4 @@
-# Kumma (Yang Wu)
+# Kumma Wu
 
 > Independent AI systems engineer based in Los Angeles. Builds real-time voice AI and multi-model agent orchestration: systems that listen, reason, coordinate, and act in production, not just in demos.
 

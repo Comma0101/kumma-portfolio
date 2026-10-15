@@ -2,7 +2,7 @@
 title: "Choosing a speech-to-text and TTS stack for a voice agent in 2026"
 excerpt: "How to pick streaming STT and TTS for a real-time phone agent, judged on the numbers a caller feels: streaming latency, partial stability, and tail latency."
 date: "2026-07-08"
-author: "Kumma"
+author: "Kumma Wu"
 tags: ["Speech-to-text", "TTS", "Voice AI", "Deepgram"]
 category: "Engineering"
 featured: false

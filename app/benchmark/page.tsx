@@ -35,8 +35,8 @@ const datasetLd = {
   ],
   creator: {
     "@type": "Person",
-    name: "Kumma",
-    alternateName: "Yang Wu",
+    name: "Kumma Wu",
+    alternateName: "Kumma",
     url: "https://kumma.me",
   },
 };

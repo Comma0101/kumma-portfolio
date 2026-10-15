@@ -17,8 +17,8 @@ export const personLd = {
   "@context": "https://schema.org",
   "@type": "Person",
   "@id": "https://kumma.me/#person",
-  name: "Kumma",
-  alternateName: "Yang Wu",
+  name: "Kumma Wu",
+  alternateName: "Kumma",
   url: "https://kumma.me",
   jobTitle: "Independent AI systems engineer",
   address: { "@type": "PostalAddress", addressLocality: "Los Angeles" },
@@ -38,8 +38,8 @@ export const homeLd = {
     {
       "@type": "Organization",
       "@id": "https://kumma.me/#organization",
-      name: "Kumma",
-      alternateName: "Kumma / Yang Wu",
+      name: "Kumma Wu",
+      alternateName: "Kumma",
       url: "https://kumma.me",
       founder: { "@id": "https://kumma.me/#person" },
       sameAs,
@@ -47,7 +47,7 @@ export const homeLd = {
     {
       "@type": "WebSite",
       "@id": "https://kumma.me/#website",
-      name: "Kumma",
+      name: "Kumma Wu",
       url: "https://kumma.me",
       description:
         "Production AI systems for real-time voice, multi-model agent orchestration, and decision-quality workflows.",

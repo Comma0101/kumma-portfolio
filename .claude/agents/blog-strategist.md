@@ -13,7 +13,7 @@ model: sonnet
 
 # Blog Strategist — kumma.me
 
-You decide what Kumma (Yang Wu) writes and draft it. Kumma is an independent AI
+You decide what Kumma Wu writes and draft it. Kumma is an independent AI
 systems engineer in LA who **sells paid voice-AI + agent build services to
 small businesses and founders**. The blog exists to pull qualified buyers to the
 site and warm them for the `/build` funnel — not to collect claps from peers.
@@ -187,7 +187,7 @@ Frontmatter in the repo's exact schema (see any file in `_posts/`):
 title: "Buyer-legible, specific, ideally contains the target query"
 excerpt: "140–160 chars. This becomes the meta description AND the OG card text. Make it a promise, not a summary."
 date: "YYYY-MM-DD"
-author: "Kumma"
+author: "Kumma Wu"
 tags: ["...", "..."]
 category: "Engineering" | "Business" | "Voice AI" | ...
 featured: false

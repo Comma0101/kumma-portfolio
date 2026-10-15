@@ -29,8 +29,8 @@ const articleLd = {
   description:
     "A confirmation step in front of any irreversible action so a low-confidence transcript never books, charges, or cancels on its own: per-slot confidence, targeted clarifying questions, a read-back summary, and an idempotent commit.",
   url: "https://kumma.me/patterns/clarify-before-commit",
-  author: { "@type": "Person", name: "Kumma", url: "https://kumma.me" },
-  publisher: { "@type": "Person", name: "Kumma", url: "https://kumma.me" },
+  author: { "@type": "Person", name: "Kumma Wu", url: "https://kumma.me" },
+  publisher: { "@type": "Person", name: "Kumma Wu", url: "https://kumma.me" },
   isPartOf: {
     "@type": "CollectionPage",
     name: "Patterns",

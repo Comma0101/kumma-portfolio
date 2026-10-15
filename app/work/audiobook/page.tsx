@@ -35,8 +35,8 @@ const caseStudyLd = {
       url: "https://listen.kummalabs.com",
       author: {
         "@type": "Person",
-        name: "Kumma",
-        alternateName: "Yang Wu",
+        name: "Kumma Wu",
+        alternateName: "Kumma",
         url: "https://kumma.me",
       },
     },
@@ -48,8 +48,8 @@ const caseStudyLd = {
       url: "https://kumma.me/work/audiobook",
       author: {
         "@type": "Person",
-        name: "Kumma",
-        alternateName: "Yang Wu",
+        name: "Kumma Wu",
+        alternateName: "Kumma",
         url: "https://kumma.me",
       },
     },

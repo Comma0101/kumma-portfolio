@@ -2,7 +2,7 @@
 title: "AI receptionists for small business, explained"
 excerpt: "A plain-English guide to AI receptionists for small business: what they do, how they actually work, what they cost, and who should skip them entirely."
 date: "2026-07-08"
-author: "Kumma"
+author: "Kumma Wu"
 tags: ["AI receptionist", "Voice AI", "Small business", "Phone agent"]
 category: "Voice AI"
 featured: true

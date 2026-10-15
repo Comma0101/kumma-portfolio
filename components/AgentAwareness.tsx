@@ -58,6 +58,7 @@ export default function AgentAwareness() {
     path.startsWith("/gallery/");
 
   if (
+    path === "/" ||
     path === "/agent" ||
     path === "/stories" ||
     path === "/build" ||

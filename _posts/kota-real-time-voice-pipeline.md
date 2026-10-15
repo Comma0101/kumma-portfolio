@@ -2,7 +2,7 @@
 title: "How to turn a restaurant phone call into a kitchen ticket with AI"
 excerpt: "KOTA takes messy, real-time speech over the phone and resolves it into a structured order the kitchen can act on. Here is the pipeline, and the parts that were actually hard."
 date: "2026-06-15"
-author: "Kumma"
+author: "Kumma Wu"
 tags: ["Real-time AI", "Voice agents", "LLM orchestration", "KOTA"]
 category: "Engineering"
 featured: true

@@ -2,7 +2,7 @@
 title: "Does an AI receptionist actually work, or will it embarrass me on a call?"
 excerpt: "The honest answer to whether an AI phone agent can handle real callers without embarrassing you: how it deals with mumbling, mind-changing, and its mistakes."
 date: "2026-07-07"
-author: "Kumma"
+author: "Kumma Wu"
 tags: ["AI receptionist", "Voice agents", "Small business", "Phone agent"]
 category: "Voice AI"
 featured: false

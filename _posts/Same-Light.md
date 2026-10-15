@@ -2,7 +2,7 @@
 title: "We’re All Walking Toward the Same Light"
 excerpt: "Spirituality isn’t about sides — it’s about direction. Through faith or awareness, belief or observation, we’re all moving toward the same quiet coherence of love and truth."
 date: "2025-10-25"
-author: "Kevin Yang"
+author: "Kumma Wu"
 category: "Insights"
 tags: ["Spirituality", "Awareness", "Faith", "Human Experience"]
 ---
