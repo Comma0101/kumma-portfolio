@@ -239,14 +239,15 @@ describe("native-compatible route navigation", () => {
 });
 
 describe("homepage terrain and reduced motion", () => {
-  it("loads the terrain from the homepage instead of the root layout", () => {
+  it("keeps the terrain out of the root layout and the personal front on the homepage", () => {
     const layout = readCss("app/layout.tsx");
     const homepage = readCss("app/page.tsx");
 
     assert.doesNotMatch(layout, /import\s+ThreeScene\b/);
     assert.doesNotMatch(layout, /<ThreeScene\b/);
-    assert.match(homepage, /import\s+ThreeScene\s+from\s+["']@\/components\/ThreeScene["']/);
-    assert.match(homepage, /<ThreeScene\s*\/>/);
+    assert.doesNotMatch(homepage, /<ThreeScene\b/);
+    assert.match(homepage, /import\s+Front\s+from\s+["']@\/components\/personal\/Front["']/);
+    assert.match(homepage, /<Front\s*\/>/);
   });
 
   it("mounts the homepage terrain without route state", () => {

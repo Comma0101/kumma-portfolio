@@ -1,46 +1,37 @@
 import type { Metadata } from "next";
-import Portrait from "@/components/personal/Portrait";
-import { JsonLd } from "@/components/seo/JsonLd";
+import Front from "@/components/personal/Front";
+import { JsonLd, homeLd } from "@/components/seo/JsonLd";
 
-const portraitLd = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  name: "Kumma Wu",
-  alternateName: "Kumma",
-  url: "https://kumma.me",
-  description:
-    "In the gym most days. Trading options. Attention goes where it compounds.",
-  sameAs: [
-    "https://x.com/Comma_9fie",
-    "https://github.com/Comma0101",
-  ],
-};
+const description =
+  "In the gym most days. Trading options. Attention goes where it compounds.";
 
 export const metadata: Metadata = {
   title: { absolute: "Kumma Wu" },
-  description:
-    "Kumma Wu. In the gym most days. Trading options. Attention goes where it compounds.",
+  description: `Kumma Wu. ${description}`,
+  alternates: { canonical: "https://kumma.me" },
   openGraph: {
     title: "Kumma Wu",
-    description:
-      "Kumma Wu. In the gym most days. Trading options. Attention goes where it compounds.",
+    description,
     url: "https://kumma.me",
     siteName: "Kumma Wu",
     type: "profile",
+    images: ["/og/portrait.png"],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
+    site: "@Comma_9fie",
+    creator: "@Comma_9fie",
     title: "Kumma Wu",
-    description:
-      "In the gym most days. Trading options. Attention goes where it compounds.",
+    description,
+    images: ["/og/portrait.png"],
   },
 };
 
 export default function HomePage() {
   return (
     <>
-      <JsonLd data={portraitLd} />
-      <Portrait />
+      <JsonLd data={homeLd} />
+      <Front />
     </>
   );
 }
