@@ -1,4 +1,5 @@
-import { Archivo, Instrument_Serif, Noto_Serif_TC } from "next/font/google";
+import { Archivo, Instrument_Serif } from "next/font/google";
+import localFont from "next/font/local";
 import Opening from "./Opening";
 import CatchUp from "./CatchUp";
 import Steps from "./Steps";
@@ -26,11 +27,13 @@ const instrument = Instrument_Serif({
   display: "swap",
 });
 
-const notoSerifTC = Noto_Serif_TC({
-  weight: ["500", "700"],
+// Only the ~30 characters the page sets (scripts/subset-cjk.py): the full
+// font arrives as ~200 chunks and cost ~1 MB for a few lines of text.
+const notoSerifTC = localFont({
+  src: "./fonts/NotoSerifTC-subset.woff2",
+  weight: "200 900",
   variable: "--font-tc",
   display: "swap",
-  preload: false,
 });
 
 // Runs before first paint on a full page load, so marks that are about to

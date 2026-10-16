@@ -19,10 +19,12 @@ const spaceGrotesk = Space_Grotesk({
   display: "swap",
 });
 
+// Secondary faces load on use, not on every page (the homepage sets neither).
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
   display: "swap",
+  preload: false,
 });
 
 const cormorant = Cormorant_Garamond({
@@ -31,6 +33,7 @@ const cormorant = Cormorant_Garamond({
   style: ["normal", "italic"],
   variable: "--font-editorial",
   display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {
