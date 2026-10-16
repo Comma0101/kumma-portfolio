@@ -4,7 +4,7 @@ import { useRef } from "react";
 import Ink, { type Trace } from "./Ink";
 import { anchor, threadX } from "./anchors";
 import { climb, fitPoints, type Point } from "./pen";
-import { ease, reveal, useBeat } from "./useBeat";
+import { draw, ease, reveal, useBeat } from "./useBeat";
 import styles from "./Front.module.css";
 
 // Price leaves from the margin and runs off the page: a jagged climb in
@@ -37,26 +37,8 @@ const flat: Trace = (_, host) => {
 function Chase() {
   const ref = useRef<HTMLDivElement>(null);
   useBeat(ref, (root, tl) => {
-    const path = reveal(root, "price") as SVGPathElement | null;
-    const label = root.querySelector<HTMLElement>("[data-price]");
-    if (!path || !label) return;
-    const state = { p: 0 };
-    tl.to(state, {
-      p: 1,
-      duration: 1.1,
-      ease: "power2.in",
-      delay: 0.25,
-      onStart: () => {
-        label.style.opacity = "1";
-      },
-      onUpdate: () => {
-        path.style.strokeDashoffset = String(1 - state.p);
-        // The label rides the pen tip until it leaves the page.
-        const total = path.getTotalLength();
-        const tip = path.getPointAtLength(total * state.p);
-        label.style.transform = `translate(${tip.x}px, ${tip.y}px)`;
-      },
-    });
+    // Price runs, accelerating away; the words above it never move.
+    draw(tl, reveal(root, "price"), { duration: 1.1, ease: "power2.in", position: 0.25 });
   });
   return (
     <div ref={ref} className={styles.chase}>

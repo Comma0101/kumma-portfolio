@@ -26,21 +26,35 @@ export default function MarginNav() {
   const [tip, setTip] = useState<Tip | null>(null);
 
   const [inView, setInView] = useState(true);
-  const [still, setStill] = useState(false);
+  const [onLine, setOnLine] = useState(false);
   const tipRef = useRef<Tip | null>(null);
 
   useEffect(() => {
     const front = ref.current?.parentElement;
     if (!front) return;
-    setStill(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
     let frame = 0;
     // Is the pen tip on screen? If not (the reader went back up, or the
     // line is finished), the nav rests on the margin at the reading line.
+    // The resting tick belongs on the margin line, so it may only rest
+    // where the reading line crosses the margin's drawn stretch (from
+    // Understanding down to the reason) — never on the hero or on paper
+    // after the line has ended.
+    const span = () => {
+      const from = front.querySelector('[data-thread="catch"]');
+      const to = front.querySelector('[data-thread="reason"]');
+      if (!from || !to) return null;
+      const origin = front.getBoundingClientRect().top;
+      return [from.getBoundingClientRect().top - origin, to.getBoundingClientRect().top - origin];
+    };
     const check = () => {
       frame = 0;
+      const origin = front.getBoundingClientRect().top;
+      const reading = window.innerHeight * 0.72 - origin;
+      const stretch = span();
+      setOnLine(!!stretch && reading > stretch[0] && reading < stretch[1]);
       const t = tipRef.current;
       if (!t) return;
-      const top = front.getBoundingClientRect().top + t.y;
+      const top = origin + t.y;
       setInView(top > 0 && top < window.innerHeight);
     };
     const schedule = () => {
@@ -53,6 +67,7 @@ export default function MarginNav() {
     };
     front.addEventListener("kumma:tip", onTip);
     window.addEventListener("scroll", schedule, { passive: true });
+    schedule();
     return () => {
       front.removeEventListener("kumma:tip", onTip);
       window.removeEventListener("scroll", schedule);
@@ -69,13 +84,11 @@ export default function MarginNav() {
     setOpen(false);
   };
 
-  // Rides the tip while it is on screen and on the margin; steps aside
-  // while the pen is out on the page; otherwise (before the pen moves,
-  // with reduced motion, or once the line is behind the reader) it rests
-  // on the margin at the reading line.
+  // Rides the tip while it is on screen and on the margin; otherwise rests
+  // on the margin line at the reading line, where there is a line to rest on.
   const riding = tip !== null && inView && tip.onMargin;
-  const waiting = tip === null && !still; // the pen has not set down yet
-  const hidden = !open && (waiting || (tip !== null && inView && !tip.onMargin));
+  // Out on the page with the pen, or with no line to rest on: step aside.
+  const hidden = !open && !riding && (!onLine || (tip !== null && inView && !tip.onMargin));
 
   return (
     <nav

@@ -1,10 +1,24 @@
+"use client";
+
+import { useRef } from "react";
+import Ink, { type Trace } from "./Ink";
+import { ensoRing } from "./enso";
+import { draw, reveal, useBeat } from "./useBeat";
 import styles from "./Front.module.css";
 
-// The sutra stands still. The thread draws the open circle beside it as
-// the reader arrives (Thread); nothing touches the characters.
+const enso: Trace = (_, host) => ({ points: ensoRing(host)?.ring ?? [] });
+
+// The sutra stands still; nothing touches the characters. Beside it the
+// brush is set down once — a pressed start, one slow sweep, a dry lift at
+// the opening toward the text.
 export default function Line() {
+  const ref = useRef<HTMLElement>(null);
+  useBeat(ref, (root, tl) => {
+    draw(tl, reveal(root, "enso"), { duration: 2.4, position: 0.5 });
+  });
+
   return (
-    <section className={styles.line} aria-label="Diamond Sutra" data-thread="reason">
+    <section ref={ref} className={styles.line} aria-label="Diamond Sutra" data-thread="reason">
       <p className={styles.label} aria-hidden="true" data-anchor="reason">
         The reason
       </p>
@@ -21,6 +35,15 @@ export default function Line() {
           </span>
         </span>
       </p>
+      <Ink
+        trace={enso}
+        mark="enso"
+        size={7.5}
+        seed={33}
+        press
+        lift={20}
+        className={styles.thread}
+      />
       <div className={styles.gloss}>
         <p>
           All that has form is illusion. See form as no-form, and you see what is

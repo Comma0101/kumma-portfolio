@@ -5,6 +5,7 @@ import gsap from "gsap";
 import type { Size } from "./Ink";
 import { centerline, inkStroke, pointAt, type Pool } from "./ink";
 import { anchor, threadX } from "./anchors";
+import { ensoRing } from "./enso";
 import { fitPoints, handLine, loop, steps, type Box, type Point } from "./pen";
 import { arcAtTip, chunksOf, slice, within, type Chunk } from "./thread";
 import { ease } from "./useBeat";
@@ -25,7 +26,7 @@ function section(front: HTMLElement, name: string): Box | null {
 const spine = (
   { width }: Size,
   host: HTMLElement,
-): { points: Point[]; split?: number; ends?: number[]; ensoStart?: number } => {
+): { points: Point[]; split?: number; ends?: number[] } => {
   // The host covers the page exactly; the anchors live in the page itself.
   const front = host.parentElement ?? host;
   const name = anchor(front, "name");
@@ -35,9 +36,7 @@ const spine = (
   const heading = anchor(front, "steps");
   const practice = section(front, "practice");
   const rules = section(front, "rules");
-  const clause = anchor(front, "not-form");
-  const seen = anchor(front, "seen");
-  if (!name || !opening || !catchUp || !stairs || !heading || !practice || !rules || !clause || !seen) {
+  if (!name || !opening || !catchUp || !stairs || !heading || !practice || !rules) {
     return { points: [] };
   }
   const x = threadX(front);
@@ -104,42 +103,19 @@ const spine = (
   to([x, bottom(rules)], 0.5);
   end();
 
-  // The reason: out to an open circle beside 若見諸相非相, its opening
-  // toward the text. The pen lifts here.
-  const radius = Math.max(seen.width * 1.05, 46);
-  const gap = seen.width * 0.45;
-  const room = seen.x - gap - radius * 2 > x + 24;
-  const cx = room ? seen.x - gap - radius : seen.x + seen.width / 2;
-  const cy = room ? clause.y + clause.height * 0.42 : seen.y + seen.height + gap + radius;
-  const ring = fitPoints(loop({ seed: 33, overshoot: -0.16, facing: room ? 0 : -Math.PI / 2 }), {
-    x: cx - radius,
-    y: cy - radius * 1.08,
-    width: radius * 2,
-    height: radius * 2.16,
-  });
-  // Come in beneath the circle, round its outside, and into the ring along
-  // its tangent — no corner where the circle begins, nothing crossed.
-  const below = cy + radius * 1.4;
-  to([x, Math.max(points[points.length - 1][1] + 1, below)], 0.5);
-  const start = Math.atan2(ring[0][1] - cy, ring[0][0] - cx);
-  // Stay in the gap between the circle and the sutra: never touch the text.
-  const limit = room ? seen.x - 12 : Infinity;
-  const back = room ? 0.8 : 1.1;
-  const behind: Point = [
-    Math.min(limit, ring[0][0] + Math.sin(start) * radius * back),
-    ring[0][1] - Math.cos(start) * radius * back,
-  ];
-  const side = behind[0] >= cx ? 1 : -1;
-  const outside = side > 0 ? Math.min(limit, cx + radius * 1.6) : cx - radius * 1.6;
-  to([outside, below - 4], 1);
-  if (behind[1] < cy - radius * 0.2) to([outside, behind[1]], 0.6);
-  to(behind, 0.4);
-  to(ring[0], 0.2);
-  const ensoStart = points.length - 1;
-  points.push(...ring.slice(1));
+  // The reason: down the margin and along beneath the open circle, where
+  // the pen lifts. The circle itself is a new stroke (Line), set down on
+  // its own — that is how an ensō is made.
+  const enso = ensoRing(front);
+  if (enso) {
+    to([x, Math.max(points[points.length - 1][1] + 1, enso.below)], 0.5);
+    to([enso.cx, enso.below + 2], 0.8);
+  } else {
+    to([x, bottom(rules) + 400], 0.5);
+  }
   end();
 
-  return { points, split, ends, ensoStart };
+  return { points, split, ends };
 };
 
 type Piece = { d: string; box: Box; chunk: Chunk };
@@ -194,18 +170,15 @@ export default function Thread() {
       frame = 0;
       const { width, height } = host.getBoundingClientRect();
       if (!width || !height) return;
-      const { points, split, ends, ensoStart } = spine({ width, height }, host);
+      const { points, split, ends } = spine({ width, height }, host);
       if (points.length < 2 || !ends) return;
-      // The climax: the ensō is drawn heavier and at half the hand's speed,
-      // and the pen lifts off it slowly, dry, at the open end.
-      const enso = ensoStart === undefined ? 1 : chunksOf(points, [ensoStart, points.length - 1])[0].to;
       const ink = inkStroke(points, {
         size: SIZE,
         seed: 3,
         smoothing: 2,
         spacing: 6,
         breath: 0.16,
-        emphasis: [{ from: enso, to: 1, weight: 2.2, slow: 2.2 }],
+        // The thread lifts off slowly beneath the circle.
         lift: 22,
       });
       const chunks = chunksOf(points, ends);

@@ -14,7 +14,8 @@ const last: Trace = (_, host) => {
   const follow = anchor(host, "follow");
   if (!follow) return { points: [] };
   const x = threadX(host);
-  const y = follow.y + follow.height * 0.98;
+  // Just below the letters: the face's line box is tighter than its glyphs.
+  const y = follow.y + follow.height + 8;
   // Down the margin to above the words, out around the F, then under.
   const above = follow.y - 28;
   const side = Math.max(4, follow.x - 22);

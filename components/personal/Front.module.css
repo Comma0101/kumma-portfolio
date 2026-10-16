@@ -570,17 +570,16 @@
   padding-bottom: 150px;
 }
 
+/* The chart's one label, set inside the gutter where the chart leaves. */
 .price {
   position: absolute;
-  top: 0;
-  left: 0;
+  right: var(--gutter);
+  bottom: 120px;
   z-index: 2;
-  margin: -1.9rem 0 0 0.4rem;
   color: var(--red);
-  font-size: 0.9rem;
+  font-size: 0.78rem;
   font-weight: 600;
   letter-spacing: 0.16em;
-  opacity: 0;
   pointer-events: none;
   text-transform: uppercase;
   white-space: nowrap;
@@ -783,6 +782,25 @@
 
   .practiceLink {
     grid-column: 2;
+  }
+
+  /* A phone screen is already one idea at a time: let sections take their
+     content's height, so nothing is stranded across the fold. */
+  .catchUp,
+  .steps,
+  .practice,
+  .rules {
+    min-height: auto;
+    padding-top: 14svh;
+    padding-bottom: 14svh;
+  }
+
+  .steps {
+    padding-bottom: calc(210px + 10svh);
+  }
+
+  .line {
+    padding-top: 8svh;
   }
 
   /* No room left of the margin on a phone: the page scrolls on its own. */
