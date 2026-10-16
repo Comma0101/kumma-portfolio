@@ -3,13 +3,9 @@
 import { useRef } from "react";
 import Ink, { type Trace } from "./Ink";
 import { anchor, threadX } from "./anchors";
-import { climb, fitPoints, handLine, type Point } from "./pen";
-import { draw, ease, reveal, useBeat } from "./useBeat";
+import { climb, fitPoints, type Point } from "./pen";
+import { ease, reveal, useBeat } from "./useBeat";
 import styles from "./Front.module.css";
-
-const margin: Trace = ({ height }, host) => ({
-  points: handLine([threadX(host), -2], [threadX(host), height + 2], 41, 0.5),
-});
 
 // Price leaves from the margin and runs off the page: a jagged climb in
 // the band under the words, which do not move.
@@ -95,14 +91,8 @@ function Small() {
 }
 
 export default function Rules() {
-  const ref = useRef<HTMLElement>(null);
-  useBeat(ref, (root, tl) => {
-    draw(tl, reveal(root, "rules-margin"), { duration: 1.4, position: 0 });
-  });
-
   return (
-    <section ref={ref} className={styles.rules} aria-label="Rules">
-      <Ink trace={margin} mark="rules-margin" size={2.2} seed={41} className={styles.thread} />
+    <section className={styles.rules} aria-label="Rules" data-thread="rules">
       <p className={styles.label}>Trade, in three rules</p>
       <Chase />
       <Small />

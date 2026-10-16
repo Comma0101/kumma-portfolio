@@ -2,15 +2,20 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { inkStroke, type Ink as InkShape } from "./ink";
+import { chunksOf, type Chunk } from "./thread";
 import type { Point } from "./pen";
 import styles from "./Front.module.css";
 
 export type Size = { width: number; height: number };
 
 // A trace is the path the pen takes, in this mark's own pixels. It may
-// read anchors from the host (the mark's parent) and may name a split:
-// the index where the first gesture ends and the next begins.
-export type Trace = (size: Size, host: HTMLElement) => { points: Point[]; split?: number };
+// read anchors from the host (the mark's parent) and may name a split
+// (the index where the first gesture ends) and chunk ends (point indices
+// where each section's share of a long line stops).
+export type Trace = (
+  size: Size,
+  host: HTMLElement,
+) => { points: Point[]; split?: number; ends?: number[] };
 
 type Props = {
   trace: Trace;
@@ -22,6 +27,7 @@ type Props = {
   startPool?: boolean;
   endPool?: boolean;
   smoothing?: number;
+  spacing?: number;
   className?: string;
 };
 
@@ -46,11 +52,14 @@ export default function Ink({
   startPool,
   endPool,
   smoothing,
+  spacing,
   className,
 }: Props) {
   const ref = useRef<SVGSVGElement>(null);
   const mask = `ink-${useId().replace(/:/g, "")}`;
-  const [shape, setShape] = useState<(InkShape & Size & { split: number }) | null>(null);
+  const [shape, setShape] = useState<
+    (InkShape & Size & { split: number; chunks?: Chunk[] }) | null
+  >(null);
 
   useEffect(() => {
     const svg = ref.current;
@@ -61,14 +70,15 @@ export default function Ink({
       frame = 0;
       const { width, height } = svg.getBoundingClientRect();
       if (!width || !height) return;
-      const { points, split } = trace({ width, height }, host);
+      const { points, split, ends } = trace({ width, height }, host);
       if (points.length < 2) return;
       const total = lengthTo(points, points.length - 1) || 1;
       setShape({
-        ...inkStroke(points, { size, seed, flat, startPool, endPool, smoothing }),
+        ...inkStroke(points, { size, seed, flat, startPool, endPool, smoothing, spacing }),
         width,
         height,
         split: split === undefined ? 1 : lengthTo(points, split) / total,
+        chunks: ends ? chunksOf(points, ends) : undefined,
       });
     };
     const schedule = () => {
@@ -97,6 +107,7 @@ export default function Ink({
       data-mark={mark}
       data-split={shape?.split ?? 1}
       data-pace={shape?.pace.join(",")}
+      data-chunks={shape?.chunks ? JSON.stringify(shape.chunks) : undefined}
       data-still={still ? "" : undefined}
       style={shape ? undefined : { visibility: "hidden" }}
     >

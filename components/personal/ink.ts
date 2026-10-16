@@ -7,7 +7,14 @@ import { random, type Point } from "./pen";
 
 export type Pool = { x: number; y: number; r: number };
 // pace[i] = fraction of the stroke drawn at time i / (pace.length - 1).
-export type Ink = { outline: string; pools: Pool[]; center: string; pace: number[] };
+// line: the resampled centreline the outline was built from.
+export type Ink = {
+  outline: string;
+  pools: Pool[];
+  center: string;
+  pace: number[];
+  line: Point[];
+};
 
 const fmt = (n: number) => String(Number(n.toFixed(1)));
 
@@ -165,6 +172,7 @@ export function inkStroke(
     endPool = false,
     startPool = false,
     smoothing = 3,
+    spacing,
   }: {
     size: number;
     seed: number;
@@ -173,9 +181,11 @@ export function inkStroke(
     startPool?: boolean;
     // Corner-cutting passes: fewer keeps a jagged gesture jagged.
     smoothing?: number;
+    // Sample spacing in px; a page-long line can afford coarser samples.
+    spacing?: number;
   },
 ): Ink {
-  const line = resample(chaikin(points, smoothing), Math.max(2, size * 0.8));
+  const line = resample(chaikin(points, smoothing), spacing ?? Math.max(2, size * 0.8));
   const p = pressures(line, seed, { flat });
   const outline = getStroke(
     line.map(([x, y], i) => [x, y, p[i]]),
@@ -207,5 +217,6 @@ export function inkStroke(
     ],
     center: centerline(line),
     pace: flat ? [0, 1] : pace(line),
+    line,
   };
 }

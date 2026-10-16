@@ -1,16 +1,9 @@
 "use client";
 
 import { useRef } from "react";
-import Ink, { type Trace } from "./Ink";
-import { threadX } from "./anchors";
-import { handLine } from "./pen";
 import { bisect, between } from "./registration";
-import { draw, reveal, useBeat, useScrub } from "./useBeat";
+import { useScrub } from "./useBeat";
 import styles from "./Front.module.css";
-
-const margin: Trace = ({ height }, host) => ({
-  points: handLine([threadX(host), -2], [threadX(host), height + 2], 61, 0.5),
-});
 
 const lines = ["The body", "catches up."];
 
@@ -19,9 +12,6 @@ const lines = ["The body", "catches up."];
 export default function CatchUp() {
   const ref = useRef<HTMLElement>(null);
 
-  useBeat(ref, (root, tl) => {
-    draw(tl, reveal(root, "catch-margin"), { duration: 1.4, position: 0 });
-  });
 
   useScrub(
     ref,
@@ -77,8 +67,7 @@ export default function CatchUp() {
   );
 
   return (
-    <section ref={ref} className={styles.catchUp} aria-labelledby="catch-up">
-      <Ink trace={margin} mark="catch-margin" size={2.2} seed={61} className={styles.thread} />
+    <section ref={ref} className={styles.catchUp} aria-labelledby="catch-up" data-thread="catch">
       <p className={styles.first}>Understanding arrives first.</p>
       <h2 id="catch-up" className={styles.catchLine}>
         <span className={styles.outline} aria-hidden="true">

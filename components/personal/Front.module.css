@@ -12,7 +12,10 @@
   --indent: calc(var(--thread) + 1.8rem);
   position: relative;
   overflow-x: clip;
-  background: var(--paper);
+  /* Paper grain is part of the paper: painted once with the background,
+     not a full-screen layer re-composited on every frame. */
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .08 0 0 0 0 .07 0 0 0 0 .06 0 0 0 .1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E") repeat, var(--paper);
+  background-size: 220px 220px, auto;
   color: var(--ink);
   font-family: var(--font-front), "Helvetica Neue", Arial, sans-serif;
   font-variation-settings: "wdth" 100;
@@ -39,17 +42,6 @@
   outline-offset: 4px;
 }
 
-/* Paper grain over everything, multiplied into the ink. */
-.front::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 50;
-  pointer-events: none;
-  opacity: 0.18;
-  mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .08 0 0 0 0 .07 0 0 0 0 .06 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
 
 .label {
   margin: 0;
@@ -67,7 +59,6 @@
   overflow: visible;
   color: var(--red);
   pointer-events: none;
-  mix-blend-mode: multiply;
 }
 
 .ink > g path,
@@ -116,6 +107,51 @@
   height: 100%;
 }
 
+/* The one line spans the whole page, under the pointer, over the paper. */
+.spineHost {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* One window per section onto the one outline: only the window being
+   drawn repaints. */
+.spineDefs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.spinePiece {
+  position: absolute;
+  overflow: visible;
+  color: var(--red);
+  pointer-events: none;
+}
+
+.spinePiece [data-reveal] {
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 0;
+}
+
+:global(html[data-front="motion"]) .front .spinePiece [data-reveal] {
+  stroke-dashoffset: 1;
+}
+
+/* One idea per screen: each statement has the paper to itself, with only
+   the line crossing between them. */
+.catchUp,
+.steps,
+.practice,
+.rules {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100svh;
+}
+
 /* ---------- Opening ---------- */
 
 .opening {
@@ -153,6 +189,8 @@
 }
 
 .nameNoise {
+  /* Red crossing black: multiply keeps the name black under the tangle. */
+  mix-blend-mode: multiply;
   top: -8%;
   left: -2%;
   width: 105%;
@@ -314,13 +352,6 @@
   line-height: 1.4;
 }
 
-.tick {
-  top: -1.55em;
-  left: 0.1em;
-  width: 1.9em;
-  height: 1.5em;
-}
-
 .practiceLink {
   grid-column: 3;
   display: block;
@@ -336,6 +367,7 @@
 
 .wu {
   display: grid;
+  min-height: 100svh;
   grid-template-columns: auto minmax(0, 24rem);
   justify-content: start;
   align-items: center;
@@ -440,7 +472,6 @@
   position: relative;
   min-height: 100svh;
   padding: 12svh var(--gutter) 4svh var(--indent);
-  border-top: 1px solid rgba(20, 20, 20, 0.12);
 }
 
 .sutra {
