@@ -10,6 +10,7 @@ import Wu from "./Wu";
 import Close from "./Close";
 import MotionFlag from "./MotionFlag";
 import Thread from "./Thread";
+import MarginNav from "./MarginNav";
 import styles from "./Front.module.css";
 
 const archivo = Archivo({
@@ -53,6 +54,7 @@ export default function Front() {
       <script dangerouslySetInnerHTML={{ __html: motion }} />
       <MotionFlag />
       <Thread />
+      <MarginNav />
       <Opening />
       <CatchUp />
       <Steps />

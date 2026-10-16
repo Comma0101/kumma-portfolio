@@ -175,12 +175,137 @@
   font-size: 0.95rem;
   font-weight: 600;
   text-decoration: none;
-  border-bottom: 1.5px solid currentColor;
-  padding-bottom: 2px;
+  padding-bottom: 6px;
 }
 
-.follow:hover {
-  color: var(--ink) !important;
+/* Links are underlined by the pen, and hovering writes the line again. */
+.follow,
+.elsewhere .title,
+.practiceLink {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 10' preserveAspectRatio='none'%3E%3Cpath d='M1 5.6C38 4.2 74 6.6 110 5.1S170 4.4 199 4.9' fill='none' stroke='%23a3121b' stroke-width='2.2' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") no-repeat 0 100% / 100% 7px;
+  text-decoration: none !important;
+}
+
+.follow:hover,
+.follow:focus-visible,
+.elsewhere a:hover .title,
+.elsewhere a:focus-visible .title,
+.practiceLink:hover,
+.practiceLink:focus-visible {
+  animation: rewrite 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+@keyframes rewrite {
+  from {
+    background-size: 0% 7px;
+  }
+  to {
+    background-size: 100% 7px;
+  }
+}
+
+/* The pen sets down: a red point that presses into the paper where the
+   underline begins, before anything else moves (first visit only). */
+.landing {
+  position: absolute;
+  left: -0.06em;
+  top: calc(98% - 0.035em);
+  width: 0.07em;
+  height: 0.07em;
+  border-radius: 50%;
+  background: var(--red);
+  pointer-events: none;
+}
+
+:global(html[data-front="motion"]) .front .landing {
+  transform: scale(0);
+}
+
+/* ---------- The pen tip: navigation ---------- */
+
+.marginNav {
+  position: fixed;
+  top: 72vh;
+  left: calc(var(--thread) - 9px);
+  z-index: 40;
+}
+
+.penTip {
+  display: block;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* The tip itself: a short red stroke across the margin line. */
+.penTip::before {
+  content: "";
+  display: block;
+  width: 18px;
+  height: 3px;
+  margin-top: 7px;
+  border-radius: 2px;
+  background: var(--red);
+  transform: rotate(-12deg);
+}
+
+.marginNav ol {
+  position: absolute;
+  bottom: 26px;
+  left: 0;
+  display: grid;
+  gap: 0.15rem;
+  margin: 0;
+  padding: 0.6rem 0.9rem 0.6rem 0;
+  list-style: none;
+  background: var(--paper);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(6px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.marginNav[data-open] ol {
+  opacity: 1;
+  pointer-events: auto;
+  transform: none;
+}
+
+.marginNav ol button {
+  display: grid;
+  grid-template-columns: 1.6rem auto;
+  align-items: baseline;
+  gap: 0.6rem;
+  padding: 0.2rem 0 0.2rem 0.3rem;
+  border: 0;
+  background: none;
+  color: var(--grey);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.marginNav ol button [lang] {
+  color: var(--ink);
+  font-family: var(--font-tc), "Noto Serif TC", serif;
+  font-size: 1.15rem;
+  letter-spacing: 0;
+}
+
+.marginNav ol button:hover,
+.marginNav ol button:focus-visible {
+  color: var(--red);
+}
+
+.marginNav ol button:hover [lang],
+.marginNav ol button:focus-visible [lang] {
+  color: var(--red);
 }
 
 .name {
@@ -685,6 +810,19 @@
   }
 
   .followBig {
+    transition: none;
+  }
+
+  .follow:hover,
+  .follow:focus-visible,
+  .elsewhere a:hover .title,
+  .elsewhere a:focus-visible .title,
+  .practiceLink:hover,
+  .practiceLink:focus-visible {
+    animation: none;
+  }
+
+  .marginNav ol {
     transition: none;
   }
 }
