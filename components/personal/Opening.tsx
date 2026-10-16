@@ -31,8 +31,17 @@ export default function Opening() {
       else tl.fromTo(landing, { scale: 0 }, { scale: 1, duration: 0.35, ease: ease.impulse }, 0);
     }
     const noise = reveal(root, "tangle");
-    draw(tl, noise, { duration: 1.15, position: seen ? 0.1 : 0.45 });
-    draw(tl, noise, { from: 1, to: 2, duration: 0.5, ease: "power2.in", position: ">0.1" });
+    // Drawn, held at its densest, then pulled away; the underline snaps
+    // taut as it goes (Thread waits for this).
+    draw(tl, noise, { duration: 1, position: seen ? 0.1 : 0.55 });
+    draw(tl, noise, { from: 1, to: 2, duration: 0.4, ease: "power2.in", position: ">0.2" });
+    tl.call(
+      () => {
+        root.dispatchEvent(new CustomEvent("kumma:lifted", { bubbles: true }));
+      },
+      [],
+      "<0.3",
+    );
   });
 
   // Attention compounds with the reader's own attention: nothing for most

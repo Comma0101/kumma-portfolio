@@ -7,7 +7,7 @@ import { centerline, inkStroke, pointAt, type Pool } from "./ink";
 import { anchor, threadX } from "./anchors";
 import { ensoRing } from "./enso";
 import { fitPoints, handLine, loop, steps, type Box, type Point } from "./pen";
-import { chunksOf, scrolledArc, slice, within, type Chunk } from "./thread";
+import { chunksOf, marginSpans, scrolledArc, slice, within, type Chunk } from "./thread";
 import { ease } from "./useBeat";
 import styles from "./Front.module.css";
 
@@ -182,6 +182,10 @@ export default function Thread() {
         lift: 22,
       });
       const chunks = chunksOf(points, ends);
+      // Where the line runs down the margin, for the navigation to rest on.
+      host.dataset.margin = marginSpans(ink.line, threadX(front))
+        .map(([a, b]) => `${Math.round(a)},${Math.round(b)}`)
+        .join(" ");
       const splitArc = split === undefined ? 0 : chunksOf(points, [split, points.length - 1])[0].to;
       setShape({
         outline: ink.outline,
@@ -239,15 +243,24 @@ export default function Thread() {
       }
     };
 
-    // The opening: the tangle (in Opening) lifts, the underline snaps taut,
-    // then the line walks down the right edge and back to the margin.
-    const tl = gsap.timeline({ delay: 1.55, onUpdate: apply });
-    tl.to(state, { opening: () => shapeRef.current?.split ?? 0, duration: 0.45, ease: ease.impulse });
+    // The opening: once the tangle (in Opening) lifts, the underline snaps
+    // taut, holds still, then walks down the right edge and back.
+    const tl = gsap.timeline({ paused: true, onUpdate: apply });
+    tl.to(state, { opening: () => shapeRef.current?.split ?? 0, duration: 0.18, ease: "expo.out" });
     tl.to(
       state,
-      { opening: () => shapeRef.current?.pieces[0]?.chunk.to ?? 0, duration: 1.8, ease: ease.hand },
-      ">0.35",
+      { opening: () => shapeRef.current?.pieces[0]?.chunk.to ?? 0, duration: 1.4, ease: ease.hand },
+      ">0.5",
     );
+    const play = () => tl.play();
+    front.addEventListener("kumma:lifted", play, { once: true });
+    // Arrived mid-page, or the opening never ran: do not wait for it.
+    const fallback = window.setTimeout(play, 3200);
+
+    // Each section's own tempo: how closely the ink follows the reader.
+    // The body catches up slowly; tally barbs are struck; the approach
+    // to the reason is unhurried.
+    const tempo = [0.12, 0.04, 0.2, 0.45, 0.12, 0.05];
 
     const tick = () => {
       const current = shapeRef.current;
@@ -259,13 +272,17 @@ export default function Thread() {
         tip,
       );
       if (target > state.drawn + 1e-4) {
-        state.drawn = Math.min(target, state.drawn + Math.max(0.0005, (target - state.drawn) * 0.12));
+        const at = current.pieces.findIndex((piece) => state.drawn < piece.chunk.to);
+        const rate = tempo[at] ?? 0.12;
+        state.drawn = Math.min(target, state.drawn + Math.max(0.0005, (target - state.drawn) * rate));
         apply();
       }
     };
     gsap.ticker.add(tick);
     return () => {
       gsap.ticker.remove(tick);
+      front.removeEventListener("kumma:lifted", play);
+      window.clearTimeout(fallback);
       tl.kill();
     };
   }, []);

@@ -82,3 +82,17 @@ export function within(chunk: Chunk, arc: number) {
 export function scrolledArc(chunks: Chunk[], pacing: number[], tip: number) {
   return arcAtTip(chunks.slice(1), pacing, tip);
 }
+
+// The stretches of page height where the line runs down the margin (at x),
+// as [top, bottom] pairs. Detours shorter than `gap` (a tally barb out and
+// back) do not break a stretch.
+export function marginSpans(line: [number, number][], x: number, tolerance = 4, gap = 48) {
+  const spans: [number, number][] = [];
+  for (const [px, py] of line) {
+    if (Math.abs(px - x) > tolerance) continue;
+    const last = spans[spans.length - 1];
+    if (last && py - last[1] <= gap) last[1] = Math.max(last[1], py);
+    else spans.push([py, py]);
+  }
+  return spans.filter(([a, b]) => b - a > 1);
+}

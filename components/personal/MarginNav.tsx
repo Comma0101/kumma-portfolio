@@ -34,24 +34,20 @@ export default function MarginNav() {
     if (!front) return;
     let frame = 0;
     // Is the pen tip on screen? If not (the reader went back up, or the
-    // line is finished), the nav rests on the margin at the reading line.
-    // The resting tick belongs on the margin line, so it may only rest
-    // where the reading line crosses the margin's drawn stretch (from
-    // Understanding down to the reason) — never on the hero or on paper
-    // after the line has ended.
-    const span = () => {
-      const from = front.querySelector('[data-thread="catch"]');
-      const to = front.querySelector('[data-thread="reason"]');
-      if (!from || !to) return null;
-      const origin = front.getBoundingClientRect().top;
-      return [from.getBoundingClientRect().top - origin, to.getBoundingClientRect().top - origin];
-    };
+    // line is finished), the nav rests on the margin at the reading line —
+    // but only where the line itself runs down the margin (Thread publishes
+    // those stretches), never on the hero, a detour, or paper past the end.
     const check = () => {
       frame = 0;
       const origin = front.getBoundingClientRect().top;
       const reading = window.innerHeight * 0.72 - origin;
-      const stretch = span();
-      setOnLine(!!stretch && reading > stretch[0] && reading < stretch[1]);
+      const spans = front.querySelector<HTMLElement>("[data-margin]")?.dataset.margin ?? "";
+      setOnLine(
+        spans.split(" ").some((span) => {
+          const [a, b] = span.split(",").map(Number);
+          return reading > a + 24 && reading < b - 24;
+        }),
+      );
       const t = tipRef.current;
       if (!t) return;
       const top = origin + t.y;

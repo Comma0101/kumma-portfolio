@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { arcAtTip, chunksOf, scrolledArc, slice, within } from "./thread";
+import { arcAtTip, chunksOf, marginSpans, scrolledArc, slice, within } from "./thread";
 import type { Point } from "./pen";
 
 // A thread down the margin with a horizontal detour in the second chunk.
@@ -72,4 +72,16 @@ test("scroll never draws the opening: that is the opening's own timed beat", () 
   // Past it, scroll takes over from the second chunk.
   assert.ok(scrolledArc(chunks, even, 250) > chunks[1].from);
   assert.equal(scrolledArc(chunks, even, 999), 1);
+});
+
+test("margin spans: where the line runs down the margin, small detours merged", () => {
+  const line: [number, number][] = [
+    [30, 0], [30, 40], [30, 80], [30, 100], // margin
+    [32, 110], [90, 118], [31, 126], // a tally barb out and back
+    [30, 160], [30, 200], // margin
+    [300, 220], [300, 600], [30, 640], // a detour across the page
+    [30, 680], [30, 720], [30, 760], [30, 800],
+  ];
+  assert.deepEqual(marginSpans(line, 30), [[0, 200], [640, 800]]);
+  assert.deepEqual(marginSpans([], 30), []);
 });
