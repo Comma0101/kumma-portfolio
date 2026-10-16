@@ -1,25 +1,10 @@
-"use client";
-
-import { useRef } from "react";
-import { ease, useBeat } from "./useBeat";
 import styles from "./Front.module.css";
 
+// The sutra stands still. The thread draws the open circle beside it as
+// the reader arrives (Thread); nothing touches the characters.
 export default function Line() {
-  const ref = useRef<HTMLElement>(null);
-
-  useBeat(ref, (root, tl) => {
-    // The thread draws the open circle as the reader arrives; the point
-    // in the full stop lands a moment after.
-    tl.fromTo(
-      root.querySelector("[data-stop]"),
-      { scale: 0 },
-      { scale: 1, duration: 0.45, ease: ease.impulse },
-      1.4,
-    );
-  });
-
   return (
-    <section ref={ref} className={styles.line} aria-label="Diamond Sutra" data-thread="reason">
+    <section className={styles.line} aria-label="Diamond Sutra" data-thread="reason">
       <p className={styles.label} aria-hidden="true" data-anchor="reason">
         The reason
       </p>
@@ -33,7 +18,6 @@ export default function Line() {
           則見如來
           <span className={styles.stopMark}>
             。
-            <i className={styles.stopDot} data-stop aria-hidden="true" />
           </span>
         </span>
       </p>

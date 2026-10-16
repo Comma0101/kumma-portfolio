@@ -5,12 +5,11 @@ import Ink, { type Trace } from "./Ink";
 import { anchor, threadX } from "./anchors";
 import { handLine } from "./pen";
 import { draw, reveal, useBeat } from "./useBeat";
-import Elsewhere from "./Elsewhere";
-import { X_HANDLE, X_URL } from "./links";
+import { X_URL } from "./links";
 import styles from "./Front.module.css";
 
-// The last stroke: the margin line comes down into the close and becomes
-// the underline of the one action, ending past the X with the pen pressed.
+// The pen set down again: the margin line comes down into the invitation
+// and becomes the underline of the one action, lifting off past the X.
 const last: Trace = (_, host) => {
   const follow = anchor(host, "follow");
   if (!follow) return { points: [] };
@@ -32,25 +31,17 @@ const last: Trace = (_, host) => {
 export default function Close() {
   const ref = useRef<HTMLElement>(null);
 
-  // The pen's last mark: the line under the action.
+  // The line under the action.
   useBeat(ref, (root, tl) => {
     draw(tl, reveal(root, "last"), { duration: 1.6, position: 0.1 });
   });
 
   return (
-    <footer ref={ref} className={styles.close}>
+    <section ref={ref} className={styles.close} aria-label="Follow">
       <a className={styles.followBig} href={X_URL} rel="me" data-anchor="follow">
         Follow on X
       </a>
-      <Ink trace={last} mark="last" size={3.4} seed={77} endPool className={styles.thread} />
-
-      <Elsewhere />
-
-      <p className={styles.colophon}>
-        <span>{X_HANDLE}</span>
-        <span>Los Angeles</span>
-        <span>© {new Date().getFullYear()} Kumma Wu</span>
-      </p>
-    </footer>
+      <Ink trace={last} mark="last" size={3.4} seed={77} lift={14} className={styles.thread} />
+    </section>
   );
 }

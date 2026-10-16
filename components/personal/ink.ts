@@ -73,9 +73,56 @@ function turn(points: Point[], i: number, reach: number) {
   return Math.acos(Math.max(-1, Math.min(1, (ux * vx + uy * vy) / (lu * lv))));
 }
 
-export function pressures(points: Point[], seed: number, { flat = false } = {}): number[] {
+// A stretch of a stroke drawn heavier (weight × pressure) and slower
+// (slow × time), as arc fractions of the stroke.
+export type Emphasis = { from: number; to: number; weight?: number; slow?: number };
+
+function fractions(points: Point[]) {
+  const lengths = [0];
+  for (let i = 1; i < points.length; i += 1) {
+    lengths.push(lengths[i - 1] + Math.hypot(points[i][0] - points[i - 1][0], points[i][1] - points[i - 1][1]));
+  }
+  const total = lengths[lengths.length - 1] || 1;
+  return { at: lengths.map((l) => l / total), total };
+}
+
+// The factor at arc fraction f, easing in and out over a short ramp so the
+// hand changes pressure, not the line's shape, abruptly.
+function factor(f: number, emphasis: Emphasis[], key: "weight" | "slow") {
+  let out = 1;
+  for (const e of emphasis) {
+    const value = e[key] ?? 1;
+    const ramp = Math.min(0.02, (e.to - e.from) / 4);
+    const t =
+      f < e.from - ramp || f > e.to + ramp
+        ? 0
+        : f < e.from + ramp
+          ? (f - (e.from - ramp)) / (2 * ramp)
+          : f > e.to - ramp
+            ? (e.to + ramp - f) / (2 * ramp)
+            : 1;
+    const s = t * t * (3 - 2 * t);
+    out *= 1 + (value - 1) * s;
+  }
+  return out;
+}
+
+export function pressures(
+  points: Point[],
+  seed: number,
+  {
+    flat = false,
+    breath = 0,
+    emphasis = [],
+  }: { flat?: boolean; breath?: number; emphasis?: Emphasis[] } = {},
+): number[] {
   if (flat) return points.map(() => 0.55);
   const rand = random(seed);
+  const { at, total } = fractions(points);
+  // A long run is not held at one pressure: it breathes, about once every
+  // 900px, with a slower second swell under it.
+  const cycles = total / 900;
+  const phase = rand() * Math.PI * 2;
   const bend = points.map((_, i) => turn(points, i, 2) / Math.PI);
   // Spread each turn over its neighbours: the hand slows before and after.
   const slow = bend.map((_, i) => {
@@ -91,10 +138,32 @@ export function pressures(points: Point[], seed: number, { flat = false } = {}):
     return sum / weight;
   });
   let drift = 0;
-  return slow.map((value) => {
+  return slow.map((value, i) => {
     drift = drift * 0.85 + (rand() - 0.5) * 0.05;
-    return Math.max(0.2, Math.min(1, 0.36 + value * 1.9 + drift));
+    const f = at[i];
+    const swell = breath
+      ? breath * (Math.sin(Math.PI * 2 * cycles * f + phase) * 0.7 + Math.sin(Math.PI * cycles * f + phase * 1.7) * 0.3)
+      : 0;
+    const base = 0.36 + value * 1.9 + drift + swell;
+    return Math.max(0.2, Math.min(1, base * factor(f, emphasis, "weight")));
   });
+}
+
+// Where the pen is when a fraction of the stroke has been drawn.
+export function pointAt(line: Point[], fraction: number): Point {
+  const { at } = fractions(line);
+  const f = Math.min(1, Math.max(0, fraction));
+  for (let i = 1; i < line.length; i += 1) {
+    if (at[i] >= f) {
+      const span = at[i] - at[i - 1] || 1;
+      const t = (f - at[i - 1]) / span;
+      return [
+        Number((line[i - 1][0] + (line[i][0] - line[i - 1][0]) * t).toFixed(3)),
+        Number((line[i - 1][1] + (line[i][1] - line[i - 1][1]) * t).toFixed(3)),
+      ];
+    }
+  }
+  return line[line.length - 1];
 }
 
 function poolsAt(points: Point[], size: number, seed: number): Pool[] {
@@ -115,15 +184,16 @@ function poolsAt(points: Point[], size: number, seed: number): Pool[] {
 
 // How a hand spends time on a stroke: quick along straight runs, slower
 // into turns and reversals. Returns arc fractions sampled at even times.
-export function pace(points: Point[], samples = 48): number[] {
+export function pace(points: Point[], samples = 48, emphasis: Emphasis[] = []): number[] {
   if (points.length < 2) return [0, 1];
+  const { at } = fractions(points);
   const arc = [0];
   const time = [0];
   for (let i = 1; i < points.length; i += 1) {
     const length = Math.hypot(points[i][0] - points[i - 1][0], points[i][1] - points[i - 1][1]);
     const bend = turn(points, i, 2) / Math.PI;
     arc.push(arc[i - 1] + length);
-    time.push(time[i - 1] + length * (1 + bend * 4.5));
+    time.push(time[i - 1] + length * (1 + bend * 4.5) * factor(at[i], emphasis, "slow"));
   }
   const totalArc = arc[arc.length - 1] || 1;
   const totalTime = time[time.length - 1] || 1;
@@ -175,6 +245,9 @@ export function inkStroke(
     smoothing = 3,
     spacing,
     press = false,
+    breath = 0,
+    emphasis = [],
+    lift = 4,
   }: {
     size: number;
     seed: number;
@@ -187,10 +260,16 @@ export function inkStroke(
     spacing?: number;
     // The landing press: a darker point where the pen first touches.
     press?: boolean;
+    // How much the pressure drifts along long runs (0 = held steady).
+    breath?: number;
+    // Stretches drawn heavier and slower.
+    emphasis?: Emphasis[];
+    // How long the lift-off taper is, in multiples of size.
+    lift?: number;
   },
 ): Ink {
   const line = resample(chaikin(points, smoothing), spacing ?? Math.max(2, size * 0.8));
-  const p = pressures(line, seed, { flat });
+  const p = pressures(line, seed, { flat, breath, emphasis });
   const outline = getStroke(
     line.map(([x, y], i) => [x, y, p[i]]),
     {
@@ -201,7 +280,7 @@ export function inkStroke(
       simulatePressure: false,
       // A pen that lands pressing starts blunt; otherwise it eases in.
       start: { taper: flat || press ? 0 : size * 2.5, cap: true },
-      end: { taper: flat ? 0 : size * 4, cap: true },
+      end: { taper: flat ? 0 : size * lift, cap: true },
       last: true,
     },
   );
@@ -224,7 +303,7 @@ export function inkStroke(
         : []),
     ],
     center: centerline(line),
-    pace: flat ? [0, 1] : pace(line),
+    pace: flat ? [0, 1] : pace(line, 48, emphasis),
     line,
   };
 }

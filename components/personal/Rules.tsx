@@ -20,7 +20,7 @@ const price: Trace = ({ width }, host) => {
     points: fitPoints(climb({ seed: 43 }), {
       x,
       y: line.y + line.height - band + 10,
-      width: width + 80 - x,
+      width: width - 2 - x,
       height: Math.max(60, band - 30),
     }),
   };
@@ -99,7 +99,6 @@ export default function Rules() {
       <p className={styles.rule} data-anchor="bored">
         Stay bored.
       </p>
-      <p className={styles.still}>(nothing moves here.)</p>
       <Ink trace={flat} mark="flat" size={2.4} seed={45} flat still className={styles.thread} />
     </section>
   );

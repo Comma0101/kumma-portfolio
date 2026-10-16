@@ -2,16 +2,14 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import gsap from "gsap";
-import type { Trace } from "./Ink";
-import { centerline, inkStroke, type Pool } from "./ink";
+import type { Size } from "./Ink";
+import { centerline, inkStroke, pointAt, type Pool } from "./ink";
 import { anchor, threadX } from "./anchors";
 import { fitPoints, handLine, loop, steps, type Box, type Point } from "./pen";
 import { arcAtTip, chunksOf, slice, within, type Chunk } from "./thread";
 import { ease } from "./useBeat";
 import styles from "./Front.module.css";
 
-// A teacher's tick, the shape the line makes at each practice.
-const tickShape: Point[] = [[0, 52], [30, 92], [100, 0]];
 
 function section(front: HTMLElement, name: string): Box | null {
   const el = front.querySelector<HTMLElement>(`[data-thread="${name}"]`);
@@ -24,7 +22,10 @@ function section(front: HTMLElement, name: string): Box | null {
 // The one red line, from the name's underline to the open circle beside
 // the sutra. Every mark on the way is a detour of the same pen; each
 // section's share of the line is one chunk.
-const spine: Trace = ({ width }, host) => {
+const spine = (
+  { width }: Size,
+  host: HTMLElement,
+): { points: Point[]; split?: number; ends?: number[]; ensoStart?: number } => {
   // The host covers the page exactly; the anchors live in the page itself.
   const front = host.parentElement ?? host;
   const name = anchor(front, "name");
@@ -86,21 +87,15 @@ const spine: Trace = ({ width }, host) => {
   to([x, bottom(stairs) + 2], 0.5);
   end();
 
-  // Practice: out from the margin to tick each numeral, and back.
+  // Practice: a tally barb from the margin to each numeral — one stroke
+  // out, one back, the way a margin is marked.
   for (let i = 0; i < 4; i += 1) {
     const numeral = anchor(front, `tick-${i}`);
     if (!numeral) continue;
-    const box: Box = {
-      x: numeral.x + numeral.height * 0.1,
-      y: numeral.y - numeral.height * 1.55,
-      width: numeral.height * 1.9,
-      height: numeral.height * 1.5,
-    };
-    const tick = fitPoints(tickShape, box);
-    to([x, box.y + box.height * 0.52 - 8], 0.4);
-    to(tick[0], 0.3);
-    points.push(...tick.slice(1));
-    to([x, box.y + box.height + 16], 0.4);
+    const y = numeral.y + numeral.height * 0.5;
+    to([x, y - 7], 0.4);
+    points.push([numeral.x - 6, y + 1]);
+    points.push([x + 1, y + 7]);
   }
   to([x, bottom(practice)], 0.5);
   end();
@@ -122,27 +117,44 @@ const spine: Trace = ({ width }, host) => {
     width: radius * 2,
     height: radius * 2.16,
   });
-  // Come in beneath the circle and round to where it starts, so the
-  // approach never crosses the ring.
+  // Come in beneath the circle, round its outside, and into the ring along
+  // its tangent — no corner where the circle begins, nothing crossed.
   const below = cy + radius * 1.4;
   to([x, Math.max(points[points.length - 1][1] + 1, below)], 0.5);
-  // Out past the circle, then in radially to where the ring begins,
-  // whichever way its opening faces.
   const start = Math.atan2(ring[0][1] - cy, ring[0][0] - cx);
-  to([cx + radius * 1.6, below - 4], 1);
-  to([cx + Math.cos(start) * radius * 1.5, cy + Math.sin(start) * radius * 1.5], 0.6);
-  to(ring[0], 0.3);
+  // Stay in the gap between the circle and the sutra: never touch the text.
+  const limit = room ? seen.x - 12 : Infinity;
+  const back = room ? 0.8 : 1.1;
+  const behind: Point = [
+    Math.min(limit, ring[0][0] + Math.sin(start) * radius * back),
+    ring[0][1] - Math.cos(start) * radius * back,
+  ];
+  const side = behind[0] >= cx ? 1 : -1;
+  const outside = side > 0 ? Math.min(limit, cx + radius * 1.6) : cx - radius * 1.6;
+  to([outside, below - 4], 1);
+  if (behind[1] < cy - radius * 0.2) to([outside, behind[1]], 0.6);
+  to(behind, 0.4);
+  to(ring[0], 0.2);
+  const ensoStart = points.length - 1;
   points.push(...ring.slice(1));
   end();
 
-  return { points, split, ends };
+  return { points, split, ends, ensoStart };
 };
 
 type Piece = { d: string; box: Box; chunk: Chunk };
 // pace: the hand's timing over the whole line (see ink.ts pace()).
-type Shape = { outline: string; pools: Pool[]; pieces: Piece[]; split: number; pace: number[] };
+// line: the stroke's samples, to find where the pen tip is.
+type Shape = {
+  outline: string;
+  pools: Pool[];
+  pieces: Piece[];
+  split: number;
+  pace: number[];
+  line: Point[];
+};
 
-const SIZE = 3;
+const SIZE = 3.6;
 
 function bounds(points: Point[], pad: number): Box {
   let x0 = Infinity;
@@ -182,9 +194,20 @@ export default function Thread() {
       frame = 0;
       const { width, height } = host.getBoundingClientRect();
       if (!width || !height) return;
-      const { points, split, ends } = spine({ width, height }, host);
+      const { points, split, ends, ensoStart } = spine({ width, height }, host);
       if (points.length < 2 || !ends) return;
-      const ink = inkStroke(points, { size: SIZE, seed: 3, endPool: true, smoothing: 2, spacing: 6 });
+      // The climax: the ensō is drawn heavier and at half the hand's speed,
+      // and the pen lifts off it slowly, dry, at the open end.
+      const enso = ensoStart === undefined ? 1 : chunksOf(points, [ensoStart, points.length - 1])[0].to;
+      const ink = inkStroke(points, {
+        size: SIZE,
+        seed: 3,
+        smoothing: 2,
+        spacing: 6,
+        breath: 0.16,
+        emphasis: [{ from: enso, to: 1, weight: 2.2, slow: 2.2 }],
+        lift: 22,
+      });
       const chunks = chunksOf(points, ends);
       const splitArc = split === undefined ? 0 : chunksOf(points, [split, points.length - 1])[0].to;
       setShape({
@@ -192,6 +215,7 @@ export default function Thread() {
         pools: ink.pools,
         split: splitArc,
         pace: ink.pace,
+        line: ink.line,
         pieces: chunks.map((chunk) => {
           const part = slice(ink.line, chunk.from, chunk.to);
           return { d: centerline(part), box: bounds(part, SIZE * 6), chunk };
@@ -223,12 +247,23 @@ export default function Thread() {
       if (!current) return;
       const arc = Math.max(state.opening, state.drawn);
       const paths = host.querySelectorAll<SVGPathElement>("[data-reveal]");
+      let changed = false;
       current.pieces.forEach((piece, i) => {
         const p = Number(within(piece.chunk, arc).toFixed(4));
         if (shown[i] === p || !paths[i]) return;
         shown[i] = p;
+        changed = true;
         paths[i].style.strokeDashoffset = String(1 - p);
       });
+      // Tell the page where the pen is (the navigation rides the tip).
+      if (changed) {
+        const [tx, ty] = pointAt(current.line, arc);
+        front.dispatchEvent(
+          new CustomEvent("kumma:tip", {
+            detail: { x: tx, y: ty, onMargin: Math.abs(tx - threadX(front)) < 30 },
+          }),
+        );
+      }
     };
 
     // The opening: the tangle (in Opening) lifts, the underline snaps taut,

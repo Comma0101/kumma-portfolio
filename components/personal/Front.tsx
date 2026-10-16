@@ -8,6 +8,7 @@ import Rules from "./Rules";
 import Line from "./Line";
 import Wu from "./Wu";
 import Close from "./Close";
+import Colophon from "./Colophon";
 import MotionFlag from "./MotionFlag";
 import Thread from "./Thread";
 import MarginNav from "./MarginNav";
@@ -44,8 +45,8 @@ const notoSerifTC = localFont({
 const motion = `try{if(!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.dataset.front="motion"}catch(e){}`;
 
 // Order: who he is, how change actually happens, what he practises, the
-// rules of one practice, the reason behind them, the empty centre, the
-// invitation. Nothing private: only the public bio, ideas, and practice.
+// rules of one practice, the reason behind them, the invitation, and last
+// the empty centre. Nothing private: only the public bio, ideas, practice.
 export default function Front() {
   return (
     <div
@@ -61,8 +62,9 @@ export default function Front() {
       <Practice />
       <Rules />
       <Line />
-      <Wu />
       <Close />
+      <Wu />
+      <Colophon />
     </div>
   );
 }

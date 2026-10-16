@@ -101,10 +101,6 @@
   visibility: hidden;
 }
 
-:global(html[data-front="motion"]) .front [data-stop] {
-  transform: scale(0);
-}
-
 /* A mark that spans its whole section: the red line passing through. */
 .thread {
   inset: 0;
@@ -223,88 +219,96 @@
 
 /* ---------- The pen tip: navigation ---------- */
 
+/* Resting on the margin at the reading line until the pen moves; then it
+   rides the live end of the thread across the page. */
 .marginNav {
   position: fixed;
   top: 72vh;
-  left: calc(var(--thread) - 9px);
+  left: var(--thread);
   z-index: 40;
+  width: 0;
+  height: 0;
+  transition: opacity 0.25s ease;
+}
+
+.marginNav[data-riding] {
+  position: absolute;
+}
+
+.marginNav[data-hidden] {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .penTip {
-  display: block;
-  width: 18px;
-  height: 18px;
+  position: absolute;
+  top: -11px;
+  left: -11px;
+  width: 22px;
+  height: 22px;
   padding: 0;
   border: 0;
+  border-radius: 50%;
   background: transparent;
   cursor: pointer;
 }
 
-/* The tip itself: a short red stroke across the margin line. */
+/* The tip itself: the nib, a short red stroke across the line. */
 .penTip::before {
   content: "";
-  display: block;
+  position: absolute;
+  top: 9.5px;
+  left: 2px;
   width: 18px;
   height: 3px;
-  margin-top: 7px;
   border-radius: 2px;
   background: var(--red);
-  transform: rotate(-12deg);
+  transform: rotate(-14deg);
+  transition: transform 0.2s ease;
 }
 
+.penTip:hover::before,
+.penTip:focus-visible::before,
+.marginNav[data-open] .penTip::before {
+  transform: rotate(-14deg) scaleX(1.35);
+}
+
+/* Opened: the sections written on the paper to the left of the line. */
 .marginNav ol {
   position: absolute;
-  bottom: 26px;
-  left: 0;
+  right: 14px;
+  top: 0;
   display: grid;
-  gap: 0.15rem;
+  gap: 0.1rem;
   margin: 0;
-  padding: 0.6rem 0.9rem 0.6rem 0;
+  padding: 0;
   list-style: none;
-  background: var(--paper);
   opacity: 0;
   pointer-events: none;
-  transform: translateY(6px);
+  transform: translate(4px, -50%);
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .marginNav[data-open] ol {
   opacity: 1;
   pointer-events: auto;
-  transform: none;
+  transform: translate(0, -50%);
 }
 
 .marginNav ol button {
-  display: grid;
-  grid-template-columns: 1.6rem auto;
-  align-items: baseline;
-  gap: 0.6rem;
-  padding: 0.2rem 0 0.2rem 0.3rem;
+  display: block;
+  padding: 0.1rem 0.2rem;
   border: 0;
   background: none;
   color: var(--grey);
   cursor: pointer;
-  font: inherit;
-  font-size: 0.78rem;
-  letter-spacing: 0.12em;
-  text-align: left;
-  text-transform: uppercase;
-}
-
-.marginNav ol button [lang] {
-  color: var(--ink);
   font-family: var(--font-tc), "Noto Serif TC", serif;
-  font-size: 1.15rem;
-  letter-spacing: 0;
+  font-size: 1.1rem;
+  line-height: 1.25;
 }
 
 .marginNav ol button:hover,
 .marginNav ol button:focus-visible {
-  color: var(--red);
-}
-
-.marginNav ol button:hover [lang],
-.marginNav ol button:focus-visible [lang] {
   color: var(--red);
 }
 
@@ -589,14 +593,6 @@
   transform-origin: left 70%;
 }
 
-.still {
-  margin: 1.1rem 0 0;
-  color: var(--grey);
-  font-family: var(--font-note), Georgia, serif;
-  font-size: 1.35rem;
-  font-style: italic;
-}
-
 /* ---------- The reason (sutra) ---------- */
 
 .line {
@@ -630,18 +626,6 @@
   position: relative;
 }
 
-/* The pen's point fills the empty circle of the full stop. */
-.stopDot {
-  position: absolute;
-  top: 47%;
-  left: 54%;
-  width: 0.13em;
-  height: 0.13em;
-  margin: -0.065em 0 0 -0.065em;
-  border-radius: 50%;
-  background: var(--red);
-}
-
 .gloss {
   position: absolute;
   left: var(--indent);
@@ -669,7 +653,7 @@
 
 .close {
   position: relative;
-  padding: 6svh var(--gutter) 5svh;
+  padding: 12svh var(--gutter) 10svh;
 }
 
 .followBig {
@@ -721,6 +705,10 @@
   color: var(--red);
 }
 
+.colophonBlock {
+  padding: 0 var(--gutter) 5svh;
+}
+
 .colophon {
   display: flex;
   flex-wrap: wrap;
@@ -740,15 +728,21 @@
     --indent: calc(var(--thread) + 1.2rem);
   }
 
+  .opening {
+    min-height: 82svh;
+  }
+
   .name {
-    margin-top: 16svh;
+    margin-top: 14svh;
     font-size: 19vw;
   }
 
+  /* On a phone the face comes up under the name, the bio right under it. */
   .portrait {
     right: calc(var(--gutter) + 4vw);
-    bottom: 36svh;
-    width: 36vw;
+    bottom: auto;
+    top: calc(14svh + 25vw);
+    width: 42vw;
   }
 
   .bio {
@@ -778,11 +772,22 @@
   }
 
   .followBig {
-    font-size: 13.2vw;
+    font-size: 12.4vw;
+  }
+
+  .wu {
+    min-height: auto;
+    padding-top: 8svh;
+    padding-bottom: 10svh;
   }
 
   .practiceLink {
     grid-column: 2;
+  }
+
+  /* No room left of the margin on a phone: the page scrolls on its own. */
+  .marginNav {
+    display: none;
   }
 
   .practice li {

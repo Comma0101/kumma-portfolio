@@ -29,6 +29,7 @@ type Props = {
   smoothing?: number;
   spacing?: number;
   press?: boolean;
+  lift?: number;
   className?: string;
 };
 
@@ -55,6 +56,7 @@ export default function Ink({
   smoothing,
   spacing,
   press,
+  lift,
   className,
 }: Props) {
   const ref = useRef<SVGSVGElement>(null);
@@ -76,7 +78,7 @@ export default function Ink({
       if (points.length < 2) return;
       const total = lengthTo(points, points.length - 1) || 1;
       setShape({
-        ...inkStroke(points, { size, seed, flat, startPool, endPool, smoothing, spacing, press }),
+        ...inkStroke(points, { size, seed, flat, startPool, endPool, smoothing, spacing, press, lift }),
         width,
         height,
         split: split === undefined ? 1 : lengthTo(points, split) / total,

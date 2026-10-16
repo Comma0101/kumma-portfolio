@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { arcAt, centerline, inkStroke, pace, pressures, resample, timeAt } from "./ink";
+import { arcAt, centerline, inkStroke, pace, pointAt, pressures, resample, timeAt } from "./ink";
 import type { Point } from "./pen";
 
 const straight: Point[] = [[0, 0], [100, 0], [200, 0], [300, 0]];
@@ -100,4 +100,35 @@ test("where the pen lands it presses: a smaller, marked pool inside the stroke's
   assert.equal(press.length, 1);
   assert.ok(Math.abs(press[0].x) < 3 && Math.abs(press[0].y) < 3);
   assert.ok(press[0].r < 4 * 0.6, "inside the stroke, not a blob on it");
+});
+
+test("a long run breathes: pressure drifts along a straight line when asked to", () => {
+  const line = resample([[0, 0], [2000, 0]], 6);
+  const flatish = pressures(line, 3);
+  const breathing = pressures(line, 3, { breath: 0.2 });
+  const range = (p: number[]) => Math.max(...p) - Math.min(...p);
+  assert.ok(range(breathing) > range(flatish) + 0.15, `${range(breathing)} vs ${range(flatish)}`);
+});
+
+test("an emphasis range presses harder and is drawn slower", () => {
+  const line = resample([[0, 0], [1000, 0]], 5);
+  const emphasis = [{ from: 0.5, to: 1, weight: 1.8, slow: 2 }];
+  const plain = inkStroke([[0, 0], [1000, 0]], { size: 4, seed: 1 });
+  const heavy = inkStroke([[0, 0], [1000, 0]], { size: 4, seed: 1, emphasis });
+  // The plain half is done well before half-time: the emphasised half
+  // gets most of the time.
+  assert.ok(timeAt(heavy.pace, 0.5) < 0.42, `${timeAt(heavy.pace, 0.5)}`);
+  assert.ok(Math.abs(timeAt(plain.pace, 0.5) - 0.5) < 0.05);
+  const p = pressures(line, 1, { emphasis });
+  const early = p[Math.floor(p.length * 0.25)];
+  const late = p[Math.floor(p.length * 0.75)];
+  assert.ok(late > early * 1.4, `${late} vs ${early}`);
+});
+
+test("the pen's position at any drawn length", () => {
+  const line: Point[] = [[0, 0], [100, 0], [100, 100]];
+  assert.deepEqual(pointAt(line, 0), [0, 0]);
+  assert.deepEqual(pointAt(line, 0.25), [50, 0]);
+  assert.deepEqual(pointAt(line, 0.75), [100, 50]);
+  assert.deepEqual(pointAt(line, 1), [100, 100]);
 });
