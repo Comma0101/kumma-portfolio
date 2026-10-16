@@ -8,7 +8,8 @@ export function bisect(measure: (axis: number) => number, target: number, lo: nu
   if (measure(lo) >= target) return lo;
   let a = lo;
   let b = hi;
-  for (let i = 0; i < 14; i += 1) {
+  // Eight halvings of 62–125: within a quarter of a width unit.
+  for (let i = 0; i < 8; i += 1) {
     const mid = (a + b) / 2;
     if (measure(mid) < target) a = mid;
     else b = mid;

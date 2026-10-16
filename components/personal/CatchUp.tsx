@@ -28,34 +28,45 @@ export default function CatchUp() {
       };
       // For each line, the width-axis value that keeps it exactly as wide
       // as its outline at each weight: the ink grows inside the outline
-      // instead of sliding out of register.
-      let tables: Array<Array<[number, number]>> | null = null;
-      const solve = () =>
-        lines.map((line, i) => {
+      // instead of sliding out of register. Solving forces layout, so only
+      // the resting weight is solved up front; the rest waits for idle time.
+      const weights = [100, 280, 460, 640, 820];
+      const tables: Array<Array<[number, number]>> = lines.map(() => []);
+      const solveAt = (weight: number) =>
+        lines.forEach((line, i) => {
+          if (tables[i].some(([w]) => w === weight)) return;
           const target = width(targets[i]);
-          return [100, 280, 460, 640, 820].map((weight): [number, number] => {
-            line.style.fontWeight = String(weight);
-            const axis = bisect(
-              (wdth) => {
-                line.style.fontVariationSettings = `"wdth" ${wdth}`;
-                return width(line);
-              },
-              target,
-              62,
-              125,
-            );
-            return [weight, axis];
-          });
+          line.style.fontWeight = String(weight);
+          const axis = bisect(
+            (wdth) => {
+              line.style.fontVariationSettings = `"wdth" ${wdth}`;
+              return width(line);
+            },
+            target,
+            62,
+            125,
+          );
+          tables[i].push([weight, axis]);
+          tables[i].sort((a, b) => a[0] - b[0]);
         });
       const state = { weight: 100 };
       const apply = () => {
-        tables ??= solve();
+        if (!tables[0]?.length) solveAt(100);
         lines.forEach((line, i) => {
           line.style.fontWeight = String(state.weight);
-          line.style.fontVariationSettings = `"wdth" ${between(tables![i], state.weight).toFixed(2)}`;
+          line.style.fontVariationSettings = `"wdth" ${between(tables[i], state.weight).toFixed(2)}`;
         });
       };
-      document.fonts?.ready.then(apply).catch(() => undefined);
+      const idle =
+        (window as Window & { requestIdleCallback?: (cb: () => void) => number })
+          .requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 300));
+      document.fonts?.ready
+        .then(() => {
+          apply();
+          // One weight per idle slice, so no single task runs long.
+          weights.slice(1).forEach((weight, k) => idle(() => window.setTimeout(() => solveAt(weight), k * 16)));
+        })
+        .catch(() => undefined);
       // Compounding, but readable within one scroll: slow, then sure.
       tl.fromTo(
         state,
