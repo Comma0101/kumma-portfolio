@@ -6,7 +6,8 @@ import { getStroke } from "perfect-freehand";
 import { random, type Point } from "./pen";
 
 export type Pool = { x: number; y: number; r: number };
-export type Ink = { outline: string; pools: Pool[]; center: string };
+// pace[i] = fraction of the stroke drawn at time i / (pace.length - 1).
+export type Ink = { outline: string; pools: Pool[]; center: string; pace: number[] };
 
 const fmt = (n: number) => String(Number(n.toFixed(1)));
 
@@ -104,6 +105,53 @@ function poolsAt(points: Point[], size: number, seed: number): Pool[] {
   return pools;
 }
 
+// How a hand spends time on a stroke: quick along straight runs, slower
+// into turns and reversals. Returns arc fractions sampled at even times.
+export function pace(points: Point[], samples = 48): number[] {
+  if (points.length < 2) return [0, 1];
+  const arc = [0];
+  const time = [0];
+  for (let i = 1; i < points.length; i += 1) {
+    const length = Math.hypot(points[i][0] - points[i - 1][0], points[i][1] - points[i - 1][1]);
+    const bend = turn(points, i, 2) / Math.PI;
+    arc.push(arc[i - 1] + length);
+    time.push(time[i - 1] + length * (1 + bend * 4.5));
+  }
+  const totalArc = arc[arc.length - 1] || 1;
+  const totalTime = time[time.length - 1] || 1;
+  const out: number[] = [];
+  let j = 1;
+  for (let k = 0; k <= samples; k += 1) {
+    const t = (k / samples) * totalTime;
+    while (j < time.length - 1 && time[j] < t) j += 1;
+    const span = time[j] - time[j - 1] || 1;
+    const f = Math.min(1, Math.max(0, (t - time[j - 1]) / span));
+    out.push(Number(((arc[j - 1] + (arc[j] - arc[j - 1]) * f) / totalArc).toFixed(4)));
+  }
+  out[0] = 0;
+  out[out.length - 1] = 1;
+  return out;
+}
+
+// Fraction of the stroke drawn at time t (0–1).
+export function arcAt(pacing: number[], t: number) {
+  const x = Math.min(1, Math.max(0, t)) * (pacing.length - 1);
+  const i = Math.min(pacing.length - 2, Math.floor(x));
+  return pacing[i] + (pacing[i + 1] - pacing[i]) * (x - i);
+}
+
+// Time (0–1) at which a fraction of the stroke has been drawn.
+export function timeAt(pacing: number[], arc: number) {
+  const a = Math.min(1, Math.max(0, arc));
+  for (let i = 1; i < pacing.length; i += 1) {
+    if (pacing[i] >= a) {
+      const span = pacing[i] - pacing[i - 1] || 1;
+      return (i - 1 + (a - pacing[i - 1]) / span) / (pacing.length - 1);
+    }
+  }
+  return 1;
+}
+
 export function centerline(points: Point[]) {
   return `M ${points.map(([x, y]) => `${fmt(x)} ${fmt(y)}`).join(" L ")}`;
 }
@@ -130,5 +178,10 @@ export function inkStroke(
   const d = outline.length
     ? `M ${outline.map(([x, y]) => `${fmt(x)} ${fmt(y)}`).join(" L ")} Z`
     : "";
-  return { outline: d, pools: flat ? [] : poolsAt(line, size, seed), center: centerline(line) };
+  return {
+    outline: d,
+    pools: flat ? [] : poolsAt(line, size, seed),
+    center: centerline(line),
+    pace: flat ? [0, 1] : pace(line),
+  };
 }

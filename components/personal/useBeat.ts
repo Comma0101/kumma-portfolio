@@ -3,6 +3,7 @@
 import { useEffect, type RefObject } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { arcAt, timeAt } from "./ink";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -87,7 +88,9 @@ export function split(root: ParentNode, mark: string) {
 
 // Draw a mark from one fraction of its length to another (0 → 1 draws it,
 // 1 → 2 lifts it from where it started). Values may be functions so they
-// resolve after the mark has been measured.
+// resolve after the mark has been measured. The tween runs in the hand's
+// time, not the line's length: quick on straight runs, slower into turns
+// (the stroke's pacing, from ink.ts).
 export function draw(
   tl: gsap.core.Timeline,
   target: Element | null,
@@ -106,17 +109,36 @@ export function draw(
   },
 ) {
   if (!target) return tl;
+  const path = target as SVGElement;
   const value = (v: number | (() => number)) => (typeof v === "function" ? v() : v);
+  let pacing = [0, 1];
+  const read = () => {
+    const raw = path.closest("svg")?.getAttribute("data-pace");
+    pacing = raw ? raw.split(",").map(Number) : [0, 1];
+    return pacing;
+  };
+  // Whole part = which pass (0 drawing, 1 lifting); fraction = progress.
+  const toTime = (v: number) => {
+    const pass = Math.min(1, Math.floor(v));
+    return pass + timeAt(pacing, v - pass);
+  };
+  const toArc = (u: number) => {
+    if (u >= 2) return 2;
+    const pass = Math.floor(u);
+    return pass + arcAt(pacing, u - pass);
+  };
+  const state = { u: 0 };
   return tl.fromTo(
-    target,
-    // autoRound off: offsets live between 0 and 1, rounding would snap them.
-    { strokeDashoffset: () => 1 - value(from), autoRound: false },
+    state,
+    { u: () => (read(), toTime(value(from))) },
     {
-      strokeDashoffset: () => 1 - value(to),
+      u: () => (read(), toTime(value(to))),
       duration,
       ease: curve,
       immediateRender: false,
-      autoRound: false,
+      onUpdate: () => {
+        path.style.strokeDashoffset = String(1 - toArc(state.u));
+      },
     },
     position,
   );

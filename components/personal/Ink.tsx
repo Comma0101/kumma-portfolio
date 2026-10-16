@@ -82,6 +82,7 @@ export default function Ink({ trace, mark, size = 2.6, seed = 1, flat, still, cl
       focusable="false"
       data-mark={mark}
       data-split={shape?.split ?? 1}
+      data-pace={shape?.pace.join(",")}
       data-still={still ? "" : undefined}
       style={shape ? undefined : { visibility: "hidden" }}
     >
