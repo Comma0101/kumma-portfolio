@@ -126,9 +126,12 @@ const spine: Trace = ({ width }, host) => {
   // approach never crosses the ring.
   const below = cy + radius * 1.4;
   to([x, Math.max(points[points.length - 1][1] + 1, below)], 0.5);
-  // Out past the circle's open side, then in to where the ring begins.
-  to([cx + radius * 1.25, below - 4], 1);
-  to(ring[0], 0.6);
+  // Out past the circle, then in radially to where the ring begins,
+  // whichever way its opening faces.
+  const start = Math.atan2(ring[0][1] - cy, ring[0][0] - cx);
+  to([cx + radius * 1.6, below - 4], 1);
+  to([cx + Math.cos(start) * radius * 1.5, cy + Math.sin(start) * radius * 1.5], 0.6);
+  to(ring[0], 0.3);
   points.push(...ring.slice(1));
   end();
 
