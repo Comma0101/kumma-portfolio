@@ -5,7 +5,8 @@
 import { getStroke } from "perfect-freehand";
 import { random, type Point } from "./pen";
 
-export type Pool = { x: number; y: number; r: number };
+// press: where the pen lands — drawn a shade darker, inside the stroke.
+export type Pool = { x: number; y: number; r: number; press?: boolean };
 // pace[i] = fraction of the stroke drawn at time i / (pace.length - 1).
 // line: the resampled centreline the outline was built from.
 export type Ink = {
@@ -173,6 +174,7 @@ export function inkStroke(
     startPool = false,
     smoothing = 3,
     spacing,
+    press = false,
   }: {
     size: number;
     seed: number;
@@ -183,6 +185,8 @@ export function inkStroke(
     smoothing?: number;
     // Sample spacing in px; a page-long line can afford coarser samples.
     spacing?: number;
+    // The landing press: a darker point where the pen first touches.
+    press?: boolean;
   },
 ): Ink {
   const line = resample(chaikin(points, smoothing), spacing ?? Math.max(2, size * 0.8));
@@ -195,7 +199,8 @@ export function inkStroke(
       smoothing: 0.5,
       streamline: 0.2,
       simulatePressure: false,
-      start: { taper: flat ? 0 : size * 2.5, cap: true },
+      // A pen that lands pressing starts blunt; otherwise it eases in.
+      start: { taper: flat || press ? 0 : size * 2.5, cap: true },
       end: { taper: flat ? 0 : size * 4, cap: true },
       last: true,
     },
@@ -210,6 +215,9 @@ export function inkStroke(
       // Where the pen lands, and where it stops and presses before lifting.
       ...(startPool
         ? [{ x: Number(fmt(line[0][0])), y: Number(fmt(line[0][1])), r: Number(fmt(size * 0.62)) }]
+        : []),
+      ...(press
+        ? [{ x: Number(fmt(line[0][0])), y: Number(fmt(line[0][1])), r: Number(fmt(size * 0.3)), press: true }]
         : []),
       ...(endPool
         ? [{ x: Number(fmt(line[line.length - 1][0])), y: Number(fmt(line[line.length - 1][1])), r: Number(fmt(size * 0.72)) }]

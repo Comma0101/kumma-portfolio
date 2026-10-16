@@ -45,7 +45,7 @@ export default function Wu() {
             mark={`wu-${index}`}
             size={11}
             seed={90 + index}
-            endPool
+            press
             className={styles.wuStroke}
           />
         ))}

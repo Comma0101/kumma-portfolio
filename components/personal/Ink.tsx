@@ -28,6 +28,7 @@ type Props = {
   endPool?: boolean;
   smoothing?: number;
   spacing?: number;
+  press?: boolean;
   className?: string;
 };
 
@@ -53,6 +54,7 @@ export default function Ink({
   endPool,
   smoothing,
   spacing,
+  press,
   className,
 }: Props) {
   const ref = useRef<SVGSVGElement>(null);
@@ -74,7 +76,7 @@ export default function Ink({
       if (points.length < 2) return;
       const total = lengthTo(points, points.length - 1) || 1;
       setShape({
-        ...inkStroke(points, { size, seed, flat, startPool, endPool, smoothing, spacing }),
+        ...inkStroke(points, { size, seed, flat, startPool, endPool, smoothing, spacing, press }),
         width,
         height,
         split: split === undefined ? 1 : lengthTo(points, split) / total,
@@ -129,7 +131,13 @@ export default function Ink({
       <g mask={`url(#${mask})`}>
         <path d={shape?.outline ?? ""} />
         {shape?.pools.map((pool, index) => (
-          <circle key={index} cx={pool.x} cy={pool.y} r={pool.r} />
+          <circle
+            key={index}
+            cx={pool.x}
+            cy={pool.y}
+            r={pool.r}
+            className={pool.press ? styles.press : undefined}
+          />
         ))}
       </g>
     </svg>

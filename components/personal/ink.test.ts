@@ -93,3 +93,11 @@ test("a stroke can end in a pool, where the pen stops and presses", () => {
   assert.ok(Math.abs(pool.x - 300) < 3 && Math.abs(pool.y) < 3);
   assert.ok(pool.r > 2);
 });
+
+test("where the pen lands it presses: a smaller, marked pool inside the stroke's start", () => {
+  const ink = inkStroke(straight, { size: 4, seed: 2, press: true });
+  const press = ink.pools.filter((pool) => pool.press);
+  assert.equal(press.length, 1);
+  assert.ok(Math.abs(press[0].x) < 3 && Math.abs(press[0].y) < 3);
+  assert.ok(press[0].r < 4 * 0.6, "inside the stroke, not a blob on it");
+});
