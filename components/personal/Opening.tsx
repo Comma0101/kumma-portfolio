@@ -55,7 +55,8 @@ export default function Opening() {
         { "--wdth": 125, "--wght": 880, ease: ease.compound },
       );
     },
-    { start: "top top", end: "+=55%" },
+    // After the line has gone home: compounding comes late, then all at once.
+    { start: "top -10%", end: "+=45%" },
   );
 
   return (

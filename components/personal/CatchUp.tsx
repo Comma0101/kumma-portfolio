@@ -74,7 +74,9 @@ export default function CatchUp() {
         { weight: 820, ease: "power3.in", immediateRender: false, onUpdate: apply },
       );
     },
-    { start: "top 75%", end: "center 40%" },
+    // The body is slower than the mind: the ink keeps filling for a couple
+    // of seconds after the reader stops.
+    { start: "top 70%", end: "center 35%", scrub: 2.2 },
   );
 
   return (

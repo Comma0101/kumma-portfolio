@@ -53,7 +53,8 @@ export function useBeat<T extends HTMLElement>(ref: RefObject<T>, build: Build<T
 export function useScrub<T extends HTMLElement>(
   ref: RefObject<T>,
   build: Build<T>,
-  { start = "top 80%", end = "top 30%" }: { start?: string; end?: string } = {},
+  // scrub: how many seconds the motion trails the scroll.
+  { start = "top 80%", end = "top 30%", scrub = 0.6 }: { start?: string; end?: string; scrub?: number } = {},
 ) {
   useEffect(() => {
     const root = ref.current;
@@ -64,7 +65,7 @@ export function useScrub<T extends HTMLElement>(
           trigger: root,
           start,
           end,
-          scrub: 0.6,
+          scrub,
           onLeave: (self) => self.animation?.progress(1),
         },
       });

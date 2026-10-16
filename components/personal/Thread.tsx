@@ -257,6 +257,13 @@ export default function Thread() {
     // taut, holds still, then walks down the right edge and back.
     const tl = gsap.timeline({ paused: true, onUpdate: apply });
     tl.to(state, { opening: () => shapeRef.current?.split ?? 0, duration: 0.18, ease: "expo.out" });
+    // The point where the pen landed recoils once as the line pulls taut:
+    // the only overshoot on the page.
+    const landing = front.querySelector("[data-landing]");
+    if (landing) {
+      tl.to(landing, { scale: 0.82, duration: 0.07, ease: "power2.in" }, 0.02);
+      tl.to(landing, { scale: 1, duration: 0.22, ease: "power4.out" }, 0.09);
+    }
     tl.to(
       state,
       { opening: () => shapeRef.current?.pieces[0]?.chunk.to ?? 0, duration: 1.4, ease: ease.hand },

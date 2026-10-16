@@ -19,22 +19,31 @@ const last: Trace = (_, host) => {
   // Down the margin to above the words, out around the F, then under.
   const above = follow.y - 28;
   const side = Math.max(4, follow.x - 22);
+  const lead = [
+    ...handLine([x, -2], [x, above], 78, 0.5),
+    ...handLine([x, above], [side, above + 40], 79, 0.4).slice(1),
+    ...handLine([side, above + 40], [side + 8, y - 6], 80, 0.4).slice(1),
+  ];
   return {
     points: [
-      ...handLine([x, -2], [x, above], 78, 0.5),
-      ...handLine([x, above], [side, above + 40], 79, 0.4).slice(1),
-      ...handLine([side, above + 40], [side + 8, y - 6], 80, 0.4).slice(1),
+      ...lead,
       ...handLine([side + 8, y - 6], [Math.min(follow.x + follow.width + 36, host.clientWidth - 10), y - 5], 77, 0.7).slice(1),
     ],
+    // Where the underline itself begins.
+    split: lead.length - 1,
   };
 };
 
 export default function Close() {
   const ref = useRef<HTMLElement>(null);
 
-  // The line under the action.
+  // The line under the action: gathering speed down into the words, then
+  // snapping taut past the X — the way the page began.
   useBeat(ref, (root, tl) => {
-    draw(tl, reveal(root, "last"), { duration: 1.6, position: 0.1 });
+    const path = reveal(root, "last");
+    const split = () => Number(path?.closest("svg")?.getAttribute("data-split") ?? 1);
+    draw(tl, path, { to: split, duration: 1.1, ease: "power2.in", position: 0.1 });
+    draw(tl, path, { from: split, to: 1, duration: 0.3, ease: "expo.out" });
   });
 
   return (

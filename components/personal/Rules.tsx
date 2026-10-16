@@ -4,7 +4,7 @@ import { useRef } from "react";
 import Ink, { type Trace } from "./Ink";
 import { anchor, threadX } from "./anchors";
 import { climb, fitPoints, type Point } from "./pen";
-import { draw, ease, reveal, useBeat } from "./useBeat";
+import { draw, reveal, useBeat, useScrub } from "./useBeat";
 import styles from "./Front.module.css";
 
 // Price leaves from the margin and runs off the page: a jagged climb in
@@ -55,14 +55,18 @@ function Chase() {
 
 function Small() {
   const ref = useRef<HTMLParagraphElement>(null);
-  useBeat(ref, (root, tl) => {
-    tl.fromTo(
-      root.querySelector("[data-small]"),
-      { "--wdth": 125, scale: 1 },
-      { "--wdth": 62, scale: 0.6, duration: 0.9, ease: ease.impulse },
-      0.15,
-    );
-  });
+  // It gets smaller as the reader goes: most of it early, then settling.
+  useScrub(
+    ref,
+    (root, tl) => {
+      tl.fromTo(
+        root.querySelector("[data-small]"),
+        { "--wdth": 125, scale: 1 },
+        { "--wdth": 62, scale: 0.6, ease: "expo.out" },
+      );
+    },
+    { start: "top 75%", end: "top 45%" },
+  );
   return (
     <p ref={ref} className={styles.rule}>
       <span className={styles.small} data-small>
