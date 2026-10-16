@@ -51,8 +51,8 @@ export function ensoPath({ seed, facing = 0, gap = 0.16 }: { seed: number; facin
 }
 
 // 飛白: where the brush runs dry the paper shows through in streaks along
-// the stroke. Six centrelines offset across the stroke's width, cut into
-// dashes that lengthen and multiply as the ink runs out. Drawn in black in
+// the stroke. Six bristle lines offset across the stroke's width, cut into
+// gaps that lengthen, multiply and widen as the ink runs out. Drawn in black in
 // the reveal mask, so they are holes in the ink.
 export function dryStreaks(
   line: Point[],
@@ -67,7 +67,6 @@ export function dryStreaks(
   const out: { d: string; width: number }[] = [];
   for (let s = 0; s < 6; s += 1) {
     const across = (s / 5 - 0.5) * 2 * 0.45 + (rand() - 0.5) * 0.08;
-    let d = "";
     let i = line.findIndex((_, k) => lengths[k] / total >= from);
     while (i > 0 && i < line.length - 1) {
       const f = lengths[i] / total;
@@ -90,10 +89,11 @@ export function dryStreaks(
         const radius = size * (0.5 - thinning * (0.5 - pressure[k]));
         piece.push(`${fmt(line[k][0] + nx * radius * across)} ${fmt(line[k][1] + ny * radius * across)}`);
       }
-      d += `M ${piece.join(" L ")} `;
+      // Each gap is its own stroke, wider as the brush empties: the
+      // bristles part, rather than a hairline scratched over the ink.
+      out.push({ d: `M ${piece.join(" L ")}`, width: Number((mix(0.6, size * 0.2, dryness) * (0.7 + rand() * 0.6)).toFixed(2)) });
       i = j + 1;
     }
-    out.push({ d: d.trim(), width: 0.7 + rand() * 0.9 });
   }
   return out;
 }

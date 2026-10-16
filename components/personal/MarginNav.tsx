@@ -94,6 +94,7 @@ export default function MarginNav() {
       data-open={open ? "" : undefined}
       data-riding={riding ? "" : undefined}
       data-hidden={hidden ? "" : undefined}
+      data-resting={!riding && !hidden && !open ? "" : undefined}
       style={riding && tip ? { left: tip.x, top: tip.y } : undefined}
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}

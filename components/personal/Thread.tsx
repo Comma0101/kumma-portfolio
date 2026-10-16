@@ -55,14 +55,18 @@ const spine = (
   // paper's edge past the face, and dragged once, diagonally, under
   // everything and home to the margin, overshooting a little.
   const y = name.y + name.height * 0.98;
-  points.push([name.x - 4, y]);
+  // From the point where the pen landed.
+  const outer = front.getBoundingClientRect();
+  const dot = front.querySelector("[data-landing]")?.getBoundingClientRect();
+  points.push([dot ? dot.left + dot.width / 2 - outer.left : name.x - 4, y]);
   to([name.x + name.width + 6, y - 5], 0.6);
   const split = points.length - 1;
   const home = bottom(opening) - 10;
-  const edge = width - Math.max(8, gutter * 0.45);
-  // Clear of everything under the horizon: the face, and on a phone the
-  // words below it.
-  const origin = front.getBoundingClientRect().top;
+  // Down close against the face's right edge — the line holds it — then
+  // clear of everything under the horizon (on a phone, the words too).
+  const face = front.querySelector('[data-thread="opening"] figure')?.getBoundingClientRect();
+  const edge = face ? Math.min(width - 6, face.right - outer.left + 14) : width - Math.max(8, gutter * 0.45);
+  const origin = outer.top;
   const under = [...front.querySelectorAll('[data-thread="opening"] figure, [data-thread="opening"] p')]
     .map((el) => el.getBoundingClientRect().bottom - origin)
     .reduce((a, b) => Math.max(a, b), y + 80);
@@ -90,8 +94,6 @@ const spine = (
   });
   to(walk[0], 0.3);
   points.push(...walk.slice(1));
-  const [right, low] = walk[walk.length - 1];
-  to([right - 30, Math.min(bottom(stairs) - 40, low + 70)], 1);
   to([x + 40, bottom(stairs) - 12], 0.8);
   to([x, bottom(stairs) + 2], 0.4);
   end();

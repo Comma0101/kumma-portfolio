@@ -84,7 +84,7 @@ export default function Opening() {
         </p>
         <figure className={styles.portrait}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/kumma/portrait.jpg" alt="Kumma Wu, black and white portrait" width={400} height={400} />
+          <img src="/kumma/portrait-3x4.jpg" alt="Kumma Wu, black and white portrait" width={190} height={253} />
         </figure>
       </div>
 
