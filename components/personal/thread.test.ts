@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { arcAtTip, chunksOf, slice, within } from "./thread";
+import { arcAtTip, chunksOf, scrolledArc, slice, within } from "./thread";
 import type { Point } from "./pen";
 
 // A thread down the margin with a horizontal detour in the second chunk.
@@ -62,4 +62,14 @@ test("progress inside a chunk: before it 0, after it 1, linear across it", () =>
   assert.equal(within(chunk, 0.1), 0);
   assert.ok(Math.abs(within(chunk, 0.4) - 0.5) < 1e-9);
   assert.equal(within(chunk, 0.9), 1);
+});
+
+test("scroll never draws the opening: that is the opening's own timed beat", () => {
+  const chunks = chunksOf(points, [2, 5]);
+  const even = [0, 1];
+  // Reading line inside the first chunk: nothing drawn by scroll.
+  assert.equal(scrolledArc(chunks, even, 150), 0);
+  // Past it, scroll takes over from the second chunk.
+  assert.ok(scrolledArc(chunks, even, 250) > chunks[1].from);
+  assert.equal(scrolledArc(chunks, even, 999), 1);
 });

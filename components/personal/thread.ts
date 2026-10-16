@@ -76,3 +76,9 @@ export function within(chunk: Chunk, arc: number) {
   if (span <= 0) return arc >= chunk.to ? 1 : 0;
   return Math.min(1, Math.max(0, (arc - chunk.from) / span));
 }
+
+// What the reader's scroll draws: every chunk after the first. The first
+// (the opening) is drawn by its own timed beat, never by scroll.
+export function scrolledArc(chunks: Chunk[], pacing: number[], tip: number) {
+  return arcAtTip(chunks.slice(1), pacing, tip);
+}

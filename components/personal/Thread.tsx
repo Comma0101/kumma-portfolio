@@ -7,7 +7,7 @@ import { centerline, inkStroke, pointAt, type Pool } from "./ink";
 import { anchor, threadX } from "./anchors";
 import { ensoRing } from "./enso";
 import { fitPoints, handLine, loop, steps, type Box, type Point } from "./pen";
-import { arcAtTip, chunksOf, slice, within, type Chunk } from "./thread";
+import { chunksOf, scrolledArc, slice, within, type Chunk } from "./thread";
 import { ease } from "./useBeat";
 import styles from "./Front.module.css";
 
@@ -253,7 +253,7 @@ export default function Thread() {
       const current = shapeRef.current;
       if (!current) return;
       const tip = window.innerHeight * 0.72 - front.getBoundingClientRect().top;
-      const target = arcAtTip(
+      const target = scrolledArc(
         current.pieces.map((piece) => piece.chunk),
         current.pace,
         tip,
