@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { climb, fitPoints, handLine, loop, scribble, steps, underline, type Point } from "./pen";
+import { climb, coil, corner, fitPoints, handLine, loop, scribble, steps, underline, type Point } from "./pen";
 import { wu } from "./wu";
 
 const finite = (points: Point[]) => points.every(([x, y]) => Number.isFinite(x) && Number.isFinite(y));
@@ -114,4 +114,34 @@ test("無 is twelve strokes in a 0–100 box", () => {
     assert.ok(stroke.length >= 2);
     assert.ok(stroke.every(([x, y]) => x >= 0 && x <= 100 && y >= 0 && y <= 100));
   }
+});
+
+test("corner rounds the turn into a curve instead of a right angle", () => {
+  const points: Point[] = [[0, 0], [50, 0], [100, 0]];
+  const at = corner(points, [100, 100], 30);
+  // Trimmed back before the corner, then curving round it.
+  assert.ok(points[at][0] <= 70 + 1e-9 && points[at][1] === 0);
+  const last = points[points.length - 1];
+  assert.ok(last[1] > 0 && last[0] > 90);
+  // No step in the curve turns sharply.
+  const heading = (a: Point, b: Point) => Math.atan2(b[1] - a[1], b[0] - a[0]);
+  for (let i = at + 1; i < points.length - 1; i += 1) {
+    const d = heading(points[i], points[i + 1]) - heading(points[i - 1], points[i]);
+    assert.ok(Math.abs(Math.atan2(Math.sin(d), Math.cos(d))) < 0.45);
+  }
+});
+
+test("coil: loose loops along a line that pull straight as tension rises", () => {
+  const from: Point = [0, 100];
+  const to: Point = [600, 95];
+  const loose = coil(from, to, { loops: 5, depth: 50, tension: 0 });
+  const taut = coil(from, to, { loops: 5, depth: 50, tension: 1 });
+  assert.deepEqual(loose[0], from);
+  assert.deepEqual(loose[loose.length - 1], to);
+  // Loose, it loops: the pen goes backward somewhere.
+  assert.ok(loose.some((p, i) => i > 0 && p[0] < loose[i - 1][0]));
+  // Taut, it is the straight line between the ends.
+  for (const [x, y] of taut) assert.ok(Math.abs(y - (100 - (5 * x) / 600)) < 1e-6);
+  // It only rises above the line (into the name), never below.
+  for (const [x, y] of loose) assert.ok(y <= 100 - (5 * x) / 600 + 1e-6);
 });

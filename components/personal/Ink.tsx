@@ -17,7 +17,7 @@ export type Size = { width: number; height: number };
 export type Trace = (
   size: Size,
   host: HTMLElement,
-) => { points: Point[]; split?: number; ends?: number[]; size?: number };
+) => { points: Point[]; split?: number; ends?: number[]; size?: number; emphasis?: Emphasis[] };
 
 type Props = {
   trace: Trace;
@@ -89,7 +89,7 @@ export default function Ink({
       frame = 0;
       const { width, height } = svg.getBoundingClientRect();
       if (!width || !height) return;
-      const { points, split, ends, size: traced } = trace({ width, height }, host);
+      const { points, split, ends, size: traced, emphasis: tracedEmphasis } = trace({ width, height }, host);
       if (points.length < 2) return;
       const total = lengthTo(points, points.length - 1) || 1;
       const px = traced ?? (scale ? scale * Math.min(width, height) : size);
@@ -107,7 +107,9 @@ export default function Ink({
           profile,
           thinning,
           dry,
-          emphasis,
+          emphasis: tracedEmphasis ?? emphasis,
+          // A ballpoint skips; a brush does not.
+          skips: !profile,
         }),
         size: px,
         width,
@@ -154,11 +156,12 @@ export default function Ink({
             pathLength={1}
             data-reveal
             fill="none"
-            stroke="#fff"
+            stroke={profile ? "#fff" : "url(#kumma-tooth)"}
             strokeWidth={(shape?.size ?? size) * 3.2}
             strokeLinecap="round"
             strokeLinejoin="round"
           />
+          {shape?.gaps ? <path d={shape.gaps} fill="none" stroke="#000" strokeWidth={1.2} /> : null}
           {shape?.dry.map((streak, index) => (
             <path
               key={index}

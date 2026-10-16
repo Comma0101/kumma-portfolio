@@ -132,3 +132,11 @@ test("the pen's position at any drawn length", () => {
   assert.deepEqual(pointAt(line, 0.75), [100, 50]);
   assert.deepEqual(pointAt(line, 1), [100, 100]);
 });
+
+test("a ballpoint skips: short gaps where it runs light, none on a brush", () => {
+  const line: Point[] = Array.from({ length: 400 }, (_, i) => [i * 3, 0]);
+  const pen = inkStroke(line, { size: 3.6, seed: 2, skips: true });
+  const gaps = pen.gaps.match(/M /g) ?? [];
+  assert.ok(gaps.length >= 6 && gaps.length <= 40, `${gaps.length} gaps`);
+  assert.equal(inkStroke(line, { size: 3.6, seed: 2 }).gaps, "");
+});

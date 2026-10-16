@@ -6,7 +6,7 @@ import type { Size } from "./Ink";
 import { centerline, inkStroke, pointAt, type Pool } from "./ink";
 import { anchor, threadX } from "./anchors";
 import { ensoRing } from "./enso";
-import { fitPoints, handLine, loop, steps, type Box, type Point } from "./pen";
+import { corner, fitPoints, handLine, steps, type Box, type Point } from "./pen";
 import { chunksOf, marginSpans, scrolledArc, slice, within, type Chunk } from "./thread";
 import { ease } from "./useBeat";
 import styles from "./Front.module.css";
@@ -45,9 +45,13 @@ const spine = (
   const points: Point[] = [];
   const ends: number[] = [];
   let seed = 100;
-  const to = (target: Point, wobble = 0.6) => {
+  // round: where the line turns to travel somewhere, it curves round
+  // (radius in px) — a pen, not a frame. Returns where the turn begins.
+  const to = (target: Point, wobble = 0.6, round = 0) => {
     seed += 1;
+    const at = round > 0 ? corner(points, target, round) : points.length - 1;
     points.push(...handLine(points[points.length - 1], target, seed, wobble).slice(1));
+    return at;
   };
   const end = () => ends.push(points.length - 1);
 
@@ -60,7 +64,6 @@ const spine = (
   const dot = front.querySelector("[data-landing]")?.getBoundingClientRect();
   points.push([dot ? dot.left + dot.width / 2 - outer.left : name.x - 4, y]);
   to([name.x + name.width + 6, y - 5], 0.6);
-  const split = points.length - 1;
   const home = bottom(opening) - 10;
   // Down close against the face's right edge — the line holds it — then
   // clear of everything under the horizon (on a phone, the words too).
@@ -71,11 +74,11 @@ const spine = (
     .map((el) => el.getBoundingClientRect().bottom - origin)
     .reduce((a, b) => Math.max(a, b), y + 80);
   const past = under + 28;
-  to([edge, y + 70], 0.9);
-  to([edge - 4, Math.min(past, home - 40)], 0.9);
-  to([x + 40, home - 6], 0.8);
-  to([x - 7, home + 4], 0.4);
-  to([x, bottom(opening) + 2], 0.3);
+  const split = to([edge, y + 90], 0.9, 46);
+  to([edge - 4, Math.min(past, home - 40)], 0.9, 30);
+  to([x + 40, home - 6], 0.8, 70);
+  to([x - 7, home + 4], 0.4, 24);
+  to([x, bottom(opening) + 2], 0.3, 10);
   end();
 
   // Understanding arrives first: the margin, nothing more.
@@ -94,8 +97,8 @@ const spine = (
   });
   to(walk[0], 0.3);
   points.push(...walk.slice(1));
-  to([x + 40, bottom(stairs) - 12], 0.8);
-  to([x, bottom(stairs) + 2], 0.4);
+  to([x + 40, bottom(stairs) - 12], 0.8, 30);
+  to([x, bottom(stairs) + 2], 0.4, 26);
   end();
 
   // Practice: a tally barb from the margin to each numeral — one stroke
@@ -121,7 +124,7 @@ const spine = (
   const enso = ensoRing(front);
   if (enso) {
     to([x, Math.max(points[points.length - 1][1] + 1, enso.below)], 0.5);
-    to([enso.cx, enso.below + 2], 0.8);
+    to([enso.cx, enso.below + 2], 0.8, 34);
   } else {
     to([x, bottom(rules) + 400], 0.5);
   }
@@ -134,6 +137,7 @@ type Piece = { d: string; box: Box; chunk: Chunk };
 // pace: the hand's timing over the whole line (see ink.ts pace()).
 // line: the stroke's samples, to find where the pen tip is.
 type Shape = {
+  gaps: string;
   outline: string;
   pools: Pool[];
   pieces: Piece[];
@@ -190,8 +194,11 @@ export default function Thread() {
         smoothing: 2,
         spacing: 6,
         breath: 0.16,
+        // The horizon under the name is pressed hardest: the page's line.
+        emphasis: [{ from: 0, to: split === undefined ? 0 : chunksOf(points, [split, points.length - 1])[0].to, weight: 1.55 }],
         // The thread lifts off slowly beneath the circle.
         lift: 22,
+        skips: true,
       });
       const chunks = chunksOf(points, ends);
       // Where the line runs down the margin, for the navigation to rest on.
@@ -200,6 +207,7 @@ export default function Thread() {
         .join(" ");
       const splitArc = split === undefined ? 0 : chunksOf(points, [split, points.length - 1])[0].to;
       setShape({
+        gaps: ink.gaps,
         outline: ink.outline,
         pools: ink.pools,
         split: splitArc,
@@ -255,10 +263,11 @@ export default function Thread() {
       }
     };
 
-    // The opening: once the tangle (in Opening) lifts, the underline snaps
+    // The opening: once the coil (in Opening) pulls taut, the underline is
     // taut, holds still, then walks down the right edge and back.
     const tl = gsap.timeline({ paused: true, onUpdate: apply });
-    tl.to(state, { opening: () => shapeRef.current?.split ?? 0, duration: 0.18, ease: "expo.out" });
+    // The coil (Opening) has just pulled straight: the underline is there.
+    tl.to(state, { opening: () => shapeRef.current?.split ?? 0, duration: 0.04, ease: "none" });
     // The point where the pen landed recoils once as the line pulls taut:
     // the only overshoot on the page.
     const landing = front.querySelector("[data-landing]");
@@ -268,7 +277,7 @@ export default function Thread() {
     }
     tl.to(
       state,
-      { opening: () => shapeRef.current?.pieces[0]?.chunk.to ?? 0, duration: 1.4, ease: ease.hand },
+      { opening: () => shapeRef.current?.pieces[0]?.chunk.to ?? 0, duration: 1.5, ease: ease.hand },
       ">0.5",
     );
     const play = () => tl.play();
@@ -310,6 +319,11 @@ export default function Thread() {
     <div ref={ref} className={styles.spineHost} aria-hidden="true">
       <svg className={styles.spineDefs} focusable="false">
         <defs>
+          {/* Paper tooth: where the ball rides over the paper's valleys,
+              ink does not reach. Painted into every ballpoint's mask. */}
+          <pattern id="kumma-tooth" patternUnits="userSpaceOnUse" width="64" height="64">
+            <image href="/kumma/tooth.png" width="64" height="64" />
+          </pattern>
           <g id={`${id}-ink`} fill="currentColor" fillOpacity={0.93}>
             <path d={shape?.outline ?? ""} />
             {shape?.pools.map((pool, index) => (
@@ -340,11 +354,12 @@ export default function Thread() {
                 pathLength={1}
                 data-reveal
                 fill="none"
-                stroke="#fff"
+                stroke="url(#kumma-tooth)"
                 strokeWidth={SIZE * 3.2}
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
+              <path d={shape.gaps} fill="none" stroke="#000" strokeWidth={1.2} />
             </mask>
           </defs>
           <use href={`#${id}-ink`} mask={`url(#${id}-m${i})`} />

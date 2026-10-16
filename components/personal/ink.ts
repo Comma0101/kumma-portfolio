@@ -18,7 +18,51 @@ export type Ink = {
   line: Point[];
   // 飛白: streaks where a brush ran dry (holes in the ink).
   dry: { d: string; width: number }[];
+  // Where a ballpoint skipped: short cuts across the line (holes).
+  gaps: string;
 };
+
+// A ballpoint starves: where it runs light and fast the ball skips the
+// paper for a moment, and just after it reverses the dry side of the ball
+// meets the paper. Short cuts across the line, as one path.
+function skipsAt(line: Point[], pressure: number[], pools: Pool[], size: number, seed: number) {
+  const rand = random(seed + 211);
+  const cuts: string[] = [];
+  const cut = (i: number) => {
+    const a = line[Math.max(0, i - 1)];
+    const b = line[Math.min(line.length - 1, i + 1)];
+    const length = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1;
+    const nx = (-(b[1] - a[1]) / length) * size;
+    const ny = ((b[0] - a[0]) / length) * size;
+    const [x, y] = line[i];
+    cuts.push(`M ${fmt(x - nx)} ${fmt(y - ny)} L ${fmt(x + nx)} ${fmt(y + ny)}`);
+  };
+  let walked = 0;
+  let next = 40 + rand() * 50;
+  for (let i = 1; i < line.length - 1; i += 1) {
+    walked += Math.hypot(line[i][0] - line[i - 1][0], line[i][1] - line[i - 1][1]);
+    if (walked < next) continue;
+    if (pressure[i] < 0.45) cut(i);
+    walked = 0;
+    next = 40 + rand() * 50;
+  }
+  // Just after each reversal.
+  for (const pool of pools) {
+    let k = line.findIndex(([x, y]) => Math.hypot(x - pool.x, y - pool.y) < size);
+    if (k < 0) continue;
+    const count = rand() < 0.5 ? 1 : 2;
+    for (let n = 0; n < count; n += 1) {
+      let gone = 0;
+      const want = 4 + rand() * 6;
+      while (k < line.length - 2 && gone < want) {
+        gone += Math.hypot(line[k + 1][0] - line[k][0], line[k + 1][1] - line[k][1]);
+        k += 1;
+      }
+      cut(k);
+    }
+  }
+  return cuts.join(" ");
+}
 
 const fmt = (n: number) => String(Number(n.toFixed(1)));
 
@@ -264,6 +308,7 @@ export function inkStroke(
     profile,
     thinning,
     dry,
+    skips = false,
   }: {
     size: number;
     seed: number;
@@ -288,6 +333,8 @@ export function inkStroke(
     thinning?: number;
     // Where (arc fraction) a brush starts to run dry, if it does.
     dry?: number;
+    // A ballpoint that skips where it runs light (see skipsAt).
+    skips?: boolean;
   },
 ): Ink {
   const line = resample(chaikin(points, smoothing), spacing ?? Math.max(2, size * 0.8));
@@ -311,11 +358,12 @@ export function inkStroke(
   const d = outline.length
     ? `M ${outline.map(([x, y]) => `${fmt(x)} ${fmt(y)}`).join(" L ")} Z`
     : "";
+  const reversals = flat || profile ? [] : poolsAt(line, size, seed);
   return {
     outline: d,
     pools: [
       // A ballpoint pools where it reverses; a brush does not.
-      ...(flat || profile ? [] : poolsAt(line, size, seed)),
+      ...reversals,
       // Where the pen lands, and where it stops and presses before lifting.
       ...(startPool
         ? [{ x: Number(fmt(line[0][0])), y: Number(fmt(line[0][1])), r: Number(fmt(size * 0.62)) }]
@@ -331,5 +379,6 @@ export function inkStroke(
     pace: flat ? [0, 1] : pace(line, 48, emphasis),
     line,
     dry: dry === undefined ? [] : dryStreaks(line, p, { size, thinning: thin, from: dry, seed }),
+    gaps: skips && !flat && !profile ? skipsAt(line, p, reversals, size, seed) : "",
   };
 }

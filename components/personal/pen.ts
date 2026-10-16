@@ -144,3 +144,62 @@ export function climb({ seed, ticks = 30 }: { seed: number; ticks?: number }): P
   const hi = Math.max(...walk);
   return walk.map((v, i): Point => [(i / ticks) * 100, 8 + ((v - lo) / (hi - lo || 1)) * 84]);
 }
+
+// Round a turn: the points already drawn end at a corner; trim back up to
+// `radius` before it and curve round to head for `target`. Returns the
+// index where the curve begins (the last point before the turn).
+export function corner(points: Point[], target: Point, radius: number): number {
+  const at = points.pop();
+  if (!at || !points.length) {
+    if (at) points.push(at);
+    return points.length - 1;
+  }
+  const dist = (a: Point, b: Point) => Math.hypot(a[0] - b[0], a[1] - b[1]);
+  while (points.length > 1 && dist(points[points.length - 1], at) < radius) points.pop();
+  const back = points[points.length - 1];
+  const inLength = dist(back, at) || 1;
+  const r1 = Math.min(radius, inLength);
+  const entry: Point = [at[0] + ((back[0] - at[0]) * r1) / inLength, at[1] + ((back[1] - at[1]) * r1) / inLength];
+  const outLength = dist(at, target) || 1;
+  const r2 = Math.min(radius, outLength / 2);
+  const exit: Point = [at[0] + ((target[0] - at[0]) * r2) / outLength, at[1] + ((target[1] - at[1]) * r2) / outLength];
+  const start = points.length;
+  points.push(entry);
+  const n = 10;
+  for (let i = 1; i <= n; i += 1) {
+    const t = i / n;
+    points.push([
+      (1 - t) * (1 - t) * entry[0] + 2 * (1 - t) * t * at[0] + t * t * exit[0],
+      (1 - t) * (1 - t) * entry[1] + 2 * (1 - t) * t * at[1] + t * t * exit[1],
+    ]);
+  }
+  return start;
+}
+
+// A loose coil of line between two points — loops rising off the line
+// (a prolate trochoid) — that pulls straight as tension goes 0 → 1.
+export function coil(
+  from: Point,
+  to: Point,
+  { loops, depth, tension, steps = 240 }: { loops: number; depth: number; tension: number; steps?: number },
+): Point[] {
+  const slack = Math.pow(1 - Math.min(1, Math.max(0, tension)), 2.2);
+  const width = to[0] - from[0];
+  // It loops where the radius is larger than the advance per radian.
+  const radius = depth / 2;
+  const out: Point[] = [];
+  for (let i = 0; i <= steps; i += 1) {
+    const u = i / steps;
+    const theta = Math.PI * 2 * loops * u;
+    // Pinned at both ends: the loops fade in and out over the first and
+    // last stretch so the coil starts and ends on the line.
+    const pin = Math.sin(Math.PI * u) ** 0.35;
+    const b = radius * slack * pin;
+    const x = from[0] + width * u - b * Math.sin(theta);
+    const y = from[1] + (to[1] - from[1]) * u - b * (1 - Math.cos(theta));
+    out.push([x, y]);
+  }
+  out[0] = [from[0], from[1]];
+  out[out.length - 1] = [to[0], to[1]];
+  return out;
+}

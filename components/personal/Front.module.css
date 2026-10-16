@@ -343,13 +343,26 @@
   line-height: 0.8;
 }
 
-.nameNoise {
-  /* Red crossing black: multiply keeps the name black under the tangle. */
-  mix-blend-mode: multiply;
-  top: -8%;
-  left: -2%;
-  width: 105%;
-  height: 110%;
+/* The underline before it is pulled taut (Opening), passing in front of
+   the name: for that moment it is the subject. */
+.knot {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  color: var(--red);
+  pointer-events: none;
+}
+
+.knot path {
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 0;
+}
+
+:global(html[data-front="motion"]) .front .knot path {
+  stroke-dashoffset: 1;
 }
 
 /* Under the horizon: the aside, the line, and the face beside it, its top
@@ -888,8 +901,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  /* The settled state of noise → focus is focus alone. */
-  .nameNoise {
+  /* The settled state of slack → taut is the taut line alone. */
+  .knot {
     display: none;
   }
 
