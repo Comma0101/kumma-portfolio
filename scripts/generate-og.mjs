@@ -179,8 +179,8 @@ async function portraitCard() {
           display: "flex",
           flexDirection: "column",
           fontFamily: "Archivo",
-          fontSize: 30,
-          color: "#3b3936",
+          fontSize: 19,
+          color: "#6b6760",
         },
         [
           el("div", {}, "In the gym most days. Trading options."),
@@ -189,8 +189,8 @@ async function portraitCard() {
       ),
       el(
         "div",
-        { position: "absolute", left: 86, bottom: 56, fontFamily: "Archivo", fontSize: 24, color: red },
-        "@Comma_9fie · kumma.me",
+        { position: "absolute", left: 86, bottom: 56, fontFamily: "Archivo", fontSize: 18, letterSpacing: 2.5, color: "#6b6760" },
+        "@COMMA_9FIE · KUMMA.ME",
       ),
     ],
   );
