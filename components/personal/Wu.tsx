@@ -1,53 +1,88 @@
 "use client";
 
-import { useRef } from "react";
-import Ink, { type Trace } from "./Ink";
-import { fitPoints } from "./pen";
+import { useId, useRef } from "react";
+import { centerline, pace, resample, type Emphasis } from "./ink";
+import type { Point } from "./pen";
 import { draw, useBeat } from "./useBeat";
-import { wu } from "./wu";
+import { wuMedians, wuOutlines } from "./wu";
 import styles from "./Front.module.css";
 
-const strokeTrace =
-  (stroke: (typeof wu)[number]): Trace =>
-  ({ width, height }) => ({
-    points: fitPoints(stroke, { x: 0, y: 0, width, height }),
-  });
+// 無 as a brush writes it: each stroke is the font's own brush shape
+// (Kaiti), revealed along the median the brush follows, in stroke order.
+// The brush pauses where it presses in and where it closes; the dots (the
+// last four strokes) only press in.
+const DOTS = 8;
 
-const traces = wu.map(strokeTrace);
+const strokes = wuMedians.map((median, i) => {
+  const line = resample(median as Point[], 8);
+  const emphasis: Emphasis[] =
+    i >= DOTS
+      ? [{ from: 0, to: 0.15, slow: 2 }]
+      : [
+          { from: 0, to: 0.08, slow: 3 },
+          { from: 0.9, to: 1, slow: 2.5 },
+        ];
+  const length = line.slice(1).reduce((sum, p, k) => sum + Math.hypot(p[0] - line[k][0], p[1] - line[k][1]), 0);
+  return {
+    median: centerline(line),
+    outline: wuOutlines[i],
+    pace: pace(line, 48, emphasis).join(","),
+    // As long as its own path: a dot is quick, the long horizontal long.
+    duration: i >= DOTS ? 0.12 : 0.12 + length * 0.00042,
+  };
+});
 
-// 無, written by the same red pen, one stroke at a time in its proper order.
 export default function Wu() {
   const ref = useRef<HTMLElement>(null);
+  const id = `wu-${useId().replace(/:/g, "")}`;
 
-  // Written, not animated: a pause between strokes so the order reads,
-  // the four dots (灬) quick. The text it comes from appears in one cut
-  // when the last dot lands.
+  // Written, not animated: a short breath between strokes so the order
+  // reads, a longer one before the dots (a new component), the dots quick.
+  // The text it comes from appears in one cut after the last dot lands.
   useBeat(ref, (root, tl) => {
     root.querySelectorAll("[data-reveal]").forEach((stroke, index) => {
-      const dot = index >= 8;
       draw(tl, stroke, {
-        duration: dot ? 0.16 : 0.34,
-        ease: "power2.out",
-        position: index === 0 ? 0.25 : dot ? ">0.12" : ">0.25",
+        duration: strokes[index].duration,
+        ease: "none",
+        position: index === 0 ? 0.2 : index === DOTS ? ">0.45" : index > DOTS ? ">0.07" : ">0.13",
       });
     });
-    tl.set(root.querySelector("[data-source]"), { visibility: "visible" }, ">0.2");
+    tl.set(root.querySelector("[data-source]"), { visibility: "visible" }, ">0.3");
   });
 
   return (
     <section ref={ref} className={styles.wu} aria-labelledby="wu">
       <h2 id="wu" className={styles.wuGlyph}>
         <span className="sr-only">無</span>
-        {traces.map((trace, index) => (
-          <Ink
+        {strokes.map((stroke, index) => (
+          <svg
             key={index}
-            trace={trace}
-            mark={`wu-${index}`}
-            size={11}
-            seed={90 + index}
-            press
-            className={styles.wuStroke}
-          />
+            className={`${styles.ink} ${styles.wuStroke}`}
+            viewBox="0 0 1024 1024"
+            aria-hidden="true"
+            focusable="false"
+            data-mark={`wu-${index}`}
+            data-pace={stroke.pace}
+          >
+            {/* In the masked path's own (flipped) space: the font's units. */}
+            <defs>
+              <mask id={`${id}-${index}`} maskUnits="userSpaceOnUse" x="-200" y="-200" width="1424" height="1424">
+                <path
+                  d={stroke.median}
+                  pathLength={1}
+                  data-reveal
+                  fill="none"
+                  stroke="#fff"
+                  strokeWidth={150}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </mask>
+            </defs>
+            <g transform="translate(0 900) scale(1 -1)">
+              <path d={stroke.outline} mask={`url(#${id}-${index})`} />
+            </g>
+          </svg>
         ))}
       </h2>
       <div className={styles.wuGloss}>

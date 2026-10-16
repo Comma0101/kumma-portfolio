@@ -65,10 +65,14 @@ async function card(key, title, kicker, sub) {
 const wide = fs.readFileSync(path.join("scripts", "fonts", "Archivo-WideHeavy.ttf"));
 const regular = fs.readFileSync(path.join("scripts", "fonts", "Archivo-Regular.ttf"));
 
-function wuStrokes() {
+// An exported array literal from wu.ts, by name.
+function wuArray(name) {
   const src = fs.readFileSync(path.join("components", "personal", "wu.ts"), "utf8");
-  return JSON.parse(src.slice(src.indexOf("= [") + 2, src.lastIndexOf("];") + 1).replace(/,\s*\]$/, "]"));
+  const from = src.indexOf("= [", src.indexOf(`export const ${name}`)) + 2;
+  const to = src.indexOf("\n];", from) + 2;
+  return JSON.parse(src.slice(from, to).replace(/,\s*\]$/, "]"));
 }
+const wuStrokes = () => wuArray("wu");
 
 // Dense samples at steady pressure: the stroke data is a few centreline
 // points, and simulated pressure on so few points wobbles.
@@ -127,7 +131,10 @@ async function portraitCard() {
   }
   const marks = [
     `<path d="${outline(thread, 6, { start: 14, end: 0 })}"/>`,
-    ...strokes.map((stroke) => `<path d="${outline(stroke, 15, { start: 0, end: 34 })}"/>`),
+    // The font's own brush shapes, as the page writes them (Wu).
+    `<g transform="translate(${box.x} ${box.y + (900 * box.s) / 1024}) scale(${box.s / 1024} ${-box.s / 1024})">${wuArray("wuOutlines")
+      .map((d) => `<path d="${d}"/>`)
+      .join("")}</g>`,
   ].join("");
   const ink = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630"><g fill="${red}" fill-opacity="0.94">${marks}</g></svg>`;
   const node = el(

@@ -2,19 +2,25 @@
 
 import { useRef } from "react";
 import Ink, { type Trace } from "./Ink";
+import { profiles } from "./brush";
 import { ensoRing } from "./enso";
 import { draw, reveal, useBeat } from "./useBeat";
 import styles from "./Front.module.css";
 
-const enso: Trace = (_, host) => ({ points: ensoRing(host)?.ring ?? [] });
+// The brush is about a fifth of the circle's radius.
+const enso: Trace = (_, host) => {
+  const ring = ensoRing(host);
+  return ring ? { points: ring.ring, size: ring.radius * 0.22 } : { points: [] };
+};
 
 // The sutra stands still; nothing touches the characters. Beside it the
-// brush is set down once — a pressed start, one slow sweep, a dry lift at
-// the opening toward the text.
+// brush is set down once (the reader's vermilion circle, see brush.ts): pressed in,
+// one quick sweep that runs dry, released at the opening toward the text.
 export default function Line() {
   const ref = useRef<HTMLElement>(null);
   useBeat(ref, (root, tl) => {
-    draw(tl, reveal(root, "enso"), { duration: 2.4, position: 0.5 });
+    // Held on landing, then one quick sweep that runs dry.
+    draw(tl, reveal(root, "enso"), { duration: 1.5, ease: "none", position: 0.2 });
   });
 
   return (
@@ -38,10 +44,16 @@ export default function Line() {
       <Ink
         trace={enso}
         mark="enso"
-        size={7.5}
+        thinning={0.8}
+        profile={profiles.enso}
+        emphasis={[
+          { from: 0, to: 0.06, slow: 6 },
+          { from: 0.08, to: 0.92, slow: 0.7 },
+        ]}
+        dry={0.55}
+        smoothing={1}
         seed={33}
-        press
-        lift={20}
+        lift={3}
         className={styles.thread}
       />
       <div className={styles.gloss}>

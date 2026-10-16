@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import { inkStroke, type Ink as InkShape } from "./ink";
+import { inkStroke, type Emphasis, type Ink as InkShape } from "./ink";
+import type { Profile } from "./brush";
 import { chunksOf, type Chunk } from "./thread";
 import type { Point } from "./pen";
 import styles from "./Front.module.css";
@@ -10,12 +11,13 @@ export type Size = { width: number; height: number };
 
 // A trace is the path the pen takes, in this mark's own pixels. It may
 // read anchors from the host (the mark's parent) and may name a split
-// (the index where the first gesture ends) and chunk ends (point indices
-// where each section's share of a long line stops).
+// (the index where the first gesture ends), chunk ends (point indices
+// where each section's share of a long line stops), and a brush size in
+// pixels when the mark's size follows its own geometry.
 export type Trace = (
   size: Size,
   host: HTMLElement,
-) => { points: Point[]; split?: number; ends?: number[] };
+) => { points: Point[]; split?: number; ends?: number[]; size?: number };
 
 type Props = {
   trace: Trace;
@@ -30,6 +32,14 @@ type Props = {
   spacing?: number;
   press?: boolean;
   lift?: number;
+  // A brush (see brush.ts): its pressure profile, how much pressure
+  // widens it, where it runs dry, and stretches drawn slower.
+  profile?: Profile;
+  thinning?: number;
+  dry?: number;
+  emphasis?: Emphasis[];
+  // Size as a fraction of the mark's smaller side, instead of pixels.
+  scale?: number;
   className?: string;
 };
 
@@ -57,12 +67,17 @@ export default function Ink({
   spacing,
   press,
   lift,
+  profile,
+  thinning,
+  dry,
+  emphasis,
+  scale,
   className,
 }: Props) {
   const ref = useRef<SVGSVGElement>(null);
   const mask = `ink-${useId().replace(/:/g, "")}`;
   const [shape, setShape] = useState<
-    (InkShape & Size & { split: number; chunks?: Chunk[] }) | null
+    (InkShape & Size & { split: number; chunks?: Chunk[]; size: number }) | null
   >(null);
 
   useEffect(() => {
@@ -74,11 +89,27 @@ export default function Ink({
       frame = 0;
       const { width, height } = svg.getBoundingClientRect();
       if (!width || !height) return;
-      const { points, split, ends } = trace({ width, height }, host);
+      const { points, split, ends, size: traced } = trace({ width, height }, host);
       if (points.length < 2) return;
       const total = lengthTo(points, points.length - 1) || 1;
+      const px = traced ?? (scale ? scale * Math.min(width, height) : size);
       setShape({
-        ...inkStroke(points, { size, seed, flat, startPool, endPool, smoothing, spacing, press, lift }),
+        ...inkStroke(points, {
+          size: px,
+          seed,
+          flat,
+          startPool,
+          endPool,
+          smoothing,
+          spacing,
+          press,
+          lift,
+          profile,
+          thinning,
+          dry,
+          emphasis,
+        }),
+        size: px,
         width,
         height,
         split: split === undefined ? 1 : lengthTo(points, split) / total,
@@ -124,10 +155,20 @@ export default function Ink({
             data-reveal
             fill="none"
             stroke="#fff"
-            strokeWidth={size * 3.2}
+            strokeWidth={(shape?.size ?? size) * 3.2}
             strokeLinecap="round"
             strokeLinejoin="round"
           />
+          {shape?.dry.map((streak, index) => (
+            <path
+              key={index}
+              d={streak.d}
+              fill="none"
+              stroke="#000"
+              strokeWidth={streak.width}
+              strokeLinecap="round"
+            />
+          ))}
         </mask>
       </defs>
       <g mask={`url(#${mask})`}>

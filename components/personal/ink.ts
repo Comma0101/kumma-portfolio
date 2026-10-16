@@ -4,6 +4,7 @@
 
 import { getStroke } from "perfect-freehand";
 import { random, type Point } from "./pen";
+import { dryStreaks, type Profile } from "./brush";
 
 // press: where the pen lands — drawn a shade darker, inside the stroke.
 export type Pool = { x: number; y: number; r: number; press?: boolean };
@@ -15,6 +16,8 @@ export type Ink = {
   center: string;
   pace: number[];
   line: Point[];
+  // 飛白: streaks where a brush ran dry (holes in the ink).
+  dry: { d: string; width: number }[];
 };
 
 const fmt = (n: number) => String(Number(n.toFixed(1)));
@@ -114,11 +117,21 @@ export function pressures(
     flat = false,
     breath = 0,
     emphasis = [],
-  }: { flat?: boolean; breath?: number; emphasis?: Emphasis[] } = {},
+    profile,
+  }: { flat?: boolean; breath?: number; emphasis?: Emphasis[]; profile?: Profile } = {},
 ): number[] {
   if (flat) return points.map(() => 0.55);
   const rand = random(seed);
   const { at, total } = fractions(points);
+  // A brush follows its stroke's own pressure, not the turns; the hand
+  // only wavers a little around it.
+  if (profile) {
+    let drift = 0;
+    return at.map((f) => {
+      drift = drift * 0.8 + (rand() - 0.5) * 0.024;
+      return Math.max(0.08, Math.min(1, (profile(f) + drift) * factor(f, emphasis, "weight")));
+    });
+  }
   // A long run is not held at one pressure: it breathes, about once every
   // 900px, with a slower second swell under it.
   const cycles = total / 900;
@@ -248,6 +261,9 @@ export function inkStroke(
     breath = 0,
     emphasis = [],
     lift = 4,
+    profile,
+    thinning,
+    dry,
   }: {
     size: number;
     seed: number;
@@ -266,20 +282,28 @@ export function inkStroke(
     emphasis?: Emphasis[];
     // How long the lift-off taper is, in multiples of size.
     lift?: number;
+    // A brush: the stroke's pressure profile (see brush.ts).
+    profile?: Profile;
+    // How much pressure changes the width (0 none, 1 fully).
+    thinning?: number;
+    // Where (arc fraction) a brush starts to run dry, if it does.
+    dry?: number;
   },
 ): Ink {
   const line = resample(chaikin(points, smoothing), spacing ?? Math.max(2, size * 0.8));
-  const p = pressures(line, seed, { flat, breath, emphasis });
+  const p = pressures(line, seed, { flat, breath, emphasis, profile });
+  const thin = flat ? 0 : (thinning ?? 0.62);
   const outline = getStroke(
     line.map(([x, y], i) => [x, y, p[i]]),
     {
       size,
-      thinning: flat ? 0 : 0.62,
+      thinning: thin,
       smoothing: 0.5,
       streamline: 0.2,
       simulatePressure: false,
-      // A pen that lands pressing starts blunt; otherwise it eases in.
-      start: { taper: flat || press ? 0 : size * 2.5, cap: true },
+      // A pen that lands pressing, or a brush, starts blunt; otherwise it
+      // eases in.
+      start: { taper: flat || press || profile ? 0 : size * 2.5, cap: true },
       end: { taper: flat ? 0 : size * lift, cap: true },
       last: true,
     },
@@ -290,7 +314,8 @@ export function inkStroke(
   return {
     outline: d,
     pools: [
-      ...(flat ? [] : poolsAt(line, size, seed)),
+      // A ballpoint pools where it reverses; a brush does not.
+      ...(flat || profile ? [] : poolsAt(line, size, seed)),
       // Where the pen lands, and where it stops and presses before lifting.
       ...(startPool
         ? [{ x: Number(fmt(line[0][0])), y: Number(fmt(line[0][1])), r: Number(fmt(size * 0.62)) }]
@@ -305,5 +330,6 @@ export function inkStroke(
     center: centerline(line),
     pace: flat ? [0, 1] : pace(line, 48, emphasis),
     line,
+    dry: dry === undefined ? [] : dryStreaks(line, p, { size, thinning: thin, from: dry, seed }),
   };
 }
