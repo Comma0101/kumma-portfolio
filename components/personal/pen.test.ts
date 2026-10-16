@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { fitPoints, handLine, loop, scribble, steps, underline, type Point } from "./pen";
+import { climb, fitPoints, handLine, loop, scribble, steps, underline, type Point } from "./pen";
 import { wu } from "./wu";
 
 const finite = (points: Point[]) => points.every(([x, y]) => Number.isFinite(x) && Number.isFinite(y));
@@ -68,17 +68,44 @@ test("handLine starts and ends exactly on its anchors and wobbles between", () =
   assert.ok(points.every(([, y]) => Math.abs(y) < 6));
 });
 
-test("three forward, two back: every cycle reverses, and the line still arrives", () => {
+test("the staircase: long flat treads forward, short steep risers back, and it arrives", () => {
   const points = steps({ seed: 6, cycles: 4 });
   const xs = points.map(([x]) => x);
   assert.ok(xs[0] <= 1);
   assert.ok(xs[xs.length - 1] >= 99);
-  let reversals = 0;
-  for (let i = 2; i < xs.length; i += 1) {
-    if ((xs[i] - xs[i - 1]) * (xs[i - 1] - xs[i - 2]) < 0) reversals += 1;
+  const forward: number[] = [];
+  const back: Array<{ dx: number; dy: number }> = [];
+  for (let i = 1; i < points.length; i += 1) {
+    const dx = points[i][0] - points[i - 1][0];
+    const dy = points[i][1] - points[i - 1][1];
+    if (dx > 0 && Math.abs(dy) < 3) forward.push(dx);
+    if (dx < 0) back.push({ dx: -dx, dy });
   }
-  assert.ok(reversals >= 7, `reversals ${reversals}`);
+  assert.ok(back.length >= 4, `back ${back.length}`);
+  const tread = forward.reduce((a, b) => a + b, 0) / forward.length;
+  for (const riser of back) {
+    assert.ok(riser.dx < tread, "a step back is shorter than a step forward");
+    assert.ok(riser.dy > riser.dx * 0.6, "and steeper");
+  }
   assert.ok(points.every(([x, y]) => x >= -2 && x <= 102 && y >= 0 && y <= 100));
+});
+
+test("an open loop leaves its gap where it is told to face", () => {
+  const facing = 0; // right
+  const points = loop({ seed: 4, overshoot: -0.2, facing });
+  const angles = points.map(([x, y]) => Math.atan2(y - 50, x - 50));
+  // No drawn point falls within the gap around the facing direction.
+  assert.ok(angles.every((a) => Math.abs(a - facing) > 0.45), "gap faces right");
+});
+
+test("price climbs: jagged, mostly upward, ending higher than it starts", () => {
+  const points = climb({ seed: 3 });
+  assert.ok(points.length > 20);
+  assert.ok(points[points.length - 1][1] < points[0][1] - 30);
+  let downs = 0;
+  for (let i = 1; i < points.length; i += 1) if (points[i][1] > points[i - 1][1]) downs += 1;
+  assert.ok(downs >= 4, "it chops on the way up");
+  for (let i = 1; i < points.length; i += 1) assert.ok(points[i][0] > points[i - 1][0]);
 });
 
 test("無 is twelve strokes in a 0–100 box", () => {

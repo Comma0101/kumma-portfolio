@@ -17,7 +17,7 @@ const walk: Trace = ({ width }, host) => {
   const path = fitPoints(steps({ seed: 6, cycles: 4 }), {
     x,
     y: top,
-    width: width - x - Math.max(16, window.innerWidth * 0.04),
+    width: width - x - Math.max(16, window.innerWidth * 0.04) - 12,
     height: 210,
   });
   return { points: [...handLine([x, -2], path[0], 71, 0.5), ...path.slice(1)] };
@@ -34,7 +34,7 @@ export default function Steps() {
       <h2 id="steps" className={styles.stepsLine} data-anchor="steps">
         Three steps forward, two back.
       </h2>
-      <Ink trace={walk} mark="walk" size={3} seed={6} className={styles.thread} />
+      <Ink trace={walk} mark="walk" size={3} seed={6} endPool className={styles.thread} />
     </section>
   );
 }

@@ -19,10 +19,19 @@ const traces = wu.map(strokeTrace);
 export default function Wu() {
   const ref = useRef<HTMLElement>(null);
 
+  // Written, not animated: a pause between strokes so the order reads,
+  // the four dots (灬) quick. The text it comes from appears in one cut
+  // when the last dot lands.
   useBeat(ref, (root, tl) => {
     root.querySelectorAll("[data-reveal]").forEach((stroke, index) => {
-      draw(tl, stroke, { duration: 0.32, position: index === 0 ? 0.2 : ">0.07" });
+      const dot = index >= 8;
+      draw(tl, stroke, {
+        duration: dot ? 0.16 : 0.34,
+        ease: "power2.out",
+        position: index === 0 ? 0.25 : dot ? ">0.12" : ">0.25",
+      });
     });
+    tl.set(root.querySelector("[data-source]"), { visibility: "visible" }, ">0.2");
   });
 
   return (
@@ -34,14 +43,15 @@ export default function Wu() {
             key={index}
             trace={trace}
             mark={`wu-${index}`}
-            size={7}
+            size={11}
             seed={90 + index}
+            endPool
             className={styles.wuStroke}
           />
         ))}
       </h2>
       <div className={styles.wuGloss}>
-        <p lang="zh-Hant" className={styles.wuSource}>
+        <p lang="zh-Hant" className={styles.wuSource} data-source>
           三十輻，共一轂，當其無，有車之用。
         </p>
         <p>

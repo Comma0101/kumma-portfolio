@@ -4,6 +4,7 @@ import { useRef } from "react";
 import Ink, { type Trace } from "./Ink";
 import { threadX } from "./anchors";
 import { handLine } from "./pen";
+import { bisect, between } from "./registration";
 import { draw, reveal, useBeat, useScrub } from "./useBeat";
 import styles from "./Front.module.css";
 
@@ -25,11 +26,51 @@ export default function CatchUp() {
   useScrub(
     ref,
     (root, tl) => {
+      const fill = root.querySelector<HTMLElement>("[data-body]");
+      const outline = fill?.previousElementSibling;
+      if (!fill || !outline) return;
+      const lines = Array.from(fill.children) as HTMLElement[];
+      const targets = Array.from(outline.children);
+      const width = (el: Element) => {
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        return range.getBoundingClientRect().width;
+      };
+      // For each line, the width-axis value that keeps it exactly as wide
+      // as its outline at each weight: the ink grows inside the outline
+      // instead of sliding out of register.
+      let tables: Array<Array<[number, number]>> | null = null;
+      const solve = () =>
+        lines.map((line, i) => {
+          const target = width(targets[i]);
+          return [100, 280, 460, 640, 820].map((weight): [number, number] => {
+            line.style.fontWeight = String(weight);
+            const axis = bisect(
+              (wdth) => {
+                line.style.fontVariationSettings = `"wdth" ${wdth}`;
+                return width(line);
+              },
+              target,
+              62,
+              125,
+            );
+            return [weight, axis];
+          });
+        });
+      const state = { weight: 100 };
+      const apply = () => {
+        tables ??= solve();
+        lines.forEach((line, i) => {
+          line.style.fontWeight = String(state.weight);
+          line.style.fontVariationSettings = `"wdth" ${between(tables![i], state.weight).toFixed(2)}`;
+        });
+      };
+      document.fonts?.ready.then(apply).catch(() => undefined);
+      // Compounding, but readable within one scroll: slow, then sure.
       tl.fromTo(
-        root.querySelector("[data-body]"),
-        { "--wght": 100 },
-        // Compounding, but readable within one scroll: slow, then sure.
-        { "--wght": 820, ease: "power3.in" },
+        state,
+        { weight: 100 },
+        { weight: 820, ease: "power3.in", immediateRender: false, onUpdate: apply },
       );
     },
     { start: "top 75%", end: "center 40%" },

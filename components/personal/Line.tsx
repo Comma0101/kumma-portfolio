@@ -7,9 +7,17 @@ import { fitPoints, handLine, loop } from "./pen";
 import { draw, ease, reveal, useBeat } from "./useBeat";
 import styles from "./Front.module.css";
 
-// The line comes down the margin, crosses to the sutra, and draws an open
-// circle beside 若見諸相非相 — seeing form as not-form, held without
-// grasping. The pen never touches the characters, and it lifts here.
+// The margin line comes down and stops at the label: the pen lifts.
+const margin: Trace = (_, host) => {
+  const label = anchor(host, "reason");
+  if (!label) return { points: [] };
+  const x = threadX(host);
+  return { points: handLine([x, -2], [x, label.y + label.height * 0.5], 51, 0.5) };
+};
+
+// Then, set down again: an open circle beside 若見諸相非相 — seeing form
+// as not-form, held without grasping. Its opening faces the text, and the
+// pen never touches the characters.
 const enso: Trace = (_, host) => {
   const clause = anchor(host, "not-form");
   const seen = anchor(host, "seen");
@@ -20,20 +28,13 @@ const enso: Trace = (_, host) => {
   // Beside the last column if there is room; on a phone, beneath it.
   const cx = room ? seen.x - gap - radius : seen.x + seen.width / 2;
   const cy = room ? clause.y + clause.height * 0.42 : seen.y + seen.height + gap + radius;
-  const ring = fitPoints(loop({ seed: 33, overshoot: -0.18 }), {
-    x: cx - radius,
-    y: cy - radius * 1.08,
-    width: radius * 2,
-    height: radius * 2.16,
-  });
-  const x = threadX(host);
-  const turn = Math.max(0, cy - radius * 2.2);
   return {
-    points: [
-      ...handLine([x, -2], [x, turn], 51, 0.5),
-      ...handLine([x, turn], ring[0], 52, 1.2).slice(1),
-      ...ring.slice(1),
-    ],
+    points: fitPoints(loop({ seed: 33, overshoot: -0.16, facing: room ? 0 : -Math.PI / 2 }), {
+      x: cx - radius,
+      y: cy - radius * 1.08,
+      width: radius * 2,
+      height: radius * 2.16,
+    }),
   };
 };
 
@@ -41,7 +42,8 @@ export default function Line() {
   const ref = useRef<HTMLElement>(null);
 
   useBeat(ref, (root, tl) => {
-    draw(tl, reveal(root, "enso"), { duration: 2.4, position: 0 });
+    draw(tl, reveal(root, "reason-margin"), { duration: 1.2, position: 0 });
+    draw(tl, reveal(root, "enso"), { duration: 1.6, position: ">0.35" });
     tl.fromTo(
       root.querySelector("[data-stop]"),
       { scale: 0 },
@@ -52,7 +54,7 @@ export default function Line() {
 
   return (
     <section ref={ref} className={styles.line} aria-label="Diamond Sutra">
-      <p className={styles.label} aria-hidden="true">
+      <p className={styles.label} aria-hidden="true" data-anchor="reason">
         The reason
       </p>
       <p className={styles.sutra} lang="zh-Hant">
@@ -76,7 +78,8 @@ export default function Line() {
         </p>
         <cite>Diamond Sutra · Kumārajīva</cite>
       </div>
-      <Ink trace={enso} mark="enso" size={2.8} seed={33} className={styles.thread} />
+      <Ink trace={margin} mark="reason-margin" size={2.2} seed={51} className={styles.thread} />
+      <Ink trace={enso} mark="enso" size={3.2} seed={33} startPool endPool className={styles.thread} />
     </section>
   );
 }

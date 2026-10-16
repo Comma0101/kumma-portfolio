@@ -87,7 +87,6 @@ export default function Opening() {
             compounds.
           </span>
         </p>
-        <p className={styles.meta}>Los Angeles</p>
       </div>
 
       <Ink trace={thread} mark="thread" size={3.2} seed={3} className={styles.thread} />

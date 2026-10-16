@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import Ink, { type Trace } from "./Ink";
 import { anchor, threadX } from "./anchors";
-import { handLine, type Point } from "./pen";
+import { climb, fitPoints, handLine, type Point } from "./pen";
 import { draw, ease, reveal, useBeat } from "./useBeat";
 import styles from "./Front.module.css";
 
@@ -11,12 +11,23 @@ const margin: Trace = ({ height }, host) => ({
   points: handLine([threadX(host), -2], [threadX(host), height + 2], 41, 0.5),
 });
 
-// Price leaves from the margin and runs off the page, rising.
+// Price leaves from the margin and runs off the page: a jagged climb in
+// the band under the words, which do not move.
 const price: Trace = ({ width }, host) => {
   const line = anchor(host, "chase");
   if (!line) return { points: [] };
-  const y = line.y + line.height + 10;
-  return { points: handLine([threadX(host), y], [width + 60, y - 36], 43, 1.4) };
+  const x = threadX(host);
+  // The band is the padding reserved under the words.
+  const words = host.querySelector<HTMLElement>('[data-anchor="chase"]');
+  const band = words ? parseFloat(getComputedStyle(words).paddingBottom) || 0 : 0;
+  return {
+    points: fitPoints(climb({ seed: 43 }), {
+      x,
+      y: line.y + line.height - band + 10,
+      width: width + 80 - x,
+      height: Math.max(60, band - 30),
+    }),
+  };
 };
 
 // Zero volatility: a ruler line, constant pressure, never animated.
@@ -59,7 +70,7 @@ function Chase() {
       <span className={styles.price} data-price aria-hidden="true">
         price
       </span>
-      <Ink trace={price} mark="price" size={2.6} seed={43} className={styles.thread} />
+      <Ink trace={price} mark="price" size={2.4} seed={43} smoothing={1} className={styles.thread} />
     </div>
   );
 }
@@ -100,10 +111,6 @@ export default function Rules() {
       </p>
       <p className={styles.still}>(nothing moves here.)</p>
       <Ink trace={flat} mark="flat" size={2.4} seed={45} flat still className={styles.thread} />
-      <p className={styles.ruleCoda}>
-        There’s always another candle. You don’t need to catch all of them, just
-        the ones you know.
-      </p>
     </section>
   );
 }

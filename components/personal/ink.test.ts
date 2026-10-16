@@ -85,3 +85,11 @@ test("an ink stroke carries its pacing", () => {
   assert.equal(ink.pace[0], 0);
   assert.equal(ink.pace[ink.pace.length - 1], 1);
 });
+
+test("a stroke can end in a pool, where the pen stops and presses", () => {
+  const ink = inkStroke(straight, { size: 4, seed: 2, endPool: true });
+  assert.equal(ink.pools.length, 1);
+  const pool = ink.pools[0];
+  assert.ok(Math.abs(pool.x - 300) < 3 && Math.abs(pool.y) < 3);
+  assert.ok(pool.r > 2);
+});

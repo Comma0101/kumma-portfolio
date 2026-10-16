@@ -19,6 +19,9 @@ type Props = {
   seed?: number;
   flat?: boolean;
   still?: boolean;
+  startPool?: boolean;
+  endPool?: boolean;
+  smoothing?: number;
   className?: string;
 };
 
@@ -33,7 +36,18 @@ function lengthTo(points: Point[], index: number) {
 // One ballpoint mark. The variable-width ink is revealed through a mask
 // whose centreline is drawn on (pathLength 1: offset 1 undrawn, 0 drawn,
 // -1 lifted), so the stroke keeps its pressure while it draws.
-export default function Ink({ trace, mark, size = 2.6, seed = 1, flat, still, className }: Props) {
+export default function Ink({
+  trace,
+  mark,
+  size = 2.6,
+  seed = 1,
+  flat,
+  still,
+  startPool,
+  endPool,
+  smoothing,
+  className,
+}: Props) {
   const ref = useRef<SVGSVGElement>(null);
   const mask = `ink-${useId().replace(/:/g, "")}`;
   const [shape, setShape] = useState<(InkShape & Size & { split: number }) | null>(null);
@@ -51,7 +65,7 @@ export default function Ink({ trace, mark, size = 2.6, seed = 1, flat, still, cl
       if (points.length < 2) return;
       const total = lengthTo(points, points.length - 1) || 1;
       setShape({
-        ...inkStroke(points, { size, seed, flat }),
+        ...inkStroke(points, { size, seed, flat, startPool, endPool, smoothing }),
         width,
         height,
         split: split === undefined ? 1 : lengthTo(points, split) / total,
@@ -87,7 +101,8 @@ export default function Ink({ trace, mark, size = 2.6, seed = 1, flat, still, cl
       style={shape ? undefined : { visibility: "hidden" }}
     >
       <defs>
-        <mask id={mask} maskUnits="userSpaceOnUse">
+        {/* The default mask region is the svg ±10%; marks run past their box. */}
+        <mask id={mask} maskUnits="userSpaceOnUse" x="-100%" y="-100%" width="300%" height="300%">
           <path
             d={shape?.center ?? ""}
             pathLength={1}

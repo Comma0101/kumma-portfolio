@@ -158,9 +158,24 @@ export function centerline(points: Point[]) {
 
 export function inkStroke(
   points: Point[],
-  { size, seed, flat = false }: { size: number; seed: number; flat?: boolean },
+  {
+    size,
+    seed,
+    flat = false,
+    endPool = false,
+    startPool = false,
+    smoothing = 3,
+  }: {
+    size: number;
+    seed: number;
+    flat?: boolean;
+    endPool?: boolean;
+    startPool?: boolean;
+    // Corner-cutting passes: fewer keeps a jagged gesture jagged.
+    smoothing?: number;
+  },
 ): Ink {
-  const line = resample(chaikin(points, 3), Math.max(2, size * 0.8));
+  const line = resample(chaikin(points, smoothing), Math.max(2, size * 0.8));
   const p = pressures(line, seed, { flat });
   const outline = getStroke(
     line.map(([x, y], i) => [x, y, p[i]]),
@@ -180,7 +195,16 @@ export function inkStroke(
     : "";
   return {
     outline: d,
-    pools: flat ? [] : poolsAt(line, size, seed),
+    pools: [
+      ...(flat ? [] : poolsAt(line, size, seed)),
+      // Where the pen lands, and where it stops and presses before lifting.
+      ...(startPool
+        ? [{ x: Number(fmt(line[0][0])), y: Number(fmt(line[0][1])), r: Number(fmt(size * 0.62)) }]
+        : []),
+      ...(endPool
+        ? [{ x: Number(fmt(line[line.length - 1][0])), y: Number(fmt(line[line.length - 1][1])), r: Number(fmt(size * 0.72)) }]
+        : []),
+    ],
     center: centerline(line),
     pace: flat ? [0, 1] : pace(line),
   };

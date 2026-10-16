@@ -53,10 +53,21 @@ export function underline({ seed, y = 50 }: { seed: number; y?: number }): Point
   return points;
 }
 
-// overshoot > 0 closes past a full turn; overshoot < 0 leaves the circle open.
-export function loop({ seed, overshoot = 0.12 }: { seed: number; overshoot?: number }): Point[] {
+// overshoot > 0 closes past a full turn; overshoot < 0 leaves the circle
+// open, with the gap centred on `facing` (radians, 0 = right) when given.
+export function loop({
+  seed,
+  overshoot = 0.12,
+  facing,
+}: {
+  seed: number;
+  overshoot?: number;
+  facing?: number;
+}): Point[] {
   const rand = random(seed);
-  const start = -Math.PI * (0.55 + rand() * 0.3);
+  const gap = overshoot < 0 ? -overshoot * Math.PI * 2 : 0;
+  const start =
+    facing === undefined ? -Math.PI * (0.55 + rand() * 0.3) : facing + gap / 2;
   const sweep = Math.PI * 2 * (1 + overshoot);
   const steps = 40;
   const points: Point[] = [];
@@ -100,26 +111,36 @@ export function handLine(from: Point, to: Point, seed: number, wobble = 1): Poin
   return points;
 }
 
-// Three steps forward, two back, until the line arrives: each advance runs
-// along a row, each retreat cuts back down-left to the next row, so the
-// walk reads as a staircase that still reaches the far side.
+// Three steps forward, two back, until the line arrives: long flat treads
+// forward, short steep risers back down to the next tread, and a last run
+// that reaches the far side.
 export function steps({ seed, cycles = 4 }: { seed: number; cycles?: number }): Point[] {
   const rand = random(seed);
-  const unit = 100 / (cycles + 2);
+  const unit = 100 / (cycles * 2.4 + 1.6);
   const row = 88 / cycles;
   const points: Point[] = [[0, 6]];
   let x = 0;
   for (let i = 0; i < cycles; i += 1) {
     const y = 6 + row * i;
     const ahead = x + unit * 3;
-    const back = x + unit;
     points.push([x + unit * 1.5, y + (rand() - 0.5) * 2]);
     points.push([ahead, y]);
     points.push([ahead + unit * 0.06, y + row * 0.12]);
-    points.push([back, y + row]);
-    x = back;
+    x = ahead - unit * 0.6;
+    points.push([x, y + row]);
   }
-  points.push([x + unit * 1.5, 94 + (rand() - 0.5) * 2]);
+  points.push([x + unit * 0.8, 94 + (rand() - 0.5) * 2]);
   points.push([100, 94]);
   return points.map(([px, py]): Point => [Math.min(100, Math.max(0, px)), py]);
+}
+
+// Price: a jagged climb that chops on the way up, left to right.
+export function climb({ seed, ticks = 30 }: { seed: number; ticks?: number }): Point[] {
+  const rand = random(seed);
+  const walk = [0];
+  for (let i = 1; i <= ticks; i += 1) walk.push(walk[i - 1] - 2.6 + (rand() - 0.35) * 14);
+  // Fill the box: the low of the walk sits on the floor, the high at the top.
+  const lo = Math.min(...walk);
+  const hi = Math.max(...walk);
+  return walk.map((v, i): Point => [(i / ticks) * 100, 8 + ((v - lo) / (hi - lo || 1)) * 84]);
 }
