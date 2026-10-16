@@ -42,7 +42,7 @@ export default function Close() {
       <a className={styles.followBig} href={X_URL} rel="me" data-anchor="follow">
         Follow on X
       </a>
-      <Ink trace={last} mark="last" size={3.4} seed={77} lift={14} className={styles.thread} />
+      <Ink trace={last} mark="last" size={3.6} seed={77} lift={14} className={styles.thread} />
     </section>
   );
 }

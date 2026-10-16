@@ -51,26 +51,36 @@ const spine = (
   };
   const end = () => ends.push(points.length - 1);
 
-  // Opening: the taut underline, then down the right edge, under
-  // everything, and back to the margin.
+  // Opening: the taut underline — the page's horizon — then down the
+  // paper's edge past the face, and dragged once, diagonally, under
+  // everything and home to the margin, overshooting a little.
   const y = name.y + name.height * 0.98;
   points.push([name.x - 4, y]);
   to([name.x + name.width + 6, y - 5], 0.6);
   const split = points.length - 1;
-  const edge = width - Math.max(14, width * 0.018);
-  to([edge, y + 60], 1);
-  to([edge - 8, bottom(opening) - 62], 1);
-  to([width * 0.55, bottom(opening) - 22], 1);
-  to([x + 30, bottom(opening) - 16], 1);
-  to([x, bottom(opening) + 2], 0.5);
+  const home = bottom(opening) - 10;
+  const edge = width - Math.max(8, gutter * 0.45);
+  // Clear of everything under the horizon: the face, and on a phone the
+  // words below it.
+  const origin = front.getBoundingClientRect().top;
+  const under = [...front.querySelectorAll('[data-thread="opening"] figure, [data-thread="opening"] p')]
+    .map((el) => el.getBoundingClientRect().bottom - origin)
+    .reduce((a, b) => Math.max(a, b), y + 80);
+  const past = under + 28;
+  to([edge, y + 70], 0.9);
+  to([edge - 4, Math.min(past, home - 40)], 0.9);
+  to([x + 40, home - 6], 0.8);
+  to([x - 7, home + 4], 0.4);
+  to([x, bottom(opening) + 2], 0.3);
   end();
 
   // Understanding arrives first: the margin, nothing more.
   to([x, bottom(catchUp)], 0.5);
   end();
 
-  // Three steps forward, two back — then down the far edge and home.
-  const top = heading.y + heading.height + 28;
+  // Three steps forward, two back — stepping off the last word, then a
+  // sweep back across under the stairs and home.
+  const top = heading.y + heading.height + 6;
   to([x, top], 0.5);
   const walk = fitPoints(steps({ seed: 6, cycles: 4 }), {
     x,
@@ -80,10 +90,10 @@ const spine = (
   });
   to(walk[0], 0.3);
   points.push(...walk.slice(1));
-  const right = walk[walk.length - 1][0];
-  to([right + 4, bottom(stairs) - 60], 1);
-  to([x + 30, bottom(stairs) - 14], 1);
-  to([x, bottom(stairs) + 2], 0.5);
+  const [right, low] = walk[walk.length - 1];
+  to([right - 30, Math.min(bottom(stairs) - 40, low + 70)], 1);
+  to([x + 40, bottom(stairs) - 12], 0.8);
+  to([x, bottom(stairs) + 2], 0.4);
   end();
 
   // Practice: a tally barb from the margin to each numeral — one stroke

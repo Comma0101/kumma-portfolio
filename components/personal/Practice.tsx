@@ -2,18 +2,18 @@ import Link from "next/link";
 import styles from "./Front.module.css";
 
 const practice = [
-  { word: "Trade", line: "Options. A craft, not a casino." },
+  { word: "Trade.", line: "Options. A craft, not a casino." },
   {
-    word: "Build",
+    word: "Build.",
     line: "Software as leverage: voice agents, tools, systems.",
     href: "/projects",
     cta: "Systems I build",
   },
   {
-    word: "Study",
+    word: "Study.",
     line: "Old texts, read slowly: the Diamond Sutra, the Daodejing, Zhuangzi, the Gospels, the Greeks.",
   },
-  { word: "Draw", line: "Bamboo, geometry, negative space." },
+  { word: "Draw.", line: "Bamboo, geometry, negative space." },
 ];
 
 export default function Practice() {
@@ -29,12 +29,17 @@ export default function Practice() {
               0{index + 1}
             </span>
             <span className={styles.practiceWord}>{item.word}</span>
-            <span className={styles.practiceLine}>{item.line}</span>
-            {item.href && (
-              <Link href={item.href} className={styles.practiceLink}>
-                {item.cta} →
-              </Link>
-            )}
+            <span className={styles.practiceLine}>
+              {item.line}
+              {item.href && (
+                <>
+                  {" "}
+                  <Link href={item.href} className={styles.practiceLink}>
+                    {item.cta} →
+                  </Link>
+                </>
+              )}
+            </span>
           </li>
         ))}
       </ol>

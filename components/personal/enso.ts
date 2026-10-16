@@ -13,10 +13,11 @@ export function ensoRing(host: HTMLElement) {
   const gap = seen.width * 0.45;
   const room = seen.x - gap - radius * 2 > threadX(host) + 24;
   const cx = room ? seen.x - gap - radius : seen.x + seen.width / 2;
-  const cy = room ? clause.y + clause.height * 0.42 : seen.y + seen.height + gap + radius;
+  const cy = room ? clause.y + clause.height * 0.5 : seen.y + seen.height + gap + radius;
   const ring: Point[] = fitPoints(
     ensoPath({ seed: 33, facing: room ? 0 : -Math.PI / 2 }),
     { x: cx - radius, y: cy - radius * 1.08, width: radius * 2, height: radius * 2.16 },
   );
-  return { ring, cx, cy, radius, below: cy + radius * 1.4 };
+  // The line runs along just under it: the circle sits in its corner.
+  return { ring, cx, cy, radius, below: cy + radius * 1.1 + 10 };
 }

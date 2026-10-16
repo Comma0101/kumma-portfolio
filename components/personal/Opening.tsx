@@ -70,19 +70,21 @@ export default function Opening() {
         <Ink trace={tangle} mark="tangle" size={2.4} seed={11} className={styles.nameNoise} />
       </h1>
 
-      <figure className={styles.portrait}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/kumma/portrait.jpg" alt="Kumma Wu, black and white portrait" width={400} height={400} />
-      </figure>
-
-      <div className={styles.bio}>
-        <p>In the gym most days. Trading options.</p>
+      {/* Under the horizon: the bio, and the face beside it. */}
+      <div className={styles.below}>
+        <p className={styles.kicker}>In the gym most days. Trading options.</p>
         <p className={styles.attention}>
-          Attention goes where it{" "}
+          Attention goes
+          <br />
+          where it{" "}
           <span className={styles.compound} data-compound>
             compounds.
           </span>
         </p>
+        <figure className={styles.portrait}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/kumma/portrait.jpg" alt="Kumma Wu, black and white portrait" width={400} height={400} />
+        </figure>
       </div>
 
     </section>

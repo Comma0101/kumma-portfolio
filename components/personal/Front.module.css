@@ -52,6 +52,15 @@
   text-transform: uppercase;
 }
 
+/* The running head of a section: always the same height above it. */
+.practice > .label,
+.rules > .label,
+.line > .label {
+  position: absolute;
+  top: 7svh;
+  left: var(--indent);
+}
+
 /* ---------- Ink ---------- */
 
 .ink {
@@ -158,20 +167,22 @@
 
 .opening {
   position: relative;
-  min-height: 94svh;
-  padding: 0 var(--gutter);
+  min-height: 100svh;
+  padding: 0 var(--gutter) 16svh;
 }
 
+/* Above the name, only the way to follow: a label, underlined by the pen. */
 .follow {
   position: absolute;
   top: 26px;
   right: var(--gutter);
   z-index: 2;
-  color: var(--red) !important;
-  font-size: 0.95rem;
+  font-size: 0.78rem;
   font-weight: 600;
+  letter-spacing: 0.16em;
   text-decoration: none;
-  padding-bottom: 6px;
+  text-transform: uppercase;
+  padding-bottom: 7px;
 }
 
 /* Links are underlined by the pen, and hovering writes the line again. */
@@ -312,11 +323,13 @@
   color: var(--red);
 }
 
+/* The name spans the page, gutter to gutter, sitting on its red line: the
+   page's horizon. */
 .name {
   position: relative;
   display: inline-block;
-  margin: 13svh 0 0 -0.04em;
-  font-size: clamp(6rem, 19.5vw, 24rem);
+  margin: calc(56svh - 0.74em) 0 0 -0.04em;
+  font-size: clamp(6rem, 20.7vw, 29rem);
   font-weight: 800;
   font-variation-settings: "wdth" 125;
   letter-spacing: -0.055em;
@@ -332,43 +345,50 @@
   height: 110%;
 }
 
-.portrait {
-  position: absolute;
-  right: calc(var(--gutter) + 3vw);
-  bottom: 13svh;
-  width: clamp(150px, 19vw, 280px);
+/* Under the horizon: the aside, the line, and the face beside it, its top
+   on the line's cap height and its edge on the gutter. */
+.below {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 4vw;
+  margin: 6svh 0 0 calc(var(--indent) - var(--gutter));
+}
+
+.kicker {
+  grid-column: 1;
+  margin: 0 0 0.9rem;
+  color: var(--grey);
+  font-family: var(--font-note), Georgia, serif;
+  font-size: clamp(1.3rem, 1.8vw, 1.7rem);
+  font-style: italic;
+}
+
+.attention {
+  grid-column: 1;
   margin: 0;
+  font-size: clamp(2.2rem, 4.6vw, 4.8rem);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 0.98;
+  word-spacing: 0.04em;
+}
+
+.portrait {
+  grid-column: 2;
+  grid-row: 2;
+  align-self: start;
+  width: clamp(140px, 14vw, 220px);
+  margin: 0.16em 0 0;
 }
 
 .portrait img {
   display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: 1;
-  border-radius: 50%;
+  aspect-ratio: 3 / 4;
   object-fit: cover;
   filter: grayscale(1) contrast(1.18) brightness(1.04);
   mix-blend-mode: multiply;
-}
-
-.bio {
-  position: absolute;
-  left: var(--gutter);
-  bottom: 13svh;
-  max-width: 36rem;
-  font-size: clamp(1rem, 1.35vw, 1.25rem);
-}
-
-.bio p {
-  margin: 0;
-}
-
-.attention {
-  margin-top: 0.7rem !important;
-  font-size: clamp(1.9rem, 4.2vw, 4.2rem);
-  font-weight: 500;
-  letter-spacing: -0.025em;
-  line-height: 0.98;
 }
 
 .compound {
@@ -399,6 +419,7 @@
   font-weight: 820;
   letter-spacing: -0.045em;
   line-height: 0.92;
+  word-spacing: 0.08em;
 }
 
 .catchLine > span > span {
@@ -432,9 +453,10 @@
 .stepsLine {
   max-width: 15ch;
   margin: 0;
-  font-size: clamp(2.6rem, 6.5vw, 6.8rem);
-  font-weight: 700;
-  letter-spacing: -0.035em;
+  font-size: clamp(2.6rem, 8.5vw, 9rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  word-spacing: 0.06em;
   line-height: 1;
 }
 
@@ -442,7 +464,7 @@
 
 .practice {
   position: relative;
-  padding: 8svh var(--gutter) 10svh var(--indent);
+  padding: calc(7svh + 3rem) var(--gutter) 8svh var(--indent);
 }
 
 .practice ol {
@@ -455,8 +477,10 @@
   display: grid;
   grid-template-columns: 3rem minmax(0, 0.9fr) minmax(0, 1.1fr);
   align-items: last baseline;
+  align-content: center;
   gap: 1rem;
-  padding: 1.5rem 0;
+  min-height: 18svh;
+  padding: 1.2rem 0;
   border-top: 1px solid rgba(20, 20, 20, 0.8);
 }
 
@@ -464,21 +488,21 @@
   border-bottom: 1px solid rgba(20, 20, 20, 0.8);
 }
 
+/* Red belongs to the line: the numerals are grey; the barbs mark them. */
 .index {
   position: relative;
-  color: var(--red);
-  font-size: 0.9rem;
-  font-weight: 600;
+  color: var(--grey);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
   font-variant-numeric: tabular-nums;
 }
 
 .practiceWord {
-  font-size: clamp(3rem, 8vw, 8rem);
-  font-weight: 800;
-  font-variation-settings: "wdth" 62;
-  letter-spacing: -0.02em;
+  font-size: clamp(3.4rem, 7vw, 7.4rem);
+  font-weight: 780;
+  letter-spacing: -0.04em;
   line-height: 0.9;
-  text-transform: uppercase;
 }
 
 .practiceLine {
@@ -488,14 +512,9 @@
 }
 
 .practiceLink {
-  grid-column: 3;
-  display: block;
-  width: fit-content;
-  margin-top: 0.6rem;
-  color: var(--red) !important;
-  font-size: 0.95rem;
   font-weight: 600;
-  text-underline-offset: 4px;
+  white-space: nowrap;
+  padding-bottom: 5px;
 }
 
 /* ---------- 無 ---------- */
@@ -507,12 +526,12 @@
   justify-content: start;
   align-items: center;
   gap: 4vw;
-  padding: 0 var(--gutter) 2svh var(--indent);
+  padding: 0 var(--gutter) 0 var(--indent);
 }
 
 .wuGlyph {
   position: relative;
-  width: clamp(300px, 50vw, 720px);
+  width: min(62svh, 50vw);
   aspect-ratio: 1;
   margin: 0;
 }
@@ -549,7 +568,7 @@
 
 .rules {
   position: relative;
-  padding: calc(var(--gutter) * 2) var(--gutter) 16svh var(--indent);
+  padding: calc(7svh + 4rem) var(--gutter) 16svh var(--indent);
 }
 
 .chase {
@@ -563,6 +582,7 @@
   font-weight: 800;
   letter-spacing: -0.045em;
   line-height: 0.95;
+  word-spacing: 0.08em;
 }
 
 .chase .rule {
@@ -576,7 +596,7 @@
   right: var(--gutter);
   bottom: 120px;
   z-index: 2;
-  color: var(--red);
+  color: var(--grey);
   font-size: 0.78rem;
   font-weight: 600;
   letter-spacing: 0.16em;
@@ -585,8 +605,11 @@
   white-space: nowrap;
 }
 
+/* Condensed type is kept for this line alone: it is what small means. */
 .small {
   display: inline-block;
+  letter-spacing: -0.01em;
+  word-spacing: 0.14em;
   font-variation-settings: "wdth" var(--wdth, 62);
   transform: scale(0.6);
   transform-origin: left 70%;
@@ -629,7 +652,8 @@
   position: absolute;
   left: var(--indent);
   bottom: 12svh;
-  max-width: 24rem;
+  max-width: 26rem;
+  text-wrap: balance;
 }
 
 .gloss p {
@@ -650,16 +674,20 @@
 
 /* ---------- Close ---------- */
 
+/* The bookend: alone on its screen, hung from the gutter like the name. */
 .close {
   position: relative;
-  padding: 12svh var(--gutter) 10svh;
+  display: flex;
+  align-items: center;
+  min-height: 100svh;
+  padding: 0 var(--gutter);
 }
 
 .followBig {
   position: relative;
   display: inline-block;
-  margin-top: 12svh;
-  font-size: clamp(3.4rem, 14vw, 17rem);
+  margin-left: -0.04em;
+  font-size: clamp(3.4rem, 14.25vw, 20rem);
   font-weight: 800;
   font-variation-settings: "wdth" 125;
   letter-spacing: -0.055em;
@@ -677,7 +705,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 1rem 3rem;
-  margin-top: 9svh;
+  margin-top: 0;
   padding-top: 1.4rem;
   border-top: 1px solid rgba(20, 20, 20, 0.6);
 }
@@ -705,7 +733,7 @@
 }
 
 .colophonBlock {
-  padding: 0 var(--gutter) 5svh;
+  padding: 6svh var(--gutter) 5svh var(--indent);
 }
 
 .colophon {
@@ -728,25 +756,40 @@
   }
 
   .opening {
-    min-height: 82svh;
+    min-height: 92svh;
+    padding: 0 12px 12svh;
   }
 
   .name {
-    margin-top: 14svh;
-    font-size: 19vw;
+    margin-top: calc(34svh - 0.74em);
+    font-size: 21.1vw;
   }
 
-  /* On a phone the face comes up under the name, the bio right under it. */
+  /* On a phone the face comes first under the line, on the right; the
+     words under it. */
+  .below {
+    grid-template-columns: minmax(0, 1fr);
+    margin: 5svh 0 0 calc(var(--indent) - 12px);
+  }
+
   .portrait {
-    right: calc(var(--gutter) + 4vw);
-    bottom: auto;
-    top: calc(14svh + 25vw);
-    width: 42vw;
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: end;
+    width: 38vw;
+    margin: 0 0 6svh;
   }
 
-  .bio {
-    right: var(--gutter);
-    bottom: 8svh;
+  .kicker {
+    font-size: 1.15rem;
+  }
+
+  .attention {
+    font-size: 9.5vw;
+  }
+
+  .close {
+    min-height: 70svh;
   }
 
   .line {
@@ -771,7 +814,7 @@
   }
 
   .followBig {
-    font-size: 12.4vw;
+    font-size: 14.3vw;
   }
 
   .wu {
@@ -780,9 +823,6 @@
     padding-bottom: 10svh;
   }
 
-  .practiceLink {
-    grid-column: 2;
-  }
 
   /* A phone screen is already one idea at a time: let sections take their
      content's height, so nothing is stranded across the fold. */
@@ -801,6 +841,10 @@
 
   .line {
     padding-top: 8svh;
+  }
+
+  .line > .label {
+    position: static;
   }
 
   /* No room left of the margin on a phone: the page scrolls on its own. */
@@ -822,6 +866,10 @@
 
   .wuGlyph {
     width: min(78vw, 360px);
+  }
+
+  .practice li {
+    min-height: auto;
   }
 
 }
