@@ -38,7 +38,7 @@ function Chase() {
   const ref = useRef<HTMLDivElement>(null);
   useBeat(ref, (root, tl) => {
     // Price runs, accelerating away; the words above it never move.
-    draw(tl, reveal(root, "price"), { duration: 1.1, ease: "power2.in", position: 0.25 });
+    draw(tl, reveal(root, "price"), { duration: 0.8, ease: "power1.in", position: 0.15 });
   });
   return (
     <div ref={ref} className={styles.chase}>
@@ -61,7 +61,9 @@ function Small() {
     (root, tl) => {
       tl.fromTo(
         root.querySelector("[data-small]"),
-        { "--wdth": 125, scale: 1 },
+        // From the line's normal width, which fits on one line like the
+        // others: wider would wrap, and the page would jump as it shrank.
+        { "--wdth": 100, scale: 1 },
         { "--wdth": 62, scale: 0.6, ease: "expo.out" },
       );
     },

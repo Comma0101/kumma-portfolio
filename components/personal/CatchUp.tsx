@@ -75,7 +75,7 @@ export default function CatchUp() {
       );
       // What was understood gives way as it is lived: the outline fades
       // while the ink arrives, so the two are never seen out of register.
-      tl.fromTo(outline, { opacity: 1 }, { opacity: 0.15, ease: "power2.in", immediateRender: false }, 0);
+      tl.fromTo(outline, { opacity: 1 }, { opacity: 0.1, ease: "power2.out", immediateRender: false }, 0);
     },
     // The body is slower than the mind: the ink keeps filling for a moment
     // after the reader stops.

@@ -95,7 +95,9 @@ export default function MarginNav() {
       data-riding={riding ? "" : undefined}
       data-hidden={hidden ? "" : undefined}
       data-resting={!riding && !hidden && !open ? "" : undefined}
-      style={riding && tip ? { left: tip.x, top: tip.y } : undefined}
+      // Moved by transform, never left/top: following the pen every frame
+      // must not re-lay out the page.
+      style={riding && tip ? { left: 0, top: 0, transform: `translate3d(${tip.x}px, ${tip.y}px, 0)` } : undefined}
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
     >

@@ -102,7 +102,7 @@
 }
 
 :global(html[data-front="motion"]) .front [data-small] {
-  --wdth: 125;
+  --wdth: 100;
   transform: none;
 }
 
@@ -465,9 +465,11 @@
 
 /* ---------- Three steps forward, two back ---------- */
 
+/* The stairs lead straight into the practice: no screen of paper between. */
 .steps {
   position: relative;
-  padding: 8svh var(--gutter) calc(210px + 12svh) var(--indent);
+  min-height: auto;
+  padding: 16svh var(--gutter) calc(210px + 6svh) var(--indent);
 }
 
 .stepsLine {
@@ -639,6 +641,7 @@
 /* Condensed type is kept for this line alone: it is what small means. */
 .small {
   display: inline-block;
+  white-space: nowrap;
   letter-spacing: -0.01em;
   word-spacing: 0.14em;
   font-variation-settings: "wdth" var(--wdth, 62);
