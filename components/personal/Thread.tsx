@@ -68,14 +68,14 @@ const spine = (
   // Down close against the face's right edge — the line holds it — then
   // clear of everything under the horizon (on a phone, the words too).
   const face = front.querySelector('[data-thread="opening"] figure')?.getBoundingClientRect();
-  const edge = face ? Math.min(width - 6, face.right - outer.left + 14) : width - Math.max(8, gutter * 0.45);
+  const edge = face ? Math.min(width - 6, face.right - outer.left + 26) : width - Math.max(8, gutter * 0.45);
   const origin = outer.top;
   const under = [...front.querySelectorAll('[data-thread="opening"] figure, [data-thread="opening"] p')]
     .map((el) => el.getBoundingClientRect().bottom - origin)
     .reduce((a, b) => Math.max(a, b), y + 80);
   const past = under + 28;
-  const split = to([edge, y + 90], 0.9, 46);
-  to([edge - 4, Math.min(past, home - 40)], 0.9, 30);
+  const split = to([edge, y + 90], 0.4, 46);
+  to([edge - 2, Math.min(past, home - 40)], 0.4, 30);
   to([x + 40, home - 6], 0.8, 70);
   to([x - 7, home + 4], 0.4, 24);
   to([x, bottom(opening) + 2], 0.3, 10);
@@ -85,8 +85,9 @@ const spine = (
   to([x, bottom(catchUp)], 0.5);
   end();
 
-  // Three steps forward, two back — stepping off the last word, then a
-  // sweep back across under the stairs and home.
+  // Three steps forward, two back — stepping off the last word, then down
+  // from the last stair to the floor, and back along it home: a staircase
+  // standing on its ground, not a line struck through.
   const top = heading.y + heading.height + 6;
   to([x, top], 0.5);
   const walk = fitPoints(steps({ seed: 6, cycles: 4 }), {
@@ -97,8 +98,11 @@ const spine = (
   });
   to(walk[0], 0.3);
   points.push(...walk.slice(1));
-  to([x + 40, bottom(stairs) - 12], 0.8, 30);
-  to([x, bottom(stairs) + 2], 0.4, 26);
+  const [far, low] = walk[walk.length - 1];
+  const floor = Math.max(low + 36, bottom(stairs) - 40);
+  to([far, floor], 0.3, 12);
+  to([x + 30, floor], 0.3, 22);
+  to([x, bottom(stairs) + 2], 0.3, 26);
   end();
 
   // Practice: a tally barb from the margin to each numeral — one stroke
@@ -277,8 +281,8 @@ export default function Thread() {
     }
     tl.to(
       state,
-      { opening: () => shapeRef.current?.pieces[0]?.chunk.to ?? 0, duration: 1.5, ease: ease.hand },
-      ">0.5",
+      { opening: () => shapeRef.current?.pieces[0]?.chunk.to ?? 0, duration: 1.15, ease: ease.hand },
+      ">0.35",
     );
     const play = () => tl.play();
     front.addEventListener("kumma:lifted", play, { once: true });

@@ -28,7 +28,7 @@ const strokes = wuMedians.map((median, i) => {
     outline: wuOutlines[i],
     pace: pace(line, 48, emphasis).join(","),
     // As long as its own path: a dot is quick, the long horizontal long.
-    duration: i >= DOTS ? 0.12 : 0.12 + length * 0.00042,
+    duration: i >= DOTS ? 0.09 : 0.08 + length * 0.0003,
   };
 });
 
@@ -44,10 +44,17 @@ export default function Wu() {
       draw(tl, stroke, {
         duration: strokes[index].duration,
         ease: "none",
-        position: index === 0 ? 0.2 : index === DOTS ? ">0.45" : index > DOTS ? ">0.07" : ">0.13",
+        position: index === 0 ? 0.15 : index === DOTS ? ">0.3" : index > DOTS ? ">0.05" : ">0.09",
       });
     });
-    tl.set(root.querySelector("[data-source]"), { visibility: "visible" }, ">0.3");
+    tl.set(root.querySelector("[data-source]"), { visibility: "visible" }, ">0.25");
+  // Once the character's centre reaches the middle of the screen.
+  }, {
+    at: (root) => {
+      const glyph = root.querySelector("#wu")?.getBoundingClientRect();
+      return glyph ? glyph.top + glyph.height / 2 - root.getBoundingClientRect().top : 0;
+    },
+    line: 0.5,
   });
 
   return (

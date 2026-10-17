@@ -539,9 +539,15 @@
 
 /* ---------- 無 ---------- */
 
+.ending {
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+}
+
 .wu {
   display: grid;
-  min-height: 100svh;
+  flex: 1;
   grid-template-columns: auto minmax(0, 24rem);
   justify-content: start;
   align-items: center;
@@ -720,9 +726,9 @@
   line-height: 0.85;
   text-decoration: none;
   white-space: nowrap;
-  transition: color 0.3s ease;
 }
 
+/* A clean change, not a fade through brown. */
 .followBig:hover {
   color: var(--red);
 }
@@ -843,8 +849,11 @@
     font-size: 14.3vw;
   }
 
-  .wu {
+  .ending {
     min-height: auto;
+  }
+
+  .wu {
     padding-top: 8svh;
     padding-bottom: 10svh;
   }
@@ -904,10 +913,6 @@
   /* The settled state of slack → taut is the taut line alone. */
   .knot {
     display: none;
-  }
-
-  .followBig {
-    transition: none;
   }
 
   .follow:hover,

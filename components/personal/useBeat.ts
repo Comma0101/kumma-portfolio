@@ -9,7 +9,8 @@ gsap.registerPlugin(ScrollTrigger);
 
 export type Build<T> = (root: T, tl: gsap.core.Timeline) => void;
 
-// The page's three easings. Motion carries meaning, so there are no others.
+// The page's shared easings. A beat that acts a particular meaning (a
+// snap, a pull, a footfall) names its own curve where it is written.
 export const ease = {
   compound: "expo.in", // flat for a long time, then sudden
   impulse: "power4.out", // one hit, then still
@@ -18,24 +19,63 @@ export const ease = {
 
 const reduced = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+// The page settles after load (fonts, marks measuring themselves), and its
+// height changes; every scroll position measured before that is stale.
+// One observer re-measures all triggers whenever the page's height moves.
+let watching = false;
+function keepMeasured() {
+  if (watching || typeof ResizeObserver === "undefined") return;
+  watching = true;
+  let timer = 0;
+  let height = document.body.scrollHeight;
+  new ResizeObserver(() => {
+    if (document.body.scrollHeight === height) return;
+    height = document.body.scrollHeight;
+    window.clearTimeout(timer);
+    timer = window.setTimeout(() => ScrollTrigger.refresh(), 150);
+  }).observe(document.body);
+}
+
 // A triggered beat plays once when its line reaches the lower third of the
 // viewport, then holds. Reduced motion never builds it, so the page stays
 // in its finished state.
-export function useBeat<T extends HTMLElement>(ref: RefObject<T>, build: Build<T>) {
+// at: the point (px from the root's top) whose arrival starts the beat —
+// the root's top by default. line: how far up the screen it must come, as
+// a fraction from the bottom.
+export function useBeat<T extends HTMLElement>(
+  ref: RefObject<T>,
+  build: Build<T>,
+  { at, line = 0.28 }: { at?: (root: T) => number; line?: number } = {},
+) {
   useEffect(() => {
     const root = ref.current;
     if (!root || reduced()) return;
+    keepMeasured();
     let observer: IntersectionObserver | undefined;
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ paused: true });
       build(root, tl);
+      if (at) {
+        ScrollTrigger.create({
+          // Where the point reaches the line — but never past the end of
+          // the page, so the last beat always plays.
+          start: () =>
+            Math.min(
+              root.getBoundingClientRect().top + window.scrollY + at(root) - window.innerHeight * (1 - line),
+              ScrollTrigger.maxScroll(window) - 2,
+            ),
+          once: true,
+          onEnter: () => tl.play(),
+        });
+        return;
+      }
       observer = new IntersectionObserver(
         ([entry]) => {
           if (!entry.isIntersecting) return;
           tl.play();
           observer?.disconnect();
         },
-        { rootMargin: "0px 0px -28% 0px" },
+        { rootMargin: `0px 0px -${Math.round(line * 100)}% 0px` },
       );
       observer.observe(root);
     }, root);
@@ -59,6 +99,7 @@ export function useScrub<T extends HTMLElement>(
   useEffect(() => {
     const root = ref.current;
     if (!root || reduced()) return;
+    keepMeasured();
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         scrollTrigger: {

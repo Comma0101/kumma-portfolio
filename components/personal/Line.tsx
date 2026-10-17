@@ -21,7 +21,9 @@ export default function Line() {
   useBeat(ref, (root, tl) => {
     // Held on landing, then one quick sweep that runs dry.
     draw(tl, reveal(root, "enso"), { duration: 1.5, ease: "none", position: 0.2 });
-  });
+  // Once the circle's centre is 70% down the screen: all of it is in view
+  // while it is set down.
+  }, { at: (root) => ensoRing(root)?.cy ?? 0, line: 0.3 });
 
   return (
     <section ref={ref} className={styles.line} aria-label="Diamond Sutra" data-thread="reason">

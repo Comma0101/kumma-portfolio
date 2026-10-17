@@ -63,8 +63,11 @@ export default function Front() {
       <Rules />
       <Line />
       <Close />
-      <Wu />
-      <Colophon />
+      {/* The last screen: 無 whole, and the quiet things under it. */}
+      <div className={styles.ending}>
+        <Wu />
+        <Colophon />
+      </div>
     </div>
   );
 }
