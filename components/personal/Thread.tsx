@@ -86,8 +86,8 @@ const spine = (
   end();
 
   // Three steps forward, two back — stepping off the last word, then down
-  // from the last stair to the floor, and back along it home: a staircase
-  // standing on its ground, not a line struck through.
+  // from the last stair to the table below and back along its top rule:
+  // the stairs lead into the practice.
   const top = heading.y + heading.height + 6;
   to([x, top], 0.5);
   const walk = fitPoints(steps({ seed: 6, cycles: 4 }), {
@@ -98,11 +98,12 @@ const spine = (
   });
   to(walk[0], 0.3);
   points.push(...walk.slice(1));
-  const [far, low] = walk[walk.length - 1];
-  const floor = Math.max(low + 36, bottom(stairs) - 40);
-  to([far, floor], 0.3, 12);
-  to([x + 30, floor], 0.3, 22);
-  to([x, bottom(stairs) + 2], 0.3, 26);
+  const [far] = walk[walk.length - 1];
+  const table = front.querySelector('[data-thread="practice"] ol')?.getBoundingClientRect();
+  const rule = table ? table.top - front.getBoundingClientRect().top : bottom(stairs) + 40;
+  to([far, rule], 0.3, 14);
+  to([x + 24, rule], 0.15, 20);
+  to([x, rule + 24], 0.3, 18);
   end();
 
   // Practice: a tally barb from the margin to each numeral — one stroke

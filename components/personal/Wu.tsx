@@ -48,13 +48,6 @@ export default function Wu() {
       });
     });
     tl.set(root.querySelector("[data-source]"), { visibility: "visible" }, ">0.25");
-  // Once the character's centre reaches the middle of the screen.
-  }, {
-    at: (root) => {
-      const glyph = root.querySelector("#wu")?.getBoundingClientRect();
-      return glyph ? glyph.top + glyph.height / 2 - root.getBoundingClientRect().top : 0;
-    },
-    line: 0.5,
   });
 
   return (

@@ -39,14 +39,7 @@ function keepMeasured() {
 // A triggered beat plays once when its line reaches the lower third of the
 // viewport, then holds. Reduced motion never builds it, so the page stays
 // in its finished state.
-// at: the point (px from the root's top) whose arrival starts the beat —
-// the root's top by default. line: how far up the screen it must come, as
-// a fraction from the bottom.
-export function useBeat<T extends HTMLElement>(
-  ref: RefObject<T>,
-  build: Build<T>,
-  { at, line = 0.28 }: { at?: (root: T) => number; line?: number } = {},
-) {
+export function useBeat<T extends HTMLElement>(ref: RefObject<T>, build: Build<T>) {
   useEffect(() => {
     const root = ref.current;
     if (!root || reduced()) return;
@@ -55,27 +48,13 @@ export function useBeat<T extends HTMLElement>(
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ paused: true });
       build(root, tl);
-      if (at) {
-        ScrollTrigger.create({
-          // Where the point reaches the line — but never past the end of
-          // the page, so the last beat always plays.
-          start: () =>
-            Math.min(
-              root.getBoundingClientRect().top + window.scrollY + at(root) - window.innerHeight * (1 - line),
-              ScrollTrigger.maxScroll(window) - 2,
-            ),
-          once: true,
-          onEnter: () => tl.play(),
-        });
-        return;
-      }
       observer = new IntersectionObserver(
         ([entry]) => {
           if (!entry.isIntersecting) return;
           tl.play();
           observer?.disconnect();
         },
-        { rootMargin: `0px 0px -${Math.round(line * 100)}% 0px` },
+        { rootMargin: "0px 0px -28% 0px" },
       );
       observer.observe(root);
     }, root);

@@ -55,10 +55,10 @@ export default function Opening() {
     tl.fromTo(
       path,
       { strokeDashoffset: 1 },
-      { strokeDashoffset: 0, duration: 1.15, ease: "power1.inOut" },
-      seen ? 0.1 : 0.55,
+      { strokeDashoffset: 0, duration: 0.85, ease: "power1.inOut" },
+      seen ? 0.1 : 0.45,
     );
-    tl.to(pull, { tension: 1, duration: 0.55, ease: "power3.in", onUpdate: shape }, ">0.25");
+    tl.to(pull, { tension: 1, duration: 0.42, ease: "power3.in", onUpdate: shape }, ">0.15");
     // Taut: the thread's own underline takes its place on the same frame.
     tl.call(
       () => {
