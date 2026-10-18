@@ -10,9 +10,16 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Voice Agent Stress Suite v1 | Kumma",
     description:
-      "50 scenarios that break real-time voice agents where they actually break — with audio, a rubric, and a scoring script. Open and reproducible.",
+      "50 scenarios that break real-time voice agents where they actually break — with audio, a rubric, and a scoring script. A draft, not yet released.",
     url: "https://kumma.me/benchmark",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: "@Comma_9fie",
+    title: "Voice Agent Stress Suite v1 | Kumma",
+    description: "Fifty scenarios that break real-time voice agents where they actually break. A draft, not yet released.",
+    images: ["/og/portrait.png"],
   },
   alternates: { canonical: "https://kumma.me/benchmark" },
 };

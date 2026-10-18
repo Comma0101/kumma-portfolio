@@ -482,7 +482,8 @@ describe("contact form semantics", () => {
 
     assert.match(
       source,
-      /<button\b(?=[^>]*\btype="submit")[^>]*>\s*Open Email\s*<\/button>/s,
+      // The label says the note goes by the reader's own email app.
+      /<button\b(?=[^>]*\btype="submit")[^>]*>\s*[^<]*\bemail\b[^<]*<\/button>/is,
     );
     assert.doesNotMatch(
       source,

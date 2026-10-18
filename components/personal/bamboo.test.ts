@@ -41,3 +41,10 @@ test("a leaf comes to a point; a joint presses into its node", () => {
   assert.equal(bambooProfiles.leaf(0.3), 1);
   assert.ok(bambooProfiles.culm(1) > bambooProfiles.culm(0.5));
 });
+
+test("every take has branches at two nodes at least", () => {
+  for (let seed = 1; seed < 200; seed += 1) {
+    const branches = bamboo(seed).filter((s) => s.kind === "branch").length / 2;
+    assert.ok(branches >= 2, `seed ${seed}: ${branches}`);
+  }
+});

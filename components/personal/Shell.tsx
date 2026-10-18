@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { X_HANDLE, X_URL } from "./links";
 import { typeClasses } from "./type";
+import SectionNav from "./SectionNav";
 import styles from "./Front.module.css";
 
 // The inner pages' paper: the name small at the top as the way home, the
@@ -23,6 +24,7 @@ export default function Shell({
         <Link href="/" className={styles.workHome}>
           Kumma
         </Link>
+        <SectionNav />
         <a className={styles.follow} href={X_URL} rel="me">
           Follow <span>{X_HANDLE}</span> ↗
         </a>

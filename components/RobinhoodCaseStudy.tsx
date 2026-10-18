@@ -21,7 +21,6 @@ const grotesk = Space_Grotesk({
   weight: ["400", "500", "700"],
 });
 
-const REPO_URL = "https://github.com/Comma0101/robinhood-performance-dash";
 
 const proofCaption =
   "A messy export becomes a correctly paired, per-trade record.";
@@ -31,7 +30,7 @@ const pipeline = [
   {
     step: "01",
     label: "Ingest",
-    input: "Robinhood CSV export",
+    input: "Brokerage CSV export",
     transform: "Parse and normalize rows with Pandas, typed and sorted by time",
     output: "Ordered transaction ledger",
   },
@@ -169,7 +168,7 @@ export default function RobinhoodCaseStudy() {
         <div className={styles.heroCopy}>
           <p className={`${styles.eyebrow} ${grotesk.className}`}>Case study</p>
           <h1 className={`${styles.title} ${cormorant.className}`}>
-            Robinhood performance dashboard
+            Trade ledger
           </h1>
           <p className={`${styles.subtitle} ${cormorant.className}`}>
             A correct record from a messy export.
@@ -189,16 +188,6 @@ export default function RobinhoodCaseStudy() {
             CSV Ingest · Transaction Pairing · FIFO · Options Matching · D3
             Analytics
           </p>
-          <div className={styles.actions}>
-            <a
-              className={`${styles.actionLink} ${grotesk.className}`}
-              href={REPO_URL}
-              target="_blank"
-              rel="noreferrer noopener"
-            >
-              View the source
-            </a>
-          </div>
         </div>
 
         <div className={styles.heroProof}>
@@ -507,37 +496,14 @@ export default function RobinhoodCaseStudy() {
           </div>
         </section>
 
-        {/* ── Source ── */}
-        <section className={styles.section} data-animate>
-          <h2 className={`${styles.sectionLabel} ${grotesk.className}`}>
-            Source
-          </h2>
-          <p className={grotesk.className} style={leadStyle}>
-            The pairing algorithm and the full pipeline are open. Read the code
-            that turns the export into the record.
-          </p>
-          <div className={styles.actions}>
-            <a
-              className={`${styles.actionLink} ${grotesk.className}`}
-              href={REPO_URL}
-              target="_blank"
-              rel="noreferrer noopener"
-            >
-              robinhood-performance-dash on GitHub
-            </a>
-          </div>
-        </section>
-
         {/* ── Close ── */}
         <footer className={styles.philosophical} data-animate>
-          <Link
-            href="/contact"
-            className={`${styles.quote} ${cormorant.className}`}
-            style={{ textDecoration: "none", display: "inline-block" }}
-          >
-            Messy input, reliable output — the same discipline as the voice work,
-            a different domain. Let&apos;s talk.
-          </Link>
+          <p className={`${styles.quote} ${cormorant.className}`}>
+            Messy input, reliable output — the same discipline as the voice work, in a different domain.
+          </p>
+          <p className={styles.closeLinks}>
+            <Link href="/work">← Systems I build</Link>
+          </p>
         </footer>
       </div>
     </div>

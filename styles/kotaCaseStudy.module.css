@@ -55,6 +55,23 @@
   color: var(--faint);
 }
 
+/* The close: the reason, then the way back. */
+.closeLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem 2.4rem;
+  margin: 2.4rem 0 0;
+  font-size: 1.05rem;
+}
+
+.closeLinks a {
+  color: var(--paper);
+  text-decoration: underline;
+  text-decoration-color: var(--red, var(--signal));
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.3em;
+}
+
 @media (max-width: 560px) {
   .metricsBand {
     grid-template-columns: 1fr;
@@ -64,10 +81,10 @@
 /* ── Hero ── */
 
 .hero {
-  min-height: calc(100svh - clamp(7rem, 10vw, 10rem) - 1.5rem);
   display: grid;
-  grid-template-columns: minmax(0, 0.95fr) minmax(360px, 1.05fr);
-  align-items: center;
+  /* The title runs the full width; the copy and the diagram sit under it. */
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
   gap: clamp(2.5rem, 5vw, 5rem);
   margin-bottom: clamp(4rem, 7vw, 6rem);
   padding-bottom: clamp(3rem, 5vw, 4.5rem);
@@ -76,6 +93,13 @@
 
 .heroCopy {
   min-width: 0;
+}
+
+/* Under the full-width title, a reading measure for the copy and the
+   diagram. */
+.heroCopy > :not(h1),
+.hero > :not(.heroCopy) {
+  max-width: 44rem;
 }
 
 .heroProof {
@@ -96,8 +120,9 @@
 
 .title {
   margin: 0 0 0.4rem;
-  font-size: clamp(3.4rem, 8vw, 7rem);
-  line-height: 0.92;
+  font-size: clamp(2.8rem, 7.4vw, 7rem);
+  line-height: 0.95;
+  overflow-wrap: anywhere;
   letter-spacing: -0.02em;
   color: var(--paper);
   font-weight: 600;
@@ -143,11 +168,14 @@
 }
 
 .actionLink {
-  font-size: 0.76rem;
+  font-size: 1rem;
   font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  text-decoration: none;
+  letter-spacing: 0.08em;
+  font-variant-caps: all-small-caps;
+  text-decoration: underline;
+  text-decoration-color: var(--red, var(--signal));
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.32em;
   color: var(--signal);
   transition: color 0.3s ease;
 }
@@ -275,7 +303,7 @@
 
 .outputRow {
   display: grid;
-  grid-template-columns: 7rem 1fr;
+  grid-template-columns: minmax(max-content, 8rem) 1fr;
   gap: 0.6rem;
   padding: 0.45rem 0;
   border-bottom: 1px solid color-mix(in srgb, var(--paper) 4%, transparent);
@@ -397,8 +425,8 @@
 
 .pipelineRow {
   display: grid;
-  grid-template-columns: 5.5rem 1fr;
-  gap: 0.6rem;
+  grid-template-columns: minmax(max-content, 7rem) 1fr;
+  gap: 0.6rem 1rem;
   font-size: 0.82rem;
   line-height: 1.55;
   color: color-mix(in srgb, var(--paper) 78%, transparent);
@@ -680,11 +708,8 @@
     font-size: clamp(1.2rem, 4vw, 1.6rem);
   }
 
-  .outputRow {
-    grid-template-columns: 5.5rem 1fr;
-  }
-
+  .outputRow,
   .pipelineRow {
-    grid-template-columns: 4rem 1fr;
+    grid-template-columns: minmax(max-content, 5.5rem) 1fr;
   }
 }

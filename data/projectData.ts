@@ -49,7 +49,7 @@ export interface Project {
   featured?: boolean;
 }
 
-export const projects: Project[] = [
+const allProjects: Project[] = [
   {
     id: 1,
     title: "KOTA",
@@ -250,3 +250,7 @@ export const projects: Project[] = [
     featured: true
   }
 ];
+
+// Market Systems is a private practice: its methods and instruments stay
+// off the site (the page and its share card are not published).
+export const projects: Project[] = allProjects.filter((project) => project.slug !== "market-systems");

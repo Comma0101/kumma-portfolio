@@ -205,7 +205,7 @@ const studies: Study[] = [
   {
     glyph: "竹",
     title: "Bamboo, in vermilion",
-    note: "Su Shi once painted bamboo in red ink. Someone asked: is there such a thing as red bamboo? He asked back: is there such a thing as black bamboo? Culm, joints, branches, leaves, in the order they are painted; never the same stalk twice.",
+    note: "Su Shi, the story goes, once painted bamboo in red ink. Someone asked: is there such a thing as red bamboo? He asked back: is there such a thing as black bamboo? Culm, joints, branches, leaves, in the order they are painted; never the same stalk twice.",
     again: "Paint another",
     viewBox: `0 0 ${PLATE.width} ${PLATE.height}`,
     make: bambooMarks,
@@ -229,7 +229,7 @@ const studies: Study[] = [
   {
     glyph: "像",
     title: "A face, as one line",
-    note: "A single spiral from the rim to a point, after Claude Mellan’s engraving of 1649. There is no shading: the dark is only the line growing thicker.",
+    note: "A single spiral from the rim to a point, after Claude Mellan’s engraving The Sudarium of Saint Veronica (1649). There is no shading: the dark is only the line growing thicker.",
     again: "Draw it again",
     portrait: true,
   },

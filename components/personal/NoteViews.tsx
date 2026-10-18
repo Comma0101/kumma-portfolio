@@ -2,6 +2,7 @@ import Link from "next/link";
 import Shell from "./Shell";
 import { label, noteDate, type Lang, type Note } from "./notes";
 import { scClass } from "./typeSC";
+import HtmlLang from "./HtmlLang";
 import front from "./Front.module.css";
 import styles from "./Pages.module.css";
 
@@ -51,6 +52,7 @@ export function NoteView({ note, lang, next }: { note: Note; lang: Lang; next?: 
   const zh = lang === "zh";
   return (
     <Shell lang={zh ? "zh-Hans" : "en"} className={`${scClass} ${zh ? styles.zh : ""}`}>
+      {zh && <HtmlLang lang="zh-Hans" />}
       <article className={styles.note}>
         <p className={front.label}>
           <Link href="/notes">{zh ? label.notes : "Notes"}</Link>

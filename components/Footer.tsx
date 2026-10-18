@@ -21,7 +21,6 @@ const quickLinks = [
 
 const socialLinks = [
   { label: "GitHub", href: "https://github.com/Comma0101" },
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/yang-w-9233a3a8/" },
   { label: "X", href: "https://x.com/Comma_9fie" },
 ];
 

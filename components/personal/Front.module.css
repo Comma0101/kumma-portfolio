@@ -796,6 +796,21 @@
   color: var(--red);
 }
 
+.howDrawn {
+  max-width: 34rem;
+  margin: 0 0 2.4rem;
+  color: var(--grey);
+  font-size: 1.05rem;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.howDrawn a {
+  font-style: normal;
+  text-decoration-color: var(--red);
+  text-underline-offset: 0.22em;
+}
+
 .colophonBlock {
   padding: 6svh var(--gutter) 5svh var(--indent);
 }
@@ -838,6 +853,29 @@
 
 .workHead .follow {
   position: static;
+}
+
+.sectionNav {
+  display: flex;
+  gap: 1.6rem;
+  margin-right: auto;
+  margin-left: clamp(1.4rem, 4vw, 3.6rem);
+  font-size: 1.05rem;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.1em;
+}
+
+.sectionNav a {
+  padding-bottom: 6px;
+  text-decoration: none;
+}
+
+.sectionNav a:hover,
+.sectionNav a[aria-current="page"] {
+  text-decoration: underline;
+  text-decoration-color: var(--red);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.42em;
 }
 
 .workBody {
@@ -911,6 +949,7 @@
 
 .workLine {
   max-width: 34rem;
+  text-wrap: pretty;
   font-size: clamp(1.05rem, 1.4vw, 1.3rem);
   line-height: 1.4;
 }
@@ -1087,7 +1126,14 @@
   }
 
   .workHead {
-    padding: 22px 12px 0;
+    padding: 22px 16px 0;
+  }
+
+  /* The rooms on their own line under the name and the follow. */
+  .sectionNav {
+    order: 3;
+    width: 100%;
+    margin-left: 0;
   }
 
   .workName {

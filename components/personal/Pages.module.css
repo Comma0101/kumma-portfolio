@@ -74,8 +74,8 @@
 
 .noteBody {
   margin-top: 10svh;
-  max-width: 36rem;
-  font-size: clamp(1.12rem, 1.3vw, 1.26rem);
+  max-width: 38rem;
+  font-size: clamp(1.18rem, 1.45vw, 1.32rem);
   line-height: 1.62;
   font-variant-numeric: oldstyle-nums;
   hanging-punctuation: first;
@@ -83,6 +83,14 @@
 
 .noteBody p {
   margin: 0 0 1.2em;
+}
+
+/* No word left alone on a line, in any of the paper's running text. */
+.noteBody :is(p, li),
+.noteLede,
+.statement p,
+.plateCaption p {
+  text-wrap: pretty;
 }
 
 /* A break before anything is written is no break. */
@@ -191,6 +199,7 @@
   line-height: 2;
   letter-spacing: 0.04em;
   text-align: justify;
+  line-break: strict;
 }
 
 .zh .noteBody h2 {
@@ -342,19 +351,24 @@
 .paperInk {
   --canvas: #f2efe8;
   --background: #f2efe8;
-  --surface: #ebe7de;
-  --raised: #e4dfd3;
-  --surface-raised: #e4dfd3;
+  /* Cards are not filled on paper: their surface is the page. */
+  --surface: #f2efe8;
+  --raised: #f2efe8;
+  --surface-raised: #f2efe8;
+  --radius-card: 0;
+  --radius-control: 0;
   --paper: #141414;
   --foreground: #141414;
   --steel: #4f4b45;
   --muted: #4f4b45;
   --faint: #66625b;
-  --signal: #a3121b;
-  --signal-strong: #7d0e15;
-  --sand: #a3121b;
-  --accent: #a3121b;
-  --accent-strong: #7d0e15;
+  /* Highlight is ink; red is kept for the pen's own marks (var(--red)). */
+  --signal: #141414;
+  --signal-strong: #141414;
+  /* The dark site's accent was decoration; on paper, red is only the pen. */
+  --sand: #4f4b45;
+  --accent: #4f4b45;
+  --accent-strong: #141414;
   --line: rgba(20, 20, 20, 0.16);
   --line-strong: rgba(20, 20, 20, 0.32);
   --font-sans: var(--font-text);
@@ -403,13 +417,68 @@
   font-variant-caps: all-small-caps;
   letter-spacing: 0.12em;
   text-transform: none;
-  color: var(--red);
+  color: var(--grey);
 }
 
-/* The homepage's links inherit their colour; a filled button keeps paper
-   on red. */
-.paperInk.paperInk a[class*="primary"] {
-  color: var(--canvas);
+/* Old idioms, re-cut: chips and tags become small-caps words; fields are
+   one rule to write on; nothing is rounded. */
+.paperInk.paperInk :is([class*="chip_"], [class*="chip "], [class*="Tag_"], [class*="Tag "]) {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.08em;
+  text-transform: none;
+}
+
+.paperInk.paperInk [class*="chipDot"] {
+  display: none;
+}
+
+.paperInk.paperInk [class*="chipRow"] {
+  column-gap: 1.6rem;
+}
+
+.paperInk.paperInk :is(input, textarea, select) {
+  padding-inline: 0;
+  border: 0;
+  border-bottom: 1px solid var(--line-strong);
+  border-radius: 0;
+  background: transparent;
+  color: var(--paper);
+}
+
+.paperInk.paperInk :is(input, textarea, select):focus {
+  outline: none;
+  border-bottom-color: var(--red);
+}
+
+/* A primary action is words with the pen under them, not a red slab. */
+.paperInk.paperInk :is(a[class*="primary"], button[class*="submit"]) {
+  min-height: 0;
+  padding: 0.2rem 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--paper);
+  font-size: 1.1rem;
+  font-variant-caps: normal;
+  letter-spacing: 0;
+  text-transform: none;
+  text-decoration: underline;
+  text-decoration-color: var(--red);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.32em;
+  cursor: pointer;
+}
+
+.paperInk.paperInk a[class*="ghost"] {
+  border: 0;
+  padding-inline: 0;
+  font-size: 1.1rem;
+  text-transform: none;
+  letter-spacing: 0;
 }
 
 .paperInk.paperInk a:not([class]) {

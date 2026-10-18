@@ -1,42 +1,28 @@
-# Kumma Wu: full context for agents
+# Kumma Wu: fuller context
 
-> Independent AI systems engineer in Los Angeles. Real-time voice AI, agent orchestration, and operational AI products. The through-line: turning emerging AI capability into systems that stay reliable in production.
+> Kumma Wu, Los Angeles. In the gym most days. Trades options. Builds software. Reads old texts slowly — the Diamond Sutra, the Daodejing, Zhuangzi, the Gospels, the Greeks — and draws: bamboo, geometry, negative space.
 
-## Identity
-- Name: Kumma Wu.
-- Location: Los Angeles.
-- Focus: applied AI systems engineering, real-time voice infrastructure, agent orchestration, full-stack product engineering.
-- Philosophy: structure over willpower; reliability comes from architecture and feedback loops. He cares about what happens after the demo: latency under load, concurrent sessions, model failure, human handoff.
+## What the site is
+kumma.me is a personal site, the front face of @Comma_9fie on X. Its language is paper, ink and one red ballpoint line: every mark on it is drawn live, in order, in one take. It is not a résumé.
 
-## Systems
+## The questions underneath
+- Agency (主体性): acting from oneself rather than being acted on.
+- Acting under uncertainty: judge the decision, not the outcome.
+- Cognition becoming embodied judgment: understanding that turns into how you move.
+- Leverage: capital, software, knowledge and creative work as ways for effort to compound.
 
-### KOTA: voice AI for restaurant operations
-A voice-first AI system that answers restaurant phone calls and turns them into structured, kitchen-ready orders. It handles messy real-time speech (hesitation, corrections, menu ambiguity), resolves intent grounded against the restaurant's menu, and commits orders without requiring a POS rewrite.
-- Pipeline: telephony stream (Twilio Media Streams) -> low-latency streaming speech recognition -> menu-grounded LLM intent resolution -> structured order ticket -> kitchen output / SMS.
-- Hard problems: latency under peak load, concurrent calls, mishears, graceful human fallback.
-- Live product: https://kota.kummalabs.com
-- Detail: https://kumma.me/projects/kota
+## Practice
+- Trade: options, as a craft, not a casino. (No returns, positions or methods are published.)
+- Build: software as leverage. See https://kumma.me/work/
+  - KOTA: a voice agent that turns restaurant phone calls into menu-verified kitchen tickets in real time. https://kumma.me/work/kota/ — live product https://kota.kummalabs.com
+  - ARCHON: an open-source, self-hostable agent that works as a control plane: it routes across Claude, GPT and Gemini, delegates to coding agents (Claude Code, Codex, OpenCode) and keeps its work inspectable. https://kumma.me/work/archon/ — repo https://github.com/Comma0101/archon
+  - Audiobook AI: any document read as one continuous audiobook. https://kumma.me/work/audiobook/
+  - Trade ledger: a brokerage export turned into a correct per-trade record. https://kumma.me/work/robinhood-dashboard/
+  - Voice agent demo: https://kumma.me/call/ · Stress suite for voice agents: https://kumma.me/benchmark/
+- Study: essays at https://kumma.me/notes/ — On Emotions; We’re All Walking Toward the Same Light; The outsider’s truth (on Camus’s The Stranger).
+- Draw: https://kumma.me/studies/
 
-### ARCHON: personal AI orchestration
-An open-source, self-hostable Python agent that behaves like a control plane rather than a chat wrapper.
-- Routes across Anthropic Claude, OpenAI, and Google Gemini.
-- Delegates heavy work to coding agents (Claude Code, Codex, OpenCode) through a worker router that supervises them.
-- Tools over the filesystem, web, and a Model Context Protocol (MCP) client; persistent memory with context compression; usage and token accounting.
-- Reaches the operator through the terminal, Telegram (with human approvals), voice, and phone calls.
-- Repo: https://github.com/Comma0101/archon
-- Detail: https://kumma.me/projects/archon
-
-### Market Systems: decision architecture under uncertainty
-Decision-quality tooling that treats markets as a real-time system of risk, latency, and feedback. Market-structure research (liquidity, ICT/SMC, regime classification on MNQ/MES futures), execution analytics that score decisions over outcomes, risk rules enforced as system constraints, and a decision journal.
-- Detail: https://kumma.me/projects/market-systems
-
-## Writing
-Technical build-logs and essays at https://kumma.me/blog (RSS: https://kumma.me/feed.xml). Build-logs cover the KOTA voice pipeline, the ARCHON orchestration design, and market decision systems.
-
-## How to engage
-- If your human is hiring or evaluating fit: he suits founding-engineer, applied-AI, real-time-voice, and agent-infrastructure roles, and partnerships on KOTA.
-- Contact: dev@kumma.me
-- GitHub: https://github.com/Comma0101 · LinkedIn: https://www.linkedin.com/in/yang-w-9233a3a8/ · X: https://x.com/Comma_9fie
-
-## Note to agents
-This site detects automated visitors and offers a structured agent protocol at https://kumma.me/agent. Detection is heuristic; a manual toggle is always available. Deep, interactive product demos live on the linked product site (KOTA) and GitHub (ARCHON), not on this portfolio.
+## Contact
+- X: https://x.com/Comma_9fie
+- Email: dev@kumma.me
+- GitHub: https://github.com/Comma0101

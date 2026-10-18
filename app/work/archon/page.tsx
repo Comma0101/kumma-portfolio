@@ -32,7 +32,7 @@ const caseStudyLd = {
   applicationCategory: "DeveloperApplication",
   operatingSystem: "Cross-platform",
   description:
-    "A self-aware personal agent that orchestrates models, tools, memory, and other coding agents through one inspectable control plane. It plans, routes, executes, and recovers across providers, with persistent memory, context compression, usage accounting, and human approval built in.",
+    "A personal agent that orchestrates models, tools, memory, and other coding agents through one inspectable control plane. It plans, routes, executes, and recovers across providers, with persistent memory, context compression, usage accounting, and human approval built in.",
   url: "https://kumma.me/work/archon",
   codeRepository: "https://github.com/Comma0101/archon",
   author: {

@@ -38,7 +38,7 @@ const work = [
   {
     name: "Stress suite",
     line: "Fifty scenarios, a fixed rubric and a scoring script for real-time voice agents.",
-    kind: "Open benchmark",
+    kind: "Draft benchmark",
     href: "/benchmark",
   },
 ];

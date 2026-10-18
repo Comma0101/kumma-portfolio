@@ -209,13 +209,12 @@ async function portraitCard() {
 const projects = [
   { slug: "kota", title: "KOTA", sub: "Voice agent for restaurant operations" },
   { slug: "archon", title: "ARCHON", sub: "Orchestrates Claude, GPT, and Gemini" },
-  { slug: "market-systems", title: "Market Systems", sub: "Decision architecture under uncertainty" },
 ];
 
 async function run() {
   await portraitCard();
-  await card("default", "Intelligent systems for the real world.", "Kumma", "Real-time AI, voice agents, agent orchestration");
-  await card("home", "I build intelligent systems for the real world.", "Kumma", "KOTA, ARCHON, and real-time AI systems");
+  await card("default", "Attention goes where it compounds.", "Kumma Wu", "Systems, notes and studies, in one red line");
+  await card("home", "Attention goes where it compounds.", "Kumma Wu", "Systems, notes and studies, in one red line");
   for (const p of projects) {
     await card(`projects-${p.slug}`, p.title, "Selected work", p.sub);
   }
@@ -224,7 +223,7 @@ async function run() {
   for (const dir of ["_posts", path.join("_posts", "zh")]) {
     if (!fs.existsSync(dir)) continue;
     for (const f of fs.readdirSync(dir)) {
-      if (!f.endsWith(".md")) continue;
+      if (!f.endsWith(".md") || f === "market-systems-decision-quality.md") continue;
       const slug = f.replace(/\.md$/, "");
       if (seen.has(slug)) continue;
       seen.add(slug);

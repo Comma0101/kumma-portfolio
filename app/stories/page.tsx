@@ -1,6 +1,13 @@
-"use client";
-import InfiniteLayersGrid from "@/components/InfiniteLayersGrid";
+import type { Metadata } from "next";
+import Moved from "@/components/personal/Moved";
+import { moved } from "@/components/personal/routes";
 
-export default function StoriesPage() {
-  return <InfiniteLayersGrid />;
+export const metadata: Metadata = {
+  title: "Moved",
+  robots: { index: false },
+  alternates: { canonical: "https://kumma.me/studies/" },
+};
+
+export default function Page() {
+  return <Moved {...moved["/stories"]} />;
 }

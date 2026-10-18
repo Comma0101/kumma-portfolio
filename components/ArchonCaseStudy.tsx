@@ -87,34 +87,6 @@ const leadStyle: CSSProperties = {
   color: "color-mix(in srgb, var(--paper) 78%, transparent)",
 };
 
-// Empty "awaiting measured results" slot. Intentionally holds no numbers.
-const awaitingWrap: CSSProperties = {
-  border: "1px dashed color-mix(in srgb, var(--paper) 14%, transparent)",
-  borderRadius: "var(--radius-card, 14px)",
-  background: "color-mix(in srgb, var(--canvas) 50%, transparent)",
-  padding: "clamp(1.6rem, 3vw, 2.4rem)",
-  display: "flex",
-  flexDirection: "column",
-  gap: "0.7rem",
-};
-
-const awaitingTag: CSSProperties = {
-  fontFamily: "var(--font-mono, monospace)",
-  fontSize: "0.66rem",
-  fontWeight: 700,
-  letterSpacing: "0.16em",
-  textTransform: "uppercase",
-  color: "color-mix(in srgb, var(--sand) 100%, transparent)",
-};
-
-const awaitingBody: CSSProperties = {
-  margin: 0,
-  maxWidth: "60ch",
-  fontSize: "0.9rem",
-  lineHeight: 1.7,
-  color: "color-mix(in srgb, var(--paper) 78%, transparent)",
-};
-
 const ctaStyle: CSSProperties = {
   margin: "1.4rem 0 0",
   fontSize: "0.76rem",
@@ -189,7 +161,7 @@ export default function ArchonCaseStudy() {
           <p className={`${styles.eyebrow} ${grotesk.className}`}>Case study</p>
           <h1 className={`${styles.title} ${cormorant.className}`}>ARCHON</h1>
           <p className={`${styles.subtitle} ${cormorant.className}`}>
-            A self-aware personal agent.
+            An agent that can see its own work.
           </p>
           <p className={`${styles.heroDesc} ${grotesk.className}`}>
             A control plane that plans, routes, executes, and recovers across
@@ -399,21 +371,6 @@ export default function ArchonCaseStudy() {
           </div>
         </section>
 
-        {/* ── Measured results (intentionally empty) ── */}
-        <section className={styles.section} data-animate>
-          <h2 className={`${styles.sectionLabel} ${grotesk.className}`}>
-            Measured results
-          </h2>
-          <div style={awaitingWrap}>
-            <span style={awaitingTag}>Awaiting measured results</span>
-            <p className={grotesk.className} style={awaitingBody}>
-              Reliability, recovery rate, and cost per task will be published
-              here from verified runs. Until that data is instrumented and
-              confirmed, this slot stays empty. No estimates.
-            </p>
-          </div>
-        </section>
-
         {/* ── Close ── */}
         <footer className={styles.philosophical} data-animate>
           <p className={`${styles.quote} ${cormorant.className}`}>
@@ -428,12 +385,8 @@ export default function ArchonCaseStudy() {
           >
             Read the source on GitHub →
           </a>
-          <Link
-            href="/contact"
-            className={grotesk.className}
-            style={ctaStyle}
-          >
-            Working on agent orchestration? Get in touch →
+          <Link href="/work" className={grotesk.className} style={ctaStyle}>
+            ← Systems I build
           </Link>
         </footer>
       </div>

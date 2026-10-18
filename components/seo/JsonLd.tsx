@@ -9,7 +9,6 @@ export function JsonLd({ data }: { data: Record<string, unknown> }) {
 
 const sameAs = [
   "https://github.com/Comma0101",
-  "https://www.linkedin.com/in/yang-w-9233a3a8/",
   "https://x.com/Comma_9fie",
 ];
 
@@ -20,13 +19,15 @@ export const personLd = {
   name: "Kumma Wu",
   alternateName: "Kumma",
   url: "https://kumma.me",
-  jobTitle: "Independent AI systems engineer",
+  description: "In the gym most days. Trading options. Builds software, reads old texts, draws.",
   address: { "@type": "PostalAddress", addressLocality: "Los Angeles" },
   knowsAbout: [
     "Real-time voice AI",
     "Agent orchestration",
-    "Model Context Protocol",
-    "Decision-quality systems",
+    "Chinese philosophy",
+    "Comparative religion",
+    "Options trading",
+    "Calligraphy and brush painting",
   ],
   sameAs,
 };
@@ -50,7 +51,7 @@ export const homeLd = {
       name: "Kumma Wu",
       url: "https://kumma.me",
       description:
-        "Production AI systems for real-time voice, multi-model agent orchestration, and decision-quality workflows.",
+        "The personal site of Kumma Wu: systems he builds, notes from his reading, and drawing studies, in one red line.",
       author: { "@id": "https://kumma.me/#person" },
       publisher: { "@id": "https://kumma.me/#organization" },
     },

@@ -13,11 +13,6 @@ export const metadata: Metadata = {
 const contact = [
   { k: "email", v: "dev@kumma.me", href: "mailto:dev@kumma.me" },
   { k: "github", v: "github.com/Comma0101", href: "https://github.com/Comma0101" },
-  {
-    k: "linkedin",
-    v: "linkedin.com/in/yang-w-9233a3a8",
-    href: "https://www.linkedin.com/in/yang-w-9233a3a8/",
-  },
   { k: "x", v: "x.com/Comma_9fie", href: "https://x.com/Comma_9fie" },
 ];
 

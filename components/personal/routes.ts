@@ -24,6 +24,15 @@ export const moved: Record<string, { to: string; label: string }> = {
   "/blog/en/Same-Light": { to: "/notes/same-light/", label: "We’re All Walking Toward the Same Light" },
   "/blog/zh/Same-Light": { to: "/notes/same-light/zh/", label: "我们都在走向同一束光" },
   "/blog/en/camus-the-stranger-analysis": { to: "/notes/the-stranger/", label: "The outsider’s truth" },
+  "/blog/en/generative-art-with-code": { to: "/studies/", label: "Studies" },
+  "/blog/zh/generative-art-with-code": { to: "/studies/", label: "Studies" },
+  "/about": { to: "/", label: "Kumma" },
+  "/gallery": { to: "/studies/", label: "Studies" },
+  "/gallery/0": { to: "/studies/", label: "Studies" },
+  "/gallery/1": { to: "/studies/", label: "Studies" },
+  "/artfulcode": { to: "/studies/", label: "Studies" },
+  "/stories": { to: "/studies/", label: "Studies" },
+  "/latency": { to: "/benchmark/", label: "the stress suite" },
 };
 
 export const movedFrom = (pathname: string | null | undefined) =>

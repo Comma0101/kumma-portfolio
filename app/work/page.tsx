@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Work from "@/components/personal/Work";
 
 const description =
-  "Systems Kumma builds: real-time voice agents, an agent control plane, document-to-audio, and the tests behind them.";
+  "Systems I build: real-time voice agents, an agent control plane, document-to-audio, and the tests behind them.";
 
 export const metadata: Metadata = {
   title: "Systems I build",

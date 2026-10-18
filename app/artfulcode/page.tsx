@@ -1,7 +1,13 @@
-import Artfulcode from '@/components/Artfulcode';
+import type { Metadata } from "next";
+import Moved from "@/components/personal/Moved";
+import { moved } from "@/components/personal/routes";
 
-// Ensure the page is treated as static despite being a client component
-// by explicitly handling the searchParams prop.
-export default function ArtfulcodePage({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
-  return <Artfulcode />;
+export const metadata: Metadata = {
+  title: "Moved",
+  robots: { index: false },
+  alternates: { canonical: "https://kumma.me/studies/" },
+};
+
+export default function Page() {
+  return <Moved {...moved["/artfulcode"]} />;
 }

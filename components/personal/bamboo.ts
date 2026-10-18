@@ -99,8 +99,14 @@ export function bamboo(seed: number): BambooStroke[] {
 
   // Branches from the upper nodes, alternating sides, reaching up and out.
   const tips: { point: Point; side: number; angle: number }[] = [];
+  // Sometimes a node bears no branch — but never more than one, so every
+  // take has foliage at two heights at least.
+  let bare = 0;
   nodes.slice(2).forEach((node, i) => {
-    if (i > 0 && rand() < 0.25) return;
+    if (i > 0 && rand() < 0.25 && bare === 0) {
+      bare += 1;
+      return;
+    }
     const s = (i % 2 === 0 ? 1 : -1) * side;
     const angle = -Math.PI / 2 + s * (0.55 + rand() * 0.35);
     const length = 70 + rand() * 50;

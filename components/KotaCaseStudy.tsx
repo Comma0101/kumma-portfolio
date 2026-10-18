@@ -8,7 +8,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Cormorant_Garamond, Space_Grotesk } from "next/font/google";
 import styles from "@/styles/kotaCaseStudy.module.css";
 import KotaViz from "@/components/viz/KotaViz";
-import AudioSlot from "@/components/AudioSlot";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -76,34 +75,6 @@ const leadStyle: CSSProperties = {
   margin: "0 0 1.6rem",
   maxWidth: "62ch",
   fontSize: "clamp(0.98rem, 1.4vw, 1.12rem)",
-  lineHeight: 1.7,
-  color: "color-mix(in srgb, var(--paper) 78%, transparent)",
-};
-
-// Empty "awaiting measured results" slot. Intentionally holds no numbers.
-const awaitingWrap: CSSProperties = {
-  border: "1px dashed color-mix(in srgb, var(--paper) 14%, transparent)",
-  borderRadius: "var(--radius-card, 14px)",
-  background: "color-mix(in srgb, var(--canvas) 50%, transparent)",
-  padding: "clamp(1.6rem, 3vw, 2.4rem)",
-  display: "flex",
-  flexDirection: "column",
-  gap: "0.7rem",
-};
-
-const awaitingTag: CSSProperties = {
-  fontFamily: "var(--font-mono, monospace)",
-  fontSize: "0.66rem",
-  fontWeight: 700,
-  letterSpacing: "0.16em",
-  textTransform: "uppercase",
-  color: "color-mix(in srgb, var(--sand) 100%, transparent)",
-};
-
-const awaitingBody: CSSProperties = {
-  margin: 0,
-  maxWidth: "60ch",
-  fontSize: "0.9rem",
   lineHeight: 1.7,
   color: "color-mix(in srgb, var(--paper) 78%, transparent)",
 };
@@ -416,48 +387,6 @@ export default function KotaCaseStudy() {
           </div>
         </section>
 
-        {/* ── Measured results (intentionally empty) ── */}
-        <section className={styles.section} data-animate>
-          <h2 className={`${styles.sectionLabel} ${grotesk.className}`}>
-            Measured results
-          </h2>
-          <div style={awaitingWrap}>
-            <span style={awaitingTag}>Awaiting measured results</span>
-            <p className={grotesk.className} style={awaitingBody}>
-              Latency, call volume, and accuracy will be published here from
-              verified live logs. Until that data is instrumented and confirmed,
-              this slot stays empty. No estimates.
-            </p>
-          </div>
-        </section>
-
-        {/* ── Call recordings (empty audio slots) ── */}
-        <section className={styles.section} data-animate>
-          <h2 className={`${styles.sectionLabel} ${grotesk.className}`}>
-            Call recordings
-          </h2>
-          <div className={styles.principlesGrid}>
-            <div className={styles.principleItem}>
-              <AudioSlot
-                label="One clean call"
-                caption="A straightforward order, captured and committed end to end."
-              />
-            </div>
-            <div className={styles.principleItem}>
-              <AudioSlot
-                label="One messy call"
-                caption="Hesitation, corrections, and menu ambiguity resolved in real time."
-              />
-            </div>
-            <div className={styles.principleItem}>
-              <AudioSlot
-                label="One failure and the fix"
-                caption="Where the system broke, and the change that handled it."
-              />
-            </div>
-          </div>
-        </section>
-
         {/* ── What broke and how I fixed it ── */}
         <section className={styles.section} data-animate>
           <h2 className={`${styles.sectionLabel} ${grotesk.className}`}>
@@ -528,13 +457,13 @@ export default function KotaCaseStudy() {
 
         {/* ── Close ── */}
         <footer className={styles.philosophical} data-animate>
-          <Link
-            href="/call"
-            className={`${styles.quote} ${cormorant.className}`}
-            style={{ textDecoration: "none", display: "inline-block" }}
-          >
-            Hear this system take a real call, or book a live demo.
-          </Link>
+          <p className={`${styles.quote} ${cormorant.className}`}>
+            Messy speech in; a ticket the kitchen can trust out.
+          </p>
+          <p className={styles.closeLinks}>
+            <Link href="/call">Try it on the demo diner →</Link>
+            <Link href="/work">← Systems I build</Link>
+          </p>
         </footer>
       </div>
     </div>

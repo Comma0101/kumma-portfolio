@@ -3,9 +3,16 @@ import ContactPage from "@/components/ContactPage";
 import Paper from "@/components/personal/Paper";
 
 export const metadata: Metadata = {
-  title: "Contact",
+  title: "Write to me",
   description:
-    "Start a real-time voice AI engagement: a voice agent audit, a scoped build to production, or ongoing advisory. Tell me the problem and the constraint.",
+    "Write to Kumma Wu — about an idea, a build, a demo call, or a text worth reading slowly.",
+  twitter: {
+    card: "summary_large_image",
+    site: "@Comma_9fie",
+    title: "Write to me | Kumma",
+    description: "Write to Kumma Wu — about an idea, a build, a demo call, or a text worth reading slowly.",
+    images: ["/og/portrait.png"],
+  },
   alternates: { canonical: "https://kumma.me/contact" },
 };
 

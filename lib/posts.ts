@@ -6,6 +6,9 @@ import html from 'remark-html';
 
 const postsDirectory = path.join(process.cwd(), '_posts');
 
+// Written, but not published: trading methods stay private.
+const unpublished = new Set(['market-systems-decision-quality.md']);
+
 import { BlogPost } from '@/components/BlogSection';
 
 export type Locale = 'en' | 'zh';
@@ -19,7 +22,7 @@ export function getSortedPostsData(locale: Locale = 'en'): BlogPost[] {
     return [];
   }
 
-  const fileNames = fs.readdirSync(localeDir).filter(name => name.endsWith('.md'));
+  const fileNames = fs.readdirSync(localeDir).filter(name => name.endsWith('.md') && !unpublished.has(name));
   const allPostsData = fileNames.map((fileName) => {
     const id = fileName.replace(/\.md$/, '');
     const fullPath = path.join(localeDir, fileName);
@@ -60,7 +63,7 @@ export function getAllPostIds(locale: Locale = 'en') {
     return [];
   }
 
-  const fileNames = fs.readdirSync(localeDir).filter(name => name.endsWith('.md'));
+  const fileNames = fs.readdirSync(localeDir).filter(name => name.endsWith('.md') && !unpublished.has(name));
 
   return fileNames.map((fileName) => {
     return {
