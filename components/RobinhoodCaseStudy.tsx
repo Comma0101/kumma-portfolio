@@ -63,14 +63,14 @@ const leadStyle: CSSProperties = {
   maxWidth: "62ch",
   fontSize: "clamp(0.98rem, 1.4vw, 1.12rem)",
   lineHeight: 1.7,
-  color: "rgba(220, 220, 220, 0.7)",
+  color: "color-mix(in srgb, var(--paper) 70%, transparent)",
 };
 
 // Static hero proof: a raw export fragment resolved into one closed trade.
 const proofWrap: CSSProperties = {
-  border: "1px solid var(--line, rgba(255, 255, 255, 0.08))",
+  border: "1px solid var(--line, color-mix(in srgb, var(--paper) 8%, transparent))",
   borderRadius: "var(--radius-card, 14px)",
-  background: "var(--raised, rgba(8, 8, 8, 0.6))",
+  background: "var(--raised, color-mix(in srgb, var(--canvas) 60%, transparent))",
   padding: "clamp(1.2rem, 2.2vw, 1.6rem)",
   display: "flex",
   flexDirection: "column",
@@ -83,7 +83,7 @@ const proofTag: CSSProperties = {
   fontWeight: 700,
   letterSpacing: "0.14em",
   textTransform: "uppercase",
-  color: "rgba(255, 255, 255, 0.4)",
+  color: "color-mix(in srgb, var(--paper) 40%, transparent)",
 };
 
 const proofRows: CSSProperties = {
@@ -92,19 +92,19 @@ const proofRows: CSSProperties = {
   gap: "0.3rem",
   fontSize: "0.78rem",
   lineHeight: 1.5,
-  color: "rgba(220, 220, 220, 0.62)",
+  color: "color-mix(in srgb, var(--paper) 62%, transparent)",
 };
 
 const proofDivider: CSSProperties = {
   height: "1px",
-  background: "rgba(163, 181, 168, 0.25)",
+  background: "color-mix(in srgb, var(--sand) 25%, transparent)",
   margin: "0.2rem 0",
 };
 
 const proofResult: CSSProperties = {
   fontSize: "0.78rem",
   lineHeight: 1.6,
-  color: "rgba(163, 181, 168, 0.85)",
+  color: "color-mix(in srgb, var(--sand) 85%, transparent)",
 };
 
 export default function RobinhoodCaseStudy() {

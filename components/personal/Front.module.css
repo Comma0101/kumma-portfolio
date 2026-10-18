@@ -834,7 +834,7 @@
   position: static;
 }
 
-.workPage main {
+.workBody {
   padding: 14svh var(--gutter) 10svh var(--indent);
 }
 

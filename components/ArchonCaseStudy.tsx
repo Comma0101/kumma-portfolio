@@ -84,14 +84,14 @@ const leadStyle: CSSProperties = {
   maxWidth: "62ch",
   fontSize: "clamp(0.98rem, 1.4vw, 1.12rem)",
   lineHeight: 1.7,
-  color: "rgba(220, 220, 220, 0.7)",
+  color: "color-mix(in srgb, var(--paper) 70%, transparent)",
 };
 
 // Empty "awaiting measured results" slot. Intentionally holds no numbers.
 const awaitingWrap: CSSProperties = {
-  border: "1px dashed rgba(255, 255, 255, 0.14)",
+  border: "1px dashed color-mix(in srgb, var(--paper) 14%, transparent)",
   borderRadius: "var(--radius-card, 14px)",
-  background: "rgba(8, 8, 8, 0.5)",
+  background: "color-mix(in srgb, var(--canvas) 50%, transparent)",
   padding: "clamp(1.6rem, 3vw, 2.4rem)",
   display: "flex",
   flexDirection: "column",
@@ -104,7 +104,7 @@ const awaitingTag: CSSProperties = {
   fontWeight: 700,
   letterSpacing: "0.16em",
   textTransform: "uppercase",
-  color: "rgba(163, 181, 168, 0.75)",
+  color: "color-mix(in srgb, var(--sand) 75%, transparent)",
 };
 
 const awaitingBody: CSSProperties = {
@@ -112,7 +112,7 @@ const awaitingBody: CSSProperties = {
   maxWidth: "60ch",
   fontSize: "0.9rem",
   lineHeight: 1.7,
-  color: "rgba(220, 220, 220, 0.5)",
+  color: "color-mix(in srgb, var(--paper) 50%, transparent)",
 };
 
 const ctaStyle: CSSProperties = {
@@ -121,7 +121,7 @@ const ctaStyle: CSSProperties = {
   fontWeight: 600,
   letterSpacing: "0.1em",
   textTransform: "uppercase",
-  color: "var(--signal, rgba(163, 181, 168, 0.9))",
+  color: "var(--signal, color-mix(in srgb, var(--sand) 90%, transparent))",
   textDecoration: "none",
   display: "inline-block",
 };

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ContactPage from "@/components/ContactPage";
+import Paper from "@/components/personal/Paper";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -9,5 +10,9 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return <ContactPage />;
+  return (
+    <Paper>
+      <ContactPage />
+    </Paper>
+  );
 }

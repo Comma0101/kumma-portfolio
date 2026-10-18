@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import CallPage from "@/components/CallPage";
+import Paper from "@/components/personal/Paper";
 
 export const metadata: Metadata = {
   title: "Voice agent demo",
@@ -16,5 +17,9 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return <CallPage />;
+  return (
+    <Paper>
+      <CallPage />
+    </Paper>
+  );
 }

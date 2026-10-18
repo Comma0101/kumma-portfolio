@@ -154,15 +154,6 @@ export default function BenchmarkPage() {
 
   return (
     <div ref={root} className={bs.page}>
-      <header className={bs.header}>
-        <a href="#top" className={bs.wordmark}>
-          Kumma Wu
-        </a>
-        <a href="#submit" className={bs.headerCta}>
-          Submit scores
-        </a>
-      </header>
-
       <div id="top">
         {/* Hero */}
         <section className={`${bs.hero} ${bs.shell}`}>
@@ -448,10 +439,6 @@ export default function BenchmarkPage() {
         </section>
       </div>
 
-      <footer className={bs.footer}>
-        <span>© {new Date().getFullYear()} Kumma Wu — Los Angeles</span>
-        <span className={s.repoTag}>Voice Agent Stress Suite v1 · repo coming</span>
-      </footer>
     </div>
   );
 }

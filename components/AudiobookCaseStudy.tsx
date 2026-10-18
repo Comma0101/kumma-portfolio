@@ -83,7 +83,7 @@ const leadStyle: CSSProperties = {
   maxWidth: "62ch",
   fontSize: "clamp(0.98rem, 1.4vw, 1.12rem)",
   lineHeight: 1.7,
-  color: "rgba(220, 220, 220, 0.7)",
+  color: "color-mix(in srgb, var(--paper) 70%, transparent)",
 };
 
 // Static, decorative waveform silhouette for the hero proof panel. No audio is
@@ -206,7 +206,7 @@ export default function AudiobookCaseStudy() {
                     flex: 1,
                     maxWidth: "6px",
                     height: `${h}%`,
-                    background: "var(--sand, #a3b5a8)",
+                    background: "var(--sand)",
                     opacity: 0.5,
                     borderRadius: "1px",
                   }}

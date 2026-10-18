@@ -6,7 +6,17 @@ import styles from "./Front.module.css";
 
 // The inner pages' paper: the name small at the top as the way home, the
 // follow beside it, and the colophon under the page.
-export default function Shell({ children, className, lang }: { children: ReactNode; className?: string; lang?: string }) {
+export default function Shell({
+  children,
+  className,
+  mainClassName,
+  lang,
+}: {
+  children: ReactNode;
+  className?: string;
+  mainClassName?: string;
+  lang?: string;
+}) {
   return (
     <div className={`${styles.front} ${styles.workPage} ${typeClasses} ${className ?? ""}`} lang={lang}>
       <header className={styles.workHead}>
@@ -18,7 +28,8 @@ export default function Shell({ children, className, lang }: { children: ReactNo
         </a>
       </header>
 
-      <main>{children}</main>
+      {/* The layout already provides the page's <main>. */}
+      <div className={mainClassName ?? styles.workBody}>{children}</div>
 
       <footer className={styles.colophonBlock}>
         <p className={styles.colophon}>

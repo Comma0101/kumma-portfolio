@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import KotaCaseStudy from "@/components/KotaCaseStudy";
+import Paper from "@/components/personal/Paper";
 import { JsonLd } from "@/components/seo/JsonLd";
 
 export const metadata: Metadata = {
@@ -43,7 +44,9 @@ export default function Page() {
   return (
     <>
       <JsonLd data={caseStudyLd} />
-      <KotaCaseStudy />
+      <Paper>
+        <KotaCaseStudy />
+      </Paper>
     </>
   );
 }

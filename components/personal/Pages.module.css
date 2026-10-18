@@ -331,6 +331,91 @@
   outline-offset: 4px;
 }
 
+/* ---------- Paper: the older pages, re-inked ---------- */
+
+.paperMain.paperMain {
+  padding: 0;
+}
+
+/* The dark site's tokens, for ink on paper. (--paper there is the text
+   colour; here it is ink.) */
+.paperInk {
+  --canvas: #f2efe8;
+  --background: #f2efe8;
+  --surface: #ebe7de;
+  --raised: #e4dfd3;
+  --surface-raised: #e4dfd3;
+  --paper: #141414;
+  --foreground: #141414;
+  --steel: #4f4b45;
+  --muted: #4f4b45;
+  --faint: #66625b;
+  --signal: #a3121b;
+  --signal-strong: #7d0e15;
+  --sand: #a3121b;
+  --accent: #a3121b;
+  --accent-strong: #7d0e15;
+  --line: rgba(20, 20, 20, 0.16);
+  --line-strong: rgba(20, 20, 20, 0.32);
+  --font-sans: var(--font-text);
+  --font-mono: var(--font-text);
+  color: var(--paper);
+}
+
+/* Their own faces (set per element) give way to the homepage's: the book
+   face for everything, the display face for titles. */
+.paperInk.paperInk * {
+  font-family: var(--font-text), Georgia, serif;
+}
+
+.paperInk.paperInk :is(h1, h2),
+.paperInk.paperInk :is(h1, h2) * {
+  font-family: var(--font-display), Georgia, serif;
+  font-style: normal;
+  font-weight: 150;
+  font-variation-settings: "wdth" 150;
+  letter-spacing: -0.02em;
+}
+
+.paperInk.paperInk h1,
+.paperInk.paperInk h1 * {
+  font-weight: 190;
+  font-variation-settings: "wdth" 190;
+  letter-spacing: -0.03em;
+}
+
+.paperInk.paperInk h3 {
+  font-weight: 600;
+}
+
+/* Junicode is small on its body: set its x-height near the faces these
+   pages were drawn for, so their sizes still read. */
+.paperInk.paperInk :not(h1, h2, h1 *, h2 *) {
+  font-size-adjust: 0.5;
+}
+
+/* A section's running head is a label, as on the homepage, not a title. */
+.paperInk.paperInk h2[class*="sectionLabel"] {
+  font-family: var(--font-text), Georgia, serif;
+  font-size: 1rem;
+  font-weight: 500;
+  font-variation-settings: normal;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.12em;
+  text-transform: none;
+  color: var(--red);
+}
+
+/* The homepage's links inherit their colour; a filled button keeps paper
+   on red. */
+.paperInk.paperInk a[class*="primary"] {
+  color: var(--canvas);
+}
+
+.paperInk.paperInk a:not([class]) {
+  text-decoration-color: var(--red);
+}
+
 @media (max-width: 720px) {
   .noteItem {
     grid-template-columns: 2.2rem minmax(0, 1fr);

@@ -62,7 +62,10 @@ export default function AgentAwareness() {
     path === "/agent" ||
     path === "/stories" ||
     path === "/build" ||
-    path === "/work" ||
+    path.startsWith("/work") ||
+    path === "/call" ||
+    path === "/benchmark" ||
+    path === "/contact" ||
     path.startsWith("/notes") ||
     path.startsWith("/studies") ||
     footerProtocolRoutes

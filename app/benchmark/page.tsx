@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import BenchmarkPage from "@/components/BenchmarkPage";
+import Paper from "@/components/personal/Paper";
 import { JsonLd } from "@/components/seo/JsonLd";
 
 export const metadata: Metadata = {
@@ -45,7 +46,9 @@ export default function BenchmarkRoute() {
   return (
     <>
       <JsonLd data={datasetLd} />
-      <BenchmarkPage />
+      <Paper>
+        <BenchmarkPage />
+      </Paper>
     </>
   );
 }

@@ -6,7 +6,7 @@ import Footer from "./Footer";
 export default function ConditionalFooter() {
   const pathname = usePathname();
   const p = pathname?.replace(/\/+$/, "") || "/";
-  const hideFooter = p === "/" || p === "/stories" || p === "/build" || p === "/work" || p.startsWith("/notes") || p.startsWith("/studies");
+  const hideFooter = p === "/" || p === "/stories" || p === "/build" || p.startsWith("/work") || p.startsWith("/notes") || p.startsWith("/studies") || p === "/call" || p === "/benchmark" || p === "/contact";
   const isBlog = pathname?.startsWith("/blog");
 
   if (hideFooter) {

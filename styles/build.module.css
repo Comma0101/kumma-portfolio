@@ -18,7 +18,7 @@
   justify-content: space-between;
   gap: 1rem;
   padding: 1rem var(--page-gutter);
-  background: rgba(10, 10, 11, 0.72);
+  background: color-mix(in srgb, var(--canvas) 72%, transparent);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--line);
 }

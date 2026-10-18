@@ -56,6 +56,16 @@ const contrastRatio = (first: number[], second: number[]) => {
 };
 
 const rgbaColor = (block: string) => {
+  // A token mixed toward transparent reads as that token at the mix's alpha.
+  const mixed = block.match(
+    /color:\s*color-mix\(in srgb,\s*var\(--([a-z-]+)\)\s+([0-9.]+)%,\s*transparent\)/,
+  );
+  if (mixed) {
+    return {
+      rgb: rgbFromHex(hexToken(readCss("app/globals.css"), mixed[1])),
+      alpha: Number(mixed[2]) / 100,
+    };
+  }
   const match = block.match(
     /color:\s*rgba\(\s*(\d+),\s*(\d+),\s*(\d+),\s*([0-9.]+)\s*\)/,
   );

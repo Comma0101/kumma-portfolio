@@ -307,8 +307,12 @@ const Navigation = () => {
     pathname === "/build/" ||
     pathname === "/work" ||
     pathname === "/work/" ||
+    pathname?.startsWith("/work") ||
     pathname?.startsWith("/notes") ||
-    pathname?.startsWith("/studies")
+    pathname?.startsWith("/studies") ||
+    pathname?.startsWith("/call") ||
+    pathname?.startsWith("/benchmark") ||
+    pathname?.startsWith("/contact")
   )
     return null;
 
