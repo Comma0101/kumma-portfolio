@@ -5,7 +5,7 @@ import Steps from "./Steps";
 import Practice from "./Practice";
 import Rules from "./Rules";
 import Line from "./Line";
-import Wu from "./Wu";
+import Dao from "./Dao";
 import Close from "./Close";
 import Colophon from "./Colophon";
 import MotionFlag from "./MotionFlag";
@@ -57,7 +57,8 @@ const motion = `try{if(!matchMedia("(prefers-reduced-motion: reduce)").matches)d
 
 // Order: who he is, how change actually happens, what he practises, the
 // rules of one practice, the reason behind them, the invitation, and last
-// the empty centre. Nothing private: only the public bio, ideas, practice.
+// the way itself — a path walked. Nothing private: only the public bio,
+// ideas, practice.
 export default function Front() {
   return (
     <div
@@ -74,9 +75,9 @@ export default function Front() {
       <Rules />
       <Line />
       <Close />
-      {/* The last screen: 無 whole, and the quiet things under it. */}
+      {/* The last screen: 道 whole, and the quiet things under it. */}
       <div className={styles.ending}>
-        <Wu />
+        <Dao />
         <Colophon />
       </div>
     </div>

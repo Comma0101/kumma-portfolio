@@ -4,64 +4,65 @@ import { useId, useRef } from "react";
 import { centerline, pace, resample, type Emphasis } from "./ink";
 import type { Point } from "./pen";
 import { draw, useBeat } from "./useBeat";
-import { wuMedians, wuOutlines } from "./wu";
+import { daoMedians, daoOutlines } from "./dao";
 import styles from "./Front.module.css";
 
-// 無 as a brush writes it: each stroke is the font's own brush shape
-// (Kaiti), revealed along the median the brush follows, in stroke order.
-// The brush pauses where it presses in and where it closes; the dots (the
-// last four strokes) only press in.
-const DOTS = 8;
+// 道, the way — a path walked — as a brush writes it: each stroke is the
+// font's own brush shape (Kaiti), revealed along the median the brush
+// follows, in stroke order. 首 first; then, after a breath, the walking
+// radical 辶 — its dot, its folded turn, and last the long sweep along the
+// bottom, the slowest stroke on the page.
+const RADICAL = 9;
+const SWEEP = daoMedians.length - 1;
 
-const strokes = wuMedians.map((median, i) => {
+const strokes = daoMedians.map((median, i) => {
   const line = resample(median as Point[], 8);
-  const emphasis: Emphasis[] =
-    i >= DOTS
-      ? [{ from: 0, to: 0.15, slow: 2 }]
-      : [
-          { from: 0, to: 0.08, slow: 3 },
-          { from: 0.9, to: 1, slow: 2.5 },
-        ];
+  // The brush pauses where it presses in and where it closes; the sweep
+  // presses hardest into its close.
+  const emphasis: Emphasis[] = [
+    { from: 0, to: 0.08, slow: 3 },
+    { from: 0.88, to: 1, slow: i === SWEEP ? 4 : 2.5 },
+  ];
   const length = line.slice(1).reduce((sum, p, k) => sum + Math.hypot(p[0] - line[k][0], p[1] - line[k][1]), 0);
   return {
     median: centerline(line),
-    outline: wuOutlines[i],
+    outline: daoOutlines[i],
     pace: pace(line, 48, emphasis).join(","),
-    // As long as its own path: a dot is quick, the long horizontal long.
-    duration: i >= DOTS ? 0.09 : 0.08 + length * 0.0003,
+    // As long as its own path; the sweep at an unhurried walk.
+    duration: (0.08 + length * 0.0003) * (i === SWEEP ? 1.8 : 1),
   };
 });
 
-export default function Wu() {
+export default function Dao() {
   const ref = useRef<HTMLElement>(null);
-  const id = `wu-${useId().replace(/:/g, "")}`;
+  const id = `dao-${useId().replace(/:/g, "")}`;
 
   // Written, not animated: a short breath between strokes so the order
-  // reads, a longer one before the dots (a new component), the dots quick.
-  // The text it comes from appears in one cut after the last dot lands.
+  // reads, a longer one before the radical (a new component). The verse
+  // appears in one cut after the sweep lifts.
   useBeat(ref, (root, tl) => {
     root.querySelectorAll("[data-reveal]").forEach((stroke, index) => {
       draw(tl, stroke, {
         duration: strokes[index].duration,
         ease: "none",
-        position: index === 0 ? 0.15 : index === DOTS ? ">0.3" : index > DOTS ? ">0.05" : ">0.09",
+        position: index === 0 ? 0.15 : index === RADICAL ? ">0.35" : index === SWEEP ? ">0.14" : ">0.09",
       });
     });
-    tl.set(root.querySelector("[data-source]"), { visibility: "visible" }, ">0.25");
+    tl.set(root.querySelector("[data-source]"), { visibility: "visible" }, ">0.3");
   });
 
   return (
-    <section ref={ref} className={styles.wu} aria-labelledby="wu">
-      <h2 id="wu" className={styles.wuGlyph}>
-        <span className="sr-only">無</span>
+    <section ref={ref} className={styles.dao} aria-labelledby="dao">
+      <h2 id="dao" className={styles.daoGlyph}>
+        <span className="sr-only">道</span>
         {strokes.map((stroke, index) => (
           <svg
             key={index}
-            className={`${styles.ink} ${styles.wuStroke}`}
+            className={`${styles.ink} ${styles.daoStroke}`}
             viewBox="0 0 1024 1024"
             aria-hidden="true"
             focusable="false"
-            data-mark={`wu-${index}`}
+            data-mark={`dao-${index}`}
             data-pace={stroke.pace}
           >
             {/* In the masked path's own (flipped) space: the font's units. */}
@@ -85,14 +86,12 @@ export default function Wu() {
           </svg>
         ))}
       </h2>
-      <div className={styles.wuGloss}>
-        <p lang="zh-Hant" className={styles.wuSource} data-source>
-          三十輻，共一轂，當其無，有車之用。
+      <div className={styles.daoGloss}>
+        <p lang="zh-Hant" className={styles.daoSource} data-source>
+          千里之行，始於足下。
         </p>
-        <p>
-          Thirty spokes share one hub. Where it is empty, the cart has its use.
-        </p>
-        <cite>Daodejing 11</cite>
+        <p>A journey of a thousand miles begins beneath one’s feet.</p>
+        <cite>Daodejing 64</cite>
       </div>
     </section>
   );

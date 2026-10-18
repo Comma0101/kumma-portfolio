@@ -558,7 +558,7 @@
   padding-bottom: 5px;
 }
 
-/* ---------- 無 ---------- */
+/* ---------- 道 ---------- */
 
 .ending {
   display: flex;
@@ -566,7 +566,7 @@
   min-height: 100svh;
 }
 
-.wu {
+.dao {
   display: grid;
   flex: 1;
   grid-template-columns: auto minmax(0, 24rem);
@@ -576,7 +576,7 @@
   padding: 0 var(--gutter) 0 var(--indent);
 }
 
-.wuGlyph {
+.daoGlyph {
   position: relative;
   width: min(62svh, 50vw);
   aspect-ratio: 1;
@@ -584,17 +584,17 @@
 }
 
 /* One ink: strokes that cross do not stack (real ink does not multiply). */
-.ink.wuStroke > g path {
+.ink.daoStroke > g path {
   fill-opacity: 1;
 }
 
-.wuStroke {
+.daoStroke {
   inset: 0;
   width: 100%;
   height: 100%;
 }
 
-.wuGloss p {
+.daoGloss p {
   margin: 0 0 1rem;
   font-family: var(--font-text), Georgia, serif;
   font-size: clamp(1.3rem, 1.9vw, 1.8rem);
@@ -602,13 +602,13 @@
   line-height: 1.25;
 }
 
-.wuGloss .wuSource {
+.daoGloss .daoSource {
   font-family: var(--font-hand), var(--font-tc), serif;
   font-style: normal;
   letter-spacing: 0.08em;
 }
 
-.wuGloss cite {
+.daoGloss cite {
   color: var(--grey);
   font-size: 1rem;
   font-style: normal;
@@ -883,7 +883,7 @@
     min-height: auto;
   }
 
-  .wu {
+  .dao {
     padding-top: 8svh;
     padding-bottom: 10svh;
   }
@@ -925,11 +925,11 @@
     grid-column: 2;
   }
 
-  .wu {
+  .dao {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .wuGlyph {
+  .daoGlyph {
     width: min(78vw, 360px);
   }
 

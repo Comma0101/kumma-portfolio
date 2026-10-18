@@ -59,20 +59,21 @@ async function card(key, title, kicker, sub) {
 }
 
 // The homepage card is the page's signature, made of the same pen: paper,
-// the name, and one red line that runs out from under it into 無, written
-// in stroke order (components/personal/wu.ts). This is the image that
+// the name, and one red line that runs out from under it into 道, written
+// in stroke order (components/personal/dao.ts). This is the image that
 // travels when kumma.me is posted on X.
-const wide = fs.readFileSync(path.join("scripts", "fonts", "Archivo-WideHeavy.ttf"));
-const regular = fs.readFileSync(path.join("scripts", "fonts", "Archivo-Regular.ttf"));
+// The page's own type, as static files (OFL; see scripts/fonts/*-OFL.txt).
+const wide = fs.readFileSync(path.join("scripts", "fonts", "Sprat-ExtendedBlack.otf"));
+const regular = fs.readFileSync(path.join("scripts", "fonts", "Junicode-Regular.ttf"));
 
-// An exported array literal from wu.ts, by name.
-function wuArray(name) {
-  const src = fs.readFileSync(path.join("components", "personal", "wu.ts"), "utf8");
+// An exported array literal from dao.ts, by name.
+function daoArray(name) {
+  const src = fs.readFileSync(path.join("components", "personal", "dao.ts"), "utf8");
   const from = src.indexOf("= [", src.indexOf(`export const ${name}`)) + 2;
   const to = src.indexOf("\n];", from) + 2;
   return JSON.parse(src.slice(from, to).replace(/,\s*\]$/, "]"));
 }
-const wuStrokes = () => wuArray("wu");
+const daoStrokes = () => daoArray("dao");
 
 // Dense samples at steady pressure: the stroke data is a few centreline
 // points, and simulated pressure on so few points wobbles.
@@ -111,13 +112,13 @@ function line(from, to, steps = 12, bow = 0) {
 
 async function portraitCard() {
   const red = "#a3121b";
-  // 無 sits in its own square on the right, clear of the name.
+  // 道 sits in its own square on the right, clear of the name.
   const box = { x: 800, y: 96, s: 360 };
   const at = ([x, y]) => [box.x + (x * box.s) / 100, box.y + (y * box.s) / 100];
-  const strokes = wuStrokes().map((stroke) => stroke.map(at));
+  const strokes = daoStrokes().map((stroke) => stroke.map(at));
   // The thread: under the name, then down and across into the first stroke.
   const first = strokes[0][0];
-  // One curve: along under the name, then rising into 無's first stroke.
+  // One curve: along under the name, then rising into 道's first stroke.
   const under = 300;
   const thread = [...line([86, under], [640, under - 4], 18, 1.5)];
   const [cx, cy] = [first[0] - 70, under - 10];
@@ -132,7 +133,7 @@ async function portraitCard() {
   const marks = [
     `<path d="${outline(thread, 6, { start: 14, end: 0 })}"/>`,
     // The font's own brush shapes, as the page writes them (Wu).
-    `<g transform="translate(${box.x} ${box.y + (900 * box.s) / 1024}) scale(${box.s / 1024} ${-box.s / 1024})">${wuArray("wuOutlines")
+    `<g transform="translate(${box.x} ${box.y + (900 * box.s) / 1024}) scale(${box.s / 1024} ${-box.s / 1024})">${daoArray("daoOutlines")
       .map((d) => `<path d="${d}"/>`)
       .join("")}</g>`,
   ].join("");
@@ -162,10 +163,10 @@ async function portraitCard() {
         {
           position: "absolute",
           left: 80,
-          top: 140,
-          fontFamily: "Archivo Wide",
-          fontSize: 150,
-          letterSpacing: -7,
+          top: 172,
+          fontFamily: "Sprat",
+          fontSize: 100,
+          letterSpacing: -3,
           lineHeight: 1,
         },
         "Kumma",
@@ -178,8 +179,8 @@ async function portraitCard() {
           top: 350,
           display: "flex",
           flexDirection: "column",
-          fontFamily: "Archivo",
-          fontSize: 19,
+          fontFamily: "Junicode",
+          fontSize: 21,
           color: "#6b6760",
         },
         [
@@ -189,7 +190,7 @@ async function portraitCard() {
       ),
       el(
         "div",
-        { position: "absolute", left: 86, bottom: 56, fontFamily: "Archivo", fontSize: 18, letterSpacing: 2.5, color: "#6b6760" },
+        { position: "absolute", left: 86, bottom: 56, fontFamily: "Junicode", fontSize: 18, letterSpacing: 2.5, color: "#6b6760" },
         "@COMMA_9FIE · KUMMA.ME",
       ),
     ],
@@ -198,8 +199,8 @@ async function portraitCard() {
     width: 1200,
     height: 630,
     fonts: [
-      { name: "Archivo Wide", data: wide, weight: 800, style: "normal" },
-      { name: "Archivo", data: regular, weight: 400, style: "normal" },
+      { name: "Sprat", data: wide, weight: 800, style: "normal" },
+      { name: "Junicode", data: regular, weight: 400, style: "normal" },
     ],
   });
   fs.writeFileSync(path.join(OUT, "portrait.png"), new Resvg(svg).render().asPng());

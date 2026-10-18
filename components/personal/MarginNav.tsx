@@ -14,7 +14,7 @@ const sections = [
   { mark: "習", label: "Practice", target: '[data-thread="practice"]' },
   { mark: "律", label: "Rules", target: '[data-thread="rules"]' },
   { mark: "理", label: "Reason", target: '[data-thread="reason"]' },
-  { mark: "無", label: "Wu", target: "#wu" },
+  { mark: "道", label: "The way", target: "#dao" },
 ];
 
 type Smooth = { lenis?: { scrollTo: (target: Element, options?: object) => void } };

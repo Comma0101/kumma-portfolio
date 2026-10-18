@@ -1,7 +1,7 @@
 // A brush, not a ballpoint: the 朱筆 that sets down the ensō. Where a
 // ballpoint presses into turns, a brush presses where it lands (頓) and
 // runs dry toward the release — pressure as arc fraction f → pressure.
-// (無 uses the font's own brush shapes: see Wu.)
+// (道 uses the font's own brush shapes: see Dao.)
 
 import { random, type Point } from "./pen";
 

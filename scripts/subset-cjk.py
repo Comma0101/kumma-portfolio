@@ -1,7 +1,7 @@
 """Subset the homepage's two Chinese faces to the characters it sets.
 
 Noto Serif TC is the printed voice (the sutra); LXGW WenKai TC is the hand
-(beside 無, and the margin navigation). Both carry the same characters, so
+(beside 道, and the margin navigation). Both carry the same characters, so
 one manifest and one test cover them. Re-run after changing any Chinese
 text in components/personal/:
 

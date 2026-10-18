@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { climb, coil, corner, fitPoints, handLine, loop, scribble, steps, underline, type Point } from "./pen";
-import { wu } from "./wu";
+import { dao } from "./dao";
 
 const finite = (points: Point[]) => points.every(([x, y]) => Number.isFinite(x) && Number.isFinite(y));
 
@@ -108,9 +108,12 @@ test("price climbs: jagged, mostly upward, ending higher than it starts", () => 
   for (let i = 1; i < points.length; i += 1) assert.ok(points[i][0] > points[i - 1][0]);
 });
 
-test("無 is twelve strokes in a 0–100 box", () => {
-  assert.equal(wu.length, 12);
-  for (const stroke of wu) {
+test("道 is twelve strokes in a 0–100 box, the walking radical last", () => {
+  assert.equal(dao.length, 12);
+  // The last stroke is the long sweep along the bottom, left to right.
+  const sweep = dao[11];
+  assert.ok(sweep[sweep.length - 1][0] - sweep[0][0] > 70);
+  for (const stroke of dao) {
     assert.ok(stroke.length >= 2);
     assert.ok(stroke.every(([x, y]) => x >= 0 && x <= 100 && y >= 0 && y <= 100));
   }
