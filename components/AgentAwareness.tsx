@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import styles from "./AgentAwareness.module.css";
+import { isPaperRoute } from "@/components/personal/routes";
 
 // Known AI-agent / automation user-agent signatures (heuristic).
 const AGENT_UA =
@@ -58,16 +59,10 @@ export default function AgentAwareness() {
     path.startsWith("/gallery/");
 
   if (
-    path === "/" ||
+    isPaperRoute(path) ||
     path === "/agent" ||
     path === "/stories" ||
     path === "/build" ||
-    path.startsWith("/work") ||
-    path === "/call" ||
-    path === "/benchmark" ||
-    path === "/contact" ||
-    path.startsWith("/notes") ||
-    path.startsWith("/studies") ||
     footerProtocolRoutes
   ) {
     return null;
@@ -83,7 +78,7 @@ export default function AgentAwareness() {
   };
 
   return (
-    <div data-agent-awareness>
+    <div data-agent-awareness data-chrome="old">
       {bannerEligible && !dismissed && (
         <div className={styles.banner} role="status">
           <span className={styles.dot} aria-hidden="true" />

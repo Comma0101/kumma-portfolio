@@ -10,6 +10,7 @@ import {
   scrollBehaviorForMotion,
   shouldRestoreMenuFocus,
 } from "./navigationBehavior";
+import { isPaperRoute } from "@/components/personal/routes";
 
 interface NavLink {
   name: string;
@@ -302,22 +303,15 @@ const Navigation = () => {
   };
 
   if (
-    pathname === "/" ||
+    isPaperRoute(pathname) ||
     pathname === "/build" ||
-    pathname === "/build/" ||
-    pathname === "/work" ||
-    pathname === "/work/" ||
-    pathname?.startsWith("/work") ||
-    pathname?.startsWith("/notes") ||
-    pathname?.startsWith("/studies") ||
-    pathname?.startsWith("/call") ||
-    pathname?.startsWith("/benchmark") ||
-    pathname?.startsWith("/contact")
+    pathname === "/build/"
   )
     return null;
 
   return (
     <nav
+      data-chrome="old"
       className={`${styles.navigation} ${
         isScrolled || !isHomePage ? styles.pageNav : ""
       } ${isNavVisible ? styles.navigationVisible : ""}`}

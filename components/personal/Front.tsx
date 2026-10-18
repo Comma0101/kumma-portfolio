@@ -22,6 +22,7 @@ export default function Front() {
   return (
     <div
       className={`${styles.front} ${typeClasses}`}
+      data-paper
     >
       <script dangerouslySetInnerHTML={{ __html: motionScript }} />
       <MotionFlag />

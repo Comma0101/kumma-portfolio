@@ -18,7 +18,7 @@ export default function Shell({
   lang?: string;
 }) {
   return (
-    <div className={`${styles.front} ${styles.workPage} ${typeClasses} ${className ?? ""}`} lang={lang}>
+    <div className={`${styles.front} ${styles.workPage} ${typeClasses} ${className ?? ""}`} lang={lang} data-paper>
       <header className={styles.workHead}>
         <Link href="/" className={styles.workHome}>
           Kumma

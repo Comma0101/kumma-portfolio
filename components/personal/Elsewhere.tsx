@@ -2,9 +2,9 @@ import Link from "next/link";
 import styles from "./Front.module.css";
 
 const items = [
-  { href: "/blog/en/On-Emotions", title: "On Emotions", kind: "Essay" },
-  { href: "/blog/en/Same-Light", title: "Same Light", kind: "Essay" },
-  { href: "/blog", title: "All writing", kind: "Index" },
+  { href: "/notes/on-emotions", title: "On Emotions", kind: "Essay" },
+  { href: "/notes/same-light", title: "Same Light", kind: "Essay" },
+  { href: "/notes", title: "All notes", kind: "Index" },
 ];
 
 // A quiet row, not a section.

@@ -30,6 +30,7 @@ export default function Footer({ variant = "default" }: FooterProps) {
 
   return (
     <footer
+      data-chrome="old"
       className={`${styles.footer} ${
         variant === "blog" ? styles.blogFooter : ""
       }`}

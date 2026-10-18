@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import ProjectDetail from "@/components/ProjectDetail";
 import KotaDetail from "@/components/projects/KotaDetail";
 import { JsonLd } from "@/components/seo/JsonLd";
+import Moved from "@/components/personal/Moved";
+import { moved } from "@/components/personal/routes";
 
 export async function generateStaticParams() {
   return projects.map((project) => ({
@@ -17,6 +19,8 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
+  const away = moved[`/projects/${slug}`];
+  if (away) return { title: "Moved", robots: { index: false }, alternates: { canonical: `https://kumma.me${away.to}` } };
   const p = projects.find((x) => x.slug === slug);
   if (!p) return {};
   const title = `${p.title} | Kumma`;
@@ -42,6 +46,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProjectPage({ params }: Props) {
   const { slug } = await params;
+  const away = moved[`/projects/${slug}`];
+  if (away) return <Moved {...away} />;
   const project = projects.find((p) => p.slug === slug);
 
   if (!project) {
