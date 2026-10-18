@@ -17,8 +17,7 @@
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .08 0 0 0 0 .07 0 0 0 0 .06 0 0 0 .1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E") repeat, var(--paper);
   background-size: 220px 220px, auto;
   color: var(--ink);
-  font-family: var(--font-front), "Helvetica Neue", Arial, sans-serif;
-  font-variation-settings: "wdth" 100;
+  font-family: var(--font-text), Georgia, serif;
 }
 
 :global(html):has(.front),
@@ -46,10 +45,10 @@
 .label {
   margin: 0;
   color: var(--grey);
-  font-size: 0.78rem;
+  font-size: 1rem;
   font-weight: 500;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.1em;
 }
 
 /* The running head of a section: always the same height above it. */
@@ -93,16 +92,16 @@
 }
 
 :global(html[data-front="motion"]) .front [data-body] {
-  --wght: 100;
+  --wght: 10;
 }
 
 :global(html[data-front="motion"]) .front [data-compound] {
-  --wdth: 75;
-  --wght: 300;
+  --wdth: 120;
+  --wght: 45;
 }
 
 :global(html[data-front="motion"]) .front [data-small] {
-  --wdth: 100;
+  --wdth: 160;
   transform: none;
 }
 
@@ -177,11 +176,11 @@
   top: 26px;
   right: var(--gutter);
   z-index: 2;
-  font-size: 0.78rem;
+  font-size: 1rem;
   font-weight: 600;
-  letter-spacing: 0.16em;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.1em;
   text-decoration: none;
-  text-transform: uppercase;
   padding-bottom: 7px;
 }
 
@@ -320,7 +319,7 @@
   background: none;
   color: var(--grey);
   cursor: pointer;
-  font-family: var(--font-tc), "Noto Serif TC", serif;
+  font-family: var(--font-hand), var(--font-tc), serif;
   font-size: 1.1rem;
   line-height: 1.25;
 }
@@ -336,10 +335,11 @@
   position: relative;
   display: inline-block;
   margin: calc(56svh - 0.74em) 0 0 -0.076em;
-  font-size: clamp(6rem, 20.7vw, 29rem);
-  font-weight: 800;
-  font-variation-settings: "wdth" 125;
-  letter-spacing: -0.055em;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(5rem, 13.3vw, 19rem);
+  font-weight: 200;
+  font-variation-settings: "wdth" 200;
+  letter-spacing: -0.035em;
   line-height: 0.8;
 }
 
@@ -378,7 +378,7 @@
   grid-column: 1;
   margin: 0 0 0.9rem;
   color: var(--grey);
-  font-family: var(--font-note), Georgia, serif;
+  font-family: var(--font-text), Georgia, serif;
   font-size: clamp(1.3rem, 1.8vw, 1.7rem);
   font-style: italic;
 }
@@ -386,9 +386,11 @@
 .attention {
   grid-column: 1;
   margin: 0;
-  font-size: clamp(2.2rem, 4.6vw, 4.8rem);
-  font-weight: 500;
-  letter-spacing: -0.025em;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(2rem, 4.2vw, 4.4rem);
+  font-weight: 55;
+  font-variation-settings: "wdth" 140;
+  letter-spacing: -0.01em;
   line-height: 0.98;
   word-spacing: 0.04em;
 }
@@ -413,8 +415,8 @@
 
 .compound {
   display: inline-block;
-  font-weight: var(--wght, 880);
-  font-variation-settings: "wdth" var(--wdth, 125);
+  font-weight: var(--wght, 200);
+  font-variation-settings: "wdth" var(--wdth, 200);
 }
 
 /* ---------- Understanding arrives first ---------- */
@@ -427,7 +429,7 @@
 .first {
   margin: 0 0 2.4rem;
   color: var(--grey);
-  font-family: var(--font-note), Georgia, serif;
+  font-family: var(--font-text), Georgia, serif;
   font-size: clamp(1.6rem, 2.6vw, 2.4rem);
   font-style: italic;
 }
@@ -435,9 +437,11 @@
 .catchLine {
   position: relative;
   margin: 0;
-  font-size: clamp(4rem, 12.5vw, 13rem);
-  font-weight: 820;
-  letter-spacing: -0.045em;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(3rem, 9vw, 9.5rem);
+  font-weight: 200;
+  font-variation-settings: "wdth" 190;
+  letter-spacing: -0.03em;
   line-height: 0.92;
   word-spacing: 0.08em;
 }
@@ -460,7 +464,7 @@
 .bodyFill {
   position: relative;
   display: block;
-  font-weight: var(--wght, 820);
+  font-weight: var(--wght, 200);
 }
 
 /* ---------- Three steps forward, two back ---------- */
@@ -473,11 +477,13 @@
 }
 
 .stepsLine {
-  max-width: 15ch;
+  max-width: 19ch;
   margin: 0;
-  font-size: clamp(2.6rem, 8.5vw, 9rem);
-  font-weight: 800;
-  letter-spacing: -0.04em;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(2.4rem, 6vw, 6.6rem);
+  font-weight: 170;
+  font-variation-settings: "wdth" 165;
+  letter-spacing: -0.03em;
   word-spacing: 0.06em;
   line-height: 1;
 }
@@ -514,16 +520,18 @@
 .index {
   position: relative;
   color: var(--grey);
-  font-size: 0.78rem;
+  font-size: 1rem;
   font-weight: 500;
-  letter-spacing: 0.16em;
-  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+  font-variant-numeric: oldstyle-nums tabular-nums;
 }
 
 .practiceWord {
-  font-size: clamp(3.4rem, 7vw, 7.4rem);
-  font-weight: 780;
-  letter-spacing: -0.04em;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(3rem, 6.2vw, 6.6rem);
+  font-weight: 150;
+  font-variation-settings: "wdth" 150;
+  letter-spacing: -0.02em;
   line-height: 0.9;
 }
 
@@ -577,24 +585,24 @@
 
 .wuGloss p {
   margin: 0 0 1rem;
-  font-family: var(--font-note), Georgia, serif;
+  font-family: var(--font-text), Georgia, serif;
   font-size: clamp(1.3rem, 1.9vw, 1.8rem);
   font-style: italic;
   line-height: 1.25;
 }
 
 .wuGloss .wuSource {
-  font-family: var(--font-tc), "Noto Serif TC", serif;
+  font-family: var(--font-hand), var(--font-tc), serif;
   font-style: normal;
   letter-spacing: 0.08em;
 }
 
 .wuGloss cite {
   color: var(--grey);
-  font-size: 0.78rem;
+  font-size: 1rem;
   font-style: normal;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.1em;
 }
 
 /* ---------- Rules ---------- */
@@ -611,9 +619,11 @@
 .rule {
   position: relative;
   margin: 0;
-  font-size: clamp(3.6rem, 13.5vw, 14rem);
-  font-weight: 800;
-  letter-spacing: -0.045em;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(3rem, 9vw, 9.6rem);
+  font-weight: 190;
+  font-variation-settings: "wdth" 190;
+  letter-spacing: -0.03em;
   line-height: 0.95;
   word-spacing: 0.08em;
 }
@@ -630,11 +640,11 @@
   bottom: 120px;
   z-index: 2;
   color: var(--grey);
-  font-size: 0.78rem;
+  font-size: 1rem;
   font-weight: 600;
-  letter-spacing: 0.16em;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.1em;
   pointer-events: none;
-  text-transform: uppercase;
   white-space: nowrap;
 }
 
@@ -642,9 +652,10 @@
 .small {
   display: inline-block;
   white-space: nowrap;
-  letter-spacing: -0.01em;
+  font-weight: 120;
+  letter-spacing: 0;
   word-spacing: 0.14em;
-  font-variation-settings: "wdth" var(--wdth, 62);
+  font-variation-settings: "wdth" var(--wdth, 100);
   transform: scale(0.6);
   transform-origin: left 70%;
 }
@@ -693,7 +704,7 @@
 
 .gloss p {
   margin: 0 0 1rem;
-  font-family: var(--font-note), Georgia, serif;
+  font-family: var(--font-text), Georgia, serif;
   font-size: clamp(1.4rem, 2vw, 1.9rem);
   font-style: italic;
   line-height: 1.2;
@@ -701,10 +712,10 @@
 
 .gloss cite {
   color: var(--grey);
-  font-size: 0.78rem;
+  font-size: 1rem;
   font-style: normal;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.1em;
 }
 
 /* ---------- Close ---------- */
@@ -722,10 +733,11 @@
   position: relative;
   display: inline-block;
   margin-left: -0.061em;
-  font-size: clamp(3.4rem, 14.25vw, 20rem);
-  font-weight: 800;
-  font-variation-settings: "wdth" 125;
-  letter-spacing: -0.055em;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(3.4rem, 18.5vw, 26rem);
+  font-weight: 60;
+  font-variation-settings: "wdth" 100;
+  letter-spacing: -0.02em;
   line-height: 0.85;
   text-decoration: none;
   white-space: nowrap;
@@ -753,9 +765,9 @@
 
 .kind {
   color: var(--grey);
-  font-size: 0.75rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-size: 0.95rem;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.1em;
 }
 
 .title {
@@ -777,9 +789,9 @@
   gap: 0.6rem 2rem;
   margin: 3rem 0 0;
   color: var(--grey);
-  font-size: 0.82rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-size: 1rem;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.1em;
 }
 
 /* ---------- Phone ---------- */
@@ -797,7 +809,7 @@
 
   .name {
     margin-top: calc(34svh - 0.74em);
-    font-size: 21.1vw;
+    font-size: 13.4vw;
   }
 
   /* On a phone the face comes first under the line, on the right; the
@@ -820,7 +832,7 @@
   }
 
   .attention {
-    font-size: 9.5vw;
+    font-size: 8.2vw;
   }
 
   .close {
@@ -845,11 +857,15 @@
   }
 
   .catchLine {
-    font-size: 14.5vw;
+    font-size: 10.4vw;
   }
 
   .followBig {
-    font-size: 14.3vw;
+    font-size: 18.8vw;
+  }
+
+  .rule {
+    font-size: 9.4vw;
   }
 
   .ending {

@@ -1,4 +1,3 @@
-import { Archivo, Instrument_Serif } from "next/font/google";
 import localFont from "next/font/local";
 import Opening from "./Opening";
 import CatchUp from "./CatchUp";
@@ -14,19 +13,25 @@ import Thread from "./Thread";
 import MarginNav from "./MarginNav";
 import styles from "./Front.module.css";
 
-const archivo = Archivo({
-  subsets: ["latin"],
-  axes: ["wdth"],
-  variable: "--font-front",
+// The page travels from carved letters, to print, to the hand: Sprat
+// (chiselled, wedge serifs) for the display voice; Junicode (a scholar's
+// book face) for running text and the asides; the sutra in a printed Ming;
+// the hand — LXGW WenKai — only beside the brush. All SIL Open Font
+// License, subset by scripts/subset-latin.py and scripts/subset-cjk.py.
+const sprat = localFont({
+  src: "./fonts/Sprat-subset.woff2",
+  // Its own scales: weight 10 (thin) to 200 (black); width 100 to 200.
+  weight: "10 200",
+  variable: "--font-display",
   display: "swap",
 });
 
-// The second voice: the margin, where he corrects himself.
-const instrument = Instrument_Serif({
-  subsets: ["latin"],
-  weight: "400",
-  style: ["normal", "italic"],
-  variable: "--font-note",
+const junicode = localFont({
+  src: [
+    { path: "./fonts/Junicode-subset.woff2", weight: "300 700", style: "normal" },
+    { path: "./fonts/Junicode-Italic-subset.woff2", weight: "300 700", style: "italic" },
+  ],
+  variable: "--font-text",
   display: "swap",
 });
 
@@ -36,6 +41,12 @@ const notoSerifTC = localFont({
   src: "./fonts/NotoSerifTC-subset.woff2",
   weight: "200 900",
   variable: "--font-tc",
+  display: "swap",
+});
+
+const wenkai = localFont({
+  src: "./fonts/LXGWWenKaiTC-subset.woff2",
+  variable: "--font-hand",
   display: "swap",
 });
 
@@ -50,7 +61,7 @@ const motion = `try{if(!matchMedia("(prefers-reduced-motion: reduce)").matches)d
 export default function Front() {
   return (
     <div
-      className={`${styles.front} ${archivo.variable} ${instrument.variable} ${notoSerifTC.variable}`}
+      className={`${styles.front} ${sprat.variable} ${junicode.variable} ${notoSerifTC.variable} ${wenkai.variable}`}
     >
       <script dangerouslySetInnerHTML={{ __html: motion }} />
       <MotionFlag />

@@ -77,8 +77,8 @@ export default function Opening() {
     (root, tl) => {
       tl.fromTo(
         root.querySelector("[data-compound]"),
-        { "--wdth": 75, "--wght": 300 },
-        { "--wdth": 125, "--wght": 880, ease: ease.compound },
+        { "--wdth": 120, "--wght": 45 },
+        { "--wdth": 200, "--wght": 200, ease: ease.compound },
       );
     },
     // After the line has gone home: compounding comes late, then all at once.

@@ -30,7 +30,7 @@ export default function CatchUp() {
       // as its outline at each weight: the ink grows inside the outline
       // instead of sliding out of register. Solving forces layout, so only
       // the resting weight is solved up front; the rest waits for idle time.
-      const weights = [100, 280, 460, 640, 820];
+      const weights = [10, 55, 100, 150, 200];
       const tables: Array<Array<[number, number]>> = lines.map(() => []);
       const solveAt = (weight: number) =>
         lines.forEach((line, i) => {
@@ -43,15 +43,15 @@ export default function CatchUp() {
               return width(line);
             },
             target,
-            62,
-            125,
+            100,
+            200,
           );
           tables[i].push([weight, axis]);
           tables[i].sort((a, b) => a[0] - b[0]);
         });
-      const state = { weight: 100 };
+      const state = { weight: 10 };
       const apply = () => {
-        if (!tables[0]?.length) solveAt(100);
+        if (!tables[0]?.length) solveAt(10);
         lines.forEach((line, i) => {
           line.style.fontWeight = String(state.weight);
           line.style.fontVariationSettings = `"wdth" ${between(tables[i], state.weight).toFixed(2)}`;
@@ -70,8 +70,8 @@ export default function CatchUp() {
       // Compounding, but readable within one scroll: slow, then sure.
       tl.fromTo(
         state,
-        { weight: 100 },
-        { weight: 820, ease: "power3.in", immediateRender: false, onUpdate: apply },
+        { weight: 10 },
+        { weight: 200, ease: "power3.in", immediateRender: false, onUpdate: apply },
       );
       // What was understood gives way as it is lived: the outline fades
       // while the ink arrives, so the two are never seen out of register.

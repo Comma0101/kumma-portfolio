@@ -63,8 +63,8 @@ function Small() {
         root.querySelector("[data-small]"),
         // From the line's normal width, which fits on one line like the
         // others: wider would wrap, and the page would jump as it shrank.
-        { "--wdth": 100, scale: 1 },
-        { "--wdth": 62, scale: 0.6, ease: "expo.out" },
+        { "--wdth": 160, scale: 1 },
+        { "--wdth": 100, scale: 0.6, ease: "expo.out" },
       );
     },
     { start: "top 75%", end: "top 45%" },
