@@ -140,3 +140,12 @@ test("a ballpoint skips: short gaps where it runs light, none on a brush", () =>
   assert.ok(gaps.length >= 6 && gaps.length <= 40, `${gaps.length} gaps`);
   assert.equal(inkStroke(line, { size: 3.6, seed: 2 }).gaps, "");
 });
+
+test("a ballpoint skips more as it runs light: a dry pen breaks up", () => {
+  const line: Point[] = Array.from({ length: 400 }, (_, i) => [i * 3, 0]);
+  const count = (pressure: (f: number) => number) =>
+    (inkStroke(line, { size: 2.4, seed: 5, skips: true, pressure }).gaps.match(/M /g) ?? []).length;
+  const wet = count(() => 0.42);
+  const dry = count(() => 0.25);
+  assert.ok(dry > wet * 1.3, `dry ${dry} vs wet ${wet}`);
+});

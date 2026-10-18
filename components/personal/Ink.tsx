@@ -40,6 +40,8 @@ type Props = {
   emphasis?: Emphasis[];
   // Size as a fraction of the mark's smaller side, instead of pixels.
   scale?: number;
+  // A ballpoint's pressure along the stroke (see ink.ts).
+  pressure?: Profile;
   className?: string;
 };
 
@@ -72,6 +74,7 @@ export default function Ink({
   dry,
   emphasis,
   scale,
+  pressure,
   className,
 }: Props) {
   const ref = useRef<SVGSVGElement>(null);
@@ -110,6 +113,7 @@ export default function Ink({
           emphasis: tracedEmphasis ?? emphasis,
           // A ballpoint skips; a brush does not.
           skips: !profile,
+          pressure,
         }),
         size: px,
         width,

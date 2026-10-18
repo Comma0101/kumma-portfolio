@@ -125,6 +125,18 @@
   pointer-events: none;
 }
 
+/* Ink bled from the resting pen (Thread): centred on where it rested. */
+.blot {
+  position: absolute;
+  width: 0;
+  height: 0;
+  background: var(--red);
+  opacity: 0.86;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  transition: width 0.12s linear, height 0.12s linear;
+}
+
 /* One window per section onto the one outline: only the window being
    drawn repaints. */
 .spineDefs {

@@ -7,7 +7,7 @@ import { centerline, inkStroke, pointAt, type Pool } from "./ink";
 import { anchor, threadX } from "./anchors";
 import { ensoRing } from "./enso";
 import { corner, fitPoints, handLine, steps, type Box, type Point } from "./pen";
-import { chunksOf, marginSpans, scrolledArc, slice, within, type Chunk } from "./thread";
+import { blotRadius, chunksOf, marginSpans, scrolledArc, slice, within, type Chunk } from "./thread";
 import { ease } from "./useBeat";
 import styles from "./Front.module.css";
 
@@ -107,13 +107,14 @@ const spine = (
   end();
 
   // Practice: a tally barb from the margin to each numeral — one stroke
-  // out, one back, the way a margin is marked.
+  // out, one back, the way a margin is marked — each a little shorter,
+  // a hand tiring, not a form.
   for (let i = 0; i < 4; i += 1) {
     const numeral = anchor(front, `tick-${i}`);
     if (!numeral) continue;
     const y = numeral.y + numeral.height * 0.5;
     to([x, y - 7], 0.4);
-    points.push([numeral.x - 6, y + 1]);
+    points.push([x + (numeral.x - 6 - x) * (1 - 0.18 * i), y + 1]);
     points.push([x + 1, y + 7]);
   }
   to([x, bottom(practice)], 0.5);
@@ -295,6 +296,43 @@ export default function Thread() {
     // to the reason is unhurried.
     const tempo = [0.12, 0.04, 0.2, 0.45, 0.12, 0.05];
 
+    // Where the reader pauses, the resting pen bleeds into the paper, and
+    // the pool stays: by the end the line is a record of the reader's own
+    // attention. Pausing again near a pool deepens it.
+    const rest = { scroll: window.scrollY, since: performance.now(), blot: null as HTMLElement | null };
+    const blots: { x: number; y: number; r: number; el: HTMLElement }[] = [];
+    const bleed = (current: Shape, moving: boolean) => {
+      const now = performance.now();
+      if (moving || state.drawn <= 0) {
+        rest.since = now;
+        rest.blot = null;
+        return;
+      }
+      const r = blotRadius((now - rest.since) / 1000);
+      if (!r) return;
+      const [x, y] = pointAt(current.line, Math.max(state.opening, state.drawn));
+      const top = front.getBoundingClientRect().top + y;
+      if (top < 0 || top > window.innerHeight) return;
+      let blot = blots.find((b) => Math.hypot(b.x - x, b.y - y) < 14);
+      if (!blot) {
+        if (blots.length >= 24) return;
+        const el = document.createElement("span");
+        el.className = styles.blot;
+        // An irregular edge: ink follows the paper's fibres, not a compass.
+        const k = () => 44 + Math.round(Math.random() * 12);
+        el.style.borderRadius = `${k()}% ${100 - k()}% ${k()}% ${100 - k()}% / ${k()}% ${k()}% ${100 - k()}% ${100 - k()}%`;
+        el.style.left = `${x}px`;
+        el.style.top = `${y}px`;
+        host.appendChild(el);
+        blot = { x, y, r: 0, el };
+        blots.push(blot);
+      }
+      if (r > blot.r + 0.05) {
+        blot.r = r;
+        blot.el.style.width = blot.el.style.height = `${(r * 2).toFixed(1)}px`;
+      }
+    };
+
     const tick = () => {
       const current = shapeRef.current;
       if (!current) return;
@@ -304,16 +342,23 @@ export default function Thread() {
         current.pace,
         tip,
       );
-      if (target > state.drawn + 1e-4) {
+      // The pen only ever moves forward (ink once written stays); the
+      // reader is still only when neither the pen nor the page moves.
+      const writing = target > state.drawn + 1e-4;
+      const moving = writing || Math.abs(window.scrollY - rest.scroll) > 0.5;
+      rest.scroll = window.scrollY;
+      if (writing) {
         const at = current.pieces.findIndex((piece) => state.drawn < piece.chunk.to);
         const rate = tempo[at] ?? 0.12;
         state.drawn = Math.min(target, state.drawn + Math.max(0.0005, (target - state.drawn) * rate));
         apply();
       }
+      bleed(current, moving);
     };
     gsap.ticker.add(tick);
     return () => {
       gsap.ticker.remove(tick);
+      blots.forEach((b) => b.el.remove());
       front.removeEventListener("kumma:lifted", play);
       window.clearTimeout(fallback);
       tl.kill();

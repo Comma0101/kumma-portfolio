@@ -96,3 +96,10 @@ export function marginSpans(line: [number, number][], x: number, tolerance = 4, 
   }
   return spans.filter(([a, b]) => b - a > 1);
 }
+
+// How far ink has bled from a pen resting on the paper for `seconds`:
+// nothing for the first moment, then spreading ever more slowly, to a cap.
+export function blotRadius(seconds: number, wait = 0.6, cap = 9) {
+  if (seconds < wait) return 0;
+  return Math.min(cap, 1.6 + 2.4 * Math.log(1 + (seconds - wait) * 1.5));
+}

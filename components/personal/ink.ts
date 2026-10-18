@@ -37,14 +37,16 @@ function skipsAt(line: Point[], pressure: number[], pools: Pool[], size: number,
     const [x, y] = line[i];
     cuts.push(`M ${fmt(x - nx)} ${fmt(y - ny)} L ${fmt(x + nx)} ${fmt(y + ny)}`);
   };
+  // The lighter the pen runs, the more often it skips: a dry pen breaks up.
+  const gap = (p: number) => (40 + rand() * 50) * Math.max(0.2, Math.min(1, (p - 0.1) / 0.4));
   let walked = 0;
-  let next = 40 + rand() * 50;
+  let next = gap(pressure[0] ?? 0.5);
   for (let i = 1; i < line.length - 1; i += 1) {
     walked += Math.hypot(line[i][0] - line[i - 1][0], line[i][1] - line[i - 1][1]);
     if (walked < next) continue;
     if (pressure[i] < 0.45) cut(i);
     walked = 0;
-    next = 40 + rand() * 50;
+    next = gap(pressure[i]);
   }
   // Just after each reversal.
   for (const pool of pools) {
@@ -309,6 +311,7 @@ export function inkStroke(
     thinning,
     dry,
     skips = false,
+    pressure,
   }: {
     size: number;
     seed: number;
@@ -335,10 +338,13 @@ export function inkStroke(
     dry?: number;
     // A ballpoint that skips where it runs light (see skipsAt).
     skips?: boolean;
+    // A ballpoint's pressure along the stroke, in place of pressing into
+    // turns: a pen running dry. (A brush's is `profile`.)
+    pressure?: Profile;
   },
 ): Ink {
   const line = resample(chaikin(points, smoothing), spacing ?? Math.max(2, size * 0.8));
-  const p = pressures(line, seed, { flat, breath, emphasis, profile });
+  const p = pressures(line, seed, { flat, breath, emphasis, profile: profile ?? pressure });
   const thin = flat ? 0 : (thinning ?? 0.62);
   const outline = getStroke(
     line.map(([x, y], i) => [x, y, p[i]]),

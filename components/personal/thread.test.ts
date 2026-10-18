@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { arcAtTip, chunksOf, marginSpans, scrolledArc, slice, within } from "./thread";
+import { arcAtTip, blotRadius, chunksOf, marginSpans, scrolledArc, slice, within } from "./thread";
 import type { Point } from "./pen";
 
 // A thread down the margin with a horizontal detour in the second chunk.
@@ -84,4 +84,13 @@ test("margin spans: where the line runs down the margin, small detours merged", 
   ];
   assert.deepEqual(marginSpans(line, 30), [[0, 200], [640, 800]]);
   assert.deepEqual(marginSpans([], 30), []);
+});
+
+test("a resting pen bleeds: nothing at first, then slowly, then no more", () => {
+  assert.equal(blotRadius(0.3), 0);
+  assert.ok(blotRadius(1) > 1.5 && blotRadius(1) < 3);
+  assert.ok(blotRadius(4) > blotRadius(2));
+  // Slowing as it spreads, and capped.
+  assert.ok(blotRadius(4) - blotRadius(3) < blotRadius(2) - blotRadius(1));
+  assert.equal(blotRadius(600), 9);
 });

@@ -26,7 +26,10 @@ const price: Trace = ({ width }, host) => {
   };
 };
 
-// Zero volatility: a ruler line, constant pressure, never animated.
+// Stay bored: a ruler line, never animated, on which the pen runs dry —
+// pressing at the start, breaking up toward the end. Patience is an empty
+// pen; the brush that comes next (the ensō) is freshly loaded.
+const dry = (f: number) => 0.85 - 0.63 * f;
 const flat: Trace = (_, host) => {
   const line = anchor(host, "bored");
   if (!line) return { points: [] };
@@ -87,7 +90,7 @@ export default function Rules() {
       <p className={styles.rule} data-anchor="bored">
         Stay bored.
       </p>
-      <Ink trace={flat} mark="flat" size={2.4} seed={45} flat still className={styles.thread} />
+      <Ink trace={flat} mark="flat" size={2.6} seed={45} pressure={dry} still lift={1} className={styles.thread} />
     </section>
   );
 }
