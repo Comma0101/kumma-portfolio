@@ -39,26 +39,26 @@ const cormorant = Cormorant_Garamond({
 export const metadata: Metadata = {
   metadataBase: new URL("https://kumma.me"),
   title: {
-    default: "Kumma Wu | Independent AI systems engineer",
+    default: "Kumma Wu",
     template: "%s | Kumma",
   },
   description:
-    "Kumma Wu builds production AI systems for real-time voice, agent orchestration, and decision-quality workflows.",
+    "In the gym most days. Trading options. Attention goes where it compounds. Los Angeles.",
   openGraph: {
-    title: "Kumma Wu | Independent AI systems engineer",
+    title: "Kumma Wu",
     description:
-      "Production AI systems for real-time voice, agent orchestration, and decision-quality workflows.",
+      "In the gym most days. Trading options. Attention goes where it compounds. Los Angeles.",
     url: "https://kumma.me",
     siteName: "Kumma Wu",
     type: "website",
-    images: ["/og/home.png"],
+    images: ["/og/portrait.png"],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Kumma Wu | Independent AI systems engineer",
+    title: "Kumma Wu",
     description:
-      "Production AI systems for real-time voice, agent orchestration, and decision-quality workflows.",
-    images: ["/og/home.png"],
+      "In the gym most days. Trading options. Attention goes where it compounds. Los Angeles.",
+    images: ["/og/portrait.png"],
   },
   ...(process.env.NEXT_PUBLIC_GSC_TOKEN
     ? { verification: { google: process.env.NEXT_PUBLIC_GSC_TOKEN } }

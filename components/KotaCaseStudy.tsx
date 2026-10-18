@@ -77,7 +77,7 @@ const leadStyle: CSSProperties = {
   maxWidth: "62ch",
   fontSize: "clamp(0.98rem, 1.4vw, 1.12rem)",
   lineHeight: 1.7,
-  color: "color-mix(in srgb, var(--paper) 70%, transparent)",
+  color: "color-mix(in srgb, var(--paper) 78%, transparent)",
 };
 
 // Empty "awaiting measured results" slot. Intentionally holds no numbers.
@@ -97,7 +97,7 @@ const awaitingTag: CSSProperties = {
   fontWeight: 700,
   letterSpacing: "0.16em",
   textTransform: "uppercase",
-  color: "color-mix(in srgb, var(--sand) 75%, transparent)",
+  color: "color-mix(in srgb, var(--sand) 100%, transparent)",
 };
 
 const awaitingBody: CSSProperties = {
@@ -105,7 +105,7 @@ const awaitingBody: CSSProperties = {
   maxWidth: "60ch",
   fontSize: "0.9rem",
   lineHeight: 1.7,
-  color: "color-mix(in srgb, var(--paper) 50%, transparent)",
+  color: "color-mix(in srgb, var(--paper) 78%, transparent)",
 };
 
 export default function KotaCaseStudy() {

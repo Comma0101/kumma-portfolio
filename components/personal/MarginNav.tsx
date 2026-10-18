@@ -100,6 +100,12 @@ export default function MarginNav() {
       style={riding && tip ? { left: 0, top: 0, transform: `translate3d(${tip.x}px, ${tip.y}px, 0)` } : undefined}
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
+      onKeyDown={(event) => {
+        if (event.key === "Escape") setOpen(false);
+      }}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setOpen(false);
+      }}
     >
       <button
         type="button"

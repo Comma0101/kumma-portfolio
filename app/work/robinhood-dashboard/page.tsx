@@ -14,9 +14,11 @@ export const metadata: Metadata = {
       "Turning a messy brokerage CSV export into a correct, inspectable per-trade record. Transaction pairing, FIFO lot matching, options-contract matching, and a D3 analytics interface.",
     url: "https://kumma.me/work/robinhood-dashboard",
     type: "article",
+    images: ["/og/portrait.png"],
   },
   twitter: {
     card: "summary_large_image",
+    images: ["/og/portrait.png"],
     title: "Robinhood performance dashboard — case study | Kumma",
     description:
       "Data correctness, not trading: pairing a messy CSV export into a correct per-trade record.",

@@ -41,13 +41,13 @@ const statusStyle: CSSProperties = {
   fontSize: "0.64rem",
   letterSpacing: "0.14em",
   textTransform: "uppercase",
-  color: "color-mix(in srgb, var(--sand) 70%, transparent)",
+  color: "var(--sand)",
 };
 
 const captionStyle: CSSProperties = {
   fontSize: "0.8rem",
   lineHeight: 1.6,
-  color: "color-mix(in srgb, var(--paper) 50%, transparent)",
+  color: "color-mix(in srgb, var(--paper) 78%, transparent)",
 };
 
 // Static, non-animated waveform silhouette. Decorative only.

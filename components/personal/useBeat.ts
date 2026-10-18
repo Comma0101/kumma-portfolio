@@ -22,18 +22,29 @@ const reduced = () => window.matchMedia("(prefers-reduced-motion: reduce)").matc
 // The page settles after load (fonts, marks measuring themselves), and its
 // height changes; every scroll position measured before that is stale.
 // One observer re-measures all triggers whenever the page's height moves.
-let watching = false;
+// Shared by every beat on the page; released when the last one unmounts.
+let watchers = 0;
+let stopWatching = () => {};
 function keepMeasured() {
-  if (watching || typeof ResizeObserver === "undefined") return;
-  watching = true;
-  let timer = 0;
-  let height = document.body.scrollHeight;
-  new ResizeObserver(() => {
-    if (document.body.scrollHeight === height) return;
-    height = document.body.scrollHeight;
-    window.clearTimeout(timer);
-    timer = window.setTimeout(() => ScrollTrigger.refresh(), 150);
-  }).observe(document.body);
+  if (typeof ResizeObserver === "undefined") return () => {};
+  if (watchers++ === 0) {
+    let timer = 0;
+    let height = document.body.scrollHeight;
+    const observer = new ResizeObserver(() => {
+      if (document.body.scrollHeight === height) return;
+      height = document.body.scrollHeight;
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => ScrollTrigger.refresh(), 150);
+    });
+    observer.observe(document.body);
+    stopWatching = () => {
+      observer.disconnect();
+      window.clearTimeout(timer);
+    };
+  }
+  return () => {
+    if (--watchers === 0) stopWatching();
+  };
 }
 
 // A triggered beat plays once when its line reaches the lower third of the
@@ -43,7 +54,7 @@ export function useBeat<T extends HTMLElement>(ref: RefObject<T>, build: Build<T
   useEffect(() => {
     const root = ref.current;
     if (!root || reduced()) return;
-    keepMeasured();
+    const release = keepMeasured();
     let observer: IntersectionObserver | undefined;
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ paused: true });
@@ -61,6 +72,7 @@ export function useBeat<T extends HTMLElement>(ref: RefObject<T>, build: Build<T
     return () => {
       observer?.disconnect();
       ctx.revert();
+      release();
     };
     // A beat is authored once; rebuilding would replay it.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -78,7 +90,7 @@ export function useScrub<T extends HTMLElement>(
   useEffect(() => {
     const root = ref.current;
     if (!root || reduced()) return;
-    keepMeasured();
+    const release = keepMeasured();
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -93,7 +105,10 @@ export function useScrub<T extends HTMLElement>(
     }, root);
     const refresh = () => ScrollTrigger.refresh();
     document.fonts?.ready.then(refresh).catch(() => undefined);
-    return () => ctx.revert();
+    return () => {
+      ctx.revert();
+      release();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 }

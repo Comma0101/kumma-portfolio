@@ -14,9 +14,11 @@ export const metadata: Metadata = {
       "A real-time voice AI system that captures phone calls, resolves intent into menu-verified tickets, and commits them to kitchen workflows. Architecture, guardrails, and failure handling.",
     url: "https://kumma.me/work/kota",
     type: "article",
+    images: ["/og/portrait.png"],
   },
   twitter: {
     card: "summary_large_image",
+    images: ["/og/portrait.png"],
     title: "KOTA — case study | Kumma",
     description:
       "Real-time voice AI: architecture, clarify-before-commit guardrails, and the failures I fixed.",

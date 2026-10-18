@@ -63,7 +63,7 @@ const leadStyle: CSSProperties = {
   maxWidth: "62ch",
   fontSize: "clamp(0.98rem, 1.4vw, 1.12rem)",
   lineHeight: 1.7,
-  color: "color-mix(in srgb, var(--paper) 70%, transparent)",
+  color: "color-mix(in srgb, var(--paper) 78%, transparent)",
 };
 
 // Static hero proof: a raw export fragment resolved into one closed trade.
@@ -83,7 +83,7 @@ const proofTag: CSSProperties = {
   fontWeight: 700,
   letterSpacing: "0.14em",
   textTransform: "uppercase",
-  color: "color-mix(in srgb, var(--paper) 40%, transparent)",
+  color: "color-mix(in srgb, var(--paper) 78%, transparent)",
 };
 
 const proofRows: CSSProperties = {
@@ -92,7 +92,7 @@ const proofRows: CSSProperties = {
   gap: "0.3rem",
   fontSize: "0.78rem",
   lineHeight: 1.5,
-  color: "color-mix(in srgb, var(--paper) 62%, transparent)",
+  color: "color-mix(in srgb, var(--paper) 78%, transparent)",
 };
 
 const proofDivider: CSSProperties = {
@@ -104,7 +104,7 @@ const proofDivider: CSSProperties = {
 const proofResult: CSSProperties = {
   fontSize: "0.78rem",
   lineHeight: 1.6,
-  color: "color-mix(in srgb, var(--sand) 85%, transparent)",
+  color: "color-mix(in srgb, var(--sand) 100%, transparent)",
 };
 
 export default function RobinhoodCaseStudy() {

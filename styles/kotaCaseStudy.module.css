@@ -91,7 +91,7 @@
   letter-spacing: 0.22em;
   font-size: 0.72rem;
   font-weight: 700;
-  color: color-mix(in srgb, var(--sand) 82%, transparent);
+  color: color-mix(in srgb, var(--sand) 100%, transparent);
 }
 
 .title {
@@ -107,7 +107,7 @@
   margin: 0 0 1.8rem;
   font-size: clamp(1.4rem, 3vw, 2.2rem);
   line-height: 1.2;
-  color: color-mix(in srgb, var(--paper) 55%, transparent);
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
   font-style: italic;
   font-weight: 500;
 }
@@ -125,7 +125,7 @@
   margin: 0 0 1.8rem;
   font-size: clamp(0.88rem, 1.1vw, 0.96rem);
   line-height: 1.7;
-  color: color-mix(in srgb, var(--paper) 68%, transparent);
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
   max-width: 60ch;
 }
 
@@ -133,7 +133,7 @@
   margin: 0 0 1.6rem;
   font-size: 0.74rem;
   letter-spacing: 0.06em;
-  color: color-mix(in srgb, var(--paper) 58%, transparent);
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
   text-transform: uppercase;
 }
 
@@ -166,7 +166,7 @@
 
 .proofCaption {
   margin: 0;
-  color: color-mix(in srgb, var(--paper) 56%, transparent);
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -185,7 +185,7 @@
   font-weight: 700;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--sand) 70%, transparent);
+  color: color-mix(in srgb, var(--sand) 100%, transparent);
 }
 
 .sectionLabelSub {
@@ -230,7 +230,7 @@
   font-size: 0.62rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--sand) 70%, transparent);
+  color: color-mix(in srgb, var(--sand) 100%, transparent);
   writing-mode: vertical-rl;
   text-orientation: mixed;
 }
@@ -241,7 +241,7 @@
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--paper) 58%, transparent);
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
 }
 
 .realityQuote {
@@ -263,7 +263,7 @@
   letter-spacing: 0.04em;
   padding: 0.25rem 0.6rem;
   border: 1px solid color-mix(in srgb, var(--paper) 10%, transparent);
-  color: color-mix(in srgb, var(--paper) 58%, transparent);
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
 }
 
 /* Output block */
@@ -288,7 +288,7 @@
 }
 
 .outputKey {
-  color: color-mix(in srgb, var(--paper) 55%, transparent);
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
   font-size: 0.72rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -299,12 +299,12 @@
 }
 
 .outputNote {
-  color: color-mix(in srgb, var(--sand) 70%, transparent);
+  color: color-mix(in srgb, var(--sand) 100%, transparent);
   font-size: 0.74rem;
 }
 
 .outputConfidence {
-  color: color-mix(in srgb, var(--sand) 90%, transparent);
+  color: color-mix(in srgb, var(--sand) 100%, transparent);
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -344,7 +344,7 @@
   margin: 0;
   font-size: clamp(0.82rem, 1vw, 0.9rem);
   line-height: 1.65;
-  color: color-mix(in srgb, var(--paper) 58%, transparent);
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
 }
 
 /* ── System Flow / Pipeline ── */
@@ -377,7 +377,7 @@
 .pipelineIndex {
   font-size: 0.66rem;
   letter-spacing: 0.12em;
-  color: color-mix(in srgb, var(--paper) 50%, transparent);
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
 }
 
 .pipelineLabel {
@@ -401,14 +401,14 @@
   gap: 0.6rem;
   font-size: 0.82rem;
   line-height: 1.55;
-  color: color-mix(in srgb, var(--paper) 62%, transparent);
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
 }
 
 .pipelineKey {
   font-size: 0.68rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--paper) 50%, transparent);
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
   padding-top: 0.1em;
 }
 
@@ -439,7 +439,7 @@
 .failureExample {
   font-size: 0.8rem;
   line-height: 1.6;
-  color: color-mix(in srgb, var(--paper) 62%, transparent);
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
   font-style: italic;
 }
 
@@ -462,13 +462,13 @@
 .handlingMech {
   font-size: 0.82rem;
   font-weight: 700;
-  color: color-mix(in srgb, var(--sand) 80%, transparent);
+  color: color-mix(in srgb, var(--sand) 100%, transparent);
 }
 
 .handlingDesc {
   font-size: 0.8rem;
   line-height: 1.6;
-  color: color-mix(in srgb, var(--paper) 55%, transparent);
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
 }
 
 /* ── Interface Principles ── */
@@ -501,7 +501,7 @@
   margin: 0;
   font-size: 0.82rem;
   line-height: 1.7;
-  color: color-mix(in srgb, var(--paper) 55%, transparent);
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
 }
 
 /* ── System Impact ── */
@@ -533,13 +533,13 @@
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--sand) 80%, transparent);
+  color: color-mix(in srgb, var(--sand) 100%, transparent);
 }
 
 .impactDetail {
   font-size: 0.8rem;
   line-height: 1.6;
-  color: color-mix(in srgb, var(--paper) 58%, transparent);
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
   margin-top: 0.2rem;
 }
 
@@ -567,14 +567,14 @@
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--sand) 70%, transparent);
+  color: color-mix(in srgb, var(--sand) 100%, transparent);
 }
 
 .stackGroupItems {
   margin: 0;
   font-size: 0.82rem;
   line-height: 1.65;
-  color: color-mix(in srgb, var(--paper) 55%, transparent);
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
 }
 
 /* ── Philosophical ── */
@@ -599,7 +599,7 @@
   font-size: 0.75rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--sand) 70%, transparent);
+  color: color-mix(in srgb, var(--sand) 100%, transparent);
 }
 
 /* ── Responsive ── */

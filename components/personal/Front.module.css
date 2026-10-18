@@ -263,6 +263,12 @@
   pointer-events: none;
 }
 
+/* Reached with the keyboard, it shows wherever it is. */
+.marginNav[data-hidden]:focus-within {
+  opacity: 1;
+  pointer-events: auto;
+}
+
 /* At rest the nib is not a mark on the page: it shows when the margin is
    pointed at, or reached with the keyboard. */
 .marginNav[data-resting]:not(:hover):not(:focus-within) {

@@ -209,20 +209,31 @@ export function pressures(
 }
 
 // Where the pen is when a fraction of the stroke has been drawn.
+// Asked every frame of the page-long line while the reader rests: its arc
+// fractions are measured once per line, then searched.
+const measured = new WeakMap<Point[], number[]>();
 export function pointAt(line: Point[], fraction: number): Point {
-  const { at } = fractions(line);
-  const f = Math.min(1, Math.max(0, fraction));
-  for (let i = 1; i < line.length; i += 1) {
-    if (at[i] >= f) {
-      const span = at[i] - at[i - 1] || 1;
-      const t = (f - at[i - 1]) / span;
-      return [
-        Number((line[i - 1][0] + (line[i][0] - line[i - 1][0]) * t).toFixed(3)),
-        Number((line[i - 1][1] + (line[i][1] - line[i - 1][1]) * t).toFixed(3)),
-      ];
-    }
+  let at = measured.get(line);
+  if (!at) {
+    at = fractions(line).at;
+    measured.set(line, at);
   }
-  return line[line.length - 1];
+  const f = Math.min(1, Math.max(0, fraction));
+  if (line.length < 2 || at[at.length - 1] < f) return line[line.length - 1];
+  let lo = 1;
+  let hi = line.length - 1;
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    if (at[mid] >= f) hi = mid;
+    else lo = mid + 1;
+  }
+  const i = lo;
+  const span = at[i] - at[i - 1] || 1;
+  const t = (f - at[i - 1]) / span;
+  return [
+    Number((line[i - 1][0] + (line[i][0] - line[i - 1][0]) * t).toFixed(3)),
+    Number((line[i - 1][1] + (line[i][1] - line[i - 1][1]) * t).toFixed(3)),
+  ];
 }
 
 function poolsAt(points: Point[], size: number, seed: number): Pool[] {

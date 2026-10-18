@@ -14,9 +14,11 @@ export const metadata: Metadata = {
       "A self-hostable control plane for agents: routes across Claude, GPT, and Gemini, runs tools over MCP, keeps compressed memory, and delegates real work to coding agents through a worker router.",
     url: "https://kumma.me/work/archon",
     type: "article",
+    images: ["/og/portrait.png"],
   },
   twitter: {
     card: "summary_large_image",
+    images: ["/og/portrait.png"],
     title: "ARCHON — case study | Kumma",
     description:
       "Agent orchestration as a control plane: routing, tools, memory, delegation, and human approval.",

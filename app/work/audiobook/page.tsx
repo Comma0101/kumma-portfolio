@@ -14,9 +14,11 @@ export const metadata: Metadata = {
       "A live text-to-speech product that converts documents into audiobooks with the open-source Kokoro model. The pipeline, the production hardening, and the offline listening experience.",
     url: "https://kumma.me/work/audiobook",
     type: "article",
+    images: ["/og/portrait.png"],
   },
   twitter: {
     card: "summary_large_image",
+    images: ["/og/portrait.png"],
     title: "Audiobook AI — case study | Kumma",
     description:
       "Documents into audiobooks with Kokoro TTS: the pipeline, the reliability work, and the offline PWA.",

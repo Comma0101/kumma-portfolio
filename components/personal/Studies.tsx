@@ -156,12 +156,17 @@ function Brushwork({ marks, viewBox, take }: { marks: Mark[]; viewBox: string; t
     };
   }, [marks, take]);
 
+  // Each mask is rasterised whenever its stroke advances: keep its region to
+  // the plate and a margin, not the whole canvas.
+  const [, , w, h] = viewBox.split(" ").map(Number);
+  const region = { x: -w * 0.25, y: -h * 0.25, width: w * 1.5, height: h * 1.5 };
+
   return (
     <svg ref={ref} className={`${front.ink} ${styles.art}`} viewBox={viewBox} aria-hidden="true" focusable="false">
       {marks.map((mark, i) => (
         <svg key={`${take}-${i}`} overflow="visible" data-pace={mark.pace}>
           <defs>
-            <mask id={`${id}-${take}-${i}`} maskUnits="userSpaceOnUse" x="-2000" y="-2000" width="6000" height="6000">
+            <mask id={`${id}-${take}-${i}`} maskUnits="userSpaceOnUse" {...region}>
               <path
                 d={mark.center}
                 pathLength={1}
