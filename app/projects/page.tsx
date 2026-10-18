@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function ProjectsPage() {
   useEffect(() => {
-    window.location.replace("/#work");
+    window.location.replace("/work/");
   }, []);
 
   return (
@@ -19,7 +19,7 @@ export default function ProjectsPage() {
     >
       <p style={{ color: "var(--steel)" }}>
         Redirecting to{" "}
-        <Link href="/#work" style={{ color: "var(--signal)" }}>
+        <Link href="/work" style={{ color: "var(--signal)" }}>
           the work index
         </Link>
         .

@@ -304,7 +304,9 @@ const Navigation = () => {
   if (
     pathname === "/" ||
     pathname === "/build" ||
-    pathname === "/build/"
+    pathname === "/build/" ||
+    pathname === "/work" ||
+    pathname === "/work/"
   )
     return null;
 

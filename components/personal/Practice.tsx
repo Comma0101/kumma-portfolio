@@ -6,7 +6,7 @@ const practice = [
   {
     word: "Build.",
     line: "Software as leverage: voice agents, tools, systems.",
-    href: "/projects",
+    href: "/work",
     cta: "Systems I build",
   },
   {
