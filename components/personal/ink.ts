@@ -311,6 +311,7 @@ export function inkStroke(
     thinning,
     dry,
     skips = false,
+    cap = true,
     pressure,
   }: {
     size: number;
@@ -338,6 +339,8 @@ export function inkStroke(
     dry?: number;
     // A ballpoint that skips where it runs light (see skipsAt).
     skips?: boolean;
+    // Round ends; a bamboo joint is cut square.
+    cap?: boolean;
     // A ballpoint's pressure along the stroke, in place of pressing into
     // turns: a pen running dry. (A brush's is `profile`.)
     pressure?: Profile;
@@ -356,8 +359,8 @@ export function inkStroke(
       simulatePressure: false,
       // A pen that lands pressing, or a brush, starts blunt; otherwise it
       // eases in.
-      start: { taper: flat || press || profile ? 0 : size * 2.5, cap: true },
-      end: { taper: flat ? 0 : size * lift, cap: true },
+      start: { taper: flat || press || profile ? 0 : size * 2.5, cap },
+      end: { taper: flat ? 0 : size * lift, cap },
       last: true,
     },
   );

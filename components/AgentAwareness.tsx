@@ -63,6 +63,8 @@ export default function AgentAwareness() {
     path === "/stories" ||
     path === "/build" ||
     path === "/work" ||
+    path.startsWith("/notes") ||
+    path.startsWith("/studies") ||
     footerProtocolRoutes
   ) {
     return null;

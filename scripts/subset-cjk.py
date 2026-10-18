@@ -51,9 +51,20 @@ def write(source: str, out: pathlib.Path):
 parser = argparse.ArgumentParser()
 parser.add_argument("--noto")
 parser.add_argument("--wenkai")
+# The notes' Chinese editions are simplified and set in print: Noto Serif
+# SC (github.com/google/fonts ofl/notoserifsc), only their characters.
+parser.add_argument("--noto-sc")
 args = parser.parse_args()
 if args.noto:
     write(args.noto, FONTS / "NotoSerifTC-subset.woff2")
 if args.wenkai:
     write(args.wenkai, FONTS / "LXGWWenKaiTC-subset.woff2")
 MANIFEST.write_text(chars + "\n", encoding="utf-8")
+
+if args.noto_sc:
+    text = set()
+    for path in [*(ROOT / "_posts" / "zh").glob("*.md"), SOURCES / "notes.ts"]:
+        text.update(cjk.findall(path.read_text(encoding="utf-8")))
+    chars = "".join(sorted(text))
+    write(args.noto_sc, FONTS / "NotoSerifSC-notes.woff2")
+    (FONTS / "NotoSerifSC-notes.txt").write_text(chars + "\n", encoding="utf-8")

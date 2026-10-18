@@ -306,7 +306,9 @@ const Navigation = () => {
     pathname === "/build" ||
     pathname === "/build/" ||
     pathname === "/work" ||
-    pathname === "/work/"
+    pathname === "/work/" ||
+    pathname?.startsWith("/notes") ||
+    pathname?.startsWith("/studies")
   )
     return null;
 

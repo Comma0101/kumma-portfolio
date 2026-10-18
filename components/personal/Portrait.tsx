@@ -12,7 +12,9 @@ const DURATION = 2800;
 // once the name's underline is taut, and spirals in — quick across the
 // light, slow through the face, so it develops like a print — ending on a
 // point at the centre.
-export default function Portrait() {
+// `when`: on the homepage the pen arrives from the name's underline; on
+// the studies it starts when the plate comes into view.
+export default function Portrait({ when = "lifted", className }: { when?: "lifted" | "visible"; className?: string }) {
   const ref = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -98,8 +100,17 @@ export default function Portrait() {
       }, 300);
     };
     // After the name's underline pulls taut (Opening), or soon regardless.
-    window.addEventListener("kumma:lifted", begin, { once: true });
-    const fallback = window.setTimeout(begin, 3600);
+    let fallback = 0;
+    let seen: IntersectionObserver | undefined;
+    if (when === "lifted") {
+      window.addEventListener("kumma:lifted", begin, { once: true });
+      fallback = window.setTimeout(begin, 3600);
+    } else {
+      seen = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting) begin();
+      }, { rootMargin: "0px 0px -20% 0px" });
+      seen.observe(canvas);
+    }
     const observer = new ResizeObserver(() => {
       if (Math.abs(canvas.getBoundingClientRect().width - size) > 1) redraw();
     });
@@ -108,14 +119,17 @@ export default function Portrait() {
     return () => {
       window.removeEventListener("kumma:lifted", begin);
       window.clearTimeout(fallback);
+      seen?.disconnect();
       window.clearTimeout(delay);
       window.cancelAnimationFrame(frame);
       observer.disconnect();
     };
+    // A portrait is drawn once per mount.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <figure className={styles.portrait}>
+    <figure className={className ?? styles.portrait}>
       <canvas ref={ref} role="img" aria-label="Kumma Wu, drawn as one red spiral line" />
     </figure>
   );

@@ -12,8 +12,10 @@ const practice = [
   {
     word: "Study.",
     line: "Old texts, read slowly: the Diamond Sutra, the Daodejing, Zhuangzi, the Gospels, the Greeks.",
+    href: "/notes",
+    cta: "Notes",
   },
-  { word: "Draw.", line: "Bamboo, geometry, negative space." },
+  { word: "Draw.", line: "Bamboo, geometry, negative space.", href: "/studies", cta: "Studies" },
 ];
 
 export default function Practice() {
