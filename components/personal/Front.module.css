@@ -395,22 +395,21 @@
   word-spacing: 0.04em;
 }
 
+/* His face, drawn by the red line as one spiral (Portrait). */
 .portrait {
   grid-column: 2;
-  grid-row: 2;
+  grid-row: 1 / span 2;
   align-self: start;
-  width: clamp(120px, 11vw, 180px);
-  margin: 0.16em 0 0;
+  width: clamp(200px, 19vw, 300px);
+  aspect-ratio: 1;
+  max-width: 100%;
+  margin: 0;
 }
 
-.portrait img {
+.portrait canvas {
   display: block;
   width: 100%;
-  height: auto;
-  aspect-ratio: 3 / 4;
-  object-fit: cover;
-  filter: grayscale(1) contrast(1.18) brightness(1.04);
-  mix-blend-mode: multiply;
+  height: 100%;
 }
 
 .compound {
@@ -823,7 +822,7 @@
     grid-column: 1;
     grid-row: 1;
     justify-self: end;
-    width: 38vw;
+    width: 54vw;
     margin: 0 0 6svh;
   }
 

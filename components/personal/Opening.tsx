@@ -5,6 +5,7 @@ import { centerline } from "./ink";
 import { coil, type Point } from "./pen";
 import { ease, useBeat, useScrub } from "./useBeat";
 import { X_HANDLE, X_URL } from "./links";
+import Portrait from "./Portrait";
 import styles from "./Front.module.css";
 
 // The underline before it is pulled taut: a loose coil along its path,
@@ -110,10 +111,7 @@ export default function Opening() {
             compounds.
           </span>
         </p>
-        <figure className={styles.portrait}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/kumma/portrait-3x4.jpg" alt="Kumma Wu, black and white portrait" width={190} height={253} />
-        </figure>
+        <Portrait />
       </div>
 
     </section>
