@@ -158,7 +158,7 @@ export default function ArchonCaseStudy() {
       {/* ── Hero ── */}
       <header ref={heroRef} className={styles.hero}>
         <div className={styles.heroCopy}>
-          <p className={`${styles.eyebrow} ${grotesk.className}`}>Case study</p>
+          <p className={`${styles.eyebrow} ${grotesk.className}`}>Build · a write-up</p>
           <h1 className={`${styles.title} ${cormorant.className}`}>ARCHON</h1>
           <p className={`${styles.subtitle} ${cormorant.className}`}>
             An agent that can see its own work.
@@ -386,7 +386,7 @@ export default function ArchonCaseStudy() {
             Read the source on GitHub →
           </a>
           <Link href="/work" className={grotesk.className} style={ctaStyle}>
-            ← Systems I build
+            ← Build
           </Link>
         </footer>
       </div>

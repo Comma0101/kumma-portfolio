@@ -139,7 +139,7 @@ export default function KotaCaseStudy() {
       {/* ── Hero ── */}
       <header ref={heroRef} className={styles.hero}>
         <div className={styles.heroCopy}>
-          <p className={`${styles.eyebrow} ${grotesk.className}`}>Case study</p>
+          <p className={`${styles.eyebrow} ${grotesk.className}`}>Build · a write-up</p>
           <h1 className={`${styles.title} ${cormorant.className}`}>KOTA</h1>
           <p className={`${styles.subtitle} ${cormorant.className}`}>
             Conversation as infrastructure.
@@ -462,7 +462,7 @@ export default function KotaCaseStudy() {
           </p>
           <p className={styles.closeLinks}>
             <Link href="/call">Try it on the demo diner →</Link>
-            <Link href="/work">← Systems I build</Link>
+            <Link href="/work">← Build</Link>
           </p>
         </footer>
       </div>

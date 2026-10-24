@@ -163,7 +163,7 @@ export default function AudiobookCaseStudy() {
       {/* ── Hero ── */}
       <header ref={heroRef} className={styles.hero}>
         <div className={styles.heroCopy}>
-          <p className={`${styles.eyebrow} ${grotesk.className}`}>Case study</p>
+          <p className={`${styles.eyebrow} ${grotesk.className}`}>Build · a write-up</p>
           <h1 className={`${styles.title} ${cormorant.className}`}>
             Audiobook AI
           </h1>
@@ -540,7 +540,7 @@ export default function AudiobookCaseStudy() {
             Anything written, heard as one continuous voice.
           </p>
           <p className={styles.closeLinks}>
-            <Link href="/work">← Systems I build</Link>
+            <Link href="/work">← Build</Link>
           </p>
         </footer>
       </div>

@@ -105,6 +105,10 @@
   transform: none;
 }
 
+:global(html[data-front="motion"]) .front [data-struck] {
+  opacity: 1;
+}
+
 :global(html[data-front="motion"]) .front [data-source] {
   visibility: hidden;
 }
@@ -164,6 +168,7 @@
 
 /* One idea per screen: each statement has the paper to itself, with only
    the line crossing between them. */
+.agency,
 .catchUp,
 .steps,
 .practice,
@@ -441,6 +446,49 @@
 .catchUp {
   position: relative;
   padding: 16svh var(--gutter) 18svh var(--indent);
+}
+
+/* ---------- Agency (主) ---------- */
+
+.agency {
+  position: relative;
+  padding: 16svh var(--gutter) 16svh var(--indent);
+}
+
+.agencyLine {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(3rem, 12vw, 13rem);
+  font-weight: 200;
+  font-variation-settings: "wdth" 190;
+  letter-spacing: -0.03em;
+  line-height: 0.92;
+  white-space: nowrap;
+}
+
+/* The reflex, struck: still on the paper, faded under the stroke. */
+.struck {
+  opacity: 0.16;
+}
+
+.agencyGloss {
+  max-width: 30rem;
+  margin: 3.2rem 0 0;
+  color: var(--grey);
+  font-size: clamp(1.1rem, 1.5vw, 1.35rem);
+  font-style: italic;
+  line-height: 1.45;
+}
+
+.agencyGloss span {
+  margin-right: 0.6em;
+  color: var(--ink);
+  font-family: var(--font-hand), var(--font-tc), serif;
+  font-size: 1.35em;
+  font-style: normal;
+  letter-spacing: 0.08em;
 }
 
 .first {
@@ -796,6 +844,25 @@
   color: var(--red);
 }
 
+.chapters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 1.1rem;
+  margin: 0 0 1rem;
+  font-family: var(--font-hand), var(--font-tc), serif;
+  font-size: clamp(1.9rem, 3vw, 2.6rem);
+  line-height: 1.2;
+}
+
+.chapters a {
+  text-decoration: none;
+}
+
+.chapters a:hover,
+.chapters a:focus-visible {
+  color: var(--red);
+}
+
 .howDrawn {
   max-width: 34rem;
   margin: 0 0 2.4rem;
@@ -826,7 +893,7 @@
   letter-spacing: 0.1em;
 }
 
-/* ---------- Work: "Systems I build" ---------- */
+/* ---------- Build (the work) ---------- */
 
 .workPage {
   min-height: 100svh;
@@ -983,6 +1050,10 @@
 /* ---------- Phone ---------- */
 
 @media (max-width: 720px) {
+  .agencyLine {
+    font-size: 11vw;
+  }
+
   .front {
     --thread: calc(var(--gutter) * 0.5);
     --indent: calc(var(--thread) + 1.2rem);

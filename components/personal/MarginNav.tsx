@@ -1,21 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { chapters } from "./chapters";
 import styles from "./Front.module.css";
 
 // The page's navigation is the pen itself: it rides the live tip of the
 // thread (Thread dispatches "kumma:tip"), and steps aside when the line
 // leaves the margin. Opened, it writes the sections on the paper beside
 // the margin, one character each — no box over the page.
-const sections = [
-  { mark: "名", label: "Name", target: '[data-thread="opening"]' },
-  { mark: "知", label: "Understanding", target: '[data-thread="catch"]' },
-  { mark: "步", label: "Steps", target: '[data-thread="steps"]' },
-  { mark: "習", label: "Practice", target: '[data-thread="practice"]' },
-  { mark: "律", label: "Rules", target: '[data-thread="rules"]' },
-  { mark: "理", label: "Reason", target: '[data-thread="reason"]' },
-  { mark: "道", label: "The way", target: "#dao" },
-];
+const sections = chapters;
 
 type Smooth = { lenis?: { scrollTo: (target: Element, options?: object) => void } };
 type Tip = { x: number; y: number; onMargin: boolean };

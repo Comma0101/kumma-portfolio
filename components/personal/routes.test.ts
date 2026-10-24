@@ -8,8 +8,8 @@ test("paper routes, with or without the trailing slash", () => {
   }
 });
 
-test("the old site's pages and look-alike paths are not paper", () => {
-  for (const path of ["/blog/", "/patterns/barge-in", "/build/", "/agent", "/workshop", "/notesy"]) {
+test("look-alike paths are not paper", () => {
+  for (const path of ["/workshop", "/notesy", "/blogger", "/patterns-old", "/studies-x"]) {
     assert.ok(!isPaperRoute(path), path);
   }
 });

@@ -122,13 +122,13 @@ export default function CallPage() {
 
           <p className={styles.subtitle}>
             An AI agent taking phone orders for Kumma Diner, a fictional demo
-            restaurant with a real menu. Below is the menu it works from; book a
-            slot to run a call live.
+            restaurant with a real menu. Below is the menu it works from; ask for
+            a slot to run a call live.
           </p>
 
           <div className={styles.ctaRow}>
             <Button href="/contact" variant="primary">
-              Book a live demo
+              Ask for a live call
             </Button>
           </div>
 

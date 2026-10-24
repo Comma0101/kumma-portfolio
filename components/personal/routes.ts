@@ -16,7 +16,7 @@ export function isPaperRoute(pathname: string | null | undefined) {
 // Old addresses whose pages now live on paper: each still answers, and
 // sends the reader on.
 export const moved: Record<string, { to: string; label: string }> = {
-  "/projects": { to: "/work/", label: "Systems I build" },
+  "/projects": { to: "/work/", label: "Build" },
   "/projects/kota": { to: "/work/kota/", label: "KOTA" },
   "/projects/archon": { to: "/work/archon/", label: "ARCHON" },
   "/blog/en/On-Emotions": { to: "/notes/on-emotions/", label: "On Emotions" },
@@ -33,6 +33,32 @@ export const moved: Record<string, { to: string; label: string }> = {
   "/artfulcode": { to: "/studies/", label: "Studies" },
   "/stories": { to: "/studies/", label: "Studies" },
   "/latency": { to: "/benchmark/", label: "the stress suite" },
+  // The voice-AI business pages: this is a personal site, not a shop
+  // window. Each points at the write-up or the suite it came from.
+  "/blog": { to: "/notes/", label: "Notes" },
+  "/blog/en/ai-receptionists-for-small-business-explained": { to: "/work/kota/", label: "KOTA" },
+  "/blog/en/does-an-ai-receptionist-actually-work": { to: "/work/kota/", label: "KOTA" },
+  "/blog/en/off-the-shelf-ai-phone-tool-vs-answering-service-vs-custom-agent": { to: "/work/kota/", label: "KOTA" },
+  "/blog/en/kota-real-time-voice-pipeline": { to: "/work/kota/", label: "KOTA" },
+  "/blog/en/telephony-gotchas-sip-audio": { to: "/work/kota/", label: "KOTA" },
+  "/blog/en/archon-agent-orchestration": { to: "/work/archon/", label: "ARCHON" },
+  "/blog/en/choosing-a-speech-to-text-and-tts-stack-2026": { to: "/benchmark/", label: "the stress suite" },
+  "/blog/en/latency-budget-twilio-deepgram-voice-agent": { to: "/benchmark/", label: "the stress suite" },
+  "/blog/en/regression-testing-a-voice-agent": { to: "/benchmark/", label: "the stress suite" },
+  "/blog/en/testing-ai-systems-like-software": { to: "/benchmark/", label: "the stress suite" },
+  "/build": { to: "/work/", label: "Build" },
+  "/agent": { to: "/", label: "Kumma" },
+  "/patterns": { to: "/work/kota/", label: "KOTA" },
+  "/patterns/barge-in": { to: "/work/kota/", label: "KOTA" },
+  "/patterns/clarify-before-commit": { to: "/work/kota/", label: "KOTA" },
+  "/patterns/endpointing": { to: "/work/kota/", label: "KOTA" },
+  "/patterns/eval-harness": { to: "/work/kota/", label: "KOTA" },
+  "/patterns/human-handoff": { to: "/work/kota/", label: "KOTA" },
+  "/patterns/latency-budgets": { to: "/work/kota/", label: "KOTA" },
+  "/patterns/menu-grounding": { to: "/work/kota/", label: "KOTA" },
+  "/patterns/streaming-stt": { to: "/work/kota/", label: "KOTA" },
+  "/patterns/telephony-failure-modes": { to: "/work/kota/", label: "KOTA" },
+  "/patterns/vad-tuning": { to: "/work/kota/", label: "KOTA" },
 };
 
 export const movedFrom = (pathname: string | null | undefined) =>

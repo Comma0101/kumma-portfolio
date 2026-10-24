@@ -24,7 +24,7 @@ export default function Line() {
   });
 
   return (
-    <section ref={ref} className={styles.line} aria-label="Diamond Sutra" data-thread="reason">
+    <section ref={ref} id="reason" className={styles.line} aria-label="Diamond Sutra" data-thread="reason">
       <p className={styles.label} aria-hidden="true" data-anchor="reason">
         The reason
       </p>

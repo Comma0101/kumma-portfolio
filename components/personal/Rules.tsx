@@ -83,7 +83,7 @@ function Small() {
 
 export default function Rules() {
   return (
-    <section className={styles.rules} aria-label="Rules" data-thread="rules">
+    <section id="rules" className={styles.rules} aria-label="Rules" data-thread="rules">
       <p className={styles.label}>Trade, in three rules</p>
       <Chase />
       <Small />

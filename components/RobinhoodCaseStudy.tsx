@@ -166,7 +166,7 @@ export default function RobinhoodCaseStudy() {
       {/* ── Hero ── */}
       <header ref={heroRef} className={styles.hero}>
         <div className={styles.heroCopy}>
-          <p className={`${styles.eyebrow} ${grotesk.className}`}>Case study</p>
+          <p className={`${styles.eyebrow} ${grotesk.className}`}>Build · a write-up</p>
           <h1 className={`${styles.title} ${cormorant.className}`}>
             Trade ledger
           </h1>
@@ -502,7 +502,7 @@ export default function RobinhoodCaseStudy() {
             Messy input, reliable output — the same discipline as the voice work, in a different domain.
           </p>
           <p className={styles.closeLinks}>
-            <Link href="/work">← Systems I build</Link>
+            <Link href="/work">← Build</Link>
           </p>
         </footer>
       </div>

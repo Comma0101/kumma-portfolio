@@ -1,4 +1,5 @@
 import Opening from "./Opening";
+import Agency from "./Agency";
 import CatchUp from "./CatchUp";
 import Steps from "./Steps";
 import Practice from "./Practice";
@@ -14,7 +15,8 @@ import MarginNav from "./MarginNav";
 import { typeClasses } from "./type";
 import styles from "./Front.module.css";
 
-// Order: who he is, how change actually happens, what he practises, the
+// Order: who he is, that a life is authored and not only reacted to, how
+// change actually happens, what he practises, the
 // rules of one practice, the reason behind them, the invitation, and last
 // the way itself — a path walked. Nothing private: only the public bio,
 // ideas, practice.
@@ -29,6 +31,7 @@ export default function Front() {
       <Thread />
       <MarginNav />
       <Opening />
+      <Agency />
       <CatchUp />
       <Steps />
       <Practice />

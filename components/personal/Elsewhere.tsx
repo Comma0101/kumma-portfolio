@@ -2,9 +2,9 @@ import Link from "next/link";
 import styles from "./Front.module.css";
 
 const items = [
-  { href: "/work", title: "Systems I build", kind: "Work" },
-  { href: "/notes", title: "Notes", kind: "Writing" },
-  { href: "/studies", title: "Studies", kind: "Drawing" },
+  { href: "/work", title: "Build", kind: "Software" },
+  { href: "/notes", title: "Study", kind: "Notes" },
+  { href: "/studies", title: "Draw", kind: "Studies" },
 ];
 
 // A quiet row, not a section.

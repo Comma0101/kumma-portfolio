@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import Work from "@/components/personal/Work";
 
 const description =
-  "Systems I build: real-time voice agents, an agent control plane, document-to-audio, and the tests behind them.";
+  "What Kumma builds, as software for leverage: each takes something messy — a phone call, a task, a document, a ledger — and makes it something you can trust.";
 
 export const metadata: Metadata = {
-  title: "Systems I build",
+  title: "Build",
   description,
   alternates: { canonical: "https://kumma.me/work" },
   openGraph: {
-    title: "Systems I build | Kumma",
+    title: "Build | Kumma",
     description,
     url: "https://kumma.me/work",
     images: ["/og/portrait.png"],

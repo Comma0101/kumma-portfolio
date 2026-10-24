@@ -14,7 +14,7 @@ export default function Moved({ to, label }: { to: string; label: string }) {
     <Shell>
       <h1 className={front.workTitle}>Moved.</h1>
       <p className={front.workLede}>
-        This page now lives at <Link href={to}>{label}</Link>.
+        This page has moved. Continue to <Link href={to}>{label}</Link>.
       </p>
     </Shell>
   );
