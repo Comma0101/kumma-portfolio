@@ -20,7 +20,7 @@ function Horizon() {
 export function NotesIndex({ notes }: { notes: Note[] }) {
   return (
     <Shell className={scClass}>
-      <h1 className={front.workTitle}>Notes.</h1>
+      <h1 className={front.workTitle}>Study.</h1>
       <Horizon />
       <p className={front.workLede}>What the reading leaves. Written slowly, for myself first.</p>
 

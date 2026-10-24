@@ -24,7 +24,7 @@ export default function StudiesPage() {
     <Shell>
       <script dangerouslySetInnerHTML={{ __html: motionScript }} />
       <MotionFlag />
-      <h1 className={front.workTitle}>Studies.</h1>
+      <h1 className={front.workTitle}>Draw.</h1>
       <svg className={`${front.workHorizon} ${styles.drawn}`} viewBox="0 0 1000 12" preserveAspectRatio="none" aria-hidden="true">
         <path pathLength={1} d="M2 7 C 220 5.6, 460 8.2, 700 6.4 S 930 5.4, 998 6" />
       </svg>

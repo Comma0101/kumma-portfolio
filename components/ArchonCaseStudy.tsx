@@ -173,10 +173,6 @@ export default function ArchonCaseStudy() {
             agents. It documents how the orchestration layer is built, and where
             it is still rough.
           </p>
-          <p className={`${styles.stackLine} ${grotesk.className}`}>
-            Agent Orchestration · Multi-model Routing · Worker Delegation · MCP
-            Tools · Persistent Memory
-          </p>
           <div className={styles.actions}>
             <a
               href={REPO_URL}

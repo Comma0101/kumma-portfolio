@@ -180,10 +180,6 @@ export default function AudiobookCaseStudy() {
             problem, not a single API call. This page documents the pipeline and
             the hardening that keeps it running under load.
           </p>
-          <p className={`${styles.stackLine} ${grotesk.className}`}>
-            Kokoro TTS · PyTorch · FastAPI · Worker Queue · PWA · Cloudflare
-            Tunnel
-          </p>
           <div className={styles.actions}>
             <a
               href={LIVE_URL}

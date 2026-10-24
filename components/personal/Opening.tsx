@@ -6,6 +6,7 @@ import { coil, type Point } from "./pen";
 import { ease, useBeat, useScrub } from "./useBeat";
 import { X_HANDLE, X_URL } from "./links";
 import Portrait from "./Portrait";
+import ChapterMark from "./ChapterMark";
 import styles from "./Front.module.css";
 
 // The underline before it is pulled taut: a loose coil along its path,
@@ -91,6 +92,10 @@ export default function Opening() {
       <a className={styles.follow} href={X_URL} rel="me">
         Follow <span>{X_HANDLE}</span> ↗
       </a>
+
+      <p className={styles.label}>
+        <ChapterMark char="名" label="Name" when="lifted" />
+      </p>
 
       <h1 id="name" className={styles.name} data-anchor="name">
         Kumma

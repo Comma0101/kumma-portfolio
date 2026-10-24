@@ -8,38 +8,22 @@ const work = [
   {
     name: "KOTA",
     line: "Restaurant phone calls become menu-verified kitchen tickets, in real time.",
-    kind: "Write-up",
     href: "/work/kota",
   },
   {
     name: "ARCHON",
     line: "One inspectable control plane for models, tools, memory and other coding agents.",
-    kind: "Write-up",
     href: "/work/archon",
   },
   {
     name: "Audiobook AI",
     line: "Any document, from a PDF to a web page, read as one continuous audiobook.",
-    kind: "Write-up",
     href: "/work/audiobook",
   },
   {
     name: "Trade ledger",
     line: "A messy broker export turned into a correct, per-trade profit-and-loss record.",
-    kind: "Write-up",
     href: "/work/robinhood-dashboard",
-  },
-  {
-    name: "Voice agent",
-    line: "An agent that takes phone orders for a demo diner with a real menu.",
-    kind: "Demo",
-    href: "/call",
-  },
-  {
-    name: "Stress suite",
-    line: "Fifty scenarios, a fixed rubric and a scoring script for real-time voice agents.",
-    kind: "Draft",
-    href: "/benchmark",
   },
 ];
 
@@ -62,7 +46,7 @@ export default function Work() {
               <span className={styles.index}>0{index + 1}</span>
               <span className={styles.workName}>{item.name}</span>
               <span className={styles.workLine}>{item.line}</span>
-              <span className={styles.workKind}>{item.kind} →</span>
+              <span className={styles.workKind} aria-hidden="true">→</span>
             </Link>
           </li>
         ))}

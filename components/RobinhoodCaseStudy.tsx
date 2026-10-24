@@ -184,10 +184,6 @@ export default function RobinhoodCaseStudy() {
             page documents how the record is built and where naive approaches get
             it wrong.
           </p>
-          <p className={`${styles.stackLine} ${grotesk.className}`}>
-            CSV Ingest · Transaction Pairing · FIFO · Options Matching · D3
-            Analytics
-          </p>
         </div>
 
         <div className={styles.heroProof}>

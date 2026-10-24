@@ -78,8 +78,8 @@ export default function ContactPage() {
           <p className={styles.eyebrow}>Write</p>
           <h1 className={styles.title}>Write to me.</h1>
           <p className={styles.subtitle}>
-            About an idea, a build, a demo call, a text worth reading slowly. I
-            read everything, and answer what I can.
+            About an idea, a text worth reading slowly, or something you are
+            making. I read everything, and answer what I can.
           </p>
         </section>
 

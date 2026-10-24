@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { bisect, between } from "./registration";
 import { useScrub } from "./useBeat";
+import ChapterMark from "./ChapterMark";
 import styles from "./Front.module.css";
 
 const lines = ["The body", "catches up."];
@@ -84,6 +85,9 @@ export default function CatchUp() {
 
   return (
     <section ref={ref} className={styles.catchUp} aria-labelledby="catch-up" data-thread="catch">
+      <p className={styles.label}>
+        <ChapterMark char="知" label="Understanding" />
+      </p>
       <p className={styles.first}>Understanding arrives first.</p>
       <h2 id="catch-up" className={styles.catchLine}>
         <span className={styles.outline} aria-hidden="true">

@@ -5,6 +5,7 @@ import Ink, { type Trace } from "./Ink";
 import { profiles } from "./brush";
 import { ensoRing } from "./enso";
 import { draw, reveal, useBeat } from "./useBeat";
+import ChapterMark from "./ChapterMark";
 import styles from "./Front.module.css";
 
 // The brush is about a fifth of the circle's radius.
@@ -25,8 +26,8 @@ export default function Line() {
 
   return (
     <section ref={ref} id="reason" className={styles.line} aria-label="Diamond Sutra" data-thread="reason">
-      <p className={styles.label} aria-hidden="true" data-anchor="reason">
-        The reason
+      <p className={styles.label} data-anchor="reason">
+        <ChapterMark char="理" label="The reason" />
       </p>
       <p className={styles.sutra} lang="zh-Hant">
         <span className={styles.column}>凡所有相，</span>
@@ -57,6 +58,7 @@ export default function Line() {
         className={styles.thread}
       />
       <div className={styles.gloss}>
+        <p className={styles.reasonLine}>Price is a form. To chase it is to take the form for the thing.</p>
         <p>
           All that has form is illusion. See form as no-form, and you see what is
           truly so.

@@ -5,6 +5,7 @@ import Ink, { type Trace } from "./Ink";
 import { anchor, threadX } from "./anchors";
 import { climb, fitPoints, type Point } from "./pen";
 import { draw, reveal, useBeat, useScrub } from "./useBeat";
+import ChapterMark from "./ChapterMark";
 import styles from "./Front.module.css";
 
 // Price leaves from the margin and runs off the page: a jagged climb in
@@ -84,7 +85,9 @@ function Small() {
 export default function Rules() {
   return (
     <section id="rules" className={styles.rules} aria-label="Rules" data-thread="rules">
-      <p className={styles.label}>Trade, in three rules</p>
+      <p className={styles.label}>
+        <ChapterMark char="律" label="Acting without knowing: three rules, learned trading" />
+      </p>
       <Chase />
       <Small />
       <p className={styles.rule} data-anchor="bored">

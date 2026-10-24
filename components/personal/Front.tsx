@@ -17,8 +17,8 @@ import styles from "./Front.module.css";
 
 // Order: who he is, that a life is authored and not only reacted to, how
 // change actually happens, what he practises, the
-// rules of one practice, the reason behind them, the invitation, and last
-// the way itself — a path walked. Nothing private: only the public bio,
+// rules for acting without knowing, the reason behind them, the way itself
+// — a path walked — and after it the invitation. Nothing private: only the public bio,
 // ideas, practice.
 export default function Front() {
   return (
@@ -37,10 +37,13 @@ export default function Front() {
       <Practice />
       <Rules />
       <Line />
-      <Close />
-      {/* The last screen: 道 whole, and the quiet things under it. */}
+      {/* 道 follows the reason directly: the way is the arc's last chapter. */}
       <div className={styles.ending}>
         <Dao />
+      </div>
+      {/* After the way, the invitation, and the quiet things under it. */}
+      <div className={styles.ending}>
+        <Close />
         <Colophon />
       </div>
     </div>

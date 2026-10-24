@@ -150,13 +150,8 @@ export default function KotaCaseStudy() {
             POS.
           </p>
           <p className={`${styles.heroContext} ${grotesk.className}`}>
-            Built for environments where missed calls mean lost revenue, and
-            speed matters more than perfect inputs. This page documents how the
-            system works, and where it does not.
-          </p>
-          <p className={`${styles.stackLine} ${grotesk.className}`}>
-            Voice Agent · LLM Orchestration · Menu Intelligence · Real-time
-            Streaming · Order Sync
+            Underneath it is one rule: clarify before you commit. This page
+            documents how the system works, and where it does not.
           </p>
         </div>
 
@@ -225,41 +220,6 @@ export default function KotaCaseStudy() {
                   <span className={styles.outputVal}>none</span>
                 </div>
               </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ── Problem ── */}
-        <section className={styles.section} data-animate>
-          <h2 className={`${styles.sectionLabel} ${grotesk.className}`}>
-            The problem
-          </h2>
-          <div className={styles.problemGrid}>
-            <div className={styles.problemItem}>
-              <p className={`${styles.problemLine} ${grotesk.className}`}>
-                Restaurants miss calls during peak hours.
-              </p>
-              <p className={`${styles.problemResult} ${grotesk.className}`}>
-                Lost orders. Lost revenue. No record of what was missed.
-              </p>
-            </div>
-            <div className={styles.problemItem}>
-              <p className={`${styles.problemLine} ${grotesk.className}`}>
-                Staff are forced to choose between phone and counter.
-              </p>
-              <p className={`${styles.problemResult} ${grotesk.className}`}>
-                Inconsistent handling. Customers repeat themselves. Errors
-                compound.
-              </p>
-            </div>
-            <div className={styles.problemItem}>
-              <p className={`${styles.problemLine} ${grotesk.className}`}>
-                Existing solutions require POS lock-in or workflow rewrites.
-              </p>
-              <p className={`${styles.problemResult} ${grotesk.className}`}>
-                Adoption fails because the cure is more invasive than the
-                disease.
-              </p>
             </div>
           </div>
         </section>

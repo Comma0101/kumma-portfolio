@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { useScrub } from "./useBeat";
+import ChapterMark from "./ChapterMark";
 import styles from "./Front.module.css";
 
 // The thread walks the staircase under the words (Thread), and the words
@@ -29,6 +30,9 @@ export default function Steps() {
 
   return (
     <section ref={ref} className={styles.steps} aria-labelledby="steps" data-thread="steps">
+      <p className={styles.label}>
+        <ChapterMark char="步" label="Steps" />
+      </p>
       <h2 id="steps" className={styles.stepsLine} data-anchor="steps">
         Three steps forward, two back.
       </h2>

@@ -5,6 +5,7 @@ import Ink, { type Trace } from "./Ink";
 import { anchor } from "./anchors";
 import { handLine } from "./pen";
 import { draw, reveal, useBeat } from "./useBeat";
+import ChapterMark from "./ChapterMark";
 import styles from "./Front.module.css";
 
 // 主: agency is an edit. One decisive stroke through the reflex — the
@@ -35,6 +36,9 @@ export default function Agency() {
 
   return (
     <section ref={ref} className={styles.agency} aria-labelledby="agency" data-thread="agency">
+      <p className={styles.label}>
+        <ChapterMark char="主" label="Agency" />
+      </p>
       <p className={styles.first}>Most of a life is reaction.</p>
       <h2 id="agency" className={styles.agencyLine}>
         <span aria-hidden="true">

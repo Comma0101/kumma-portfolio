@@ -52,12 +52,41 @@
 }
 
 /* The running head of a section: always the same height above it. */
+.opening > .label,
+.agency > .label,
+.catchUp > .label,
+.steps > .label,
 .practice > .label,
 .rules > .label,
 .line > .label {
   position: absolute;
   top: 7svh;
   left: var(--indent);
+}
+
+/* A chapter's running head: its character, written as the chapter
+   arrives (ChapterMark), and its name. */
+.chapterMark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.chapterGlyph {
+  position: relative;
+  flex: none;
+  width: clamp(2.2rem, 2.4vw, 2.8rem);
+  height: clamp(2.2rem, 2.4vw, 2.8rem);
+}
+
+.chapterStroke {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.ink.chapterStroke > g path {
+  fill-opacity: 0.95;
 }
 
 /* ---------- Ink ---------- */
@@ -204,17 +233,22 @@
 /* Links are underlined by the pen, and hovering writes the line again. */
 .follow,
 .elsewhere .title,
-.practiceLink {
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 10' preserveAspectRatio='none'%3E%3Cpath d='M1 5.6C38 4.2 74 6.6 110 5.1S170 4.4 199 4.9' fill='none' stroke='%23a3121b' stroke-width='2.2' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") no-repeat 0 100% / 100% 7px;
+.practiceDoor {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 10' preserveAspectRatio='none'%3E%3Cpath d='M1 5.6C38 4.2 74 6.6 110 5.1S170 4.4 199 4.9' fill='none' stroke='%23a3121b' stroke-width='2.2' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") no-repeat 0 100% / 0% 7px;
   text-decoration: none !important;
+  transition: background-size 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* Pointing at a room: the pen underlines its verb. */
+.practiceDoor:hover,
+.practiceDoor:focus-visible {
+  background-size: 100% 7px;
 }
 
 .follow:hover,
 .follow:focus-visible,
 .elsewhere a:hover .title,
-.elsewhere a:focus-visible .title,
-.practiceLink:hover,
-.practiceLink:focus-visible {
+.elsewhere a:focus-visible .title {
   animation: rewrite 0.5s cubic-bezier(0.65, 0, 0.35, 1);
 }
 
@@ -606,10 +640,18 @@
   line-height: 1.4;
 }
 
-.practiceLink {
-  font-weight: 600;
-  white-space: nowrap;
-  padding-bottom: 5px;
+.practiceArrow {
+  margin-left: 0.35em;
+  color: var(--grey);
+  font-family: var(--font-text), Georgia, serif;
+  font-size: 0.42em;
+  font-weight: 400;
+  vertical-align: 0.4em;
+}
+
+.practiceDoor:hover .practiceArrow,
+.practiceDoor:focus-visible .practiceArrow {
+  color: var(--red);
 }
 
 /* ---------- 道 ---------- */
@@ -618,6 +660,11 @@
   display: flex;
   flex-direction: column;
   min-height: 100svh;
+}
+
+.ending > .close {
+  flex: 1;
+  min-height: 0;
 }
 
 .dao {
@@ -863,6 +910,12 @@
   color: var(--red);
 }
 
+.gloss .reasonLine {
+  margin-bottom: 1.2rem;
+  color: var(--ink);
+  font-style: normal;
+}
+
 .howDrawn {
   max-width: 34rem;
   margin: 0 0 2.4rem;
@@ -1050,6 +1103,12 @@
 /* ---------- Phone ---------- */
 
 @media (max-width: 720px) {
+  /* The eight chapters on one line at phone width. */
+  .chapters {
+    gap: 0.2rem 0.55rem;
+    font-size: 1.55rem;
+  }
+
   .agencyLine {
     font-size: 11vw;
   }
