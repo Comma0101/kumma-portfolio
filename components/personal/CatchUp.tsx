@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { bisect, between } from "./registration";
 import { useScrub } from "./useBeat";
 import ChapterMark from "./ChapterMark";
+import ThenNow from "./ThenNow";
 import styles from "./Front.module.css";
 
 const lines = ["The body", "catches up."];
@@ -101,6 +102,10 @@ export default function CatchUp() {
           ))}
         </span>
       </h2>
+      <ThenNow
+        then="I used to think that understanding something intellectually meant I had already changed."
+        now="Now I recognize that the body and behavior take longer to catch up. I judge understanding not only by what I can explain, but by what I can consistently do."
+      />
     </section>
   );
 }

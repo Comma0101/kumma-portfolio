@@ -512,6 +512,36 @@
   padding: 16svh var(--gutter) 18svh var(--indent);
 }
 
+/* ---------- Then / now ---------- */
+
+.thenNow {
+  position: relative;
+  z-index: 2;
+  max-width: 34rem;
+  margin-top: 3.4rem;
+  font-size: clamp(1.08rem, 1.35vw, 1.25rem);
+  line-height: 1.5;
+}
+
+.thenNow p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+/* The past, in grey; the present, in ink, after it. */
+.then {
+  color: var(--grey);
+  font-style: italic;
+}
+
+.now {
+  margin-top: 0.7rem !important;
+}
+
+:global(html[data-front="motion"]) .front [data-now] {
+  opacity: 0;
+}
+
 /* ---------- Agency (主) ---------- */
 
 .agency {
@@ -535,6 +565,80 @@
 /* The reflex, struck: still on the paper, faded under the stroke. */
 .struck {
   opacity: 0.16;
+}
+
+/* Until it is struck, the word is the reader's to strike: horizontal
+   drags draw, vertical ones still scroll. */
+.agency {
+  touch-action: pan-y;
+}
+
+.agencyLine[data-interactive] {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.agencyLine[data-interactive] .struck {
+  cursor: crosshair;
+}
+
+.agency[data-struck-state="struck"] .struck {
+  cursor: auto;
+}
+
+/* The reader's own ink, over the word. */
+.readerInk {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.readerInk path {
+  fill: var(--red);
+  fill-opacity: 0.93;
+}
+
+.agencyHint {
+  margin: 1.6rem 0 0;
+  color: var(--grey);
+  font-size: clamp(1.05rem, 1.3vw, 1.2rem);
+  font-style: italic;
+}
+
+.agencyButton {
+  padding: 0 0 2px;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-style: normal;
+  cursor: pointer;
+}
+
+.agencyButton:hover,
+.agencyButton:focus-visible {
+  color: var(--red);
+}
+
+.agencyButton:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 4px;
+}
+
+:global(html[data-front="motion"]) .front [data-hint] {
+  opacity: 0;
+}
+
+/* Reduced motion: the page arrives finished, with nothing to ask. */
+@media (prefers-reduced-motion: reduce) {
+  .agencyHint {
+    display: none;
+  }
 }
 
 .agencyGloss {
@@ -636,13 +740,44 @@
   align-items: last baseline;
   align-content: center;
   gap: 1rem;
-  min-height: 18svh;
+  min-height: 14svh;
   padding: 1.2rem 0;
   border-top: 1px solid rgba(20, 20, 20, 0.8);
 }
 
 .practice li:last-child {
   border-bottom: 1px solid rgba(20, 20, 20, 0.8);
+}
+
+/* 習: the same stroke, again and again, under the practices. */
+.practiceSheet {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 18rem);
+  align-items: end;
+  gap: 1.4rem 3rem;
+  margin-top: 7svh;
+}
+
+.sheetInk g path,
+.sheetInk g circle {
+  fill: currentColor;
+  fill-opacity: 0.93;
+}
+
+.practiceSheet .sheetInk {
+  position: static;
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.practiceCaption {
+  margin: 0;
+  color: var(--grey);
+  font-size: clamp(1.05rem, 1.3vw, 1.2rem);
+  font-style: italic;
+  line-height: 1.45;
+  text-wrap: pretty;
 }
 
 /* Red belongs to the line: the numerals are grey; the barbs mark them. */
@@ -1165,6 +1300,10 @@
 /* ---------- Phone ---------- */
 
 @media (max-width: 720px) {
+  .practiceSheet {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .contents ol {
     grid-template-columns: minmax(0, 1fr);
   }

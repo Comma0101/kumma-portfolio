@@ -29,6 +29,8 @@ TEXT = (
     "".join(chr(c) for c in range(0x20, 0x7F))
     + "".join(chr(c) for c in range(0xA0, 0x100))
     + "āīūĀĪŪ‘’“”—–…→↗·•©"
+    # The Greek on Study (texts.ts), with its accents.
+    + "".join(sorted({c for c in (ROOT / "components" / "personal" / "texts.ts").read_text(encoding="utf-8") if "\u0370" <= c <= "\u03ff" or "\u1f00" <= c <= "\u1fff"}))
 )
 FEATURES = ["kern", "liga", "clig", "calt", "smcp", "c2sc", "onum", "lnum", "pnum", "tnum", "ss01"]
 

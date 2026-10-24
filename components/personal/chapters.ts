@@ -49,7 +49,7 @@ export const chapters = [
   },
   {
     mark: "律",
-    label: "Rules",
+    label: "Measure",
     target: '[data-thread="rules"]',
     id: "rules",
     parts: "彳 聿",

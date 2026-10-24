@@ -28,8 +28,9 @@ MANIFEST = FONTS / "NotoSerifTC-subset.txt"
 
 cjk = re.compile(r"[　-〿㐀-鿿＀-￯]")
 text = set()
-# Every page source, and the chapter list the margin and the colophon share.
-for path in [*SOURCES.glob("*.tsx"), SOURCES / "chapters.ts"]:
+# Every page source, the chapter list the margin and the colophon share,
+# and the passages on Study.
+for path in [*SOURCES.glob("*.tsx"), SOURCES / "chapters.ts", SOURCES / "texts.ts"]:
     text.update(cjk.findall(path.read_text(encoding="utf-8")))
 chars = "".join(sorted(text))
 

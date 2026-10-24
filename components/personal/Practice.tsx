@@ -1,8 +1,10 @@
 import Link from "next/link";
 import ChapterMark from "./ChapterMark";
+import PracticeSheet from "./PracticeSheet";
 import styles from "./Front.module.css";
 
 const practice = [
+  { word: "Train.", line: "Most days. Where understanding has to become physical." },
   { word: "Trade.", line: "Options. A craft, not a casino." },
   {
     word: "Build.",
@@ -44,6 +46,7 @@ export default function Practice() {
           </li>
         ))}
       </ol>
+      <PracticeSheet />
     </section>
   );
 }

@@ -3,6 +3,7 @@ import Shell from "./Shell";
 import { label, noteDate, type Lang, type Note } from "./notes";
 import { scClass } from "./typeSC";
 import HtmlLang from "./HtmlLang";
+import { texts } from "./texts";
 import front from "./Front.module.css";
 import styles from "./Pages.module.css";
 
@@ -24,6 +25,38 @@ export function NotesIndex({ notes }: { notes: Note[] }) {
       <Horizon />
       <p className={front.workLede}>What the reading leaves. Written slowly, for myself first.</p>
 
+      {/* The texts the homepage names, each in its own script and
+          direction, each with its own mark: side by side, not joined. */}
+      <section className={styles.texts} aria-labelledby="texts">
+        <h2 id="texts" className={front.label}>
+          Five texts
+        </h2>
+        <p className={styles.textsLede}>
+          “I want to preserve the differences between traditions rather than force them into one universal
+          philosophy.”
+        </p>
+        <ol className={styles.textList}>
+          {texts.map((text) => (
+            <li key={text.id} className={styles.text} data-vertical={text.vertical ? "" : undefined}>
+              <p className={styles.textOriginal} lang={text.lang}>
+                {text.original}
+              </p>
+              <div className={styles.textGloss}>
+                <p className={styles.textSource}>
+                  <span>{text.tradition}</span> {text.source}
+                </p>
+                {text.translation && <p className={styles.textTranslation}>{text.translation}</p>}
+                <p className={styles.textNote}>{text.note}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+        <p className={styles.textsAfter}>
+          The Chinese is given as it was written, in columns; the English beside it is a plain rendering for this page.
+        </p>
+      </section>
+
+      <h2 className={`${front.label} ${styles.essaysHead}`}>Essays</h2>
       <ol className={front.workList}>
         {notes.map((note, index) => (
           <li key={note.slug}>

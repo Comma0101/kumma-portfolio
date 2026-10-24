@@ -109,7 +109,7 @@ const spine = (
   // Practice: a tally barb from the margin to each numeral — one stroke
   // out, one back, the way a margin is marked — each a little shorter,
   // a hand tiring, not a form.
-  for (let i = 0; i < 4; i += 1) {
+  for (let i = 0; i < 5; i += 1) {
     const numeral = anchor(front, `tick-${i}`);
     if (!numeral) continue;
     const y = numeral.y + numeral.height * 0.5;
