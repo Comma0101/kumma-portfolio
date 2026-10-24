@@ -68,8 +68,38 @@
    arrives (ChapterMark), and its name. */
 .chapterMark {
   display: inline-flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.75rem;
+}
+
+.chapterText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+/* What the character shows (chapters.ts), read off it once written. */
+.chapterReading {
+  max-width: 24rem;
+  font-kerning: none;
+  color: var(--grey);
+  font-size: 0.98rem;
+  font-style: italic;
+  font-variant-caps: normal;
+  letter-spacing: 0;
+  line-height: 1.35;
+}
+
+.chapterReading span {
+  margin-right: 0.3em;
+  color: var(--ink);
+  font-family: var(--font-hand), var(--font-tc), serif;
+  font-style: normal;
+  letter-spacing: 0.1em;
+}
+
+:global(html[data-front="motion"]) .front [data-reading] {
+  opacity: 0;
 }
 
 .chapterGlyph {
@@ -902,29 +932,50 @@
   color: var(--red);
 }
 
-.chapters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.2rem 1.1rem;
-  margin: 0 0 1rem;
-  font-family: var(--font-hand), var(--font-tc), serif;
-  font-size: clamp(1.9rem, 3vw, 2.6rem);
-  line-height: 1.2;
+.contents ol {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem 3rem;
+  max-width: 64rem;
+  margin: 0 0 2.6rem;
+  padding: 0;
+  list-style: none;
 }
 
-.chapters a {
+.contents a {
+  display: grid;
+  grid-template-columns: 2.6rem minmax(0, 1fr);
+  column-gap: 0.9rem;
+  align-items: baseline;
   text-decoration: none;
 }
 
-.chapters a:hover,
-.chapters a:focus-visible {
-  color: var(--red);
+.contentsMark {
+  grid-row: span 2;
+  font-family: var(--font-hand), var(--font-tc), serif;
+  font-size: 2.2rem;
+  line-height: 1;
 }
 
-.gloss .reasonLine {
-  margin-bottom: 1.2rem;
-  color: var(--ink);
-  font-style: normal;
+.contentsLabel {
+  font-size: 0.95rem;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.1em;
+  color: var(--grey);
+}
+
+.contentsReading {
+  font-size: 1.05rem;
+  font-style: italic;
+  /* Junicode Italic kerns the colon into the hook of h ("mouth:" reads
+     "moutlx"); the readings are full of colons. */
+  font-kerning: none;
+  line-height: 1.35;
+}
+
+.contents a:hover .contentsMark,
+.contents a:focus-visible .contentsMark {
+  color: var(--red);
 }
 
 .howDrawn {
@@ -1114,10 +1165,8 @@
 /* ---------- Phone ---------- */
 
 @media (max-width: 720px) {
-  /* The eight chapters on one line at phone width. */
-  .chapters {
-    gap: 0.2rem 0.55rem;
-    font-size: 1.55rem;
+  .contents ol {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .agencyLine {
