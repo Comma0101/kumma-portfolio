@@ -75,8 +75,8 @@
 .chapterGlyph {
   position: relative;
   flex: none;
-  width: clamp(2.2rem, 2.4vw, 2.8rem);
-  height: clamp(2.2rem, 2.4vw, 2.8rem);
+  width: clamp(2.6rem, 3.2vw, 3.6rem);
+  height: clamp(2.6rem, 3.2vw, 3.6rem);
 }
 
 .chapterStroke {
@@ -663,8 +663,19 @@
 }
 
 .ending > .close {
-  flex: 1;
+  flex: none;
   min-height: 0;
+  padding: 0 var(--gutter) 0 var(--indent);
+}
+
+/* At the end the invitation is a line under the way, not a second title. */
+.ending .followBig {
+  margin-left: -0.04em;
+  font-size: clamp(2.2rem, 5.6vw, 5.6rem);
+}
+
+.ending .daoGlyph {
+  width: min(52svh, 46vw);
 }
 
 .dao {
@@ -1178,6 +1189,10 @@
 
   .followBig {
     font-size: 18.8vw;
+  }
+
+  .ending .followBig {
+    font-size: 10vw;
   }
 
   .rule {

@@ -42,9 +42,14 @@ export default function ChapterMark({ char, label, when = "beat" }: { char: stri
   const id = `chapter-${useId().replace(/:/g, "")}`;
   const strokes = prepared[char] ?? [];
 
-  useBeat(ref, (root, tl) => {
-    if (when === "beat") write(root, tl);
-  });
+  // Written as the chapter comes into view, before its own beat plays.
+  useBeat(
+    ref,
+    (root, tl) => {
+      if (when === "beat") write(root, tl);
+    },
+    { line: "-6%" },
+  );
 
   useEffect(() => {
     const root = ref.current;

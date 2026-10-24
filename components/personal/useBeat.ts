@@ -50,7 +50,13 @@ function keepMeasured() {
 // A triggered beat plays once when its line reaches the lower third of the
 // viewport, then holds. Reduced motion never builds it, so the page stays
 // in its finished state.
-export function useBeat<T extends HTMLElement>(ref: RefObject<T>, build: Build<T>) {
+export function useBeat<T extends HTMLElement>(
+  ref: RefObject<T>,
+  build: Build<T>,
+  // How far above the viewport's bottom the beat waits (a chapter's
+  // character is written as soon as its chapter shows).
+  { line = "-28%" }: { line?: string } = {},
+) {
   useEffect(() => {
     const root = ref.current;
     if (!root || reduced()) return;
@@ -65,7 +71,7 @@ export function useBeat<T extends HTMLElement>(ref: RefObject<T>, build: Build<T
           tl.play();
           observer?.disconnect();
         },
-        { rootMargin: "0px 0px -28% 0px" },
+        { rootMargin: `0px 0px ${line} 0px` },
       );
       observer.observe(root);
     }, root);

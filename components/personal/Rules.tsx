@@ -86,7 +86,7 @@ export default function Rules() {
   return (
     <section id="rules" className={styles.rules} aria-label="Rules" data-thread="rules">
       <p className={styles.label}>
-        <ChapterMark char="律" label="Acting without knowing: three rules, learned trading" />
+        <ChapterMark char="律" label="Acting without knowing: three rules, learned at the screen" />
       </p>
       <Chase />
       <Small />

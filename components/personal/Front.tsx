@@ -37,12 +37,10 @@ export default function Front() {
       <Practice />
       <Rules />
       <Line />
-      {/* 道 follows the reason directly: the way is the arc's last chapter. */}
+      {/* The last screen: 道, the arc's last chapter, straight after the
+          reason; under it, small, the invitation and the quiet things. */}
       <div className={styles.ending}>
         <Dao />
-      </div>
-      {/* After the way, the invitation, and the quiet things under it. */}
-      <div className={styles.ending}>
         <Close />
         <Colophon />
       </div>
