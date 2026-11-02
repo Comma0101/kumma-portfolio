@@ -10,6 +10,7 @@ import {
   scrollBehaviorForMotion,
   shouldRestoreMenuFocus,
 } from "./navigationBehavior";
+import { isPaperRoute } from "@/components/personal/routes";
 
 interface NavLink {
   name: string;
@@ -301,10 +302,16 @@ const Navigation = () => {
     return activeSection === href.substring(1);
   };
 
-  if (pathname === "/build" || pathname === "/build/") return null;
+  if (
+    isPaperRoute(pathname) ||
+    pathname === "/build" ||
+    pathname === "/build/"
+  )
+    return null;
 
   return (
     <nav
+      data-chrome="old"
       className={`${styles.navigation} ${
         isScrolled || !isHomePage ? styles.pageNav : ""
       } ${isNavVisible ? styles.navigationVisible : ""}`}
@@ -319,7 +326,7 @@ const Navigation = () => {
           onClick={scrollToTop}
           aria-label="Kumma - Scroll to top"
         >
-          <span className={styles.logoWordmark}>Kumma</span>
+          <span className={styles.logoWordmark}>Kumma Wu</span>
           <span className={styles.logoMeta}>Independent systems builder</span>
         </a>
 

@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { projects } from "@/data/projectData";
 import { getAllPostIdsForAllLocales } from "@/lib/posts";
+import { movedFrom } from "@/components/personal/routes";
 
 const BASE = "https://kumma.me";
 
@@ -31,10 +32,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/patterns/telephony-failure-modes",
     "/patterns/eval-harness",
     "/patterns/latency-budgets",
+    "/work",
     "/work/kota",
     "/work/audiobook",
     "/work/archon",
     "/work/robinhood-dashboard",
+    "/notes",
+    "/notes/on-emotions",
+    "/notes/on-emotions/zh",
+    "/notes/same-light",
+    "/notes/same-light/zh",
+    "/notes/the-stranger",
+    "/studies",
   ].map((p) => ({
     url: `${BASE}${p}`,
     lastModified: new Date(),
@@ -47,5 +56,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${BASE}/blog/${params.locale}/${params.slug}`,
     lastModified: new Date(),
   }));
-  return [...staticRoutes, ...projectRoutes, ...postRoutes];
+  // A moved address is not a page of its own.
+  return [...staticRoutes, ...projectRoutes, ...postRoutes].filter(
+    ({ url }) => !movedFrom(url.slice(BASE.length)),
+  );
 }

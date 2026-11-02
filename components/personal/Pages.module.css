@@ -1,0 +1,627 @@
+/* The inner pages in the homepage's voice: notes (what the reading
+   leaves) and studies (what the pen draws). Tokens come from .front. */
+
+/* ---------- The pen under a title ---------- */
+
+.drawn path {
+  stroke-dasharray: 1 1;
+  animation: set-down 0.9s cubic-bezier(0.55, 0, 0.75, 1) 0.25s both;
+}
+
+@keyframes set-down {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drawn path {
+    animation: none;
+  }
+}
+
+.sc {
+  font-family: var(--font-sc), "Noto Serif SC", "Songti SC", serif;
+  font-variant-caps: normal;
+  letter-spacing: 0.04em;
+}
+
+/* ---------- Notes ---------- */
+
+/* Titles are sentences, not names: they may wrap. */
+.noteName {
+  white-space: normal;
+  font-size: clamp(1.6rem, 2.4vw, 2.6rem);
+  font-weight: 130;
+  font-variation-settings: "wdth" 130;
+  line-height: 1.02;
+}
+
+.noteItem {
+  grid-template-columns: 3rem minmax(0, 1fr) minmax(0, 1.15fr) 13rem;
+}
+
+.note {
+  max-width: 46rem;
+}
+
+.note > .noteTitle {
+  margin: 1.4rem 0 0 -0.04em;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(2.6rem, 6.4vw, 6.4rem);
+  font-weight: 160;
+  font-variation-settings: "wdth" 150;
+  letter-spacing: -0.025em;
+  line-height: 0.98;
+  text-wrap: balance;
+}
+
+.note > svg {
+  width: min(100%, 40rem);
+}
+
+.noteLede {
+  margin: 2rem 0 0;
+  max-width: 36rem;
+  color: var(--grey);
+  font-size: clamp(1.2rem, 1.7vw, 1.45rem);
+  font-style: italic;
+  line-height: 1.45;
+}
+
+.noteBody {
+  margin-top: 10svh;
+  max-width: 38rem;
+  font-size: clamp(1.18rem, 1.45vw, 1.32rem);
+  line-height: 1.62;
+  font-variant-numeric: oldstyle-nums;
+  hanging-punctuation: first;
+}
+
+.noteBody p {
+  margin: 0 0 1.2em;
+}
+
+/* No word left alone on a line, in any of the paper's running text. */
+.noteBody :is(p, li),
+.noteLede,
+.statement p,
+.plateCaption p {
+  text-wrap: pretty;
+}
+
+/* A break before anything is written is no break. */
+.noteBody > hr:first-child {
+  display: none;
+}
+
+.noteBody h2 {
+  margin: 2.6em 0 0.8em;
+  font-size: 1.05rem;
+  font-weight: 600;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.1em;
+  color: var(--grey);
+}
+
+/* A section break is the pen touching down once: a short red stroke. */
+.noteBody hr {
+  width: 3.2rem;
+  height: 8px;
+  margin: 3em 0;
+  border: 0;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 8' preserveAspectRatio='none'%3E%3Cpath d='M1.5 5.2C14 3.6 30 5.8 58 3.4' fill='none' stroke='%23a3121b' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat center / 100% 100%;
+}
+
+.noteBody ul,
+.noteBody ol {
+  margin: 0 0 1.4em;
+  padding-left: 1.4em;
+}
+
+.noteBody li {
+  margin-bottom: 0.45em;
+}
+
+.noteBody ul li::marker {
+  content: "–  ";
+  color: var(--red);
+}
+
+.noteBody strong {
+  font-weight: 600;
+}
+
+.noteBody blockquote {
+  margin: 2em 0;
+  padding: 0.1em 0 0.1em 1.4em;
+  border-left: 2px solid var(--red);
+  font-size: 1.12em;
+  font-style: italic;
+}
+
+.noteBody blockquote p {
+  margin: 0;
+}
+
+.noteBody a {
+  text-decoration-color: var(--red);
+  text-underline-offset: 0.18em;
+}
+
+.noteNav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem 2.4rem;
+  margin-top: 12svh;
+  padding-top: 1.4rem;
+  border-top: 1px solid rgba(20, 20, 20, 0.8);
+  font-size: 1.05rem;
+}
+
+.noteNav a {
+  text-decoration: none;
+}
+
+.noteNav a:hover {
+  color: var(--red);
+}
+
+.noteNav .sc {
+  font-size: 1.1em;
+}
+
+/* The Chinese edition: printed Song, looser lines, no italics (CJK has
+   none; emphasis stays in the words). */
+.zh .note > .noteTitle {
+  font-family: var(--font-sc), "Noto Serif SC", "Songti SC", serif;
+  font-size: clamp(2.2rem, 5.4vw, 5rem);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+}
+
+.zh .noteLede {
+  font-family: var(--font-sc), "Noto Serif SC", "Songti SC", serif;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.9;
+  letter-spacing: 0.03em;
+}
+
+.zh .noteBody {
+  font-family: var(--font-sc), "Noto Serif SC", "Songti SC", serif;
+  font-size: clamp(1.1rem, 1.3vw, 1.22rem);
+  font-weight: 400;
+  line-height: 2;
+  letter-spacing: 0.04em;
+  text-align: justify;
+  line-break: strict;
+}
+
+.zh .noteBody h2 {
+  font-variant-caps: normal;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+}
+
+.zh .noteBody blockquote {
+  font-style: normal;
+}
+
+.zh .note > p:first-child a,
+.zh .note > p:first-child time {
+  font-family: var(--font-sc), "Noto Serif SC", serif;
+  font-variant-caps: normal;
+}
+
+/* ---------- Studies ---------- */
+
+.statement {
+  max-width: 38rem;
+  margin-top: 8svh;
+  font-size: clamp(1.15rem, 1.5vw, 1.4rem);
+  line-height: 1.55;
+}
+
+.statement p {
+  margin: 0 0 1em;
+}
+
+.plates {
+  margin-top: 14svh;
+}
+
+/* A plate: the drawing with paper all round it, and its caption to one
+   side at the baseline; sides alternate down the page. */
+.plate {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  align-items: end;
+  gap: 2rem clamp(2rem, 6vw, 7rem);
+  margin: 0 0 18svh;
+}
+
+.plate[data-side="right"] {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+}
+
+.plate[data-side="right"] .plateArt {
+  order: 2;
+}
+
+.plateArt {
+  position: relative;
+  width: 100%;
+  max-width: 36rem;
+}
+
+.plate[data-side="right"] .plateArt {
+  justify-self: end;
+}
+
+.plateArt .art {
+  position: static;
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.art g > path {
+  fill: currentColor;
+  fill-opacity: 0.9;
+}
+
+/* The face: the homepage's canvas, at plate size. */
+.platePortrait {
+  width: min(100%, 30rem);
+  margin: 0;
+}
+
+.platePortrait canvas {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+}
+
+.plateCaption {
+  max-width: 26rem;
+  padding-bottom: 1rem;
+}
+
+.plateGlyph {
+  display: block;
+  margin-bottom: 1.4rem;
+  font-family: var(--font-hand), var(--font-tc), serif;
+  font-size: clamp(3rem, 5vw, 4.6rem);
+  line-height: 1;
+}
+
+.plateTitle {
+  margin: 0.5rem 0 0.9rem;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(1.6rem, 2.4vw, 2.4rem);
+  font-weight: 150;
+  font-variation-settings: "wdth" 150;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.plateCaption p {
+  margin: 0 0 1.4rem;
+  font-size: clamp(1.05rem, 1.3vw, 1.2rem);
+  line-height: 1.5;
+}
+
+.again {
+  padding: 0.3rem 0;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  background: none;
+  color: var(--grey);
+  font: inherit;
+  font-size: 1rem;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+}
+
+.again:hover,
+.again:focus-visible {
+  color: var(--red);
+}
+
+.again:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 4px;
+}
+
+/* ---------- Paper: the older pages, re-inked ---------- */
+
+.paperMain.paperMain {
+  padding: 0;
+}
+
+/* The dark site's tokens, for ink on paper. (--paper there is the text
+   colour; here it is ink.) */
+.paperInk {
+  --canvas: #f2efe8;
+  --background: #f2efe8;
+  /* Cards are not filled on paper: their surface is the page. */
+  --surface: #f2efe8;
+  --raised: #f2efe8;
+  --surface-raised: #f2efe8;
+  --radius-card: 0;
+  --radius-control: 0;
+  --paper: #141414;
+  --foreground: #141414;
+  --steel: #4f4b45;
+  --muted: #4f4b45;
+  --faint: #66625b;
+  /* Highlight is ink; red is kept for the pen's own marks (var(--red)). */
+  --signal: #141414;
+  --signal-strong: #141414;
+  /* The dark site's accent was decoration; on paper, red is only the pen. */
+  --sand: #4f4b45;
+  --accent: #4f4b45;
+  --accent-strong: #141414;
+  --line: rgba(20, 20, 20, 0.16);
+  --line-strong: rgba(20, 20, 20, 0.32);
+  --font-sans: var(--font-text);
+  --font-mono: var(--font-text);
+  color: var(--paper);
+}
+
+/* Their own faces (set per element) give way to the homepage's: the book
+   face for everything, the display face for titles. */
+.paperInk.paperInk * {
+  font-family: var(--font-text), Georgia, serif;
+}
+
+.paperInk.paperInk :is(h1, h2),
+.paperInk.paperInk :is(h1, h2) * {
+  font-family: var(--font-display), Georgia, serif;
+  font-style: normal;
+  font-weight: 150;
+  font-variation-settings: "wdth" 150;
+  letter-spacing: -0.02em;
+}
+
+.paperInk.paperInk h1,
+.paperInk.paperInk h1 * {
+  font-weight: 190;
+  font-variation-settings: "wdth" 190;
+  letter-spacing: -0.03em;
+}
+
+.paperInk.paperInk h3 {
+  font-weight: 600;
+}
+
+/* Junicode is small on its body: set its x-height near the faces these
+   pages were drawn for, so their sizes still read. */
+.paperInk.paperInk :not(h1, h2, h1 *, h2 *) {
+  font-size-adjust: 0.5;
+}
+
+/* A section's running head is a label, as on the homepage, not a title. */
+.paperInk.paperInk h2[class*="sectionLabel"] {
+  font-family: var(--font-text), Georgia, serif;
+  font-size: 1rem;
+  font-weight: 500;
+  font-variation-settings: normal;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.12em;
+  text-transform: none;
+  color: var(--grey);
+}
+
+/* Old idioms, re-cut: chips and tags become small-caps words; fields are
+   one rule to write on; nothing is rounded. */
+.paperInk.paperInk :is([class*="chip_"], [class*="chip "], [class*="Tag_"], [class*="Tag "]) {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.08em;
+  text-transform: none;
+}
+
+.paperInk.paperInk [class*="chipDot"] {
+  display: none;
+}
+
+.paperInk.paperInk [class*="chipRow"] {
+  column-gap: 1.6rem;
+}
+
+.paperInk.paperInk :is(input, textarea, select) {
+  padding-inline: 0;
+  border: 0;
+  border-bottom: 1px solid var(--line-strong);
+  border-radius: 0;
+  background: transparent;
+  color: var(--paper);
+}
+
+.paperInk.paperInk :is(input, textarea, select):focus {
+  outline: none;
+  border-bottom-color: var(--red);
+}
+
+/* A primary action is words with the pen under them, not a red slab. */
+.paperInk.paperInk :is(a[class*="primary"], button[class*="submit"]) {
+  min-height: 0;
+  padding: 0.2rem 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--paper);
+  font-size: 1.1rem;
+  font-variant-caps: normal;
+  letter-spacing: 0;
+  text-transform: none;
+  text-decoration: underline;
+  text-decoration-color: var(--red);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.32em;
+  cursor: pointer;
+}
+
+.paperInk.paperInk a[class*="ghost"] {
+  border: 0;
+  padding-inline: 0;
+  font-size: 1.1rem;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.paperInk.paperInk a:not([class]) {
+  text-decoration-color: var(--red);
+}
+
+/* ---------- Study: five texts ---------- */
+
+.texts {
+  margin-top: 12svh;
+}
+
+.textsLede {
+  max-width: 34rem;
+  margin: 1.2rem 0 0;
+  font-size: clamp(1.2rem, 1.6vw, 1.45rem);
+  font-style: italic;
+  line-height: 1.45;
+}
+
+.textList {
+  margin: 8svh 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* One text: its words in their own form, and beside them the source, a
+   rendering, and his note. Each opens with its own short mark — five
+   strokes, never one line. */
+.text {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: 2rem clamp(2rem, 6vw, 6rem);
+  align-items: start;
+  max-width: 68rem;
+  padding: 9svh 0 0;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 8' preserveAspectRatio='none'%3E%3Cpath d='M1.5 5.2C14 3.6 30 5.8 58 3.4' fill='none' stroke='%23a3121b' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat 0 0 / 3.2rem 8px;
+  margin-bottom: 6svh;
+}
+
+.textOriginal {
+  margin: 0;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(1.8rem, 3.2vw, 3rem);
+  font-weight: 120;
+  font-variation-settings: "wdth" 120;
+  line-height: 1.12;
+  text-wrap: balance;
+}
+
+.textOriginal:lang(grc) {
+  font-family: var(--font-text), Georgia, serif;
+  font-size: clamp(1.8rem, 3vw, 2.7rem);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.25;
+}
+
+/* Chinese stands in columns, read right to left, as it was printed. */
+.text[data-vertical] .textOriginal {
+  justify-self: start;
+  max-height: 22rem;
+  font-family: var(--font-tc), serif;
+  font-size: clamp(2rem, 3.4vw, 3.2rem);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  line-height: 1.5;
+  /* Mixed orientation lets the font's vertical punctuation (，。……) stand
+     in the column. */
+  writing-mode: vertical-rl;
+}
+
+.textGloss {
+  max-width: 34rem;
+}
+
+.textSource {
+  margin: 0 0 1rem;
+  color: var(--grey);
+  font-size: 1rem;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.1em;
+}
+
+.textSource span {
+  color: var(--ink);
+}
+
+.textTranslation {
+  margin: 0 0 1.1rem;
+  font-size: clamp(1.15rem, 1.5vw, 1.35rem);
+  font-style: italic;
+  line-height: 1.4;
+}
+
+.textNote {
+  margin: 0;
+  font-size: clamp(1.08rem, 1.3vw, 1.22rem);
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.textsAfter {
+  max-width: 34rem;
+  margin: 0;
+  color: var(--grey);
+  font-size: 0.98rem;
+  font-style: italic;
+}
+
+.essaysHead {
+  margin-top: 14svh;
+}
+
+.essaysHead + ol {
+  margin-top: 2rem;
+}
+
+@media (max-width: 720px) {
+  .noteItem {
+    grid-template-columns: 2.2rem minmax(0, 1fr);
+  }
+
+  .noteBody {
+    margin-top: 6svh;
+  }
+
+  .plate,
+  .plate[data-side="right"] {
+    grid-template-columns: minmax(0, 1fr);
+    margin-bottom: 12svh;
+  }
+
+  .plate[data-side="right"] .plateArt {
+    order: 0;
+    justify-self: start;
+  }
+
+  .text {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .text[data-vertical] .textOriginal {
+    max-height: 16rem;
+  }
+}

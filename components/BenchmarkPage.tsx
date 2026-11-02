@@ -82,18 +82,10 @@ const rubric = [
   },
 ];
 
-const rubricCols = [
-  "Ticket accuracy",
-  "Clarification",
-  "Latency",
-  "Containment",
-  "Graceful failure",
-];
-
 // Published third-party component figures for the KOTA stack (Twilio + Deepgram).
 // This is a PROJECTED envelope from vendors'/benchmarks' numbers — NOT a measured
 // run of this suite. Each row is cited. The measured 0–2 scores replace nothing
-// here; they land in the Results table once the suite runs on the live line.
+// here; measured scores will be published once the suite runs on the live line.
 const expectedEnvelope: {
   stage: string;
   figure: string;
@@ -154,15 +146,6 @@ export default function BenchmarkPage() {
 
   return (
     <div ref={root} className={bs.page}>
-      <header className={bs.header}>
-        <a href="#top" className={bs.wordmark}>
-          Kumma
-        </a>
-        <a href="#submit" className={bs.headerCta}>
-          Submit scores
-        </a>
-      </header>
-
       <div id="top">
         {/* Hero */}
         <section className={`${bs.hero} ${bs.shell}`}>
@@ -181,7 +164,7 @@ export default function BenchmarkPage() {
             </span>
             <span className={s.chip}>6 categories</span>
             <span className={s.chip}>0–2 rubric, 5 dimensions</span>
-            <span className={`${s.chip} ${s.chipMuted}`}>repo: coming</span>
+            <span className={`${s.chip} ${s.chipMuted}`}>draft v1 · not yet released</span>
           </div>
         </section>
 
@@ -200,8 +183,8 @@ export default function BenchmarkPage() {
             anyone can rerun the exact conditions.
           </p>
           <p className={s.meta}>
-            Distribution: audio + expected outcomes + scoring script.{" "}
-            <span className={s.repoTag}>repo: coming</span>
+            Distribution: audio, expected outcomes and the scoring script, in one
+            repository when the suite is released.
           </p>
         </section>
 
@@ -354,74 +337,25 @@ export default function BenchmarkPage() {
           </p>
         </section>
 
-        {/* Results — empty state */}
-        <section className={`${bs.section} ${bs.shell}`}>
-          <h2 className={`${bs.h2} ${bs.reveal}`} data-reveal>
-            Results
-          </h2>
-          <p className={`${s.lead} ${s.leadTight} ${bs.reveal}`} data-reveal>
-            KOTA&rsquo;s scores publish here once the suite runs — warts included.
-            No results exist yet; the table below shows the structure they land
-            in.
-          </p>
-          <div className={`${s.tableFrame} ${bs.reveal}`} data-reveal>
-            <div className={s.awaiting}>
-              <span className={s.awaitingDot} />
-              Awaiting first run — no scores recorded.
-            </div>
-            <div className={s.tableScroll}>
-              <table className={s.table}>
-                <caption>
-                  Mean score per category (0–2 per dimension) — awaiting data
-                </caption>
-                <thead>
-                  <tr>
-                    <th scope="col">Category</th>
-                    {rubricCols.map((c) => (
-                      <th scope="col" key={c}>
-                        {c}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {taxonomy.map((t) => (
-                    <tr key={t.name}>
-                      <th scope="row" className={s.cellName}>
-                        {t.name}
-                      </th>
-                      {rubricCols.map((c) => (
-                        <td key={c} className={s.pending} aria-label="pending">
-                          &mdash;
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
         {/* Third-party submissions */}
         <section
           id="submit"
           className={`${bs.section} ${bs.shell} ${bs.consult}`}
         >
           <h2 className={`${bs.h2} ${bs.reveal}`} data-reveal>
-            Submit your own scores
+            How submissions will work
           </h2>
           <p className={`${s.lead} ${s.leadTight} ${bs.reveal}`} data-reveal>
-            Ran your agent against the suite? Add its column to the public
-            record. Submissions go in as a pull request so the method is visible
-            alongside the numbers.
+            Once the suite is released, anyone can add their agent&rsquo;s column
+            to the public record. Submissions go in as a pull request so the
+            method is visible alongside the numbers.
           </p>
           <ol className={`${s.steps} ${bs.reveal}`} data-reveal>
             <li className={s.stepItem}>
               <p className={s.stepBody}>
                 <strong>Clone the repo</strong> and run all {total} clips through
                 your agent with the audio and expected outcomes as shipped — no
-                edits to the scenarios. <span className={s.repoTag}>repo: coming</span>
+                edits to the scenarios.
               </p>
             </li>
             <li className={s.stepItem}>
@@ -448,10 +382,6 @@ export default function BenchmarkPage() {
         </section>
       </div>
 
-      <footer className={bs.footer}>
-        <span>© {new Date().getFullYear()} Kumma — Los Angeles</span>
-        <span className={s.repoTag}>Voice Agent Stress Suite v1 · repo coming</span>
-      </footer>
     </div>
   );
 }

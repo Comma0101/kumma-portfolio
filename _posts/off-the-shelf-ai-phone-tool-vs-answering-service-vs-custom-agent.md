@@ -2,7 +2,7 @@
 title: "Off-the-shelf AI phone tool, an answering service, or a custom agent: what should a small business pick?"
 excerpt: "Off-the-shelf voice AI, an answering service, or a custom-built agent? An honest, no-hype breakdown of which one a small business should actually pick."
 date: "2026-07-08"
-author: "Kumma"
+author: "Kumma Wu"
 tags: ["AI receptionist", "Voice AI", "Answering service", "Small business"]
 category: "Voice AI"
 featured: false

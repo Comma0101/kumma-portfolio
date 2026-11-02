@@ -56,6 +56,16 @@ const contrastRatio = (first: number[], second: number[]) => {
 };
 
 const rgbaColor = (block: string) => {
+  // A token mixed toward transparent reads as that token at the mix's alpha.
+  const mixed = block.match(
+    /color:\s*color-mix\(in srgb,\s*var\(--([a-z-]+)\)\s+([0-9.]+)%,\s*transparent\)/,
+  );
+  if (mixed) {
+    return {
+      rgb: rgbFromHex(hexToken(readCss("app/globals.css"), mixed[1])),
+      alpha: Number(mixed[2]) / 100,
+    };
+  }
   const match = block.match(
     /color:\s*rgba\(\s*(\d+),\s*(\d+),\s*(\d+),\s*([0-9.]+)\s*\)/,
   );
@@ -239,14 +249,15 @@ describe("native-compatible route navigation", () => {
 });
 
 describe("homepage terrain and reduced motion", () => {
-  it("loads the terrain from the homepage instead of the root layout", () => {
+  it("keeps the terrain out of the root layout and the personal front on the homepage", () => {
     const layout = readCss("app/layout.tsx");
     const homepage = readCss("app/page.tsx");
 
     assert.doesNotMatch(layout, /import\s+ThreeScene\b/);
     assert.doesNotMatch(layout, /<ThreeScene\b/);
-    assert.match(homepage, /import\s+ThreeScene\s+from\s+["']@\/components\/ThreeScene["']/);
-    assert.match(homepage, /<ThreeScene\s*\/>/);
+    assert.doesNotMatch(homepage, /<ThreeScene\b/);
+    assert.match(homepage, /import\s+Front\s+from\s+["']@\/components\/personal\/Front["']/);
+    assert.match(homepage, /<Front\s*\/>/);
   });
 
   it("mounts the homepage terrain without route state", () => {
@@ -471,7 +482,8 @@ describe("contact form semantics", () => {
 
     assert.match(
       source,
-      /<button\b(?=[^>]*\btype="submit")[^>]*>\s*Open Email\s*<\/button>/s,
+      // The label says the note goes by the reader's own email app.
+      /<button\b(?=[^>]*\btype="submit")[^>]*>\s*[^<]*\bemail\b[^<]*<\/button>/is,
     );
     assert.doesNotMatch(
       source,

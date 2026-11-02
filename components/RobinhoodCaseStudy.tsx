@@ -21,7 +21,6 @@ const grotesk = Space_Grotesk({
   weight: ["400", "500", "700"],
 });
 
-const REPO_URL = "https://github.com/Comma0101/robinhood-performance-dash";
 
 const proofCaption =
   "A messy export becomes a correctly paired, per-trade record.";
@@ -31,7 +30,7 @@ const pipeline = [
   {
     step: "01",
     label: "Ingest",
-    input: "Robinhood CSV export",
+    input: "Brokerage CSV export",
     transform: "Parse and normalize rows with Pandas, typed and sorted by time",
     output: "Ordered transaction ledger",
   },
@@ -63,14 +62,14 @@ const leadStyle: CSSProperties = {
   maxWidth: "62ch",
   fontSize: "clamp(0.98rem, 1.4vw, 1.12rem)",
   lineHeight: 1.7,
-  color: "rgba(220, 220, 220, 0.7)",
+  color: "color-mix(in srgb, var(--paper) 78%, transparent)",
 };
 
 // Static hero proof: a raw export fragment resolved into one closed trade.
 const proofWrap: CSSProperties = {
-  border: "1px solid var(--line, rgba(255, 255, 255, 0.08))",
+  border: "1px solid var(--line, color-mix(in srgb, var(--paper) 8%, transparent))",
   borderRadius: "var(--radius-card, 14px)",
-  background: "var(--raised, rgba(8, 8, 8, 0.6))",
+  background: "var(--raised, color-mix(in srgb, var(--canvas) 60%, transparent))",
   padding: "clamp(1.2rem, 2.2vw, 1.6rem)",
   display: "flex",
   flexDirection: "column",
@@ -83,7 +82,7 @@ const proofTag: CSSProperties = {
   fontWeight: 700,
   letterSpacing: "0.14em",
   textTransform: "uppercase",
-  color: "rgba(255, 255, 255, 0.4)",
+  color: "color-mix(in srgb, var(--paper) 78%, transparent)",
 };
 
 const proofRows: CSSProperties = {
@@ -92,19 +91,19 @@ const proofRows: CSSProperties = {
   gap: "0.3rem",
   fontSize: "0.78rem",
   lineHeight: 1.5,
-  color: "rgba(220, 220, 220, 0.62)",
+  color: "color-mix(in srgb, var(--paper) 78%, transparent)",
 };
 
 const proofDivider: CSSProperties = {
   height: "1px",
-  background: "rgba(163, 181, 168, 0.25)",
+  background: "color-mix(in srgb, var(--sand) 25%, transparent)",
   margin: "0.2rem 0",
 };
 
 const proofResult: CSSProperties = {
   fontSize: "0.78rem",
   lineHeight: 1.6,
-  color: "rgba(163, 181, 168, 0.85)",
+  color: "color-mix(in srgb, var(--sand) 100%, transparent)",
 };
 
 export default function RobinhoodCaseStudy() {
@@ -167,9 +166,9 @@ export default function RobinhoodCaseStudy() {
       {/* ── Hero ── */}
       <header ref={heroRef} className={styles.hero}>
         <div className={styles.heroCopy}>
-          <p className={`${styles.eyebrow} ${grotesk.className}`}>Case study</p>
+          <p className={`${styles.eyebrow} ${grotesk.className}`}>Build · a write-up</p>
           <h1 className={`${styles.title} ${cormorant.className}`}>
-            Robinhood performance dashboard
+            Trade ledger
           </h1>
           <p className={`${styles.subtitle} ${cormorant.className}`}>
             A correct record from a messy export.
@@ -185,20 +184,6 @@ export default function RobinhoodCaseStudy() {
             page documents how the record is built and where naive approaches get
             it wrong.
           </p>
-          <p className={`${styles.stackLine} ${grotesk.className}`}>
-            CSV Ingest · Transaction Pairing · FIFO · Options Matching · D3
-            Analytics
-          </p>
-          <div className={styles.actions}>
-            <a
-              className={`${styles.actionLink} ${grotesk.className}`}
-              href={REPO_URL}
-              target="_blank"
-              rel="noreferrer noopener"
-            >
-              View the source
-            </a>
-          </div>
         </div>
 
         <div className={styles.heroProof}>
@@ -507,37 +492,14 @@ export default function RobinhoodCaseStudy() {
           </div>
         </section>
 
-        {/* ── Source ── */}
-        <section className={styles.section} data-animate>
-          <h2 className={`${styles.sectionLabel} ${grotesk.className}`}>
-            Source
-          </h2>
-          <p className={grotesk.className} style={leadStyle}>
-            The pairing algorithm and the full pipeline are open. Read the code
-            that turns the export into the record.
-          </p>
-          <div className={styles.actions}>
-            <a
-              className={`${styles.actionLink} ${grotesk.className}`}
-              href={REPO_URL}
-              target="_blank"
-              rel="noreferrer noopener"
-            >
-              robinhood-performance-dash on GitHub
-            </a>
-          </div>
-        </section>
-
         {/* ── Close ── */}
         <footer className={styles.philosophical} data-animate>
-          <Link
-            href="/contact"
-            className={`${styles.quote} ${cormorant.className}`}
-            style={{ textDecoration: "none", display: "inline-block" }}
-          >
-            Messy input, reliable output — the same discipline as the voice work,
-            a different domain. Let&apos;s talk.
-          </Link>
+          <p className={`${styles.quote} ${cormorant.className}`}>
+            Messy input, reliable output — the same discipline as the voice work, in a different domain.
+          </p>
+          <p className={styles.closeLinks}>
+            <Link href="/work">← All work</Link>
+          </p>
         </footer>
       </div>
     </div>

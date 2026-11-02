@@ -1,0 +1,48 @@
+import Link from "next/link";
+import type { ReactNode } from "react";
+import { X_HANDLE, X_URL } from "./links";
+import { typeClasses } from "./type";
+import SectionNav from "./SectionNav";
+import styles from "./Front.module.css";
+
+// The inner pages' paper: the name small at the top as the way home, the
+// follow beside it, and the colophon under the page.
+export default function Shell({
+  children,
+  className,
+  mainClassName,
+  lang,
+}: {
+  children: ReactNode;
+  className?: string;
+  mainClassName?: string;
+  lang?: string;
+}) {
+  return (
+    <div className={`${styles.front} ${styles.workPage} ${typeClasses} ${className ?? ""}`} lang={lang} data-paper>
+      <header className={styles.workHead}>
+        <Link href="/" className={styles.workHome} aria-label="Kumma — introduction">
+          Kumma
+        </Link>
+        <SectionNav />
+        <a className={styles.follow} href={X_URL} rel="me" aria-label={`Follow on X: ${X_HANDLE}`}>
+          Follow on X <span aria-hidden="true">↗</span>
+        </a>
+      </header>
+
+      {/* The layout already provides the page's <main>. */}
+      <div className={mainClassName ?? styles.workBody}>{children}</div>
+
+      <footer className={styles.roomFooter}>
+        <nav aria-label="Elsewhere on the site">
+          <Link href="/">← Introduction</Link>
+          <Link href="/studies">Visual studies <span aria-hidden="true">↗</span></Link>
+        </nav>
+        <p className={styles.colophon}>
+          <span>Los Angeles</span>
+          <span>© {new Date().getFullYear()} Kumma Wu</span>
+        </p>
+      </footer>
+    </div>
+  );
+}

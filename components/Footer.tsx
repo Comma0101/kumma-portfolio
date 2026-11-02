@@ -21,7 +21,6 @@ const quickLinks = [
 
 const socialLinks = [
   { label: "GitHub", href: "https://github.com/Comma0101" },
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/yang-w-9233a3a8/" },
   { label: "X", href: "https://x.com/Comma_9fie" },
 ];
 
@@ -30,6 +29,7 @@ export default function Footer({ variant = "default" }: FooterProps) {
 
   return (
     <footer
+      data-chrome="old"
       className={`${styles.footer} ${
         variant === "blog" ? styles.blogFooter : ""
       }`}
@@ -37,7 +37,7 @@ export default function Footer({ variant = "default" }: FooterProps) {
       <div className={styles.footerShell}>
         <div className={styles.footerBrand}>
           <Link href="/" className={styles.wordmark}>
-            Kumma
+            Kumma Wu
           </Link>
           <p>AI systems made operational.</p>
         </div>
@@ -71,7 +71,7 @@ export default function Footer({ variant = "default" }: FooterProps) {
         </div>
 
         <div className={styles.footerBottom}>
-          <p>© {currentYear} KUMMA</p>
+          <p>© {currentYear} Kumma Wu</p>
           <p>AI Systems / Product Engineering / Visual Practice</p>
         </div>
       </div>

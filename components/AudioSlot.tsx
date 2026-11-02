@@ -25,7 +25,7 @@ const labelStyle: CSSProperties = {
   fontWeight: 700,
   letterSpacing: "0.12em",
   textTransform: "uppercase",
-  color: "#e8e4e4",
+  color: "var(--paper)",
 };
 
 const waveWrap: CSSProperties = {
@@ -41,13 +41,13 @@ const statusStyle: CSSProperties = {
   fontSize: "0.64rem",
   letterSpacing: "0.14em",
   textTransform: "uppercase",
-  color: "rgba(163, 181, 168, 0.7)",
+  color: "var(--sand)",
 };
 
 const captionStyle: CSSProperties = {
   fontSize: "0.8rem",
   lineHeight: 1.6,
-  color: "rgba(220, 220, 220, 0.5)",
+  color: "color-mix(in srgb, var(--paper) 78%, transparent)",
 };
 
 // Static, non-animated waveform silhouette. Decorative only.
@@ -74,7 +74,7 @@ export default function AudioSlot({ label, caption, src }: AudioSlotProps) {
                 style={{
                   flex: 1,
                   height: `${h}px`,
-                  background: "var(--sand, #a3b5a8)",
+                  background: "var(--sand)",
                   borderRadius: "1px",
                 }}
               />

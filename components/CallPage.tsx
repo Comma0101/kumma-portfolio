@@ -1,6 +1,5 @@
 import styles from "@/styles/call.module.css";
 import Button from "@/components/system/Button";
-import AudioSlot from "@/components/AudioSlot";
 
 type MenuSection = {
   heading: string;
@@ -89,26 +88,6 @@ const MENU: MenuSection[] = [
 // non-autoplaying "recording coming" placeholder until a real audio src is
 // wired in. To publish a clip later, pass its URL as `src` to the matching
 // slot; nothing else needs to change.
-const RECORDINGS: { label: string; caption: string; note: string }[] = [
-  {
-    label: "a clean call",
-    caption:
-      "A straightforward order, from what the caller said to the ticket the kitchen sees.",
-    note: "transcript and the ticket it produced land here with the clip.",
-  },
-  {
-    label: "a messy call",
-    caption:
-      "Hesitation, corrections, and a mid-call language switch, resolved into one ticket.",
-    note: "transcript and the ticket it produced land here with the clip.",
-  },
-  {
-    label: "a failure and the fix",
-    caption:
-      "Where the agent got the ticket wrong, and the change that handled it.",
-    note: "transcript, the wrong ticket, and the fix land here with the clip.",
-  },
-];
 
 const CHALLENGES = [
   "Order five items with modifications.",
@@ -143,16 +122,13 @@ export default function CallPage() {
 
           <p className={styles.subtitle}>
             An AI agent taking phone orders for Kumma Diner, a fictional demo
-            restaurant with a real menu. Listen to recorded calls below, or book
-            a slot to run one live.
+            restaurant with a real menu. Below is the menu it works from; ask for
+            a slot to run a call live.
           </p>
 
           <div className={styles.ctaRow}>
             <Button href="/contact" variant="primary">
-              Book a live demo
-            </Button>
-            <Button href="#recordings" variant="ghost">
-              Hear recorded calls
+              Ask for a live call
             </Button>
           </div>
 
@@ -161,35 +137,6 @@ export default function CallPage() {
             spam. You get a real conversation, not a robot to hammer.
           </p>
         </header>
-
-        {/* ── Recorded calls (centerpiece) ── */}
-        <section
-          id="recordings"
-          className={styles.section}
-          aria-labelledby="recordings-heading"
-        >
-          <h2 id="recordings-heading" className={styles.h2}>
-            Recorded calls
-          </h2>
-          <p className={styles.sectionLead}>
-            Recordings of demo calls, so you can hear the agent work without
-            booking anything. Nothing plays until you press play.
-          </p>
-
-          <div className={styles.recordingsGrid}>
-            {RECORDINGS.map((r) => (
-              <div key={r.label} className={styles.recordingItem}>
-                <AudioSlot label={r.label} caption={r.caption} />
-                <div className={styles.transcriptNote}>
-                  <span className={styles.transcriptTag}>
-                    transcript → ticket
-                  </span>
-                  <p className={styles.transcriptBody}>{r.note}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
 
         {/* ── Menu ── */}
         <section className={styles.section} aria-labelledby="menu-heading">
@@ -262,18 +209,6 @@ export default function CallPage() {
                 </li>
               ))}
             </ul>
-          </div>
-        </section>
-
-        {/* ── Hall of fame ── */}
-        <section className={styles.section} aria-labelledby="fame-heading">
-          <h2 id="fame-heading" className={styles.h2}>
-            Hall of fame
-          </h2>
-          <div className={styles.fameEmpty}>
-            <p className={styles.fameEmptyText}>
-              The best break attempts from live demos will show up here.
-            </p>
           </div>
         </section>
 

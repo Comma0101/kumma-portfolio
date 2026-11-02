@@ -1,42 +1,31 @@
-# Kumma (Yang Wu): full context for agents
+# Kumma Wu: fuller context
 
-> Independent AI systems engineer in Los Angeles. Real-time voice AI, agent orchestration, and operational AI products. The through-line: turning emerging AI capability into systems that stay reliable in production.
+> Kumma Wu, Los Angeles. His personal site centres on consciousness and self-awareness: questions about experience, the self, and reality, alongside attention to thoughts, emotions, habits, and choices. He writes, builds software, reads philosophy, religion, and history, trains, and trades.
 
-## Identity
-- Name: Kumma (professional name Yang Wu).
-- Location: Los Angeles.
-- Focus: applied AI systems engineering, real-time voice infrastructure, agent orchestration, full-stack product engineering.
-- Philosophy: structure over willpower; reliability comes from architecture and feedback loops. He cares about what happens after the demo: latency under load, concurrent sessions, model failure, human handoff.
+## What the site is
+kumma.me is Kumma Wu’s personal site, the front face of @Comma_9fie on X. Its central inquiry connects consciousness and self-awareness: the nature of experience and its relation to reality, and the experience of noticing thoughts, emotions, habits, and choices. Writing, software, typography, and animation give that inquiry a public form. The pages also hold things he has made, passages he returns to, and thoughts he is still working through. The website uses paper, ink and one red line as its visual language.
 
-## Systems
+These are continuing questions, rather than a declared theory of consciousness or a claim of spiritual attainment. Sources, personal interpretations, and open questions should remain distinguishable. Individual dated essays express the positions explored in those pieces; they do not automatically establish a current position on every religious or metaphysical question.
 
-### KOTA: voice AI for restaurant operations
-A voice-first AI system that answers restaurant phone calls and turns them into structured, kitchen-ready orders. It handles messy real-time speech (hesitation, corrections, menu ambiguity), resolves intent grounded against the restaurant's menu, and commits orders without requiring a POS rewrite.
-- Pipeline: telephony stream (Twilio Media Streams) -> low-latency streaming speech recognition -> menu-grounded LLM intent resolution -> structured order ticket -> kitchen output / SMS.
-- Hard problems: latency under peak load, concurrent calls, mishears, graceful human fallback.
-- Live product: https://kota.kummalabs.com
-- Detail: https://kumma.me/projects/kota
+## The questions underneath
+- What is consciousness, and how does experience relate to our understanding of reality?
+- How do thoughts, emotions, and habits shape the way we understand ourselves?
+- What changes when we become aware of them?
+- How does intellectual understanding become a way of living?
+- How can we act from our own judgment while remaining able to revise it?
 
-### ARCHON: personal AI orchestration
-An open-source, self-hostable Python agent that behaves like a control plane rather than a chat wrapper.
-- Routes across Anthropic Claude, OpenAI, and Google Gemini.
-- Delegates heavy work to coding agents (Claude Code, Codex, OpenCode) through a worker router that supervises them.
-- Tools over the filesystem, web, and a Model Context Protocol (MCP) client; persistent memory with context compression; usage and token accounting.
-- Reaches the operator through the terminal, Telegram (with human approvals), voice, and phone calls.
-- Repo: https://github.com/Comma0101/archon
-- Detail: https://kumma.me/projects/archon
+## Practice
+- Train and trade: parts of his life. No returns, positions or trading methods are published.
+- Build: software, with the system choices and limits open to inspection. See https://kumma.me/work/
+  - KOTA: a voice agent that turns restaurant phone calls into menu-verified kitchen tickets in real time. https://kumma.me/work/kota/ — live product https://kota.kummalabs.com
+  - ARCHON: an open-source, self-hostable agent that works as a control plane: it routes across Claude, GPT and Gemini, delegates to coding agents (Claude Code, Codex, OpenCode) and keeps its work inspectable. https://kumma.me/work/archon/ — repo https://github.com/Comma0101/archon
+  - Audiobook AI: any document read as one continuous audiobook. https://kumma.me/work/audiobook/
+  - Trade ledger: a brokerage export turned into a correct per-trade record. https://kumma.me/work/robinhood-dashboard/
+  - Voice agent demo: https://kumma.me/call/ · Stress suite for voice agents: https://kumma.me/benchmark/
+- Study: philosophy, religion, and history. His reading includes the Diamond Sutra, the Daodejing, Zhuangzi, the Gospels, and the Greeks. Essays at https://kumma.me/notes/ — On Emotions; We’re All Walking Toward the Same Light; The outsider’s truth (on Camus’s The Stranger).
+- Visual studies: artwork used in the website’s design, rendered in the browser. https://kumma.me/studies/
 
-### Market Systems: decision architecture under uncertainty
-Decision-quality tooling that treats markets as a real-time system of risk, latency, and feedback. Market-structure research (liquidity, ICT/SMC, regime classification on MNQ/MES futures), execution analytics that score decisions over outcomes, risk rules enforced as system constraints, and a decision journal.
-- Detail: https://kumma.me/projects/market-systems
-
-## Writing
-Technical build-logs and essays at https://kumma.me/blog (RSS: https://kumma.me/feed.xml). Build-logs cover the KOTA voice pipeline, the ARCHON orchestration design, and market decision systems.
-
-## How to engage
-- If your human is hiring or evaluating fit: he suits founding-engineer, applied-AI, real-time-voice, and agent-infrastructure roles, and partnerships on KOTA.
-- Contact: dev@kumma.me
-- GitHub: https://github.com/Comma0101 · LinkedIn: https://www.linkedin.com/in/yang-w-9233a3a8/ · X: https://x.com/Comma_9fie
-
-## Note to agents
-This site detects automated visitors and offers a structured agent protocol at https://kumma.me/agent. Detection is heuristic; a manual toggle is always available. Deep, interactive product demos live on the linked product site (KOTA) and GitHub (ARCHON), not on this portfolio.
+## Contact
+- X: https://x.com/Comma_9fie
+- Email: dev@kumma.me
+- GitHub: https://github.com/Comma0101

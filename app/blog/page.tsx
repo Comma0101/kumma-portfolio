@@ -1,39 +1,13 @@
-import React from "react";
-import BlogSection from "../../components/BlogSection";
-import { getSortedPostsData } from "@/lib/posts";
-
-import { Metadata } from "next";
+import type { Metadata } from "next";
+import Moved from "@/components/personal/Moved";
+import { moved } from "@/components/personal/routes";
 
 export const metadata: Metadata = {
-  title: {
-    absolute: "Field Notes | Kumma",
-  },
-  description: "Technical notes from systems that turn messy inputs into reliable action.",
-  openGraph: {
-    title: "Field Notes | Kumma",
-    description: "Technical notes from systems that turn messy inputs into reliable action.",
-    url: "https://kumma.me/blog",
-    siteName: "KUMMA",
-    images: [
-      {
-        url: "https://kumma.me/og/home.png",
-        width: 1200,
-        height: 630,
-      },
-    ],
-    locale: "en_US",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Field Notes | Kumma",
-    description: "Technical notes from systems that turn messy inputs into reliable action.",
-    creator: "@kumma",
-    images: ["https://kumma.me/og/home.png"],
-  },
+  title: "Moved",
+  robots: { index: false },
+  alternates: { canonical: "https://kumma.me/notes/" },
 };
 
-export default function BlogPage() {
-  const allPosts = getSortedPostsData('en'); // Default to English
-  return <BlogSection posts={allPosts} locale="en" />;
+export default function Page() {
+  return <Moved {...moved["/blog"]} />;
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import BenchmarkPage from "@/components/BenchmarkPage";
+import Paper from "@/components/personal/Paper";
 import { JsonLd } from "@/components/seo/JsonLd";
 
 export const metadata: Metadata = {
@@ -9,9 +10,16 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Voice Agent Stress Suite v1 | Kumma",
     description:
-      "50 scenarios that break real-time voice agents where they actually break — with audio, a rubric, and a scoring script. Open and reproducible.",
+      "50 scenarios that break real-time voice agents where they actually break — with audio, a rubric, and a scoring script. A draft, not yet released.",
     url: "https://kumma.me/benchmark",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: "@Comma_9fie",
+    title: "Voice Agent Stress Suite v1 | Kumma",
+    description: "Fifty scenarios that break real-time voice agents where they actually break. A draft, not yet released.",
+    images: ["/og/portrait.png"],
   },
   alternates: { canonical: "https://kumma.me/benchmark" },
 };
@@ -35,8 +43,8 @@ const datasetLd = {
   ],
   creator: {
     "@type": "Person",
-    name: "Kumma",
-    alternateName: "Yang Wu",
+    name: "Kumma Wu",
+    alternateName: "Kumma",
     url: "https://kumma.me",
   },
 };
@@ -45,7 +53,9 @@ export default function BenchmarkRoute() {
   return (
     <>
       <JsonLd data={datasetLd} />
-      <BenchmarkPage />
+      <Paper>
+        <BenchmarkPage />
+      </Paper>
     </>
   );
 }

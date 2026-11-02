@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import AudiobookCaseStudy from "@/components/AudiobookCaseStudy";
+import Paper from "@/components/personal/Paper";
 import { JsonLd } from "@/components/seo/JsonLd";
 
 export const metadata: Metadata = {
@@ -13,9 +14,11 @@ export const metadata: Metadata = {
       "A live text-to-speech product that converts documents into audiobooks with the open-source Kokoro model. The pipeline, the production hardening, and the offline listening experience.",
     url: "https://kumma.me/work/audiobook",
     type: "article",
+    images: ["/og/portrait.png"],
   },
   twitter: {
     card: "summary_large_image",
+    images: ["/og/portrait.png"],
     title: "Audiobook AI — case study | Kumma",
     description:
       "Documents into audiobooks with Kokoro TTS: the pipeline, the reliability work, and the offline PWA.",
@@ -35,8 +38,8 @@ const caseStudyLd = {
       url: "https://listen.kummalabs.com",
       author: {
         "@type": "Person",
-        name: "Kumma",
-        alternateName: "Yang Wu",
+        name: "Kumma Wu",
+        alternateName: "Kumma",
         url: "https://kumma.me",
       },
     },
@@ -48,8 +51,8 @@ const caseStudyLd = {
       url: "https://kumma.me/work/audiobook",
       author: {
         "@type": "Person",
-        name: "Kumma",
-        alternateName: "Yang Wu",
+        name: "Kumma Wu",
+        alternateName: "Kumma",
         url: "https://kumma.me",
       },
     },
@@ -60,7 +63,9 @@ export default function Page() {
   return (
     <>
       <JsonLd data={caseStudyLd} />
-      <AudiobookCaseStudy />
+      <Paper>
+        <AudiobookCaseStudy />
+      </Paper>
     </>
   );
 }

@@ -69,7 +69,7 @@ The blog system now supports both English and Chinese content. Here's how to cre
 title: "生成设计的艺术"
 excerpt: "探索代码与创造力的交集，通过算法和数学之美产生独特的视觉艺术。"
 date: "2025-01-15"
-author: "KUMMA"
+author: "Kumma Wu"
 tags: ["生成艺术", "创意编程", "Three.js", "WebGL"]
 category: "设计"
 readingTime: 5

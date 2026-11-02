@@ -2,7 +2,7 @@
 title: "Telephony gotchas: what SIP does to your audio that localhost doesn't"
 excerpt: "Your voice agent works on localhost because localhost hides everything a phone line does to audio. Here is what breaks the moment a real call hits SIP."
 date: "2026-07-08"
-author: "Kumma"
+author: "Kumma Wu"
 tags: ["Telephony", "Voice AI", "SIP", "Real-time"]
 category: "Engineering"
 featured: false

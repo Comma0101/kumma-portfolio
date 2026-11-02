@@ -1,0 +1,1643 @@
+/* Paper, ink, and one ballpoint red: the X banner as a page. One red line
+   runs down the margin and becomes every mark. */
+
+.front {
+  --paper: #f2efe8;
+  --ink: #141414;
+  --grey: #6b6760;
+  --red: #a3121b;
+  --gutter: max(16px, 4vw);
+  /* Matches threadX() in anchors.ts: where the red line runs. */
+  --thread: calc(var(--gutter) + 30px);
+  --indent: calc(var(--thread) + 1.8rem);
+  position: relative;
+  overflow-x: clip;
+  /* Paper grain is part of the paper: painted once with the background,
+     not a full-screen layer re-composited on every frame. */
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .08 0 0 0 0 .07 0 0 0 0 .06 0 0 0 .1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E") repeat, var(--paper);
+  background-size: 220px 220px, auto;
+  color: var(--ink);
+  font-family: var(--font-text), Georgia, serif;
+}
+
+:global(html):has(.front),
+:global(body):has(.front) {
+  background: #f2efe8;
+  color: #141414;
+  color-scheme: light;
+}
+
+.front ::selection {
+  background: var(--red);
+  color: var(--paper);
+}
+
+.front a {
+  color: inherit;
+}
+
+.front a:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 4px;
+}
+
+
+.label {
+  margin: 0;
+  color: var(--grey);
+  font-size: 1rem;
+  font-weight: 500;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.1em;
+}
+
+/* The running head of a section: always the same height above it. */
+.opening > .label,
+.agency > .label,
+.catchUp > .label,
+.steps > .label,
+.practice > .label,
+.rules > .label,
+.line > .label {
+  position: absolute;
+  top: 7svh;
+  left: var(--indent);
+}
+
+/* A chapter's running head: its character, written as the chapter
+   arrives (ChapterMark), and its name. */
+.chapterMark {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.chapterText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+/* The personal reflection arrives after its chapter mark is written. */
+.chapterReflection {
+  max-width: 24rem;
+  font-kerning: none;
+  color: var(--grey);
+  font-size: 0.98rem;
+  font-style: italic;
+  font-variant-caps: normal;
+  letter-spacing: 0;
+  line-height: 1.35;
+}
+
+:global(html[data-front="motion"]) .front [data-reflection] {
+  opacity: 0;
+}
+
+.chapterGlyph {
+  position: relative;
+  flex: none;
+  width: clamp(2.6rem, 3.2vw, 3.6rem);
+  height: clamp(2.6rem, 3.2vw, 3.6rem);
+}
+
+.chapterStroke {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.ink.chapterStroke > g path {
+  fill-opacity: 0.95;
+}
+
+/* ---------- Ink ---------- */
+
+.ink {
+  position: absolute;
+  overflow: visible;
+  color: var(--red);
+  pointer-events: none;
+}
+
+.ink > g path,
+.ink > g circle {
+  fill: currentColor;
+  fill-opacity: 0.93;
+}
+
+/* The pen presses where it lands: a shade deeper than the stroke. */
+.ink > g circle.press {
+  fill: #74101a;
+  fill-opacity: 0.85;
+}
+
+.ink [data-reveal] {
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 0;
+}
+
+/* Before first paint, anything about to be drawn starts undrawn. */
+:global(html[data-front="motion"]) .front .ink:not([data-still]) [data-reveal] {
+  stroke-dashoffset: 1;
+}
+
+:global(html[data-front="motion"]) .front [data-body] {
+  --wght: 10;
+}
+
+:global(html[data-front="motion"]) .front [data-small] {
+  --wdth: 160;
+  transform: none;
+}
+
+:global(html[data-front="motion"]) .front [data-struck] {
+  opacity: 1;
+}
+
+:global(html[data-front="motion"]) .front [data-source] {
+  visibility: hidden;
+}
+
+/* A mark that spans its whole section: the red line passing through. */
+.thread {
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+}
+
+/* The one line spans the whole page, under the pointer, over the paper. */
+.spineHost {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Ink bled from the resting pen (Thread): centred on where it rested. */
+.blot {
+  position: absolute;
+  width: 0;
+  height: 0;
+  background: var(--red);
+  opacity: 0.86;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  transition: width 0.12s linear, height 0.12s linear;
+}
+
+/* One window per section onto the one outline: only the window being
+   drawn repaints. */
+.spineDefs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.spinePiece {
+  position: absolute;
+  overflow: visible;
+  color: var(--red);
+  pointer-events: none;
+}
+
+.spinePiece [data-reveal] {
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 0;
+}
+
+:global(html[data-front="motion"]) .front .spinePiece [data-reveal] {
+  stroke-dashoffset: 1;
+}
+
+/* One idea per screen: each statement has the paper to itself, with only
+   the line crossing between them. */
+.agency,
+.catchUp,
+.steps,
+.practice,
+.rules {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100svh;
+}
+
+/* ---------- Opening ---------- */
+
+.opening {
+  position: relative;
+  min-height: 100svh;
+  padding: 0 var(--gutter) 16svh;
+}
+
+.opening > .label {
+  top: max(7svh, 4rem);
+}
+
+/* Quiet destinations above the name, with the artwork free to unfold below. */
+.openingLinks {
+  position: absolute;
+  top: 1rem;
+  right: var(--gutter);
+  left: var(--gutter);
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: clamp(1.2rem, 3vw, 2.5rem);
+}
+
+.openingLinks nav {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.openingLinks nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 1.05rem;
+  text-decoration: none;
+  text-underline-offset: 0.25em;
+}
+
+.openingLinks nav a:hover,
+.openingLinks nav a:focus-visible {
+  text-decoration: underline;
+  text-decoration-color: var(--red);
+}
+
+.openingLinks .follow {
+  position: static;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  min-height: 44px;
+  padding-bottom: 0;
+}
+
+.follow {
+  position: absolute;
+  top: 26px;
+  right: var(--gutter);
+  z-index: 2;
+  font-size: 1rem;
+  font-weight: 600;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  padding-bottom: 7px;
+}
+
+/* Links are underlined by the pen, and hovering writes the line again. */
+.follow,
+.elsewhere .title,
+.practiceDoor {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 10' preserveAspectRatio='none'%3E%3Cpath d='M1 5.6C38 4.2 74 6.6 110 5.1S170 4.4 199 4.9' fill='none' stroke='%23a3121b' stroke-width='2.2' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") no-repeat 0 100% / 0% 7px;
+  text-decoration: none !important;
+  transition: background-size 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* Pointing at a room: the pen underlines its verb. */
+.practiceDoor:hover,
+.practiceDoor:focus-visible {
+  background-size: 100% 7px;
+}
+
+.follow:hover,
+.follow:focus-visible,
+.elsewhere a:hover .title,
+.elsewhere a:focus-visible .title {
+  animation: rewrite 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+@keyframes rewrite {
+  from {
+    background-size: 0% 7px;
+  }
+  to {
+    background-size: 100% 7px;
+  }
+}
+
+/* The pen sets down: a red point that presses into the paper where the
+   underline begins, before anything else moves (first visit only). */
+.landing {
+  position: absolute;
+  /* On the edge where the name's ink begins. */
+  left: 0.041em;
+  top: calc(98% - 0.035em);
+  width: 0.07em;
+  height: 0.07em;
+  border-radius: 50%;
+  background: var(--red);
+  pointer-events: none;
+}
+
+:global(html[data-front="motion"]) .front .landing {
+  transform: scale(0);
+}
+
+/* ---------- The pen tip: navigation ---------- */
+
+/* Resting on the margin at the reading line until the pen moves; then it
+   rides the live end of the thread across the page. */
+.marginNav {
+  position: fixed;
+  top: 72vh;
+  left: var(--thread);
+  z-index: 40;
+  width: 0;
+  height: 0;
+  transition: opacity 0.25s ease;
+}
+
+.marginNav[data-riding] {
+  position: absolute;
+}
+
+.marginNav[data-hidden] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Reached with the keyboard, it shows wherever it is. */
+.marginNav[data-hidden]:focus-within {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* At rest the nib is not a mark on the page: it shows when the margin is
+   pointed at, or reached with the keyboard. */
+.marginNav[data-resting]:not(:hover):not(:focus-within) {
+  opacity: 0;
+}
+
+.penTip {
+  position: absolute;
+  top: -11px;
+  left: -11px;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* The tip itself: the nib, a short red stroke across the line. */
+.penTip::before {
+  content: "";
+  position: absolute;
+  top: 9.5px;
+  left: 2px;
+  width: 18px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--red);
+  transform: rotate(-14deg);
+  transition: transform 0.2s ease;
+}
+
+.penTip:hover::before,
+.penTip:focus-visible::before,
+.marginNav[data-open] .penTip::before {
+  transform: rotate(-14deg) scaleX(1.35);
+}
+
+/* Opened: the sections written on the paper to the left of the line. */
+.marginNav ol {
+  position: absolute;
+  right: 14px;
+  top: 0;
+  display: grid;
+  gap: 0.1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(4px, -50%);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.marginNav[data-open] ol {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(0, -50%);
+}
+
+.marginNav ol button {
+  display: block;
+  padding: 0.1rem 0.2rem;
+  border: 0;
+  background: none;
+  color: var(--grey);
+  cursor: pointer;
+  font-family: var(--font-hand), var(--font-tc), serif;
+  font-size: 1.1rem;
+  line-height: 1.25;
+}
+
+.marginNav ol button:hover,
+.marginNav ol button:focus-visible {
+  color: var(--red);
+}
+
+/* The name spans the page, gutter to gutter, sitting on its red line: the
+   page's horizon. */
+.name {
+  position: relative;
+  display: inline-block;
+  margin: calc(56svh - 0.74em) 0 0 -0.076em;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(5rem, 13.3vw, 19rem);
+  font-weight: 200;
+  font-variation-settings: "wdth" 200;
+  letter-spacing: -0.035em;
+  line-height: 0.8;
+}
+
+/* The underline before it is pulled taut (Opening), passing in front of
+   the name: for that moment it is the subject. */
+.knot {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  color: var(--red);
+  pointer-events: none;
+}
+
+.knot path {
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 0;
+}
+
+:global(html[data-front="motion"]) .front .knot path {
+  stroke-dashoffset: 1;
+}
+
+/* Under the horizon: the aside, the line, and the face beside it, its top
+   on the line's cap height and its edge on the gutter. */
+.below {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 4vw;
+  margin: 6svh 0 0 calc(var(--indent) - var(--gutter));
+}
+
+.kicker {
+  grid-column: 1;
+  margin: 0 0 0.9rem;
+  color: var(--grey);
+  font-family: var(--font-text), Georgia, serif;
+  font-size: clamp(1.3rem, 1.8vw, 1.7rem);
+  font-style: italic;
+}
+
+.attention {
+  grid-column: 1;
+  margin: 0;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(2rem, 4.2vw, 4.4rem);
+  font-weight: 55;
+  font-variation-settings: "wdth" 140;
+  letter-spacing: -0.01em;
+  line-height: 0.98;
+  word-spacing: 0.04em;
+}
+
+/* His face, drawn by the red line as one spiral (Portrait). */
+.portrait {
+  grid-column: 2;
+  grid-row: 1 / span 3;
+  align-self: start;
+  width: clamp(200px, 19vw, 300px);
+  aspect-ratio: 1;
+  max-width: 100%;
+  margin: 0;
+}
+
+.portrait canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.openingNote {
+  grid-column: 1;
+  max-width: 36rem;
+  margin-top: 1.5rem;
+  font-size: clamp(1.12rem, 1.5vw, 1.35rem);
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+.openingNote p {
+  margin: 0 0 0.8em;
+}
+
+.openingNote p:last-child {
+  margin-bottom: 0;
+}
+
+/* ---------- Understanding arrives first ---------- */
+
+.catchUp {
+  position: relative;
+  padding: 16svh var(--gutter) 18svh var(--indent);
+}
+
+/* ---------- Then / now ---------- */
+
+.thenNow {
+  position: relative;
+  z-index: 2;
+  max-width: 34rem;
+  margin-top: 3.4rem;
+  font-size: clamp(1.08rem, 1.35vw, 1.25rem);
+  line-height: 1.5;
+}
+
+.thenNow p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+/* A reflection in grey; its response arrives in ink after it. */
+.then {
+  color: var(--grey);
+  font-style: italic;
+}
+
+.now {
+  margin-top: 0.7rem !important;
+}
+
+:global(html[data-front="motion"]) .front [data-now] {
+  opacity: 0;
+}
+
+/* ---------- Agency (主) ---------- */
+
+.agency {
+  position: relative;
+  padding: 16svh var(--gutter) 16svh var(--indent);
+}
+
+.agencyLine {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(3rem, 12vw, 13rem);
+  font-weight: 200;
+  font-variation-settings: "wdth" 190;
+  letter-spacing: -0.03em;
+  line-height: 0.92;
+  white-space: nowrap;
+}
+
+/* The reflex, struck: still on the paper, faded under the stroke. */
+.struck {
+  opacity: 0.16;
+}
+
+/* Until it is struck, the word is the reader's to strike: horizontal
+   drags draw, vertical ones still scroll. */
+.agency {
+  touch-action: pan-y;
+}
+
+.agencyLine[data-interactive] {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.agencyLine[data-interactive] .struck {
+  cursor: crosshair;
+}
+
+.agency[data-struck-state="struck"] .struck {
+  cursor: auto;
+}
+
+/* The reader's own ink, over the word. */
+.readerInk {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.readerInk path {
+  fill: var(--red);
+  fill-opacity: 0.93;
+}
+
+.agencyHint {
+  margin: 1.6rem 0 0;
+  color: var(--grey);
+  font-size: clamp(1.05rem, 1.3vw, 1.2rem);
+  font-style: italic;
+}
+
+.agencyButton {
+  padding: 0 0 2px;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-style: normal;
+  cursor: pointer;
+}
+
+.agencyButton:hover,
+.agencyButton:focus-visible {
+  color: var(--red);
+}
+
+.agencyButton:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 4px;
+}
+
+:global(html[data-front="motion"]) .front [data-hint] {
+  opacity: 0;
+}
+
+/* Reduced motion: the page arrives finished, with nothing to ask. */
+@media (prefers-reduced-motion: reduce) {
+  .agencyHint {
+    display: none;
+  }
+}
+
+.agencyGloss {
+  max-width: 30rem;
+  margin: 3.2rem 0 0;
+  color: var(--grey);
+  font-size: clamp(1.1rem, 1.5vw, 1.35rem);
+  font-style: italic;
+  line-height: 1.45;
+}
+
+.agencyGloss span {
+  margin-right: 0.6em;
+  color: var(--ink);
+  font-family: var(--font-hand), var(--font-tc), serif;
+  font-size: 1.35em;
+  font-style: normal;
+  letter-spacing: 0.08em;
+}
+
+.first {
+  margin: 0 0 2.4rem;
+  color: var(--grey);
+  font-family: var(--font-text), Georgia, serif;
+  font-size: clamp(1.6rem, 2.6vw, 2.4rem);
+  font-style: italic;
+}
+
+.catchLine {
+  position: relative;
+  margin: 0;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(3rem, 9vw, 9.5rem);
+  font-weight: 200;
+  font-variation-settings: "wdth" 190;
+  letter-spacing: -0.03em;
+  line-height: 0.92;
+  word-spacing: 0.08em;
+}
+
+.catchLine > span > span {
+  display: block;
+  white-space: nowrap;
+}
+
+/* What is already understood: the outline of the sentence. */
+.outline {
+  position: absolute;
+  inset: 0;
+  color: transparent;
+  -webkit-text-stroke: 1.2px rgba(20, 20, 20, 0.5);
+  pointer-events: none;
+}
+
+/* What is lived: the ink that grows into it. */
+.bodyFill {
+  position: relative;
+  display: block;
+  font-weight: var(--wght, 200);
+}
+
+/* ---------- Three steps forward, two back ---------- */
+
+/* The stairs lead straight into the practice: no screen of paper between. */
+.steps {
+  position: relative;
+  min-height: auto;
+  padding: 16svh var(--gutter) calc(210px + 6svh) var(--indent);
+}
+
+.stepsLine {
+  max-width: 19ch;
+  margin: 0;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(2.4rem, 6vw, 6.6rem);
+  font-weight: 170;
+  font-variation-settings: "wdth" 165;
+  letter-spacing: -0.03em;
+  word-spacing: 0.06em;
+  line-height: 1;
+}
+
+/* ---------- Practice ---------- */
+
+.practice {
+  position: relative;
+  padding: calc(7svh + 3rem) var(--gutter) 8svh var(--indent);
+}
+
+.practice ol {
+  margin: 1.6rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.practice li {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 0.9fr) minmax(0, 1.1fr);
+  align-items: last baseline;
+  align-content: center;
+  gap: 1rem;
+  min-height: 14svh;
+  padding: 1.2rem 0;
+  border-top: 1px solid rgba(20, 20, 20, 0.8);
+}
+
+.practice li:last-child {
+  border-bottom: 1px solid rgba(20, 20, 20, 0.8);
+}
+
+/* 習: the same stroke, again and again, under the practices. */
+.practiceSheet {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 18rem);
+  align-items: end;
+  gap: 1.4rem 3rem;
+  margin-top: 7svh;
+}
+
+.sheetInk g path,
+.sheetInk g circle {
+  fill: currentColor;
+  fill-opacity: 0.93;
+}
+
+.practiceSheet .sheetInk {
+  position: static;
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.practiceCaption {
+  margin: 0;
+  color: var(--grey);
+  font-size: clamp(1.05rem, 1.3vw, 1.2rem);
+  font-style: italic;
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+/* Red belongs to the line: the numerals are grey; the barbs mark them. */
+.index {
+  position: relative;
+  color: var(--grey);
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  font-variant-numeric: oldstyle-nums tabular-nums;
+}
+
+.practiceWord {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(3rem, 6.2vw, 6.6rem);
+  font-weight: 150;
+  font-variation-settings: "wdth" 150;
+  letter-spacing: -0.02em;
+  line-height: 0.9;
+}
+
+.practiceLine {
+  max-width: 30rem;
+  font-size: clamp(1.05rem, 1.5vw, 1.35rem);
+  line-height: 1.4;
+}
+
+.practiceExcerpt {
+  max-width: 42rem;
+  margin: 5svh 0 0;
+}
+
+.practiceExcerpt blockquote {
+  margin: 0;
+  font-size: clamp(1.4rem, 2.3vw, 2rem);
+  font-style: italic;
+  line-height: 1.3;
+}
+
+.practiceExcerpt blockquote p {
+  margin: 0;
+}
+
+.practiceExcerpt figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.3rem;
+  margin-top: 1rem;
+  color: var(--grey);
+  font-size: 1.05rem;
+}
+
+.practiceExcerpt figcaption cite {
+  font-style: normal;
+}
+
+.practiceExcerpt figcaption a {
+  margin-left: 1rem;
+  color: var(--ink);
+  text-decoration-color: var(--red);
+  text-underline-offset: 0.2em;
+}
+
+.practiceArrow {
+  margin-left: 0.35em;
+  color: var(--grey);
+  font-family: var(--font-text), Georgia, serif;
+  font-size: 0.42em;
+  font-weight: 400;
+  vertical-align: 0.4em;
+}
+
+.practiceDoor:hover .practiceArrow,
+.practiceDoor:focus-visible .practiceArrow {
+  color: var(--red);
+}
+
+/* ---------- 道 ---------- */
+
+.ending {
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+}
+
+.ending > .close {
+  flex: none;
+  min-height: 0;
+  padding: 0 var(--gutter) 0 var(--indent);
+}
+
+/* At the end the invitation is a line under the way, not a second title. */
+.ending .followBig {
+  margin-left: -0.04em;
+  font-size: clamp(2.2rem, 5.6vw, 5.6rem);
+}
+
+.ending .daoGlyph {
+  width: min(52svh, 46vw);
+}
+
+.dao {
+  display: grid;
+  flex: 1;
+  grid-template-columns: auto minmax(0, 24rem);
+  justify-content: start;
+  align-items: center;
+  gap: 4vw;
+  padding: 0 var(--gutter) 0 var(--indent);
+}
+
+.daoGlyph {
+  position: relative;
+  width: min(62svh, 50vw);
+  aspect-ratio: 1;
+  margin: 0;
+}
+
+/* One ink: strokes that cross do not stack (real ink does not multiply). */
+.ink.daoStroke > g path {
+  fill-opacity: 1;
+}
+
+.daoStroke {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.daoGloss p {
+  margin: 0 0 1rem;
+  font-family: var(--font-text), Georgia, serif;
+  font-size: clamp(1.3rem, 1.9vw, 1.8rem);
+  font-style: italic;
+  line-height: 1.25;
+}
+
+/* ---------- Rules ---------- */
+
+.rules {
+  position: relative;
+  padding: calc(7svh + 4rem) var(--gutter) 16svh var(--indent);
+}
+
+.ruleContext {
+  margin: 0 0 1.5rem;
+  color: var(--grey);
+  font-size: clamp(1.1rem, 1.5vw, 1.35rem);
+  font-style: italic;
+}
+
+.chase {
+  position: relative;
+}
+
+.rule {
+  position: relative;
+  margin: 0;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(3rem, 9vw, 9.6rem);
+  font-weight: 190;
+  font-variation-settings: "wdth" 190;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+  word-spacing: 0.08em;
+}
+
+.chase .rule {
+  /* Room under the words for price to run. */
+  padding-bottom: 150px;
+}
+
+/* The chart's one label, set inside the gutter where the chart leaves. */
+.price {
+  position: absolute;
+  right: var(--gutter);
+  bottom: 120px;
+  z-index: 2;
+  color: var(--grey);
+  font-size: 1rem;
+  font-weight: 600;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.1em;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* Condensed type is kept for this line alone: it is what small means. */
+.small {
+  display: inline-block;
+  white-space: nowrap;
+  font-weight: 120;
+  letter-spacing: 0;
+  word-spacing: 0.14em;
+  font-variation-settings: "wdth" var(--wdth, 100);
+  transform: scale(0.6);
+  transform-origin: left 70%;
+}
+
+/* ---------- The reason (sutra) ---------- */
+
+.line {
+  position: relative;
+  overflow: clip;
+  min-height: 100svh;
+  padding: 12svh var(--gutter) 4svh var(--indent);
+}
+
+.sutra {
+  display: block;
+  width: fit-content;
+  margin: 0 8vw 0 auto;
+  writing-mode: vertical-rl;
+  font-family: var(--font-tc), "Noto Serif TC", "Songti TC", serif;
+  font-size: min(9.4svh, 15vw);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.column {
+  position: relative;
+  display: block;
+  margin-block-end: 0.28em;
+}
+
+.seen {
+  font-weight: 700;
+}
+
+.stopMark {
+  position: relative;
+}
+
+.gloss {
+  max-width: 38rem;
+  margin-top: max(5svh, var(--enso-clearance, 0px));
+  text-wrap: pretty;
+}
+
+.gloss p {
+  margin: 0 0 1rem;
+  font-family: var(--font-text), Georgia, serif;
+  font-size: clamp(1.2rem, 1.6vw, 1.6rem);
+  font-style: italic;
+  line-height: 1.4;
+}
+
+.gloss cite {
+  display: block;
+  margin-bottom: 1.5rem;
+  color: var(--grey);
+  font-size: 1rem;
+  font-style: normal;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.1em;
+}
+
+/* ---------- Close ---------- */
+
+/* The bookend: alone on its screen, hung from the gutter like the name. */
+.close {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 100svh;
+  padding: 0 var(--gutter);
+}
+
+.followBig {
+  position: relative;
+  display: inline-block;
+  margin-left: -0.061em;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(3.4rem, 18.5vw, 26rem);
+  font-weight: 60;
+  font-variation-settings: "wdth" 100;
+  letter-spacing: -0.02em;
+  line-height: 0.85;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* A clean change, not a fade through brown. */
+.followBig:hover {
+  color: var(--red);
+}
+
+.elsewhere {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 3rem;
+  margin-top: 0;
+  padding-top: 1.4rem;
+  border-top: 1px solid rgba(20, 20, 20, 0.6);
+}
+
+.elsewhere a {
+  display: grid;
+  align-content: center;
+  min-height: 44px;
+  gap: 0.2rem;
+  text-decoration: none;
+}
+
+.kind {
+  color: var(--grey);
+  font-size: 0.95rem;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.1em;
+}
+
+.title {
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.elsewhere a:hover .title {
+  color: var(--red);
+}
+
+.contents ol {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem 3rem;
+  max-width: 64rem;
+  margin: 0 0 2.6rem;
+  padding: 0;
+  list-style: none;
+}
+
+.contents a {
+  display: grid;
+  grid-template-columns: 2.6rem minmax(0, 1fr);
+  column-gap: 0.9rem;
+  align-items: baseline;
+  text-decoration: none;
+}
+
+.contentsMark {
+  grid-row: span 2;
+  font-family: var(--font-hand), var(--font-tc), serif;
+  font-size: 2.2rem;
+  line-height: 1;
+}
+
+.contentsLabel {
+  font-size: 0.95rem;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.1em;
+  color: var(--grey);
+}
+
+.contentsReflection {
+  font-size: 1.05rem;
+  font-style: italic;
+  font-kerning: none;
+  line-height: 1.35;
+}
+
+.contents a:hover .contentsMark,
+.contents a:focus-visible .contentsMark {
+  color: var(--red);
+}
+
+.howDrawn {
+  max-width: 34rem;
+  margin: 0 0 2.4rem;
+  color: var(--grey);
+  font-size: 1.05rem;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.howDrawn a {
+  font-style: normal;
+  text-decoration-color: var(--red);
+  text-underline-offset: 0.22em;
+}
+
+.colophonBlock {
+  padding: 6svh var(--gutter) 5svh var(--indent);
+}
+
+.colophon {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 2rem;
+  margin: 3rem 0 0;
+  color: var(--grey);
+  font-size: 1rem;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.1em;
+}
+
+.roomFooter {
+  width: min(calc(100% - 2 * var(--gutter)), 76rem);
+  margin-inline: auto;
+  padding: 1.4rem 0 2.8rem;
+  border-top: 1px solid rgba(20, 20, 20, 0.25);
+}
+
+.roomFooter nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 2rem;
+}
+
+.roomFooter a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  min-height: 44px;
+  font-size: 1.05rem;
+  text-decoration: none;
+  text-underline-offset: 0.25em;
+}
+
+.roomFooter a:hover,
+.roomFooter a:focus-visible {
+  text-decoration: underline;
+  text-decoration-color: var(--red);
+}
+
+.roomFooter .colophon {
+  margin-top: 1.5rem;
+}
+
+/* ---------- Build (the work) ---------- */
+
+.workPage {
+  min-height: 100svh;
+}
+
+.workHead {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem 1.6rem;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 26px var(--gutter) 0;
+}
+
+/* The name, small, on its own line: the way home. */
+.workHome {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.6rem;
+  font-weight: 200;
+  font-variation-settings: "wdth" 200;
+  letter-spacing: -0.03em;
+  text-decoration: none;
+}
+
+.workHead .follow {
+  position: static;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.sectionNav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.6rem;
+  margin-right: auto;
+  margin-left: clamp(1.4rem, 4vw, 3.6rem);
+  font-size: 1.05rem;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.1em;
+}
+
+.sectionNav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-bottom: 6px;
+  text-decoration: none;
+}
+
+.sectionNav a:hover,
+.sectionNav a[aria-current="page"] {
+  text-decoration: underline;
+  text-decoration-color: var(--red);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.42em;
+}
+
+.workBody {
+  padding: 14svh var(--gutter) 10svh var(--indent);
+}
+
+.workTitle {
+  margin: 0 0 0 -0.06em;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(3rem, 9vw, 9.6rem);
+  font-weight: 190;
+  font-variation-settings: "wdth" 190;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+  word-spacing: 0.08em;
+}
+
+.workHorizon {
+  display: block;
+  width: min(100%, 72rem);
+  height: 12px;
+  margin-top: 0.6rem;
+  overflow: visible;
+}
+
+.workHorizon path {
+  fill: none;
+  stroke: var(--red);
+  stroke-width: 3.2;
+  stroke-linecap: round;
+}
+
+.workLede {
+  margin: 2rem 0 0;
+  color: var(--grey);
+  font-size: clamp(1.2rem, 1.8vw, 1.6rem);
+  font-style: italic;
+}
+
+.workList {
+  margin: 10svh 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid rgba(20, 20, 20, 0.8);
+}
+
+.workList li {
+  border-bottom: 1px solid rgba(20, 20, 20, 0.8);
+}
+
+.workItem {
+  display: grid;
+  /* Each row is its own grid: fixed tracks keep the columns aligned. */
+  grid-template-columns: 3rem minmax(0, 1fr) minmax(0, 1.15fr) 10rem;
+  align-items: last baseline;
+  gap: 1rem 2rem;
+  padding: 1.6rem 0;
+  text-decoration: none;
+}
+
+.workName {
+  justify-self: start;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(1.8rem, 3vw, 3.4rem);
+  white-space: nowrap;
+  font-weight: 150;
+  font-variation-settings: "wdth" 150;
+  letter-spacing: -0.02em;
+  line-height: 0.95;
+}
+
+.workLine {
+  max-width: 34rem;
+  text-wrap: pretty;
+  font-size: clamp(1.05rem, 1.4vw, 1.3rem);
+  line-height: 1.4;
+}
+
+.workKind {
+  justify-self: end;
+  color: var(--grey);
+  font-size: 1rem;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+
+/* Pointing at a system: the pen underlines its name. */
+.workName {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 10' preserveAspectRatio='none'%3E%3Cpath d='M1 5.6C38 4.2 74 6.6 110 5.1S170 4.4 199 4.9' fill='none' stroke='%23a3121b' stroke-width='2.2' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") no-repeat 0 100% / 0% 7px;
+  padding-bottom: 8px;
+  transition: background-size 0.45s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.workItem:hover .workName,
+.workItem:focus-visible .workName {
+  background-size: 100% 7px;
+}
+
+.workItem:hover .workKind,
+.workItem:focus-visible .workKind {
+  color: var(--red);
+}
+
+/* ---------- Phone ---------- */
+
+@media (max-width: 720px) {
+  .openingLinks {
+    top: 0.35rem;
+  }
+
+  .openingLinks .follow span {
+    display: none;
+  }
+
+  .practiceSheet {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .contents ol {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .agencyLine {
+    font-size: 11vw;
+  }
+
+  .front {
+    --thread: calc(var(--gutter) * 0.5);
+    --indent: calc(var(--thread) + 1.2rem);
+  }
+
+  .opening {
+    min-height: 92svh;
+    padding: 0 12px 12svh;
+  }
+
+  .name {
+    margin-top: calc(34svh - 0.74em);
+    font-size: 13.4vw;
+  }
+
+  /* On a phone the face comes first under the line, on the right; the
+     words under it. */
+  .below {
+    grid-template-columns: minmax(0, 1fr);
+    margin: 5svh 0 0 calc(var(--indent) - 12px);
+  }
+
+  .portrait {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: end;
+    width: 54vw;
+    margin: 0 0 6svh;
+  }
+
+  .kicker {
+    font-size: 1.15rem;
+  }
+
+  .attention {
+    font-size: 8.2vw;
+  }
+
+  .close {
+    min-height: 70svh;
+  }
+
+  .line {
+    display: flex;
+    flex-direction: column;
+    gap: 8svh;
+    min-height: auto;
+  }
+
+  .sutra {
+    margin: 0 auto;
+    font-size: min(9svh, 13.5vw);
+  }
+
+  .gloss {
+    position: static;
+    margin-top: max(10rem, var(--enso-clearance, 0px));
+  }
+
+  .catchLine {
+    font-size: 9.5vw;
+  }
+
+  .followBig {
+    font-size: 18.8vw;
+  }
+
+  .ending .followBig {
+    font-size: 10vw;
+  }
+
+  .rule {
+    font-size: 9.4vw;
+  }
+
+  .ending {
+    min-height: auto;
+  }
+
+  .dao {
+    padding-top: 8svh;
+    padding-bottom: 10svh;
+  }
+
+
+  /* A phone screen is already one idea at a time: let sections take their
+     content's height, so nothing is stranded across the fold. */
+  .catchUp,
+  .steps,
+  .practice,
+  .rules {
+    min-height: auto;
+    padding-top: 14svh;
+    padding-bottom: 14svh;
+  }
+
+  .steps {
+    padding-bottom: calc(210px + 10svh);
+  }
+
+  .line {
+    padding-top: 8svh;
+  }
+
+  .catchUp > .label,
+  .steps > .label,
+  .rules > .label,
+  .line > .label {
+    position: static;
+  }
+
+  .catchUp > .label,
+  .steps > .label,
+  .rules > .label {
+    margin-bottom: 1.5rem;
+  }
+
+  /* No room left of the margin on a phone: the page scrolls on its own. */
+  .marginNav {
+    display: none;
+  }
+
+  .practice li {
+    grid-template-columns: 2.2rem minmax(0, 1fr);
+  }
+
+  .practiceLine {
+    grid-column: 2;
+  }
+
+  .dao {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .daoGlyph {
+    width: min(78vw, 360px);
+  }
+
+  .practice li {
+    min-height: auto;
+  }
+
+}
+
+@media (max-width: 720px) {
+  .workItem {
+    grid-template-columns: 2.2rem minmax(0, 1fr);
+  }
+
+  .workLine,
+  .workKind {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .workHead {
+    padding: 22px 16px 0;
+  }
+
+  .workHome {
+    font-size: 1.4rem;
+    font-variation-settings: "wdth" 160;
+  }
+
+  .workHead .follow {
+    font-size: 0.95rem;
+    letter-spacing: 0.06em;
+  }
+
+  /* The rooms on their own line under the name and the follow. */
+  .sectionNav {
+    order: 3;
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .workName {
+    white-space: normal;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .workName {
+    transition: none;
+  }
+
+  /* The settled state of slack → taut is the taut line alone. */
+  .knot {
+    display: none;
+  }
+
+  .follow:hover,
+  .follow:focus-visible,
+  .elsewhere a:hover .title,
+  .elsewhere a:focus-visible .title,
+  .practiceLink:hover,
+  .practiceLink:focus-visible {
+    animation: none;
+  }
+
+  .marginNav ol {
+    transition: none;
+  }
+}

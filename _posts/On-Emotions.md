@@ -2,7 +2,7 @@
 title: "On Emotions"
 excerpt: "Emotions aren’t something to control—they’re a part of you, quietly reminding you where it hurts. Learning to befriend them is where real growth begins."
 date: "2025-10-26"
-author: "Kumma"
+author: "Kumma Wu"
 category: "Insights"
 tags: ["Emotions", "Awareness", "Self-growth", "Inner Balance"]
 ---

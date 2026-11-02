@@ -2,7 +2,7 @@
 title: "Markets as a real-time system: scoring decisions, not outcomes"
 excerpt: "A trade can be right and lose, or wrong and win. I built tooling that scores decision quality and enforces process, treating the market as a noisy real-time system rather than a slot machine."
 date: "2026-06-08"
-author: "Kumma"
+author: "Kumma Wu"
 tags: ["Markets", "Decision systems", "Risk", "Research"]
 category: "Engineering"
 ---

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import gsap from "gsap";
 import styles from "../styles/introOverlay.module.css";
+import { isPaperRoute } from "@/components/personal/routes";
 
 const KEY = "kumma_intro_seen_v1";
 
@@ -23,7 +24,8 @@ export default function IntroOverlay() {
     } catch {
       seen = false;
     }
-    if (reduced || seen || pathname === "/stories") return;
+    // The paper pages open on themselves, not on the old site's intro.
+    if (reduced || seen || pathname === "/stories" || isPaperRoute(pathname)) return;
     setShow(true);
   }, [pathname]);
 
@@ -91,6 +93,7 @@ export default function IntroOverlay() {
   return (
     <div
       ref={rootRef}
+      data-chrome="old"
       className={styles.overlay}
       onClick={skip}
       role="presentation"
@@ -100,7 +103,7 @@ export default function IntroOverlay() {
           Independent systems builder
         </p>
         <p data-intro-rise className={styles.wordmark}>
-          Kumma
+          Kumma Wu
         </p>
         <span data-intro-line className={styles.line} aria-hidden="true" />
       </div>

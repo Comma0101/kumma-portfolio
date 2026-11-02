@@ -152,3 +152,17 @@ a {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* A page drawn on paper (components/personal) carries none of the old
+   site's chrome, whatever its path — the 404 and moved pages included. */
+body:has([data-paper]) [data-chrome="old"] {
+  display: none !important;
+}
+
+body:has([data-paper]) .skip-link {
+  border-radius: 0;
+  background: #141414;
+  color: #f2efe8;
+  font-family: Georgia, serif;
+  letter-spacing: 0.04em;
+}

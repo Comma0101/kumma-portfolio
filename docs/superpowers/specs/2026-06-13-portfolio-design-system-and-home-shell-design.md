@@ -2,7 +2,7 @@
 
 **Date:** 2026-06-13
 **Status:** Draft for review
-**Owner:** Kumma (Yang Wu)
+**Owner:** Kumma Wu
 **Scope of this spec:** Phase 1A only — the visual + motion design system and the rebuilt home/entrance page, plus global chrome (navigation, footer, page transitions) and removal of the current fake-UI and dead code. The KOTA deep case study is Phase 1B (separate spec). ARCHON, Market Systems, and Experiments full chapters are Phase 2. About/Philosophy expansion, Contact polish, and blog integration are Phase 3.
 
 ---

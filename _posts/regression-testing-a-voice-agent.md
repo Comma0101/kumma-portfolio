@@ -2,7 +2,7 @@
 title: "Regression-testing a voice agent like software"
 excerpt: "A one-line prompt or timer change can silently break a call flow. How to build a regression harness that replays real calls and asserts on structured output."
 date: "2026-07-08"
-author: "Kumma"
+author: "Kumma Wu"
 tags: ["Testing", "Voice AI", "Evals", "Reliability"]
 category: "Engineering"
 featured: false

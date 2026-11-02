@@ -55,6 +55,23 @@
   color: var(--faint);
 }
 
+/* The close: the reason, then the way back. */
+.closeLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem 2.4rem;
+  margin: 2.4rem 0 0;
+  font-size: 1.05rem;
+}
+
+.closeLinks a {
+  color: var(--paper);
+  text-decoration: underline;
+  text-decoration-color: var(--red, var(--signal));
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.3em;
+}
+
 @media (max-width: 560px) {
   .metricsBand {
     grid-template-columns: 1fr;
@@ -64,18 +81,25 @@
 /* ── Hero ── */
 
 .hero {
-  min-height: calc(100svh - clamp(7rem, 10vw, 10rem) - 1.5rem);
   display: grid;
-  grid-template-columns: minmax(0, 0.95fr) minmax(360px, 1.05fr);
-  align-items: center;
+  /* The title runs the full width; the copy and the diagram sit under it. */
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
   gap: clamp(2.5rem, 5vw, 5rem);
   margin-bottom: clamp(4rem, 7vw, 6rem);
   padding-bottom: clamp(3rem, 5vw, 4.5rem);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid color-mix(in srgb, var(--paper) 8%, transparent);
 }
 
 .heroCopy {
   min-width: 0;
+}
+
+/* Under the full-width title, a reading measure for the copy and the
+   diagram. */
+.heroCopy > :not(h1),
+.hero > :not(.heroCopy) {
+  max-width: 44rem;
 }
 
 .heroProof {
@@ -91,13 +115,14 @@
   letter-spacing: 0.22em;
   font-size: 0.72rem;
   font-weight: 700;
-  color: rgba(163, 181, 168, 0.82);
+  color: color-mix(in srgb, var(--sand) 100%, transparent);
 }
 
 .title {
   margin: 0 0 0.4rem;
-  font-size: clamp(3.4rem, 8vw, 7rem);
-  line-height: 0.92;
+  font-size: clamp(2.8rem, 7.4vw, 7rem);
+  line-height: 0.95;
+  overflow-wrap: anywhere;
   letter-spacing: -0.02em;
   color: var(--paper);
   font-weight: 600;
@@ -107,7 +132,7 @@
   margin: 0 0 1.8rem;
   font-size: clamp(1.4rem, 3vw, 2.2rem);
   line-height: 1.2;
-  color: rgba(220, 220, 220, 0.55);
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
   font-style: italic;
   font-weight: 500;
 }
@@ -117,7 +142,7 @@
   font-size: clamp(1.12rem, 1.7vw, 1.5rem);
   font-weight: 500;
   line-height: 1.45;
-  color: rgba(240, 237, 232, 0.92);
+  color: color-mix(in srgb, var(--paper) 92%, transparent);
   max-width: 48ch;
 }
 
@@ -125,7 +150,7 @@
   margin: 0 0 1.8rem;
   font-size: clamp(0.88rem, 1.1vw, 0.96rem);
   line-height: 1.7;
-  color: rgba(220, 220, 220, 0.68);
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
   max-width: 60ch;
 }
 
@@ -133,7 +158,7 @@
   margin: 0 0 1.6rem;
   font-size: 0.74rem;
   letter-spacing: 0.06em;
-  color: rgba(255, 255, 255, 0.58);
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
   text-transform: uppercase;
 }
 
@@ -143,11 +168,14 @@
 }
 
 .actionLink {
-  font-size: 0.76rem;
+  font-size: 1rem;
   font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  text-decoration: none;
+  letter-spacing: 0.08em;
+  font-variant-caps: all-small-caps;
+  text-decoration: underline;
+  text-decoration-color: var(--red, var(--signal));
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.32em;
   color: var(--signal);
   transition: color 0.3s ease;
 }
@@ -166,7 +194,7 @@
 
 .proofCaption {
   margin: 0;
-  color: rgba(220, 220, 220, 0.56);
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -185,7 +213,7 @@
   font-weight: 700;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(163, 181, 168, 0.7);
+  color: color-mix(in srgb, var(--sand) 100%, transparent);
 }
 
 .sectionLabelSub {
@@ -198,8 +226,8 @@
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   gap: 0;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(8, 8, 8, 0.6);
+  border: 1px solid color-mix(in srgb, var(--paper) 8%, transparent);
+  background: color-mix(in srgb, var(--canvas) 60%, transparent);
 }
 
 .realityInput,
@@ -208,7 +236,7 @@
 }
 
 .realityInput {
-  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  border-right: 1px solid color-mix(in srgb, var(--paper) 6%, transparent);
 }
 
 .realityArrow {
@@ -223,14 +251,14 @@
 .arrowLine {
   width: 1px;
   height: 40px;
-  background: rgba(163, 181, 168, 0.3);
+  background: color-mix(in srgb, var(--sand) 30%, transparent);
 }
 
 .arrowLabel {
   font-size: 0.62rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(163, 181, 168, 0.7);
+  color: color-mix(in srgb, var(--sand) 100%, transparent);
   writing-mode: vertical-rl;
   text-orientation: mixed;
 }
@@ -241,14 +269,14 @@
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.58);
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
 }
 
 .realityQuote {
   margin: 0 0 1.2rem;
   font-size: clamp(1.1rem, 1.6vw, 1.4rem);
   line-height: 1.6;
-  color: rgba(220, 220, 220, 0.75);
+  color: color-mix(in srgb, var(--paper) 75%, transparent);
   font-style: italic;
 }
 
@@ -262,8 +290,8 @@
   font-size: 0.68rem;
   letter-spacing: 0.04em;
   padding: 0.25rem 0.6rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(220, 220, 220, 0.58);
+  border: 1px solid color-mix(in srgb, var(--paper) 10%, transparent);
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
 }
 
 /* Output block */
@@ -275,10 +303,10 @@
 
 .outputRow {
   display: grid;
-  grid-template-columns: 7rem 1fr;
+  grid-template-columns: minmax(max-content, 8rem) 1fr;
   gap: 0.6rem;
   padding: 0.45rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid color-mix(in srgb, var(--paper) 4%, transparent);
   font-size: 0.82rem;
   line-height: 1.5;
 }
@@ -288,23 +316,23 @@
 }
 
 .outputKey {
-  color: rgba(255, 255, 255, 0.55);
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
   font-size: 0.72rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
 .outputVal {
-  color: rgba(220, 220, 220, 0.8);
+  color: color-mix(in srgb, var(--paper) 80%, transparent);
 }
 
 .outputNote {
-  color: rgba(163, 181, 168, 0.7);
+  color: color-mix(in srgb, var(--sand) 100%, transparent);
   font-size: 0.74rem;
 }
 
 .outputConfidence {
-  color: rgba(163, 181, 168, 0.9);
+  color: color-mix(in srgb, var(--sand) 100%, transparent);
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -317,12 +345,12 @@
   display: flex;
   flex-direction: column;
   gap: 0;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid color-mix(in srgb, var(--paper) 6%, transparent);
 }
 
 .problemItem {
   padding: clamp(1.2rem, 2vw, 1.8rem);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid color-mix(in srgb, var(--paper) 4%, transparent);
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
@@ -336,7 +364,7 @@
   margin: 0;
   font-size: clamp(0.92rem, 1.15vw, 1.02rem);
   line-height: 1.5;
-  color: rgba(220, 220, 220, 0.85);
+  color: color-mix(in srgb, var(--paper) 85%, transparent);
   font-weight: 500;
 }
 
@@ -344,7 +372,7 @@
   margin: 0;
   font-size: clamp(0.82rem, 1vw, 0.9rem);
   line-height: 1.65;
-  color: rgba(220, 220, 220, 0.58);
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
 }
 
 /* ── System Flow / Pipeline ── */
@@ -353,13 +381,13 @@
   display: flex;
   flex-direction: column;
   gap: 0;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid color-mix(in srgb, var(--paper) 6%, transparent);
 }
 
 .pipelineStep {
   display: grid;
   grid-template-columns: 10rem 1fr;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid color-mix(in srgb, var(--paper) 4%, transparent);
 }
 
 .pipelineStep:last-child {
@@ -371,19 +399,19 @@
   align-items: baseline;
   gap: 0.8rem;
   padding: clamp(1rem, 1.8vw, 1.5rem);
-  border-right: 1px solid rgba(255, 255, 255, 0.04);
+  border-right: 1px solid color-mix(in srgb, var(--paper) 4%, transparent);
 }
 
 .pipelineIndex {
   font-size: 0.66rem;
   letter-spacing: 0.12em;
-  color: rgba(255, 255, 255, 0.5);
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
 }
 
 .pipelineLabel {
   font-size: 0.82rem;
   font-weight: 700;
-  color: #e8e4e4;
+  color: var(--paper);
   letter-spacing: 0.02em;
   text-transform: uppercase;
 }
@@ -397,18 +425,18 @@
 
 .pipelineRow {
   display: grid;
-  grid-template-columns: 5.5rem 1fr;
-  gap: 0.6rem;
+  grid-template-columns: minmax(max-content, 7rem) 1fr;
+  gap: 0.6rem 1rem;
   font-size: 0.82rem;
   line-height: 1.55;
-  color: rgba(220, 220, 220, 0.62);
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
 }
 
 .pipelineKey {
   font-size: 0.68rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.5);
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
   padding-top: 0.1em;
 }
 
@@ -418,12 +446,12 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: color-mix(in srgb, var(--paper) 4%, transparent);
+  border: 1px solid color-mix(in srgb, var(--paper) 6%, transparent);
 }
 
 .failureItem {
-  background: rgba(8, 8, 8, 0.7);
+  background: color-mix(in srgb, var(--canvas) 70%, transparent);
   padding: clamp(1.2rem, 2vw, 1.6rem);
   display: flex;
   flex-direction: column;
@@ -433,13 +461,13 @@
 .failureType {
   font-size: 0.82rem;
   font-weight: 700;
-  color: #e8e4e4;
+  color: var(--paper);
 }
 
 .failureExample {
   font-size: 0.8rem;
   line-height: 1.6;
-  color: rgba(220, 220, 220, 0.62);
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
   font-style: italic;
 }
 
@@ -447,12 +475,12 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: color-mix(in srgb, var(--paper) 4%, transparent);
+  border: 1px solid color-mix(in srgb, var(--paper) 6%, transparent);
 }
 
 .handlingItem {
-  background: rgba(8, 8, 8, 0.7);
+  background: color-mix(in srgb, var(--canvas) 70%, transparent);
   padding: clamp(1.2rem, 2vw, 1.6rem);
   display: flex;
   flex-direction: column;
@@ -462,13 +490,13 @@
 .handlingMech {
   font-size: 0.82rem;
   font-weight: 700;
-  color: rgba(163, 181, 168, 0.8);
+  color: color-mix(in srgb, var(--sand) 100%, transparent);
 }
 
 .handlingDesc {
   font-size: 0.8rem;
   line-height: 1.6;
-  color: rgba(220, 220, 220, 0.55);
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
 }
 
 /* ── Interface Principles ── */
@@ -477,12 +505,12 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: color-mix(in srgb, var(--paper) 4%, transparent);
+  border: 1px solid color-mix(in srgb, var(--paper) 6%, transparent);
 }
 
 .principleItem {
-  background: rgba(8, 8, 8, 0.7);
+  background: color-mix(in srgb, var(--canvas) 70%, transparent);
   padding: clamp(1.4rem, 2.5vw, 2rem);
   display: flex;
   flex-direction: column;
@@ -493,7 +521,7 @@
   margin: 0;
   font-size: 0.88rem;
   font-weight: 700;
-  color: #e8e4e4;
+  color: var(--paper);
   letter-spacing: 0.01em;
 }
 
@@ -501,7 +529,7 @@
   margin: 0;
   font-size: 0.82rem;
   line-height: 1.7;
-  color: rgba(220, 220, 220, 0.55);
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
 }
 
 /* ── System Impact ── */
@@ -510,12 +538,12 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: color-mix(in srgb, var(--paper) 4%, transparent);
+  border: 1px solid color-mix(in srgb, var(--paper) 6%, transparent);
 }
 
 .impactItem {
-  background: rgba(8, 8, 8, 0.7);
+  background: color-mix(in srgb, var(--canvas) 70%, transparent);
   padding: clamp(1.4rem, 2.5vw, 2rem);
   display: flex;
   flex-direction: column;
@@ -525,7 +553,7 @@
 .impactMetric {
   font-size: 0.82rem;
   font-weight: 700;
-  color: #e8e4e4;
+  color: var(--paper);
 }
 
 .impactDirection {
@@ -533,13 +561,13 @@
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(163, 181, 168, 0.8);
+  color: color-mix(in srgb, var(--sand) 100%, transparent);
 }
 
 .impactDetail {
   font-size: 0.8rem;
   line-height: 1.6;
-  color: rgba(220, 220, 220, 0.58);
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
   margin-top: 0.2rem;
 }
 
@@ -549,12 +577,12 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: color-mix(in srgb, var(--paper) 4%, transparent);
+  border: 1px solid color-mix(in srgb, var(--paper) 6%, transparent);
 }
 
 .stackGroup {
-  background: rgba(8, 8, 8, 0.7);
+  background: color-mix(in srgb, var(--canvas) 70%, transparent);
   padding: clamp(1.2rem, 2vw, 1.6rem);
   display: flex;
   flex-direction: column;
@@ -567,21 +595,21 @@
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(163, 181, 168, 0.7);
+  color: color-mix(in srgb, var(--sand) 100%, transparent);
 }
 
 .stackGroupItems {
   margin: 0;
   font-size: 0.82rem;
   line-height: 1.65;
-  color: rgba(220, 220, 220, 0.55);
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
 }
 
 /* ── Philosophical ── */
 
 .philosophical {
   padding: clamp(3rem, 5vw, 5rem) 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid color-mix(in srgb, var(--paper) 6%, transparent);
   max-width: 680px;
 }
 
@@ -589,7 +617,7 @@
   margin: 0 0 1.2rem;
   font-size: clamp(1.6rem, 3vw, 2.4rem);
   line-height: 1.5;
-  color: rgba(220, 220, 220, 0.8);
+  color: color-mix(in srgb, var(--paper) 80%, transparent);
   font-style: italic;
   font-weight: 500;
 }
@@ -599,7 +627,7 @@
   font-size: 0.75rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(163, 181, 168, 0.7);
+  color: color-mix(in srgb, var(--sand) 100%, transparent);
 }
 
 /* ── Responsive ── */
@@ -622,14 +650,14 @@
 
   .realityInput {
     border-right: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid color-mix(in srgb, var(--paper) 6%, transparent);
   }
 
   .realityArrow {
     writing-mode: horizontal-tb;
     flex-direction: row;
     padding: 0.8rem 1.4rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid color-mix(in srgb, var(--paper) 4%, transparent);
   }
 
   .arrowLine {
@@ -647,7 +675,7 @@
 
   .pipelineHeader {
     border-right: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid color-mix(in srgb, var(--paper) 3%, transparent);
     padding-bottom: 0.6rem;
   }
 
@@ -680,11 +708,8 @@
     font-size: clamp(1.2rem, 4vw, 1.6rem);
   }
 
-  .outputRow {
-    grid-template-columns: 5.5rem 1fr;
-  }
-
+  .outputRow,
   .pipelineRow {
-    grid-template-columns: 4rem 1fr;
+    grid-template-columns: minmax(max-content, 5.5rem) 1fr;
   }
 }

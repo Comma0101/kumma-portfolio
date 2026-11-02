@@ -83,7 +83,7 @@ const leadStyle: CSSProperties = {
   maxWidth: "62ch",
   fontSize: "clamp(0.98rem, 1.4vw, 1.12rem)",
   lineHeight: 1.7,
-  color: "rgba(220, 220, 220, 0.7)",
+  color: "color-mix(in srgb, var(--paper) 78%, transparent)",
 };
 
 // Static, decorative waveform silhouette for the hero proof panel. No audio is
@@ -163,7 +163,7 @@ export default function AudiobookCaseStudy() {
       {/* ── Hero ── */}
       <header ref={heroRef} className={styles.hero}>
         <div className={styles.heroCopy}>
-          <p className={`${styles.eyebrow} ${grotesk.className}`}>Case study</p>
+          <p className={`${styles.eyebrow} ${grotesk.className}`}>Build · a write-up</p>
           <h1 className={`${styles.title} ${cormorant.className}`}>
             Audiobook AI
           </h1>
@@ -179,10 +179,6 @@ export default function AudiobookCaseStudy() {
             Turning arbitrary documents into listenable audio is a pipeline
             problem, not a single API call. This page documents the pipeline and
             the hardening that keeps it running under load.
-          </p>
-          <p className={`${styles.stackLine} ${grotesk.className}`}>
-            Kokoro TTS · PyTorch · FastAPI · Worker Queue · PWA · Cloudflare
-            Tunnel
           </p>
           <div className={styles.actions}>
             <a
@@ -206,7 +202,7 @@ export default function AudiobookCaseStudy() {
                     flex: 1,
                     maxWidth: "6px",
                     height: `${h}%`,
-                    background: "var(--sand, #a3b5a8)",
+                    background: "var(--sand)",
                     opacity: 0.5,
                     borderRadius: "1px",
                   }}
@@ -536,13 +532,12 @@ export default function AudiobookCaseStudy() {
 
         {/* ── Close ── */}
         <footer className={styles.philosophical} data-animate>
-          <Link
-            href="/contact"
-            className={`${styles.quote} ${cormorant.className}`}
-            style={{ textDecoration: "none", display: "inline-block" }}
-          >
-            Have a document, a stream, or a voice problem? Let&apos;s talk.
-          </Link>
+          <p className={`${styles.quote} ${cormorant.className}`}>
+            Anything written, heard as one continuous voice.
+          </p>
+          <p className={styles.closeLinks}>
+            <Link href="/work">← All work</Link>
+          </p>
         </footer>
       </div>
     </div>

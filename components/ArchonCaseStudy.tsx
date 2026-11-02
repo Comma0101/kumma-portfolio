@@ -84,35 +84,7 @@ const leadStyle: CSSProperties = {
   maxWidth: "62ch",
   fontSize: "clamp(0.98rem, 1.4vw, 1.12rem)",
   lineHeight: 1.7,
-  color: "rgba(220, 220, 220, 0.7)",
-};
-
-// Empty "awaiting measured results" slot. Intentionally holds no numbers.
-const awaitingWrap: CSSProperties = {
-  border: "1px dashed rgba(255, 255, 255, 0.14)",
-  borderRadius: "var(--radius-card, 14px)",
-  background: "rgba(8, 8, 8, 0.5)",
-  padding: "clamp(1.6rem, 3vw, 2.4rem)",
-  display: "flex",
-  flexDirection: "column",
-  gap: "0.7rem",
-};
-
-const awaitingTag: CSSProperties = {
-  fontFamily: "var(--font-mono, monospace)",
-  fontSize: "0.66rem",
-  fontWeight: 700,
-  letterSpacing: "0.16em",
-  textTransform: "uppercase",
-  color: "rgba(163, 181, 168, 0.75)",
-};
-
-const awaitingBody: CSSProperties = {
-  margin: 0,
-  maxWidth: "60ch",
-  fontSize: "0.9rem",
-  lineHeight: 1.7,
-  color: "rgba(220, 220, 220, 0.5)",
+  color: "color-mix(in srgb, var(--paper) 78%, transparent)",
 };
 
 const ctaStyle: CSSProperties = {
@@ -121,7 +93,7 @@ const ctaStyle: CSSProperties = {
   fontWeight: 600,
   letterSpacing: "0.1em",
   textTransform: "uppercase",
-  color: "var(--signal, rgba(163, 181, 168, 0.9))",
+  color: "var(--signal, color-mix(in srgb, var(--sand) 90%, transparent))",
   textDecoration: "none",
   display: "inline-block",
 };
@@ -186,10 +158,10 @@ export default function ArchonCaseStudy() {
       {/* ── Hero ── */}
       <header ref={heroRef} className={styles.hero}>
         <div className={styles.heroCopy}>
-          <p className={`${styles.eyebrow} ${grotesk.className}`}>Case study</p>
+          <p className={`${styles.eyebrow} ${grotesk.className}`}>Build · a write-up</p>
           <h1 className={`${styles.title} ${cormorant.className}`}>ARCHON</h1>
           <p className={`${styles.subtitle} ${cormorant.className}`}>
-            A self-aware personal agent.
+            An agent that can see its own work.
           </p>
           <p className={`${styles.heroDesc} ${grotesk.className}`}>
             A control plane that plans, routes, executes, and recovers across
@@ -200,10 +172,6 @@ export default function ArchonCaseStudy() {
             This is the systems craft underneath the voice work, applied to
             agents. It documents how the orchestration layer is built, and where
             it is still rough.
-          </p>
-          <p className={`${styles.stackLine} ${grotesk.className}`}>
-            Agent Orchestration · Multi-model Routing · Worker Delegation · MCP
-            Tools · Persistent Memory
           </p>
           <div className={styles.actions}>
             <a
@@ -399,21 +367,6 @@ export default function ArchonCaseStudy() {
           </div>
         </section>
 
-        {/* ── Measured results (intentionally empty) ── */}
-        <section className={styles.section} data-animate>
-          <h2 className={`${styles.sectionLabel} ${grotesk.className}`}>
-            Measured results
-          </h2>
-          <div style={awaitingWrap}>
-            <span style={awaitingTag}>Awaiting measured results</span>
-            <p className={grotesk.className} style={awaitingBody}>
-              Reliability, recovery rate, and cost per task will be published
-              here from verified runs. Until that data is instrumented and
-              confirmed, this slot stays empty. No estimates.
-            </p>
-          </div>
-        </section>
-
         {/* ── Close ── */}
         <footer className={styles.philosophical} data-animate>
           <p className={`${styles.quote} ${cormorant.className}`}>
@@ -428,12 +381,8 @@ export default function ArchonCaseStudy() {
           >
             Read the source on GitHub →
           </a>
-          <Link
-            href="/contact"
-            className={grotesk.className}
-            style={ctaStyle}
-          >
-            Working on agent orchestration? Get in touch →
+          <Link href="/work" className={grotesk.className} style={ctaStyle}>
+            ← All work
           </Link>
         </footer>
       </div>

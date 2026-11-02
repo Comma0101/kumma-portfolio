@@ -94,13 +94,6 @@ export default function ContactSection() {
               GitHub <span aria-hidden="true">→</span>
             </a>
             <a
-              href="https://www.linkedin.com/in/yang-w-9233a3a8/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              LinkedIn <span aria-hidden="true">→</span>
-            </a>
-            <a
               href="https://x.com/Comma_9fie"
               target="_blank"
               rel="noopener noreferrer"

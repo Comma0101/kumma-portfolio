@@ -14,6 +14,8 @@ import styles from "@/styles/blogDetail.module.css";
 import { FaLinkedin, FaXTwitter } from "react-icons/fa6";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { JsonLd } from "@/components/seo/JsonLd";
+import Moved from "@/components/personal/Moved";
+import { moved } from "@/components/personal/routes";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -39,6 +41,8 @@ export async function generateMetadata({
 }: {
   params: { locale: string; slug: string };
 }): Promise<Metadata> {
+  const away = moved[`/blog/${params.locale}/${params.slug}`];
+  if (away) return { title: "Moved", robots: { index: false }, alternates: { canonical: `https://kumma.me${away.to}` } };
   try {
     const post = await getPostData(params.slug, params.locale as Locale);
     const title = `${post.title} | Kumma`;
@@ -81,6 +85,8 @@ export default async function BlogDetailPage({
   params: { locale: string; slug: string };
 }) {
   const locale = params.locale as Locale;
+  const away = moved[`/blog/${params.locale}/${params.slug}`];
+  if (away) return <Moved {...away} />;
 
   try {
     const post = await getPostData(params.slug, locale);
@@ -101,7 +107,7 @@ export default async function BlogDetailPage({
             description: post.excerpt,
             datePublished: post.publishedDate,
             inLanguage: locale,
-            author: { "@type": "Person", name: "Kumma" },
+            author: { "@type": "Person", name: "Kumma Wu" },
             url: `https://kumma.me/blog/${locale}/${params.slug}`,
           }}
         />

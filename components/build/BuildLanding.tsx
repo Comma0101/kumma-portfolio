@@ -90,7 +90,7 @@ export default function BuildLanding() {
     <div ref={root} className={styles.page}>
       <header className={styles.header}>
         <a href="#top" className={styles.wordmark}>
-          Kumma
+          Kumma Wu
         </a>
         <a
           href="#consult"
@@ -273,7 +273,7 @@ export default function BuildLanding() {
       </div>
 
       <footer className={styles.footer}>
-        <span>© {new Date().getFullYear()} Kumma</span>
+        <span>© {new Date().getFullYear()} Kumma Wu</span>
         <a href={`mailto:${contactEmail}`}>{contactEmail}</a>
       </footer>
     </div>

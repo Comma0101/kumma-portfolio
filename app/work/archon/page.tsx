@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ArchonCaseStudy from "@/components/ArchonCaseStudy";
+import Paper from "@/components/personal/Paper";
 import { JsonLd } from "@/components/seo/JsonLd";
 
 export const metadata: Metadata = {
@@ -13,9 +14,11 @@ export const metadata: Metadata = {
       "A self-hostable control plane for agents: routes across Claude, GPT, and Gemini, runs tools over MCP, keeps compressed memory, and delegates real work to coding agents through a worker router.",
     url: "https://kumma.me/work/archon",
     type: "article",
+    images: ["/og/portrait.png"],
   },
   twitter: {
     card: "summary_large_image",
+    images: ["/og/portrait.png"],
     title: "ARCHON — case study | Kumma",
     description:
       "Agent orchestration as a control plane: routing, tools, memory, delegation, and human approval.",
@@ -29,13 +32,13 @@ const caseStudyLd = {
   applicationCategory: "DeveloperApplication",
   operatingSystem: "Cross-platform",
   description:
-    "A self-aware personal agent that orchestrates models, tools, memory, and other coding agents through one inspectable control plane. It plans, routes, executes, and recovers across providers, with persistent memory, context compression, usage accounting, and human approval built in.",
+    "A personal agent that orchestrates models, tools, memory, and other coding agents through one inspectable control plane. It plans, routes, executes, and recovers across providers, with persistent memory, context compression, usage accounting, and human approval built in.",
   url: "https://kumma.me/work/archon",
   codeRepository: "https://github.com/Comma0101/archon",
   author: {
     "@type": "Person",
-    name: "Kumma",
-    alternateName: "Yang Wu",
+    name: "Kumma Wu",
+    alternateName: "Kumma",
     url: "https://kumma.me",
   },
 };
@@ -44,7 +47,9 @@ export default function Page() {
   return (
     <>
       <JsonLd data={caseStudyLd} />
-      <ArchonCaseStudy />
+      <Paper>
+        <ArchonCaseStudy />
+      </Paper>
     </>
   );
 }

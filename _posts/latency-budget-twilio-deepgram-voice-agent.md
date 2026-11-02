@@ -2,7 +2,7 @@
 title: "The latency budget of a Twilio and Deepgram voice agent, from published numbers"
 excerpt: "What each stage of a phone voice agent actually costs — telephony, Deepgram STT, LLM, and TTS — using vendors' own published latency figures, not guesses."
 date: "2026-07-08"
-author: "Kumma"
+author: "Kumma Wu"
 tags: ["Latency", "Voice AI", "Deepgram", "Twilio"]
 category: "Engineering"
 featured: false

@@ -510,7 +510,7 @@ export function JsonLd({ data }: { data: Record<string, unknown> }) {
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />;
 }
 export const personLd = {
-  "@context": "https://schema.org", "@type": "Person", name: "Kumma", alternateName: "Yang Wu",
+  "@context": "https://schema.org", "@type": "Person", name: "Kumma Wu", alternateName: "Kumma",
   url: "https://kumma.me", jobTitle: "Independent systems builder", address: { "@type": "PostalAddress", addressLocality: "Los Angeles" },
   sameAs: ["https://github.com/Comma0101", "https://www.linkedin.com/in/yang-w-9233a3a8/", "https://x.com/Comma_9fie"],
 };
@@ -571,7 +571,7 @@ export async function generateMetadata({ params }: { params: { locale: "en" | "z
 - [ ] **Step 2:** Render an `Article` JSON-LD in the page:
 ```tsx
 <JsonLd data={{ "@context": "https://schema.org", "@type": "Article", headline: post.title, description: post.excerpt,
-  datePublished: post.publishedDate, inLanguage: params.locale, author: { "@type": "Person", name: "Kumma" },
+  datePublished: post.publishedDate, inLanguage: params.locale, author: { "@type": "Person", name: "Kumma Wu" },
   url: `https://kumma.me/blog/${params.locale}/${params.slug}` }} />
 ```
 

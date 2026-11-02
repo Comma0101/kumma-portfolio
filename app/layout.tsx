@@ -19,10 +19,12 @@ const spaceGrotesk = Space_Grotesk({
   display: "swap",
 });
 
+// Secondary faces load on use, not on every page (the homepage sets neither).
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
   display: "swap",
+  preload: false,
 });
 
 const cormorant = Cormorant_Garamond({
@@ -31,31 +33,32 @@ const cormorant = Cormorant_Garamond({
   style: ["normal", "italic"],
   variable: "--font-editorial",
   display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://kumma.me"),
   title: {
-    default: "Kumma / Yang Wu | Independent AI systems engineer",
+    default: "Kumma Wu",
     template: "%s | Kumma",
   },
   description:
-    "Kumma / Yang Wu builds production AI systems for real-time voice, agent orchestration, and decision-quality workflows.",
+    "Kumma Wu explores consciousness, self-awareness, and how understanding enters everyday life. A personal site of writing, software, and visual inquiry.",
   openGraph: {
-    title: "Kumma / Yang Wu | Independent AI systems engineer",
+    title: "Kumma Wu",
     description:
-      "Production AI systems for real-time voice, agent orchestration, and decision-quality workflows.",
+      "Kumma Wu explores consciousness, self-awareness, and how understanding enters everyday life. A personal site of writing, software, and visual inquiry.",
     url: "https://kumma.me",
-    siteName: "Kumma / Yang Wu",
+    siteName: "Kumma Wu",
     type: "website",
-    images: ["/og/home.png"],
+    images: ["/og/portrait.png"],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Kumma / Yang Wu | Independent AI systems engineer",
+    title: "Kumma Wu",
     description:
-      "Production AI systems for real-time voice, agent orchestration, and decision-quality workflows.",
-    images: ["/og/home.png"],
+      "Kumma Wu explores consciousness, self-awareness, and how understanding enters everyday life. A personal site of writing, software, and visual inquiry.",
+    images: ["/og/portrait.png"],
   },
   ...(process.env.NEXT_PUBLIC_GSC_TOKEN
     ? { verification: { google: process.env.NEXT_PUBLIC_GSC_TOKEN } }

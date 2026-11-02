@@ -1,29 +1,13 @@
-"use client";
+import type { Metadata } from "next";
+import Moved from "@/components/personal/Moved";
+import { moved } from "@/components/personal/routes";
 
-import { useEffect } from "react";
-import Link from "next/link";
+export const metadata: Metadata = {
+  title: "Moved",
+  robots: { index: false },
+  alternates: { canonical: "https://kumma.me/work/" },
+};
 
 export default function ProjectsPage() {
-  useEffect(() => {
-    window.location.replace("/#work");
-  }, []);
-
-  return (
-    <div
-      style={{
-        minHeight: "60vh",
-        display: "grid",
-        placeItems: "center",
-        padding: "9rem 1.5rem",
-      }}
-    >
-      <p style={{ color: "var(--steel)" }}>
-        Redirecting to{" "}
-        <Link href="/#work" style={{ color: "var(--signal)" }}>
-          the work index
-        </Link>
-        .
-      </p>
-    </div>
-  );
+  return <Moved {...moved["/projects"]} />;
 }

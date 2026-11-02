@@ -1,71 +1,61 @@
-# Personal Website & Portfolio
+# Kumma
 
-This is a personal website and portfolio project built with Next.js. It showcases a variety of projects, a blog, and a gallery of creative work.
+Kumma Wu’s personal site explores consciousness, self-awareness, and how understanding enters everyday life. The main experience uses paper, continuous red ink, variable typography, Chinese text, and brushwork across eight personal chapters. Software projects have their own Work pages; essays and reading references live under Writing.
 
-## Features
+## Run locally
 
-- **Project Showcase:** A dedicated section to display and detail various software and creative projects.
-- **Blog:** A space for articles, tutorials, and thoughts on technology and design.
-- **Gallery:** A visual collection of artwork, photography, or other creative endeavors.
-- **Interactive 3D Elements:** Utilizes Three.js for engaging and dynamic visual components.
+Use Node.js and npm. The Node version used by the deployment workflow is recorded in `.github/workflows/deploy.yml`.
 
-## Getting Started
+```sh
+npm ci
+npm run dev
+```
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+The development server runs at `http://localhost:4242`. To use another port:
 
-### Prerequisites
+```sh
+npm run dev -- --port 4243
+```
 
-- [Node.js](https://nodejs.org/) (v20 or later recommended)
-- [npm](https://www.npmjs.com/)
+## Architecture
 
-### Installation
+- `app/`: Next.js App Router routes and metadata. `/` is the primary personal site; `/work`, `/notes`, and `/studies` hold work, writing, and browser-rendered visual studies. `/view` is a retained noindex experiment.
+- `components/personal/`: the paper design system, eight-chapter sequence, ink geometry, portrait, typography, interactions, and shared page shell.
+- `components/seo/JsonLd.tsx`: public identity and website structured data.
+- `_posts/`: Markdown essays, with Chinese editions under `_posts/zh/`.
+- `public/`: fonts, assets, and the `llms.txt` / `llms-full.txt` identity summaries.
+- `scripts/`: share-image generation and visual/font authoring tools. `npm run build` regenerates `public/og/` through `prebuild`.
+- `PRODUCT.md`, `DESIGN.md`, and `.impeccable/surfaces/`: product truths, visual conventions, and surface-specific intent.
+- `components/personal/routes.ts`: paper routes and destinations for retired addresses.
 
-1.  Clone the repository:
-    ```bash
-    git clone https://github.com/Comma0101/3D-Maze.git
-    ```
-2.  Navigate to the project directory:
-    ```bash
-    cd p-website-next
-    ```
-3.  Install the dependencies:
-    ```bash
-    npm install
-    ```
-4.  Run the development server:
-    ```bash
-    npm run dev
-    ```
+Next.js 14, React 18, TypeScript, CSS Modules, GSAP, SVG, Canvas, and `perfect-freehand` support the main experience. Production uses static export with trailing slashes; generated files live in `out/`.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Verify changes
 
-## Automated Deployment (CI/CD)
-This project is configured for seamless, automated deployment to **kumma.me** via GitHub Pages.
-- **Trigger**: Any code pushed or merged into the `master` branch will automatically trigger the deployment pipeline.
-- **Workflow**: The pipeline uses GitHub Actions (defined in `.github/workflows/deploy.yml`). It sets up a Node.js environment, installs dependencies, runs `npm run build` to generate a static export (`/out`), and publishes those artifacts directly to GitHub Pages.
-- **Custom Domain**: A `CNAME` file is included in the project root to ensure GitHub Pages correctly routes traffic for `kumma.me`.
+```sh
+npm test
+./node_modules/.bin/tsc --noEmit --incremental false --target es2020
+```
 
-## Folder Structure Overview & Suggestions
-The repository is structured as a standard modern Next.js 14+ application:
+Run the local ESLint configuration against the changed TypeScript files. For example:
 
-- `/app` - Contains the core Next.js App Router layout, page routing, and metadata configuration.
-- `/components` - Houses modular React components.
-  - `/components/home` - Highly specific, heavy sections (Hero, About/Manifesto, Skills, Projects) are perfectly co-located here.
-  - `/components/Animations` - Contains reusable GSAP and frame-motion animation wrappers.
-- `/styles` - Global CSS and component-specific CSS Modules.
-- `/public` - Static assets (images, fonts, 3D models).
-- `/_posts` - Markdown files for blog content.
+```sh
+ESLINT_USE_FLAT_CONFIG=false ./node_modules/.bin/eslint --no-eslintrc --config .eslintrc.json app/page.tsx components/personal/Opening.tsx
+```
 
-**Architectural Suggestions for Scaling:**
-1. **Three.js Extraction**: Currently, some complex WebGL components (like `TextTunnelTransition.tsx` and `RotatingCuboids`) mix heavy React state with low-level Three.js `useFrame` logic. As the app grows, consider moving the pure non-React WebGL logic into a dedicated `/webgl` or `/three` folder to separate the rendering mathematics from the React component lifecycle.
-2. **Context Co-location**: The `/context` folder (e.g. `TransitionContext.tsx`) is currently at the root. Consider moving this inside `/components/context` or `/hooks` to keep state management closer to the UI components that consume them.
-3. **CSS Modules**: The app currently uses a mix of global CSS (`/styles/index.css`) and modular CSS (`HeroSection.module.css`). Ensure that all new component-specific styling continues to use the `.module.css` pattern to prevent global namespace collisions.
+The legacy `npm run lint` command can encounter a parent-checkout plugin conflict in nested worktrees. The explicit local-config command avoids that resolution path. Standalone type checking uses ES2020 to match the test compilation target and include the repository’s regular-expression tests. Production builds skip ESLint in `next.config.mjs`, so lint remains a separate check.
 
-## Technologies Used
+Stop the development server before building; both commands use `.next/`.
 
-- [Next.js](https://nextjs.org/) - React framework for production
-- [React](https://reactjs.org/) - A JavaScript library for building user interfaces
-- [TypeScript](https://www.typescriptlang.org/) - Typed superset of JavaScript
-- [Three.js](https://threejs.org/) - 3D graphics library
-- [GSAP](https://greensock.com/gsap/) - JavaScript animation library
-- [Tailwind CSS](https://tailwindcss.com/) - A utility-first CSS framework
+```sh
+npm run build
+python3 -m http.server 4242 --bind 127.0.0.1 --directory out
+```
+
+Before publication, inspect the built site in a real browser at desktop and phone widths. Exercise the chapter interactions and keyboard alternatives, reduced-motion and no-JavaScript reading, Work/Writing/contact paths, language editions, and retired URLs. Check exported metadata, structured data, share images, horizontal overflow, and console errors. Review the final diff for unrelated files.
+
+## Publication
+
+`.github/workflows/deploy.yml` runs on pushes to `master` and through manual dispatch. It installs dependencies, runs the static build, uploads `out/`, and deploys that artifact to GitHub Pages. The custom domain is `kumma.me`.
+
+The rich `/` experience is the primary replacement site. `/view` remains an optional noindex comparison, with no project showcase on the main journey. A local build or publication instruction does not establish deployment success: verify the workflow result and the live domain after publishing.

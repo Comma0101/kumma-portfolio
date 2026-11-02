@@ -5,7 +5,9 @@ const nextConfig = {
     // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
-  output: 'export',
+  // Next 14's dev server rejects dynamicParams: false under static export.
+  // Production still exports every published route for GitHub Pages.
+  output: process.env.NODE_ENV === 'development' ? undefined : 'export',
   trailingSlash: true,
   // Configure `pageExtensions` to include MDX files
   pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
