@@ -158,7 +158,7 @@ export default function Agency() {
       <p className={styles.label}>
         <ChapterMark char="主" label="Agency" />
       </p>
-      <p className={styles.first}>Much of life is reaction. Agency begins when we choose what happens next.</p>
+      <p className={styles.first}>Before I call a choice my own, I want to notice what is moving me.</p>
       <h2 id="agency" className={styles.agencyLine} data-interactive={interactive ? "" : undefined}>
         <span aria-hidden="true">
           <span ref={reRef} className={styles.struck} data-anchor="re" data-struck>
@@ -187,8 +187,8 @@ export default function Agency() {
       </p>
       <ThenNow
         waitFor="act"
-        then="I used to look outward for confirmation and allow other people’s reactions to influence my direction."
-        now="Now I want to determine my own direction, establish boundaries, and accept responsibility for my choices."
+        then="Habit and other people’s expectations can move me before I have asked whether I agree."
+        now="I want to notice those influences, choose what I will act on, and answer for the consequences."
       />
     </section>
   );

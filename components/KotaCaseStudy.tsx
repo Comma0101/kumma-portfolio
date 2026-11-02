@@ -422,7 +422,7 @@ export default function KotaCaseStudy() {
           </p>
           <p className={styles.closeLinks}>
             <Link href="/call">Try it on the demo diner →</Link>
-            <Link href="/work">← Build</Link>
+            <Link href="/work">← All work</Link>
           </p>
         </footer>
       </div>

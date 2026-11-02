@@ -78,8 +78,8 @@
   gap: 0.15rem;
 }
 
-/* What the character shows (chapters.ts), read off it once written. */
-.chapterReading {
+/* The personal reflection arrives after its chapter mark is written. */
+.chapterReflection {
   max-width: 24rem;
   font-kerning: none;
   color: var(--grey);
@@ -90,15 +90,7 @@
   line-height: 1.35;
 }
 
-.chapterReading span {
-  margin-right: 0.3em;
-  color: var(--ink);
-  font-family: var(--font-hand), var(--font-tc), serif;
-  font-style: normal;
-  letter-spacing: 0.1em;
-}
-
-:global(html[data-front="motion"]) .front [data-reading] {
+:global(html[data-front="motion"]) .front [data-reflection] {
   opacity: 0;
 }
 
@@ -152,11 +144,6 @@
 
 :global(html[data-front="motion"]) .front [data-body] {
   --wght: 10;
-}
-
-:global(html[data-front="motion"]) .front [data-compound] {
-  --wdth: 120;
-  --wght: 45;
 }
 
 :global(html[data-front="motion"]) .front [data-small] {
@@ -246,7 +233,53 @@
   padding: 0 var(--gutter) 16svh;
 }
 
-/* Above the name, only the way to follow: a label, underlined by the pen. */
+.opening > .label {
+  top: max(7svh, 4rem);
+}
+
+/* Quiet destinations above the name, with the artwork free to unfold below. */
+.openingLinks {
+  position: absolute;
+  top: 1rem;
+  right: var(--gutter);
+  left: var(--gutter);
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: clamp(1.2rem, 3vw, 2.5rem);
+}
+
+.openingLinks nav {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.openingLinks nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 1.05rem;
+  text-decoration: none;
+  text-underline-offset: 0.25em;
+}
+
+.openingLinks nav a:hover,
+.openingLinks nav a:focus-visible {
+  text-decoration: underline;
+  text-decoration-color: var(--red);
+}
+
+.openingLinks .follow {
+  position: static;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  min-height: 44px;
+  padding-bottom: 0;
+}
+
 .follow {
   position: absolute;
   top: 26px;
@@ -485,7 +518,7 @@
 /* His face, drawn by the red line as one spiral (Portrait). */
 .portrait {
   grid-column: 2;
-  grid-row: 1 / span 2;
+  grid-row: 1 / span 3;
   align-self: start;
   width: clamp(200px, 19vw, 300px);
   aspect-ratio: 1;
@@ -499,10 +532,21 @@
   height: 100%;
 }
 
-.compound {
-  display: inline-block;
-  font-weight: var(--wght, 200);
-  font-variation-settings: "wdth" var(--wdth, 200);
+.openingNote {
+  grid-column: 1;
+  max-width: 36rem;
+  margin-top: 1.5rem;
+  font-size: clamp(1.12rem, 1.5vw, 1.35rem);
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+.openingNote p {
+  margin: 0 0 0.8em;
+}
+
+.openingNote p:last-child {
+  margin-bottom: 0;
 }
 
 /* ---------- Understanding arrives first ---------- */
@@ -528,7 +572,7 @@
   text-wrap: pretty;
 }
 
-/* The past, in grey; the present, in ink, after it. */
+/* A reflection in grey; its response arrives in ink after it. */
 .then {
   color: var(--grey);
   font-style: italic;
@@ -805,6 +849,43 @@
   line-height: 1.4;
 }
 
+.practiceExcerpt {
+  max-width: 42rem;
+  margin: 5svh 0 0;
+}
+
+.practiceExcerpt blockquote {
+  margin: 0;
+  font-size: clamp(1.4rem, 2.3vw, 2rem);
+  font-style: italic;
+  line-height: 1.3;
+}
+
+.practiceExcerpt blockquote p {
+  margin: 0;
+}
+
+.practiceExcerpt figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.3rem;
+  margin-top: 1rem;
+  color: var(--grey);
+  font-size: 1.05rem;
+}
+
+.practiceExcerpt figcaption cite {
+  font-style: normal;
+}
+
+.practiceExcerpt figcaption a {
+  margin-left: 1rem;
+  color: var(--ink);
+  text-decoration-color: var(--red);
+  text-underline-offset: 0.2em;
+}
+
 .practiceArrow {
   margin-left: 0.35em;
   color: var(--grey);
@@ -879,25 +960,18 @@
   line-height: 1.25;
 }
 
-.daoGloss .daoSource {
-  font-family: var(--font-hand), var(--font-tc), serif;
-  font-style: normal;
-  letter-spacing: 0.08em;
-}
-
-.daoGloss cite {
-  color: var(--grey);
-  font-size: 1rem;
-  font-style: normal;
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.1em;
-}
-
 /* ---------- Rules ---------- */
 
 .rules {
   position: relative;
   padding: calc(7svh + 4rem) var(--gutter) 16svh var(--indent);
+}
+
+.ruleContext {
+  margin: 0 0 1.5rem;
+  color: var(--grey);
+  font-size: clamp(1.1rem, 1.5vw, 1.35rem);
+  font-style: italic;
 }
 
 .chase {
@@ -983,22 +1057,22 @@
 }
 
 .gloss {
-  position: absolute;
-  left: var(--indent);
-  bottom: 12svh;
-  max-width: 26rem;
-  text-wrap: balance;
+  max-width: 38rem;
+  margin-top: max(5svh, var(--enso-clearance, 0px));
+  text-wrap: pretty;
 }
 
 .gloss p {
   margin: 0 0 1rem;
   font-family: var(--font-text), Georgia, serif;
-  font-size: clamp(1.4rem, 2vw, 1.9rem);
+  font-size: clamp(1.2rem, 1.6vw, 1.6rem);
   font-style: italic;
-  line-height: 1.2;
+  line-height: 1.4;
 }
 
 .gloss cite {
+  display: block;
+  margin-bottom: 1.5rem;
   color: var(--grey);
   font-size: 1rem;
   font-style: normal;
@@ -1047,6 +1121,8 @@
 
 .elsewhere a {
   display: grid;
+  align-content: center;
+  min-height: 44px;
   gap: 0.2rem;
   text-decoration: none;
 }
@@ -1099,11 +1175,9 @@
   color: var(--grey);
 }
 
-.contentsReading {
+.contentsReflection {
   font-size: 1.05rem;
   font-style: italic;
-  /* Junicode Italic kerns the colon into the hook of h ("mouth:" reads
-     "moutlx"); the readings are full of colons. */
   font-kerning: none;
   line-height: 1.35;
 }
@@ -1143,6 +1217,39 @@
   letter-spacing: 0.1em;
 }
 
+.roomFooter {
+  width: min(calc(100% - 2 * var(--gutter)), 76rem);
+  margin-inline: auto;
+  padding: 1.4rem 0 2.8rem;
+  border-top: 1px solid rgba(20, 20, 20, 0.25);
+}
+
+.roomFooter nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 2rem;
+}
+
+.roomFooter a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  min-height: 44px;
+  font-size: 1.05rem;
+  text-decoration: none;
+  text-underline-offset: 0.25em;
+}
+
+.roomFooter a:hover,
+.roomFooter a:focus-visible {
+  text-decoration: underline;
+  text-decoration-color: var(--red);
+}
+
+.roomFooter .colophon {
+  margin-top: 1.5rem;
+}
+
 /* ---------- Build (the work) ---------- */
 
 .workPage {
@@ -1160,6 +1267,9 @@
 
 /* The name, small, on its own line: the way home. */
 .workHome {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   font-family: var(--font-display), Georgia, serif;
   font-size: 1.6rem;
   font-weight: 200;
@@ -1170,11 +1280,15 @@
 
 .workHead .follow {
   position: static;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
 }
 
 .sectionNav {
   display: flex;
-  gap: 1.6rem;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.6rem;
   margin-right: auto;
   margin-left: clamp(1.4rem, 4vw, 3.6rem);
   font-size: 1.05rem;
@@ -1183,6 +1297,9 @@
 }
 
 .sectionNav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   padding-bottom: 6px;
   text-decoration: none;
 }
@@ -1300,6 +1417,14 @@
 /* ---------- Phone ---------- */
 
 @media (max-width: 720px) {
+  .openingLinks {
+    top: 0.35rem;
+  }
+
+  .openingLinks .follow span {
+    display: none;
+  }
+
   .practiceSheet {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -1368,11 +1493,11 @@
 
   .gloss {
     position: static;
-    margin-top: 10rem;
+    margin-top: max(10rem, var(--enso-clearance, 0px));
   }
 
   .catchLine {
-    font-size: 10.4vw;
+    font-size: 9.5vw;
   }
 
   .followBig {
@@ -1416,8 +1541,17 @@
     padding-top: 8svh;
   }
 
+  .catchUp > .label,
+  .steps > .label,
+  .rules > .label,
   .line > .label {
     position: static;
+  }
+
+  .catchUp > .label,
+  .steps > .label,
+  .rules > .label {
+    margin-bottom: 1.5rem;
   }
 
   /* No room left of the margin on a phone: the page scrolls on its own. */
@@ -1460,6 +1594,16 @@
 
   .workHead {
     padding: 22px 16px 0;
+  }
+
+  .workHome {
+    font-size: 1.4rem;
+    font-variation-settings: "wdth" 160;
+  }
+
+  .workHead .follow {
+    font-size: 0.95rem;
+    letter-spacing: 0.06em;
   }
 
   /* The rooms on their own line under the name and the follow. */

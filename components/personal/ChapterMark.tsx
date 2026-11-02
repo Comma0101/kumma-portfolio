@@ -34,9 +34,9 @@ function write(root: HTMLElement, tl: gsap.core.Timeline) {
   root.querySelectorAll("[data-reveal]").forEach((stroke, index) => {
     draw(tl, stroke, { duration: Number((stroke.closest("svg") as SVGElement).dataset.duration), ease: "none", position: index === 0 ? 0.1 : ">0.03" });
   });
-  // Then what the character shows, as if read off it.
-  const reading = root.querySelector("[data-reading]");
-  if (reading) tl.to(reading, { opacity: 1, duration: 0.9, ease: "power1.out" }, ">0.25");
+  // The personal reflection follows the written chapter mark.
+  const reflection = root.querySelector("[data-reflection]");
+  if (reflection) tl.to(reflection, { opacity: 1, duration: 0.9, ease: "power1.out" }, ">0.25");
 }
 
 // when: "beat" writes it as its chapter reaches the reading line; "lifted"
@@ -109,8 +109,8 @@ export default function ChapterMark({ char, label, when = "beat" }: { char: stri
           {label}
         </span>
         {chapter && (
-          <span className={styles.chapterReading} data-reading>
-            <span lang="zh-Hant">{chapter.parts}</span> {chapter.reading}
+          <span className={styles.chapterReflection} data-reflection>
+            {chapter.reflection}
           </span>
         )}
       </span>

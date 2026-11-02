@@ -4,19 +4,18 @@ import PracticeSheet from "./PracticeSheet";
 import styles from "./Front.module.css";
 
 const practice = [
-  { word: "Train.", line: "Most days. Where understanding has to become physical." },
-  { word: "Trade.", line: "Options. A craft, not a casino." },
+  { word: "Train.", line: "Most days. Returning to what the body learns through doing." },
+  { word: "Trade.", line: "Decisions under uncertainty, with consequences I have to accept." },
   {
     word: "Build.",
-    line: "Software as leverage: voice agents, tools, systems.",
+    line: "Making tools and systems, and learning from what happens when they are used.",
     href: "/work",
   },
   {
     word: "Study.",
-    line: "Old texts, read slowly: the Diamond Sutra, the Daodejing, Zhuangzi, the Gospels, the Greeks.",
+    line: "Philosophy, religion, and history. Reading sources, comparing interpretations, and writing through my own questions.",
     href: "/notes",
   },
-  { word: "Draw.", line: "Bamboo, geometry, negative space.", href: "/studies" },
 ];
 
 export default function Practice() {
@@ -46,6 +45,19 @@ export default function Practice() {
           </li>
         ))}
       </ol>
+      <figure className={styles.practiceExcerpt}>
+        <blockquote>
+          <p>
+            Reason tells us how to walk,
+            <br />
+            emotion reminds us why we walk.
+          </p>
+        </blockquote>
+        <figcaption>
+          <cite>On Emotions</cite> · <time dateTime="2025-10">October 2025</time>
+          <Link href="/notes/on-emotions">Read the essay →</Link>
+        </figcaption>
+      </figure>
       <PracticeSheet />
     </section>
   );

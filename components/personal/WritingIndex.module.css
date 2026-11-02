@@ -1,0 +1,136 @@
+.index {
+  width: min(calc(100% - 2 * var(--gutter)), 68rem);
+  margin-inline: auto;
+  padding-block: clamp(3.5rem, 8vw, 7rem) clamp(3rem, 7vw, 6rem);
+}
+
+.heading h1 {
+  margin: 0;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(3.1rem, 8vw, 6rem);
+  font-weight: 160;
+  font-variation-settings: "wdth" 150;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+.lede {
+  max-width: 38ch;
+  margin: 1.8rem 0 0;
+  color: var(--grey);
+  font-size: clamp(1.15rem, 1.8vw, 1.4rem);
+  line-height: 1.5;
+}
+
+.entries {
+  margin: clamp(2.8rem, 6vw, 5rem) 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid rgba(20, 20, 20, 0.32);
+}
+
+.entry {
+  padding-block: clamp(2rem, 4vw, 3.2rem);
+  border-bottom: 1px solid rgba(20, 20, 20, 0.32);
+}
+
+.entry h2 {
+  max-width: 28ch;
+  margin: 0;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(1.9rem, 3.5vw, 3rem);
+  font-weight: 130;
+  font-variation-settings: "wdth" 120;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+.entry h2 a {
+  display: block;
+  min-height: 44px;
+  text-decoration: none;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.15em;
+}
+
+.entry h2 a:hover,
+.entry h2 a:focus-visible {
+  text-decoration: underline;
+  text-decoration-color: var(--red);
+}
+
+.entryMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 1.5rem;
+  margin-top: 0.8rem;
+  color: var(--grey);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.edition {
+  display: inline-block;
+  min-height: 44px;
+  padding-block: 0.55rem;
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--red);
+  text-underline-offset: 0.25em;
+}
+
+.excerpt {
+  max-width: 65ch;
+  margin: 0.8rem 0 0;
+  font-size: clamp(1.12rem, 1.5vw, 1.3rem);
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.references {
+  margin-top: clamp(3rem, 6vw, 5rem);
+}
+
+.references summary {
+  min-height: 44px;
+  padding-block: 0.75rem;
+  font-size: 1.2rem;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.references summary::marker {
+  color: var(--red);
+}
+
+.references summary:hover {
+  text-decoration: underline;
+  text-decoration-color: var(--red);
+  text-underline-offset: 0.25em;
+}
+
+.references summary:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 4px;
+}
+
+.referencesBody {
+  min-width: 0;
+  padding-top: 1rem;
+}
+
+.referencesBody .referenceList {
+  margin-top: 3rem;
+}
+
+@media (max-width: 480px) {
+  .entryMeta {
+    column-gap: 1rem;
+  }
+
+  .excerpt {
+    margin-top: 0.5rem;
+  }
+}

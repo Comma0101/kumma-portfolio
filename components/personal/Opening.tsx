@@ -1,9 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useRef } from "react";
 import { centerline } from "./ink";
 import { coil, type Point } from "./pen";
-import { ease, useBeat, useScrub } from "./useBeat";
+import { ease, useBeat } from "./useBeat";
 import { X_HANDLE, X_URL } from "./links";
 import Portrait from "./Portrait";
 import ChapterMark from "./ChapterMark";
@@ -72,26 +73,18 @@ export default function Opening() {
     tl.set(knot, { visibility: "hidden" }, ">0.04");
   });
 
-  // Attention compounds with the reader's own attention: nothing for most
-  // of the first scroll, then all at once.
-  useScrub(
-    ref,
-    (root, tl) => {
-      tl.fromTo(
-        root.querySelector("[data-compound]"),
-        { "--wdth": 120, "--wght": 45 },
-        { "--wdth": 200, "--wght": 200, ease: ease.compound },
-      );
-    },
-    // After the line has gone home: compounding comes late, then all at once.
-    { start: "top -10%", end: "+=45%" },
-  );
-
   return (
     <section ref={ref} className={styles.opening} aria-labelledby="name" data-thread="opening">
-      <a className={styles.follow} href={X_URL} rel="me">
-        Follow <span>{X_HANDLE}</span> ↗
-      </a>
+      <div className={styles.openingLinks}>
+        <nav aria-label="Main navigation">
+          <Link href="/work">Work</Link>
+          <Link href="/notes">Writing</Link>
+          <a href="mailto:dev@kumma.me">Email</a>
+        </nav>
+        <a className={styles.follow} href={X_URL} rel="me" aria-label={`Follow on X: ${X_HANDLE}`}>
+          Follow <span>{X_HANDLE}</span> ↗
+        </a>
+      </div>
 
       <p className={styles.label}>
         <ChapterMark char="名" label="Name" when="lifted" />
@@ -107,15 +100,24 @@ export default function Opening() {
 
       {/* Under the horizon: the bio, and the face beside it. */}
       <div className={styles.below}>
-        <p className={styles.kicker}>In the gym most days. Trading options.</p>
+        <p className={styles.kicker}>Kumma Wu · Los Angeles</p>
         <p className={styles.attention}>
-          Attention goes
+          What is it
           <br />
-          where it{" "}
-          <span className={styles.compound} data-compound>
-            compounds.
-          </span>
+          to be aware?
         </p>
+        <div className={styles.openingNote}>
+          <p>
+            I return to questions about consciousness: what experience is, how it
+            relates to reality, and how awareness of my thoughts, emotions, and
+            habits changes the way I live.
+          </p>
+          <p>
+            I write and build software, read philosophy, religion, and history,
+            train, and trade. These pages hold things I’ve made and thoughts
+            I’m still working through.
+          </p>
+        </div>
         <Portrait />
       </div>
 

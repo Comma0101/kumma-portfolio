@@ -1,0 +1,171 @@
+.journey {
+  min-height: 100svh;
+}
+
+.intro {
+  width: 100%;
+  max-width: 28rem;
+}
+
+.byline {
+  margin: 0 0 1.6rem;
+  color: var(--grey);
+  font-size: 1.05rem;
+}
+
+.intro h2 {
+  margin: 0;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(2.4rem, 4.2vw, 4rem);
+  font-weight: 140;
+  font-variation-settings: "wdth" 120;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.intro h2 span {
+  display: block;
+}
+
+.introText {
+  max-width: 42ch;
+  margin: 1.6rem 0 1rem;
+  font-size: clamp(1.12rem, 1.5vw, 1.3rem);
+  line-height: 1.5;
+}
+
+.continue {
+  display: inline-block;
+  padding: 0.7rem 0;
+  font-size: 1.15rem;
+  line-height: 1.5;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
+  text-decoration: none;
+}
+
+.continue span {
+  margin-left: 0.5rem;
+  color: var(--red);
+}
+
+.continue:hover,
+.continue:focus-visible {
+  text-decoration: underline;
+  text-decoration-color: var(--red);
+}
+
+.reflection,
+.footer {
+  width: min(calc(100% - 2 * var(--gutter)), 76rem);
+  margin-inline: auto;
+}
+
+.reflection {
+  max-width: 40rem;
+  padding-block: clamp(4rem, 8vw, 7rem) clamp(5rem, 10vw, 9rem);
+  scroll-margin-top: 2rem;
+}
+
+.reflection figure,
+.reflection blockquote {
+  margin: 0;
+}
+
+.reflection blockquote p {
+  margin: 0;
+  font-family: var(--font-text), Georgia, serif;
+  font-size: clamp(1.45rem, 2.5vw, 2rem);
+  font-weight: 400;
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+.reflection figcaption {
+  margin-top: 1.5rem;
+  color: var(--grey);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.reflection figcaption a {
+  display: inline-block;
+  min-height: 44px;
+  padding-block: 0.6rem;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
+}
+
+.reflection figcaption a:hover,
+.reflection figcaption a:focus-visible {
+  color: var(--ink);
+  text-decoration-color: var(--red);
+}
+
+.reflection time {
+  display: inline-block;
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.8rem 2.5rem;
+  padding-block: 1.4rem 3rem;
+  border-top: 1px solid var(--grey);
+  font-size: 1.05rem;
+}
+
+.footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 2rem;
+}
+
+.footer a {
+  display: inline-block;
+  padding: 0.7rem 0;
+  text-decoration: none;
+}
+
+.footer a:hover,
+.footer a:focus-visible {
+  text-decoration: underline;
+  text-decoration-color: var(--red);
+  text-underline-offset: 0.25em;
+}
+
+.footer > p {
+  margin: 0;
+  color: var(--grey);
+}
+
+@media (max-width: 600px) {
+  .byline {
+    margin-bottom: 1.2rem;
+    font-size: 1rem;
+  }
+
+  .introText {
+    margin-top: 1.25rem;
+  }
+
+  .footer nav {
+    column-gap: 1.4rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .intro h2 {
+    font-size: 2rem;
+    line-height: 1.03;
+  }
+
+  .introText {
+    font-size: 1.05rem;
+    line-height: 1.45;
+  }
+}

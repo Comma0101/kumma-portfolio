@@ -2,7 +2,7 @@
 // its navigation, footer, agent banner, intro and dark page wipe — stays
 // off them. One list, read by every piece of that chrome.
 const sections = ["/work", "/notes", "/studies"];
-const pages = ["/", "/call", "/benchmark", "/contact"];
+const pages = ["/", "/call", "/benchmark", "/contact", "/view"];
 
 export function isPaperRoute(pathname: string | null | undefined) {
   const path = (pathname || "/").replace(/\/+$/, "") || "/";
@@ -19,6 +19,7 @@ export const moved: Record<string, { to: string; label: string }> = {
   "/projects": { to: "/work/", label: "Build" },
   "/projects/kota": { to: "/work/kota/", label: "KOTA" },
   "/projects/archon": { to: "/work/archon/", label: "ARCHON" },
+  "/projects/market-systems": { to: "/work/", label: "Work" },
   "/blog/en/On-Emotions": { to: "/notes/on-emotions/", label: "On Emotions" },
   "/blog/zh/On-Emotions": { to: "/notes/on-emotions/zh/", label: "关于情绪" },
   "/blog/en/Same-Light": { to: "/notes/same-light/", label: "We’re All Walking Toward the Same Light" },

@@ -6,7 +6,6 @@ import { anchor, threadX } from "./anchors";
 import { climb, fitPoints, type Point } from "./pen";
 import { draw, reveal, useBeat, useScrub } from "./useBeat";
 import ChapterMark from "./ChapterMark";
-import ThenNow from "./ThenNow";
 import styles from "./Front.module.css";
 
 // Price leaves from the margin and runs off the page: a jagged climb in
@@ -87,18 +86,26 @@ export default function Rules() {
   return (
     <section id="rules" className={styles.rules} aria-label="Measure" data-thread="rules">
       <p className={styles.label}>
-        <ChapterMark char="律" label="Measure: acting without knowing, learned at the screen" />
+        <ChapterMark char="律" label="Measure" />
       </p>
+      <p className={styles.ruleContext}>Three reminders from my trading practice</p>
       <Chase />
       <Small />
       <p className={styles.rule} data-anchor="bored">
         Stay bored.
       </p>
       <Ink trace={flat} mark="flat" size={2.6} seed={45} pressure={dry} still lift={1} className={styles.thread} />
-      <ThenNow
-        then="I used to swing between resisting constraints and trying to control everything."
-        now="Now I want a structure that supports consistency without turning life into a box. Rules should serve the person living, not become another authority the person obeys blindly."
-      />
+      <div className={styles.thenNow}>
+        <p>
+          In trading, I use these reminders to keep risk bounded and notice when
+          urgency begins to make the decision for me.
+        </p>
+        <p>
+          Their usefulness has a context. Beyond trading, I keep asking: <em>when
+          does a rule help me see clearly, and when do I stop looking because I
+          have a rule?</em>
+        </p>
+      </div>
     </section>
   );
 }

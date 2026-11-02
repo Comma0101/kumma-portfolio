@@ -1,26 +1,29 @@
 # Kumma Wu: fuller context
 
-> Kumma Wu, Los Angeles. In the gym most days. Trades options. Builds software. Reads old texts slowly — the Diamond Sutra, the Daodejing, Zhuangzi, the Gospels, the Greeks — and draws: bamboo, geometry, negative space.
+> Kumma Wu, Los Angeles. His personal site centres on consciousness and self-awareness: questions about experience, the self, and reality, alongside attention to thoughts, emotions, habits, and choices. He writes, builds software, reads philosophy, religion, and history, trains, and trades.
 
 ## What the site is
-kumma.me is a personal site, the front face of @Comma_9fie on X. Its language is paper, ink and one red ballpoint line: every mark on it is drawn live, in order, in one take. It is not a résumé.
+kumma.me is Kumma Wu’s personal site, the front face of @Comma_9fie on X. Its central inquiry connects consciousness and self-awareness: the nature of experience and its relation to reality, and the experience of noticing thoughts, emotions, habits, and choices. Writing, software, typography, and animation give that inquiry a public form. The pages also hold things he has made, passages he returns to, and thoughts he is still working through. The website uses paper, ink and one red line as its visual language.
+
+These are continuing questions, rather than a declared theory of consciousness or a claim of spiritual attainment. Sources, personal interpretations, and open questions should remain distinguishable. Individual dated essays express the positions explored in those pieces; they do not automatically establish a current position on every religious or metaphysical question.
 
 ## The questions underneath
-- Agency (主体性): acting from oneself rather than being acted on.
-- Acting under uncertainty: judge the decision, not the outcome.
-- Cognition becoming embodied judgment: understanding that turns into how you move.
-- Leverage: capital, software, knowledge and creative work as ways for effort to compound.
+- What is consciousness, and how does experience relate to our understanding of reality?
+- How do thoughts, emotions, and habits shape the way we understand ourselves?
+- What changes when we become aware of them?
+- How does intellectual understanding become a way of living?
+- How can we act from our own judgment while remaining able to revise it?
 
 ## Practice
-- Trade: options, as a craft, not a casino. (No returns, positions or methods are published.)
-- Build: software as leverage. See https://kumma.me/work/
+- Train and trade: parts of his life. No returns, positions or trading methods are published.
+- Build: software, with the system choices and limits open to inspection. See https://kumma.me/work/
   - KOTA: a voice agent that turns restaurant phone calls into menu-verified kitchen tickets in real time. https://kumma.me/work/kota/ — live product https://kota.kummalabs.com
   - ARCHON: an open-source, self-hostable agent that works as a control plane: it routes across Claude, GPT and Gemini, delegates to coding agents (Claude Code, Codex, OpenCode) and keeps its work inspectable. https://kumma.me/work/archon/ — repo https://github.com/Comma0101/archon
   - Audiobook AI: any document read as one continuous audiobook. https://kumma.me/work/audiobook/
   - Trade ledger: a brokerage export turned into a correct per-trade record. https://kumma.me/work/robinhood-dashboard/
   - Voice agent demo: https://kumma.me/call/ · Stress suite for voice agents: https://kumma.me/benchmark/
-- Study: essays at https://kumma.me/notes/ — On Emotions; We’re All Walking Toward the Same Light; The outsider’s truth (on Camus’s The Stranger).
-- Draw: https://kumma.me/studies/
+- Study: philosophy, religion, and history. His reading includes the Diamond Sutra, the Daodejing, Zhuangzi, the Gospels, and the Greeks. Essays at https://kumma.me/notes/ — On Emotions; We’re All Walking Toward the Same Light; The outsider’s truth (on Camus’s The Stranger).
+- Visual studies: artwork used in the website’s design, rendered in the browser. https://kumma.me/studies/
 
 ## Contact
 - X: https://x.com/Comma_9fie

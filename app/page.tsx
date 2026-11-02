@@ -3,11 +3,11 @@ import Front from "@/components/personal/Front";
 import { JsonLd, homeLd } from "@/components/seo/JsonLd";
 
 const description =
-  "In the gym most days. Trading options. Attention goes where it compounds.";
+  "Kumma Wu explores consciousness, self-awareness, and how understanding enters everyday life. A personal site of writing, software, and visual inquiry.";
 
 export const metadata: Metadata = {
   title: { absolute: "Kumma Wu" },
-  description: `Kumma Wu. ${description}`,
+  description,
   alternates: { canonical: "https://kumma.me" },
   openGraph: {
     title: "Kumma Wu",

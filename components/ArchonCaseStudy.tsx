@@ -382,7 +382,7 @@ export default function ArchonCaseStudy() {
             Read the source on GitHub →
           </a>
           <Link href="/work" className={grotesk.className} style={ctaStyle}>
-            ← Build
+            ← All work
           </Link>
         </footer>
       </div>

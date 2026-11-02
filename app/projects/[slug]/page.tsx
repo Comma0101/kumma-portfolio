@@ -8,9 +8,15 @@ import Moved from "@/components/personal/Moved";
 import { moved } from "@/components/personal/routes";
 
 export async function generateStaticParams() {
-  return projects.map((project) => ({
-    slug: project.slug,
-  }));
+  // Retired project addresses still need exported move pages, even when
+  // their details are deliberately absent from the public project list.
+  const slugs = new Set([
+    ...projects.map((project) => project.slug),
+    ...Object.keys(moved)
+      .filter((path) => path.startsWith("/projects/"))
+      .map((path) => path.slice("/projects/".length)),
+  ]);
+  return [...slugs].map((slug) => ({ slug }));
 }
 
 type Props = {

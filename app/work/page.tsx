@@ -2,19 +2,19 @@ import type { Metadata } from "next";
 import Work from "@/components/personal/Work";
 
 const description =
-  "What Kumma builds, as software for leverage: each takes something messy — a phone call, a task, a document, a ledger — and makes it something you can trust.";
+  "Four systems by Kumma Wu: restaurant voice orders, agent orchestration, document-to-audiobook synthesis, and a trade ledger. Inputs, outputs, and engineering decisions.";
 
 export const metadata: Metadata = {
-  title: "Build",
+  title: "Work",
   description,
   alternates: { canonical: "https://kumma.me/work" },
   openGraph: {
-    title: "Build | Kumma",
+    title: "Work | Kumma",
     description,
     url: "https://kumma.me/work",
     images: ["/og/portrait.png"],
   },
-  twitter: { card: "summary_large_image", site: "@Comma_9fie", images: ["/og/portrait.png"] },
+  twitter: { card: "summary_large_image", site: "@Comma_9fie", title: "Work | Kumma", description, images: ["/og/portrait.png"] },
 };
 
 export default function WorkPage() {

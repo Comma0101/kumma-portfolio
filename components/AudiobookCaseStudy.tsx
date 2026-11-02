@@ -536,7 +536,7 @@ export default function AudiobookCaseStudy() {
             Anything written, heard as one continuous voice.
           </p>
           <p className={styles.closeLinks}>
-            <Link href="/work">← Build</Link>
+            <Link href="/work">← All work</Link>
           </p>
         </footer>
       </div>

@@ -8,8 +8,7 @@ import styles from "./Front.module.css";
 export default function Colophon() {
   return (
     <footer className={styles.colophonBlock}>
-      {/* The page's contents: the eight characters and what each one shows —
-          the whole life again, compressed to eight lines. */}
+      {/* Eight personal notes, repeated here as the page's contents. */}
       <nav className={styles.contents} aria-label="Chapters">
         <ol>
           {chapters.map((chapter) => (
@@ -19,16 +18,21 @@ export default function Colophon() {
                   {chapter.mark}
                 </span>
                 <span className={styles.contentsLabel}>{chapter.label}</span>
-                <span className={styles.contentsReading}>{chapter.reading}</span>
+                <span className={styles.contentsReflection}>{chapter.reflection}</span>
               </a>
             </li>
           ))}
         </ol>
       </nav>
       <p className={styles.howDrawn}>
-        A life in eight characters, and one line through them — drawn once, while you watch, by a hand that
-        cannot erase. The readings of the characters follow the <i>Shuowen Jiezi</i>, the oldest dictionary of
-        them (c. 100 CE). <Link href="/studies">How it is drawn →</Link>
+        Eight characters I return to in reading and in life.
+        <br />
+        The marks remain; my understanding can change.
+      </p>
+      <p className={styles.howDrawn}>
+        Personal reflections informed by the <i>Zhuangzi</i>, the <i>Daodejing</i>, and Buddhist texts.
+        <br />
+        <Link href="/studies">How it is drawn →</Link>
       </p>
       <Elsewhere />
       <p className={styles.colophon}>

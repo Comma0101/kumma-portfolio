@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       languages: note.zh ? { en: url, "zh-Hans": `${url}/zh` } : undefined,
     },
     openGraph: { title: `${note.title} | Kumma`, description: note.excerpt, url, type: "article", images: ["/og/portrait.png"] },
-    twitter: { card: "summary_large_image", site: "@Comma_9fie", images: ["/og/portrait.png"] },
+    twitter: { card: "summary_large_image", site: "@Comma_9fie", title: `${note.title} | Kumma`, description: note.excerpt, images: ["/og/portrait.png"] },
   };
 }
 

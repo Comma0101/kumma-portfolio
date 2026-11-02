@@ -1,6 +1,13 @@
-# The eight chapters and the Shuowen Jiezi
+# Historical chapter references: Shuowen Jiezi
 
-The homepage's chapter readings (components/personal/chapters.ts) follow
+This records the earlier etymological treatment. The current homepage uses
+eight personal English reflections edited for the site in `components/personal/chapters.ts`.
+They are informed by the Zhuangzi, the Daodejing, and Buddhist texts; they
+are not presented as character etymologies or translations of those works.
+
+The earlier implementation is documented below for reference.
+
+The earlier homepage's chapter readings followed
 the Shuowen Jiezi 說文解字 (Xu Shen, c. 100 CE). Source lines:
 
 | Chapter | Shuowen | Reading on the page |

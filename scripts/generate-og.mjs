@@ -184,8 +184,8 @@ async function portraitCard() {
           color: "#6b6760",
         },
         [
-          el("div", {}, "In the gym most days. Trading options."),
-          el("div", { marginTop: 6 }, "Attention goes where it compounds."),
+          el("div", {}, "Consciousness, self-awareness, and how to live."),
+          el("div", { marginTop: 6 }, "Writing, software, and visual inquiry."),
         ],
       ),
       el(
@@ -213,8 +213,8 @@ const projects = [
 
 async function run() {
   await portraitCard();
-  await card("default", "Attention goes where it compounds.", "Kumma Wu", "Systems, notes and studies, in one red line");
-  await card("home", "Attention goes where it compounds.", "Kumma Wu", "Systems, notes and studies, in one red line");
+  await card("default", "Consciousness and self-awareness.", "Kumma Wu", "Writing, software, and questions about how to live");
+  await card("home", "Consciousness and self-awareness.", "Kumma Wu", "Writing, software, and questions about how to live");
   for (const p of projects) {
     await card(`projects-${p.slug}`, p.title, "Selected work", p.sub);
   }

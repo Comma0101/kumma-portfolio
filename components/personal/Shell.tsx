@@ -21,21 +21,24 @@ export default function Shell({
   return (
     <div className={`${styles.front} ${styles.workPage} ${typeClasses} ${className ?? ""}`} lang={lang} data-paper>
       <header className={styles.workHead}>
-        <Link href="/" className={styles.workHome}>
+        <Link href="/" className={styles.workHome} aria-label="Kumma — introduction">
           Kumma
         </Link>
         <SectionNav />
-        <a className={styles.follow} href={X_URL} rel="me">
-          Follow <span>{X_HANDLE}</span> ↗
+        <a className={styles.follow} href={X_URL} rel="me" aria-label={`Follow on X: ${X_HANDLE}`}>
+          Follow on X <span aria-hidden="true">↗</span>
         </a>
       </header>
 
       {/* The layout already provides the page's <main>. */}
       <div className={mainClassName ?? styles.workBody}>{children}</div>
 
-      <footer className={styles.colophonBlock}>
+      <footer className={styles.roomFooter}>
+        <nav aria-label="Elsewhere on the site">
+          <Link href="/">← Introduction</Link>
+          <Link href="/studies">Visual studies <span aria-hidden="true">↗</span></Link>
+        </nav>
         <p className={styles.colophon}>
-          <Link href="/">← Kumma</Link>
           <span>Los Angeles</span>
           <span>© {new Date().getFullYear()} Kumma Wu</span>
         </p>

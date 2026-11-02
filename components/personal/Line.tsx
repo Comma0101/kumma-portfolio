@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import Ink, { type Trace } from "./Ink";
+import { anchor } from "./anchors";
 import { profiles } from "./brush";
 import { ensoRing } from "./enso";
 import { draw, reveal, useBeat } from "./useBeat";
@@ -11,6 +12,13 @@ import styles from "./Front.module.css";
 // The brush is about a fifth of the circle's radius.
 const enso: Trace = (_, host) => {
   const ring = ensoRing(host);
+  const sutra = anchor(host, "sutra");
+  if (ring && sutra) {
+    // The circle moves below the columns when they leave too little room
+    // beside them. Keep the reading note below the actual ink at any size.
+    const clearance = Math.max(0, ring.below - (sutra.y + sutra.height) + 24);
+    host.style.setProperty("--enso-clearance", `${clearance}px`);
+  }
   return ring ? { points: ring.ring, size: ring.radius * 0.22 } : { points: [] };
 };
 
@@ -27,9 +35,9 @@ export default function Line() {
   return (
     <section ref={ref} id="reason" className={styles.line} aria-label="Diamond Sutra" data-thread="reason">
       <p className={styles.label} data-anchor="reason">
-        <ChapterMark char="理" label="The reason" />
+        <ChapterMark char="理" label="Reason" />
       </p>
-      <p className={styles.sutra} lang="zh-Hant">
+      <p className={styles.sutra} lang="zh-Hant" data-anchor="sutra">
         <span className={styles.column}>凡所有相，</span>
         <span className={styles.column}>皆是虛妄；</span>
         <span className={styles.column} data-anchor="not-form">
@@ -58,12 +66,17 @@ export default function Line() {
         className={styles.thread}
       />
       <div className={styles.gloss}>
-        <p className={styles.reasonLine}>Price is a form. To chase it is to take the form for the thing.</p>
-        <p>
-          All that has form is illusion. See form as no-form, and you see what is
-          truly so.
-        </p>
         <cite>Diamond Sutra · Kumārajīva</cite>
+        <p>
+          Some passages stay with me because I don’t finish understanding them.
+        </p>
+        <p>
+          What am I experiencing, and what have I already decided it means? I ask
+          this about a thought, an identity, and the reality I take for granted.
+        </p>
+        <p>
+          I want to read closely enough to let a text disagree with me.
+        </p>
       </div>
     </section>
   );

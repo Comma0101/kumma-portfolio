@@ -43,11 +43,11 @@ export const metadata: Metadata = {
     template: "%s | Kumma",
   },
   description:
-    "In the gym most days. Trading options. Attention goes where it compounds. Los Angeles.",
+    "Kumma Wu explores consciousness, self-awareness, and how understanding enters everyday life. A personal site of writing, software, and visual inquiry.",
   openGraph: {
     title: "Kumma Wu",
     description:
-      "In the gym most days. Trading options. Attention goes where it compounds. Los Angeles.",
+      "Kumma Wu explores consciousness, self-awareness, and how understanding enters everyday life. A personal site of writing, software, and visual inquiry.",
     url: "https://kumma.me",
     siteName: "Kumma Wu",
     type: "website",
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Kumma Wu",
     description:
-      "In the gym most days. Trading options. Attention goes where it compounds. Los Angeles.",
+      "Kumma Wu explores consciousness, self-awareness, and how understanding enters everyday life. A personal site of writing, software, and visual inquiry.",
     images: ["/og/portrait.png"],
   },
   ...(process.env.NEXT_PUBLIC_GSC_TOKEN

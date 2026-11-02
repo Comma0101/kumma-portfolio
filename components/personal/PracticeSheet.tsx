@@ -74,7 +74,7 @@ export default function PracticeSheet() {
         ))}
       </svg>
       <p className={styles.practiceCaption}>
-        Practice isn’t a declaration of intention but something formed through doing.
+        Returning to the same work can reveal something I missed before.
       </p>
     </div>
   );

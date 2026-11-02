@@ -5,13 +5,11 @@ import { usePathname } from "next/navigation";
 import styles from "./Front.module.css";
 
 const sections = [
-  { href: "/work", label: "Build" },
-  { href: "/notes", label: "Study" },
-  { href: "/studies", label: "Draw" },
+  { href: "/work", label: "Work" },
+  { href: "/notes", label: "Writing" },
 ];
 
-// The three rooms off the homepage, named for the practices they hold;
-// the one you are in is underlined.
+// The two main destinations; the current section is underlined.
 export default function SectionNav() {
   const pathname = usePathname() ?? "";
   return (

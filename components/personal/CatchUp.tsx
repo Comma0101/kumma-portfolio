@@ -103,8 +103,8 @@ export default function CatchUp() {
         </span>
       </h2>
       <ThenNow
-        then="I used to think that understanding something intellectually meant I had already changed."
-        now="Now I recognize that the body and behavior take longer to catch up. I judge understanding not only by what I can explain, but by what I can consistently do."
+        then="I can understand an idea and still meet the same situation with an old response."
+        now="I return to that gap through practice: noticing what I do, trying again, and letting experience revise what I thought I knew."
       />
     </section>
   );

@@ -498,7 +498,7 @@ export default function RobinhoodCaseStudy() {
             Messy input, reliable output — the same discipline as the voice work, in a different domain.
           </p>
           <p className={styles.closeLinks}>
-            <Link href="/work">← Build</Link>
+            <Link href="/work">← All work</Link>
           </p>
         </footer>
       </div>

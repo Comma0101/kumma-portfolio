@@ -5,6 +5,7 @@ import { centerline, pace, resample, type Emphasis } from "./ink";
 import type { Point } from "./pen";
 import { draw, useBeat } from "./useBeat";
 import { daoMedians, daoOutlines } from "./dao";
+import { chapterOf } from "./chapters";
 import styles from "./Front.module.css";
 
 // 道, the way — a path walked — as a brush writes it: each stroke is the
@@ -36,9 +37,10 @@ const strokes = daoMedians.map((median, i) => {
 export default function Dao() {
   const ref = useRef<HTMLElement>(null);
   const id = `dao-${useId().replace(/:/g, "")}`;
+  const chapter = chapterOf("道");
 
   // Written, not animated: a short breath between strokes so the order
-  // reads, a longer one before the radical (a new component). The verse
+  // reads, a longer one before the radical (a new component). The reflection
   // appears in one cut after the sweep lifts.
   useBeat(ref, (root, tl) => {
     root.querySelectorAll("[data-reveal]").forEach((stroke, index) => {
@@ -87,11 +89,7 @@ export default function Dao() {
         ))}
       </h2>
       <div className={styles.daoGloss}>
-        <p lang="zh-Hant" className={styles.daoSource} data-source>
-          千里之行，始於足下。
-        </p>
-        <p>A journey of a thousand miles begins beneath one’s feet.</p>
-        <cite>Daodejing 64</cite>
+        <p data-source>{chapter?.reflection}</p>
       </div>
     </section>
   );

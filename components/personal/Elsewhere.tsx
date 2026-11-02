@@ -2,9 +2,9 @@ import Link from "next/link";
 import styles from "./Front.module.css";
 
 const items = [
-  { href: "/work", title: "Build" },
-  { href: "/notes", title: "Study" },
-  { href: "/studies", title: "Draw" },
+  { href: "/work", title: "Work" },
+  { href: "/notes", title: "Writing" },
+  { href: "/studies", title: "Visual studies" },
 ];
 
 // A quiet row, not a section.
@@ -16,6 +16,9 @@ export default function Elsewhere() {
           <span className={styles.title}>{item.title} →</span>
         </Link>
       ))}
+      <a href="mailto:dev@kumma.me">
+        <span className={styles.title}>Email →</span>
+      </a>
     </nav>
   );
 }
