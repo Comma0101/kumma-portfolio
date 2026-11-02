@@ -1,23 +1,12 @@
 "use client";
 
 import { useRef } from "react";
-import { Cormorant_Garamond, Space_Grotesk } from "next/font/google";
+import { cormorant, legacyGrotesk as spaceGrotesk } from "@/components/legacyFonts";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import MenuItem from "@/components/MenuItem";
 import { menuItems } from "@/components/menuItems";
 import styles from "@/styles/PhotoGallery.module.css";
-
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  style: ["normal", "italic"],
-});
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-});
 
 export default function GalleryLandingClient() {
   const containerRef = useRef<HTMLDivElement>(null);

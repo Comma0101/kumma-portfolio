@@ -5,21 +5,10 @@ import type { CSSProperties } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Cormorant_Garamond, Space_Grotesk } from "next/font/google";
+import { cormorant, legacyGrotesk as grotesk } from "@/components/legacyFonts";
 import styles from "@/styles/kotaCaseStudy.module.css";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  style: ["normal", "italic"],
-});
-
-const grotesk = Space_Grotesk({
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-});
 
 const LIVE_URL = "https://listen.kummalabs.com";
 

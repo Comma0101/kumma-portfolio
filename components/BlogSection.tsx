@@ -2,7 +2,7 @@
 
 import React, { forwardRef, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Cormorant_Garamond, Space_Grotesk } from "next/font/google";
+import { cormorant, legacyGrotesk as spaceGrotesk } from "@/components/legacyFonts";
 import styles from "@/styles/blog.module.css";
 
 export interface BlogPost {
@@ -21,17 +21,6 @@ export interface BlogPost {
   readingTime?: number;
   featured?: boolean;
 }
-
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  style: ["normal", "italic"],
-});
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-});
 
 const escapeRegExp = (value: string) =>
   value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");

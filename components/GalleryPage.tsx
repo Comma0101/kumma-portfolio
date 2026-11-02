@@ -6,21 +6,10 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import * as THREE from "three";
 import { PlaneGeometry, ShaderMaterial, Uniform } from "three";
-import { Cormorant_Garamond, Space_Grotesk } from "next/font/google";
+import { cormorant, legacyGrotesk as spaceGrotesk } from "@/components/legacyFonts";
 import gsap from "gsap";
 import { menuItems } from "./menuItems";
 import styles from "../styles/GalleryPage.module.css";
-
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  style: ["normal", "italic"],
-});
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-});
 
 interface GalleryPageProps {
   collectionId?: string;

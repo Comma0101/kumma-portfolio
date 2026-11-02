@@ -65,3 +65,13 @@ Verified cleanup:
 - Preserved the other worktrees, shared visual helpers, fonts/source assets, and legacy 3D code rather than attempting an untraced global deletion.
 
 Local verification passed: standard lint (five documented pre-existing legacy warnings), type checking, all 15 test-file subprocesses, a 66-route production build, and the export audit's 506 internal links / 42 legacy moves with no broken targets. Current-document Markdown links resolved, and the archived context was verified byte-identical. Subsequent commit, pull-request, and workflow history identify publication of this follow-up; these local checks alone do not assert deployment success.
+
+## 2026-11-02 — Follow-up font build failure
+
+The handoff cleanup merged through PR #18 as `a634ffdfa6fcbf3f610e6e5fa397b837ecb653de`. Its GitHub Actions run `41536305675` failed at the production build on two attempts, before artifact upload or deployment. The live site continued serving the successful personal-site release.
+
+Both failures came from Next 14's Google-font loader: an unchecked extension regex returned null. The first log named the legacy KOTA detail component; the retry also named the root layout and an active case study. The exact unexpected font URL was not logged. Local builds had succeeded, so a warm local font cache was insufficient evidence of CI reproducibility.
+
+The repair replaces all eleven `next/font/google` import sites with a shared local-font configuration. It preserves the existing Space Grotesk, JetBrains Mono, and normal/italic Cormorant Garamond families, requested weight ranges, CSS variables, swap behavior, and serif fallback. Official unmodified variable font files and OFL licenses are pinned to Google Fonts commit `2fe1e8c6b137fb13041a7cfca6fdcd8a910ea4dc`, with hashes in `components/fonts/README.md`. The main paper site's Sprat, Junicode, and CJK fonts are unchanged. Later verification and workflow history establish publication of this repair.
+
+Local repair verification passed lint, type checking, all 15 test-file subprocesses, a build with the old `.next/` cache moved aside, and the export audit. Desktop/phone homepage, a case study, and a Chinese note retained their expected Sprat/Junicode/CJK computed fonts, with no overflow, runtime errors, remote-font requests, or auxiliary-TTF requests in those checked paper pages. Auxiliary faces are deferred until a style actually uses them.
