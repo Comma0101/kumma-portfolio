@@ -1,3 +1,5 @@
+> Historical plan, superseded by the personal-site release. Start with [HANDOFF.md](../HANDOFF.md) and the [documentation map](README.md); the priorities below are not the current task queue.
+
 # 🎯 Portfolio Enhancement Master Plan
 
 ## 📋 Project Overview
