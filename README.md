@@ -2,9 +2,11 @@
 
 Kumma Wu’s personal site explores consciousness, self-awareness, and how understanding enters everyday life. The main experience uses paper, continuous red ink, variable typography, Chinese text, and brushwork across eight personal chapters. Software projects have their own Work pages; essays and reading references live under Writing.
 
+**New agent:** start with [AGENTS.md](AGENTS.md) and [HANDOFF.md](HANDOFF.md). The [project log](docs/PROJECT_LOG.md) records the release and design decisions; the [documentation map](docs/README.md) separates current guidance from historical plans.
+
 ## Run locally
 
-Use Node.js and npm. The Node version used by the deployment workflow is recorded in `.github/workflows/deploy.yml`.
+Use Node.js and npm. The Node version used by the deployment workflow is recorded in `.github/workflows/deploy.yml`. Python 3.9+ supports the export audit and existing authoring tools.
 
 ```sh
 npm ci
@@ -33,26 +35,24 @@ Next.js 14, React 18, TypeScript, CSS Modules, GSAP, SVG, Canvas, and `perfect-f
 ## Verify changes
 
 ```sh
+npm run lint
+npm run typecheck
 npm test
-./node_modules/.bin/tsc --noEmit --incremental false --target es2020
 ```
 
-Run the local ESLint configuration against the changed TypeScript files. For example:
-
-```sh
-ESLINT_USE_FLAT_CONFIG=false ./node_modules/.bin/eslint --no-eslintrc --config .eslintrc.json app/page.tsx components/personal/Opening.tsx
-```
-
-The legacy `npm run lint` command can encounter a parent-checkout plugin conflict in nested worktrees. The explicit local-config command avoids that resolution path. Standalone type checking uses ES2020 to match the test compilation target and include the repository’s regular-expression tests. Production builds skip ESLint in `next.config.mjs`, so lint remains a separate check.
+ESLint uses the self-contained `.eslintrc.json`; TypeScript targets ES2020, matching the tests. Existing non-blocking legacy lint warnings are recorded in the handoff. Production builds skip ESLint in `next.config.mjs`, so lint remains a separate check.
 
 Stop the development server before building; both commands use `.next/`.
 
 ```sh
 npm run build
+npm run audit:export
 python3 -m http.server 4242 --bind 127.0.0.1 --directory out
 ```
 
 Before publication, inspect the built site in a real browser at desktop and phone widths. Exercise the chapter interactions and keyboard alternatives, reduced-motion and no-JavaScript reading, Work/Writing/contact paths, language editions, and retired URLs. Check exported metadata, structured data, share images, horizontal overflow, and console errors. Review the final diff for unrelated files.
+
+`audit:export` validates the generated HTML, internal link targets, legacy moves, key metadata, sitemap/RSS, identity summaries, and domain configuration. It uses the completed `out/` and should run after the build.
 
 ## Publication
 

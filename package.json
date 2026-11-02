@@ -8,7 +8,9 @@
     "prebuild": "node scripts/generate-og.mjs",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit --incremental false",
+    "audit:export": "python3 scripts/audit-static-export.py"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

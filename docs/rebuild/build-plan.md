@@ -1,3 +1,5 @@
+> Historical voice-AI services rebuild, superseded as the site's primary positioning. Read [HANDOFF.md](../../HANDOFF.md) before using this material; it is not the current source of truth or task queue.
+
 # kumma.me rebuild — build plan & status
 
 Source of truth for the Voice AI Direction rebuild (spec v1.0, 2026-07-07).

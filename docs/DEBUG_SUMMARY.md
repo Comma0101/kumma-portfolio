@@ -1,3 +1,5 @@
+> Historical debugging snapshot for an earlier design. Current architecture and known issues are in [HANDOFF.md](../HANDOFF.md).
+
 # Contact & About Section Animation Debug Summary
 
 ## Problem Statement
