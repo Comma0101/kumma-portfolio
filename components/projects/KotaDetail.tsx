@@ -2,7 +2,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Cormorant_Garamond, Space_Grotesk } from "next/font/google";
+import { cormorant, legacyGrotesk as grotesk } from "@/components/legacyFonts";
 import styles from "@/styles/kotaCaseStudy.module.css";
 import KotaViz from "@/components/viz/KotaViz";
 import type { Project } from "@/data/projectData";
@@ -11,17 +11,6 @@ gsap.registerPlugin(ScrollTrigger);
 
 const proofCaption =
   "Messy speech becomes a menu-verified ticket with confidence checks.";
-
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  style: ["normal", "italic"],
-});
-
-const grotesk = Space_Grotesk({
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-});
 
 export default function KotaDetail({ project }: { project: Project }) {
   const heroRef = useRef<HTMLDivElement>(null);

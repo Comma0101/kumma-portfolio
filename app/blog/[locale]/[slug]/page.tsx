@@ -2,7 +2,7 @@ import React from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Cormorant_Garamond, Space_Grotesk } from "next/font/google";
+import { cormorant, legacyGrotesk as spaceGrotesk } from "@/components/legacyFonts";
 import {
   getAllPostIdsForAllLocales,
   getPostData,
@@ -16,17 +16,6 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { JsonLd } from "@/components/seo/JsonLd";
 import Moved from "@/components/personal/Moved";
 import { moved } from "@/components/personal/routes";
-
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  style: ["normal", "italic"],
-});
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-});
 
 export async function generateStaticParams() {
   const paths = getAllPostIdsForAllLocales();

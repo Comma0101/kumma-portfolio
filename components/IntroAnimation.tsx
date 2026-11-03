@@ -1,22 +1,11 @@
 "use client";
 import { useCallback, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
-import { Cormorant_Garamond, Space_Grotesk } from "next/font/google";
+import { cormorant, legacyGrotesk as spaceGrotesk } from "@/components/legacyFonts";
 import gsap from "gsap";
 import MorphingLogo from "./MorphingLogo";
 import styles from "../styles/introAnimation.module.css";
 import { useAnimation } from "../context/AnimationContext";
-
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  style: ["normal", "italic"],
-});
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-});
 
 const IntroAnimation = () => {
   const { isIntroPlayed, setIsIntroPlayed } = useAnimation();

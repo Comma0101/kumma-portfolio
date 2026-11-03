@@ -23,6 +23,7 @@ npm run dev -- --port 4243
 
 - `app/`: Next.js App Router routes and metadata. `/` is the primary personal site; `/work`, `/notes`, and `/studies` hold work, writing, and browser-rendered visual studies. `/view` is a retained noindex experiment.
 - `components/personal/`: the paper design system, eight-chapter sequence, ink geometry, portrait, typography, interactions, and shared page shell.
+- `components/legacyFonts.ts`, `components/fonts/`: locally hosted auxiliary font families, OFL licenses, and pinned source provenance. The build does not fetch font CSS/files from Google.
 - `components/seo/JsonLd.tsx`: public identity and website structured data.
 - `_posts/`: Markdown essays, with Chinese editions under `_posts/zh/`.
 - `public/`: fonts, assets, and the `llms.txt` / `llms-full.txt` identity summaries.

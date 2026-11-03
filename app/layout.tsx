@@ -1,9 +1,5 @@
 import type { Metadata } from "next";
-import {
-  Cormorant_Garamond,
-  JetBrains_Mono,
-  Space_Grotesk,
-} from "next/font/google";
+import { spaceGrotesk, jetbrainsMono, cormorant } from "@/components/legacyFonts";
 import "./globals.css";
 import Navigation from "../components/Navigation";
 import SmoothScrollProvider from "../components/SmoothScrollProvider";
@@ -12,29 +8,6 @@ import { PageTransitionProvider } from "@/components/PageTransition";
 import IntroOverlay from "../components/IntroOverlay";
 import Analytics from "../components/Analytics";
 import AgentAwareness from "../components/AgentAwareness";
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  display: "swap",
-});
-
-// Secondary faces load on use, not on every page (the homepage sets neither).
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-  display: "swap",
-  preload: false,
-});
-
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  style: ["normal", "italic"],
-  variable: "--font-editorial",
-  display: "swap",
-  preload: false,
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://kumma.me"),

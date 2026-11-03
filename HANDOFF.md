@@ -43,6 +43,7 @@ Projects, including KOTA, belong under Work. The main page has no featured proje
 | Chapter reflections/navigation | `chapters.ts`, `ChapterMark.tsx`, `MarginNav.tsx`, `Colophon.tsx` |
 | Visual system | `Front.module.css`, `type.ts`, local fonts |
 | Ink and motion | `Thread.tsx`, `Ink.tsx`, `ink.ts`, `pen.ts`, `brush.ts`, `useBeat.ts`, `Portrait.tsx` |
+| Auxiliary fonts/build reliability | `components/legacyFonts.ts`, `components/fonts/README.md` |
 | Work | `app/work/`, `Work.tsx`, the four case-study components |
 | Writing | `app/notes/`, `notes.ts`, `NoteViews.tsx`, `_posts/`, `_posts/zh/` |
 | Shared page shell | `Shell.tsx`, `SectionNav.tsx`, `Paper.tsx` |
@@ -54,6 +55,8 @@ Projects, including KOTA, belong under Work. The main page has no featured proje
 `chapters.ts` feeds both running heads and footer contents. Hardcoded ChapterMark labels must agree with it. The red spine measures specific section IDs and `data-anchor`/`data-thread` attributes; removing a section or anchor requires tracing that geometry first.
 
 The older 3D components and assets are not the active homepage, but some remain shared or reachable. Their dependency graph has not been globally pruned. Do not delete them or remove dependencies solely because the homepage does not use them.
+
+All font files are local. The paper faces remain under `components/personal/fonts/`; existing auxiliary Space Grotesk, Cormorant Garamond, and JetBrains Mono faces are configured in `components/legacyFonts.ts`. Their full source files, licenses, pinned provenance, and hashes live in `components/fonts/`. The Google-font build loader failed twice in the cleanup CI follow-up despite a successful cached local build, so the remote factory imports were replaced. Do not reintroduce build-time font downloads as incidental cleanup.
 
 ## Run and verify
 
