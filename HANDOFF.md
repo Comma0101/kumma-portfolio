@@ -36,13 +36,13 @@ Projects, including KOTA, belong under Work. The main page has no featured proje
 
 ## Current design work
 
-The user requested an expert team to develop exceptional visual typography and animation representing his clarified philosophy. The [personal-expression brief](docs/design/personal-expression-brief.md) records the three specialist agents' findings and the proposed next prototype.
+The user requested an expert team to develop exceptional visual typography and animation representing his clarified philosophy. The [personal-expression brief](docs/design/personal-expression-brief.md) records the initial specialist review and a second independent challenge. Revision 2 strengthens the continuity, content roles, implementation contract, and rejection tests.
 
 Public identity wording should use his own beliefs, questions, and commitments. The philosophical influences discussed in discovery provide internal context. Existing quotations carry their source attribution wherever used. The role of the current source-led passage and final character needs explicit editorial resolution within this new direction.
 
-The proposal develops the rich paper/ink world through a composed opening, the existing material typographic transformation, and an ending that opens toward care and contact. Different chapter tempos should carry the sequence. The current prominent closing Follow action gives social following greater visual weight than the newly confirmed outward commitment.
+The revised proposal develops the rich paper/ink world through an actual reader contribution that remains recognisable in later compositions. Distinguish authored spine, reader mark, and typography, with a complete authored reading for people who skip interaction. Give beliefs, questions, dated writing, observations, and intentions different roles. Love remains the user's stated intention and guides accommodation and contact. The current prominent closing Follow action gives social following greater visual weight than that newly confirmed outward commitment.
 
-The next reviewable deliverable is a high-fidelity opening and ending at desktop and phone sizes, including settled, motion, touch, keyboard, and reduced-motion states. PRODUCT contains the updated personal truth. DESIGN describes the shipped visual system. The proposal is planning material, and its suggested copy and new interactions await visual review. The live UI and public metadata remain at the released implementation.
+The next reviewable deliverables are an eight-part composition study and a thin connected passage from the existing intervention through one changed reading/type state to the proposed shared ending. Prove the continuity and review its still states before extensive opening/ending polish. The brief defines contribution ownership, visit lifetime, input alternatives, resize/interruption behaviour, and observable acceptance tests. PRODUCT contains the updated personal truth. DESIGN describes the shipped visual system. Suggested copy, metaphors, and new interactions await visual review. The live UI and public metadata remain at the released implementation.
 
 ## Architecture map
 
