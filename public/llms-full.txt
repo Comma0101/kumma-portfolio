@@ -1,18 +1,23 @@
 # Kumma Wu: fuller context
 
-> Kumma Wu, Los Angeles. His personal site centres on consciousness and self-awareness: questions about experience, the self, and reality, alongside attention to thoughts, emotions, habits, and choices. He writes, builds software, reads philosophy, religion, and history, trains, and trades.
+> Kumma Wu, Los Angeles. His personal site explores consciousness, self-awareness, and imagination through writing, software, and visual experiments. He seeks to know himself, keep growing, and meet the world with love. He also reads philosophy, religion, and history, trains, and trades.
 
 ## What the site is
-kumma.me is Kumma Wu’s personal site, the front face of @Comma_9fie on X. Its central inquiry connects consciousness and self-awareness: the nature of experience and its relation to reality, and the experience of noticing thoughts, emotions, habits, and choices. Writing, software, typography, and animation give that inquiry a public form. The pages also hold things he has made, passages he returns to, and thoughts he is still working through. The website uses paper, ink and one red line as its visual language.
+kumma.me is Kumma Wu’s personal site, the front face of @Comma_9fie on X. Its central inquiry connects consciousness, self-awareness, and imagination with the way he lives. Writing, software, typography, and animation give that inquiry a public form. The pages also hold things he has made, passages he returns to, and thoughts he is still working through. The website uses paper, ink and one red line as its visual language. An optional reader contribution returns in later compositions during the current visit.
 
-These are continuing questions, rather than a declared theory of consciousness or a claim of spiritual attainment. Sources, personal interpretations, and open questions should remain distinguishable. Individual dated essays express the positions explored in those pieces; they do not automatically establish a current position on every religious or metaphysical question.
+Kumma believes imagination participates in reality both at the level of existence itself and through human choices and actions. Within that view, physical existence follows physical laws. He distinguishes the mental image of the “I” from the awareness that can observe it, with an observer remaining when identification with that image falls away. He sees human beings as witnesses and participants in creation. These are his personal philosophical positions.
+
+Finding his true self, cultivating himself, and interacting with the world with love are his stated aspirations and commitments. How the infinite gives rise to finite existence, and the role of human consciousness in that relationship, remain active questions. Sources, personal beliefs, interpretations, and open questions should remain distinguishable. Individual dated essays express the positions explored in those pieces. Their present significance should be assessed in context.
 
 ## The questions underneath
 - What is consciousness, and how does experience relate to our understanding of reality?
+- What remains aware when the mental “I” falls quiet?
+- How do imagination and creation participate in reality?
 - How do thoughts, emotions, and habits shape the way we understand ourselves?
 - What changes when we become aware of them?
 - How does intellectual understanding become a way of living?
 - How can we act from our own judgment while remaining able to revise it?
+- How can self-discovery and growth enter a life lived with love?
 
 ## Practice
 - Train and trade: parts of his life. No returns, positions or trading methods are published.
@@ -21,8 +26,8 @@ These are continuing questions, rather than a declared theory of consciousness o
   - ARCHON: an open-source, self-hostable agent that works as a control plane: it routes across Claude, GPT and Gemini, delegates to coding agents (Claude Code, Codex, OpenCode) and keeps its work inspectable. https://kumma.me/work/archon/ — repo https://github.com/Comma0101/archon
   - Audiobook AI: any document read as one continuous audiobook. https://kumma.me/work/audiobook/
   - Trade ledger: a brokerage export turned into a correct per-trade record. https://kumma.me/work/robinhood-dashboard/
-  - Voice agent demo: https://kumma.me/call/ · Stress suite for voice agents: https://kumma.me/benchmark/
-- Study: philosophy, religion, and history. His reading includes the Diamond Sutra, the Daodejing, Zhuangzi, the Gospels, and the Greeks. Essays at https://kumma.me/notes/ — On Emotions; We’re All Walking Toward the Same Light; The outsider’s truth (on Camus’s The Stranger).
+  - An unreleased draft stress-suite outline is at https://kumma.me/benchmark/. Audio and a scoring repository are planned.
+- Study: philosophy, religion, and history. Dated essays and attributed reading references are at https://kumma.me/notes/ — On Emotions; We’re All Walking Toward the Same Light; The outsider’s truth (on Camus’s The Stranger).
 - Visual studies: artwork used in the website’s design, rendered in the browser. https://kumma.me/studies/
 
 ## Contact

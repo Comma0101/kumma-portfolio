@@ -7,7 +7,7 @@ import { arcAt, timeAt } from "./ink";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export type Build<T> = (root: T, tl: gsap.core.Timeline) => void;
+export type Build<T> = (root: T, tl: gsap.core.Timeline) => void | (() => void);
 
 // The page's shared easings. A beat that acts a particular meaning (a
 // snap, a pull, a footfall) names its own curve where it is written.
@@ -16,8 +16,6 @@ export const ease = {
   impulse: "power4.out", // one hit, then still
   hand: "power1.inOut", // a pen at writing speed
 } as const;
-
-const reduced = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 // The page settles after load (fonts, marks measuring themselves), and its
 // height changes; every scroll position measured before that is stale.
@@ -47,6 +45,12 @@ function keepMeasured() {
   };
 }
 
+export function settleInk(root: HTMLElement) {
+  root.querySelectorAll<SVGElement>("[data-reveal], [data-circle-reveal]").forEach((path) => {
+    path.style.removeProperty("stroke-dashoffset");
+  });
+}
+
 // A triggered beat plays once when its line reaches the lower third of the
 // viewport, then holds. Reduced motion never builds it, so the page stays
 // in its finished state.
@@ -59,27 +63,36 @@ export function useBeat<T extends HTMLElement>(
 ) {
   useEffect(() => {
     const root = ref.current;
-    if (!root || reduced()) return;
-    const release = keepMeasured();
-    let observer: IntersectionObserver | undefined;
-    const ctx = gsap.context(() => {
+    if (!root) return;
+    const media = gsap.matchMedia();
+    let played = false;
+    media.add("(prefers-reduced-motion: no-preference)", () => {
+      const release = keepMeasured();
+      let observer: IntersectionObserver | undefined;
       const tl = gsap.timeline({ paused: true });
-      build(root, tl);
-      observer = new IntersectionObserver(
-        ([entry]) => {
-          if (!entry.isIntersecting) return;
-          tl.play();
-          observer?.disconnect();
-        },
-        { rootMargin: `0px 0px ${line} 0px` },
-      );
-      observer.observe(root);
+      const dispose = build(root, tl);
+      if (played) {
+        tl.progress(1);
+      } else {
+        observer = new IntersectionObserver(
+          ([entry]) => {
+            if (!entry.isIntersecting) return;
+            played = true;
+            tl.play();
+            observer?.disconnect();
+          },
+          { rootMargin: `0px 0px ${line} 0px` },
+        );
+        observer.observe(root);
+      }
+      return () => {
+        observer?.disconnect();
+        if (dispose) dispose();
+        settleInk(root);
+        release();
+      };
     }, root);
-    return () => {
-      observer?.disconnect();
-      ctx.revert();
-      release();
-    };
+    return () => media.revert();
     // A beat is authored once; rebuilding would replay it.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -95,9 +108,11 @@ export function useScrub<T extends HTMLElement>(
 ) {
   useEffect(() => {
     const root = ref.current;
-    if (!root || reduced()) return;
-    const release = keepMeasured();
-    const ctx = gsap.context(() => {
+    if (!root) return;
+    const media = gsap.matchMedia();
+    media.add("(prefers-reduced-motion: no-preference)", () => {
+      const release = keepMeasured();
+      let active = true;
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: root,
@@ -107,14 +122,18 @@ export function useScrub<T extends HTMLElement>(
           onLeave: (self) => self.animation?.progress(1),
         },
       });
-      build(root, tl);
+      const dispose = build(root, tl);
+      document.fonts?.ready.then(() => {
+        if (active) ScrollTrigger.refresh();
+      }).catch(() => undefined);
+      return () => {
+        active = false;
+        if (dispose) dispose();
+        settleInk(root);
+        release();
+      };
     }, root);
-    const refresh = () => ScrollTrigger.refresh();
-    document.fonts?.ready.then(refresh).catch(() => undefined);
-    return () => {
-      ctx.revert();
-      release();
-    };
+    return () => media.revert();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 }

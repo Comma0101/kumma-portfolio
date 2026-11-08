@@ -188,8 +188,10 @@ export default function Thread() {
     const front = host?.parentElement;
     if (!host || !front) return;
     let frame = 0;
+    let mounted = true;
     const measure = () => {
       frame = 0;
+      if (!mounted) return;
       const { width, height } = host.getBoundingClientRect();
       if (!width || !height) return;
       const { points, split, ends } = spine({ width, height }, host);
@@ -226,13 +228,14 @@ export default function Thread() {
       });
     };
     const schedule = () => {
-      if (!frame) frame = window.requestAnimationFrame(measure);
+      if (mounted && !frame) frame = window.requestAnimationFrame(measure);
     };
     measure();
     const observer = new ResizeObserver(schedule);
     observer.observe(front);
     document.fonts?.ready.then(schedule).catch(() => undefined);
     return () => {
+      mounted = false;
       observer.disconnect();
       if (frame) window.cancelAnimationFrame(frame);
     };
@@ -241,128 +244,135 @@ export default function Thread() {
   useEffect(() => {
     const host = ref.current;
     const front = host?.parentElement;
-    if (!host || !front || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!host || !front) return;
+    const media = gsap.matchMedia();
+    media.add("(prefers-reduced-motion: no-preference)", () => {
 
-    const state = { opening: 0, drawn: 0 };
-    const shown: number[] = [];
-    const apply = () => {
-      const current = shapeRef.current;
-      if (!current) return;
-      const arc = Math.max(state.opening, state.drawn);
-      const paths = host.querySelectorAll<SVGPathElement>("[data-reveal]");
-      let changed = false;
-      current.pieces.forEach((piece, i) => {
-        const p = Number(within(piece.chunk, arc).toFixed(4));
-        if (shown[i] === p || !paths[i]) return;
-        shown[i] = p;
-        changed = true;
-        paths[i].style.strokeDashoffset = String(1 - p);
-      });
-      // Tell the page where the pen is (the navigation rides the tip).
-      if (changed) {
-        const [tx, ty] = pointAt(current.line, arc);
-        front.dispatchEvent(
-          new CustomEvent("kumma:tip", {
-            detail: { x: tx, y: ty, onMargin: Math.abs(tx - threadX(front)) < 30 },
-          }),
-        );
+      const state = { opening: 0, drawn: 0 };
+      const shown: number[] = [];
+      const apply = () => {
+        const current = shapeRef.current;
+        if (!current) return;
+        const arc = Math.max(state.opening, state.drawn);
+        const paths = host.querySelectorAll<SVGPathElement>("[data-reveal]");
+        let changed = false;
+        current.pieces.forEach((piece, i) => {
+          const p = Number(within(piece.chunk, arc).toFixed(4));
+          if (shown[i] === p || !paths[i]) return;
+          shown[i] = p;
+          changed = true;
+          paths[i].style.strokeDashoffset = String(1 - p);
+        });
+        // Tell the page where the pen is (the navigation rides the tip).
+        if (changed) {
+          const [tx, ty] = pointAt(current.line, arc);
+          front.dispatchEvent(
+            new CustomEvent("kumma:tip", {
+              detail: { x: tx, y: ty, onMargin: Math.abs(tx - threadX(front)) < 30 },
+            }),
+          );
+        }
+      };
+
+      // The opening: once the coil (in Opening) pulls taut, the underline is
+      // taut, holds still, then walks down the right edge and back.
+      const tl = gsap.timeline({ paused: true, onUpdate: apply });
+      // The coil (Opening) has just pulled straight: the underline is there.
+      tl.to(state, { opening: () => shapeRef.current?.split ?? 0, duration: 0.04, ease: "none" });
+      // The point where the pen landed recoils once as the line pulls taut:
+      // the only overshoot on the page.
+      const landing = front.querySelector("[data-landing]");
+      if (landing) {
+        tl.to(landing, { scale: 0.82, duration: 0.07, ease: "power2.in" }, 0.02);
+        tl.to(landing, { scale: 1, duration: 0.22, ease: "power4.out" }, 0.09);
       }
-    };
-
-    // The opening: once the coil (in Opening) pulls taut, the underline is
-    // taut, holds still, then walks down the right edge and back.
-    const tl = gsap.timeline({ paused: true, onUpdate: apply });
-    // The coil (Opening) has just pulled straight: the underline is there.
-    tl.to(state, { opening: () => shapeRef.current?.split ?? 0, duration: 0.04, ease: "none" });
-    // The point where the pen landed recoils once as the line pulls taut:
-    // the only overshoot on the page.
-    const landing = front.querySelector("[data-landing]");
-    if (landing) {
-      tl.to(landing, { scale: 0.82, duration: 0.07, ease: "power2.in" }, 0.02);
-      tl.to(landing, { scale: 1, duration: 0.22, ease: "power4.out" }, 0.09);
-    }
-    tl.to(
-      state,
-      { opening: () => shapeRef.current?.pieces[0]?.chunk.to ?? 0, duration: 1.15, ease: ease.hand },
-      ">0.35",
-    );
-    const play = () => tl.play();
-    front.addEventListener("kumma:lifted", play, { once: true });
-    // Arrived mid-page, or the opening never ran: do not wait for it.
-    const fallback = window.setTimeout(play, 3200);
-
-    // Each section's own tempo: how closely the ink follows the reader.
-    // The body catches up slowly; tally barbs are struck; the approach
-    // to the reason is unhurried.
-    const tempo = [0.12, 0.04, 0.2, 0.45, 0.12, 0.05];
-
-    // Where the reader pauses, the resting pen bleeds into the paper, and
-    // the pool stays: by the end the line is a record of the reader's own
-    // attention. Pausing again near a pool deepens it.
-    const rest = { scroll: window.scrollY, since: performance.now(), blot: null as HTMLElement | null };
-    const blots: { x: number; y: number; r: number; el: HTMLElement }[] = [];
-    const bleed = (current: Shape, moving: boolean) => {
-      const now = performance.now();
-      if (moving || state.drawn <= 0) {
-        rest.since = now;
-        rest.blot = null;
-        return;
-      }
-      const r = blotRadius((now - rest.since) / 1000);
-      if (!r) return;
-      const [x, y] = pointAt(current.line, Math.max(state.opening, state.drawn));
-      const top = front.getBoundingClientRect().top + y;
-      if (top < 0 || top > window.innerHeight) return;
-      let blot = blots.find((b) => Math.hypot(b.x - x, b.y - y) < 14);
-      if (!blot) {
-        if (blots.length >= 24) return;
-        const el = document.createElement("span");
-        el.className = styles.blot;
-        // An irregular edge: ink follows the paper's fibres, not a compass.
-        const k = () => 44 + Math.round(Math.random() * 12);
-        el.style.borderRadius = `${k()}% ${100 - k()}% ${k()}% ${100 - k()}% / ${k()}% ${k()}% ${100 - k()}% ${100 - k()}%`;
-        el.style.left = `${x}px`;
-        el.style.top = `${y}px`;
-        host.appendChild(el);
-        blot = { x, y, r: 0, el };
-        blots.push(blot);
-      }
-      if (r > blot.r + 0.05) {
-        blot.r = r;
-        blot.el.style.width = blot.el.style.height = `${(r * 2).toFixed(1)}px`;
-      }
-    };
-
-    const tick = () => {
-      const current = shapeRef.current;
-      if (!current) return;
-      const tip = window.innerHeight * 0.72 - front.getBoundingClientRect().top;
-      const target = scrolledArc(
-        current.pieces.map((piece) => piece.chunk),
-        current.pace,
-        tip,
+      tl.to(
+        state,
+        { opening: () => shapeRef.current?.pieces[0]?.chunk.to ?? 0, duration: 1.15, ease: ease.hand },
+        ">0.35",
       );
-      // The pen only ever moves forward (ink once written stays); the
-      // reader is still only when neither the pen nor the page moves.
-      const writing = target > state.drawn + 1e-4;
-      const moving = writing || Math.abs(window.scrollY - rest.scroll) > 0.5;
-      rest.scroll = window.scrollY;
-      if (writing) {
-        const at = current.pieces.findIndex((piece) => state.drawn < piece.chunk.to);
-        const rate = tempo[at] ?? 0.12;
-        state.drawn = Math.min(target, state.drawn + Math.max(0.0005, (target - state.drawn) * rate));
-        apply();
-      }
-      bleed(current, moving);
-    };
-    gsap.ticker.add(tick);
-    return () => {
-      gsap.ticker.remove(tick);
-      blots.forEach((b) => b.el.remove());
-      front.removeEventListener("kumma:lifted", play);
-      window.clearTimeout(fallback);
-      tl.kill();
-    };
+      const play = () => tl.play();
+      front.addEventListener("kumma:lifted", play, { once: true });
+      // Arrived mid-page, or the opening never ran: do not wait for it.
+      const fallback = window.setTimeout(play, 3200);
+
+      // Each section's own tempo: how closely the ink follows the reader.
+      // The body catches up slowly; tally barbs are struck; the approach
+      // to the reason is unhurried.
+      const tempo = [0.12, 0.04, 0.2, 0.45, 0.12, 0.05];
+
+      // Where the reader pauses, the resting pen bleeds into the paper, and
+      // the pool stays: by the end the line is a record of the reader's own
+      // attention. Pausing again near a pool deepens it.
+      const rest = { scroll: window.scrollY, since: performance.now(), blot: null as HTMLElement | null };
+      const blots: { x: number; y: number; r: number; el: HTMLElement }[] = [];
+      const bleed = (current: Shape, moving: boolean) => {
+        const now = performance.now();
+        if (moving || state.drawn <= 0) {
+          rest.since = now;
+          rest.blot = null;
+          return;
+        }
+        const r = blotRadius((now - rest.since) / 1000);
+        if (!r) return;
+        const [x, y] = pointAt(current.line, Math.max(state.opening, state.drawn));
+        const top = front.getBoundingClientRect().top + y;
+        if (top < 0 || top > window.innerHeight) return;
+        let blot = blots.find((b) => Math.hypot(b.x - x, b.y - y) < 14);
+        if (!blot) {
+          if (blots.length >= 24) return;
+          const el = document.createElement("span");
+          el.className = styles.blot;
+          // An irregular edge: ink follows the paper's fibres, not a compass.
+          const k = () => 44 + Math.round(Math.random() * 12);
+          el.style.borderRadius = `${k()}% ${100 - k()}% ${k()}% ${100 - k()}% / ${k()}% ${k()}% ${100 - k()}% ${100 - k()}%`;
+          el.style.left = `${x}px`;
+          el.style.top = `${y}px`;
+          host.appendChild(el);
+          blot = { x, y, r: 0, el };
+          blots.push(blot);
+        }
+        if (r > blot.r + 0.05) {
+          blot.r = r;
+          blot.el.style.width = blot.el.style.height = `${(r * 2).toFixed(1)}px`;
+        }
+      };
+
+      const tick = () => {
+        const current = shapeRef.current;
+        if (!current) return;
+        const tip = window.innerHeight * 0.72 - front.getBoundingClientRect().top;
+        const target = scrolledArc(
+          current.pieces.map((piece) => piece.chunk),
+          current.pace,
+          tip,
+        );
+        // The pen only ever moves forward (ink once written stays); the
+        // reader is still only when neither the pen nor the page moves.
+        const writing = target > state.drawn + 1e-4;
+        const moving = writing || Math.abs(window.scrollY - rest.scroll) > 0.5;
+        rest.scroll = window.scrollY;
+        if (writing) {
+          const at = current.pieces.findIndex((piece) => state.drawn < piece.chunk.to);
+          const rate = tempo[at] ?? 0.12;
+          state.drawn = Math.min(target, state.drawn + Math.max(0.0005, (target - state.drawn) * rate));
+          apply();
+        }
+        bleed(current, moving);
+      };
+      gsap.ticker.add(tick);
+      return () => {
+        gsap.ticker.remove(tick);
+        blots.forEach((b) => b.el.remove());
+        front.removeEventListener("kumma:lifted", play);
+        window.clearTimeout(fallback);
+        tl.kill();
+        host.querySelectorAll<SVGElement>("[data-reveal]").forEach((path) => {
+          path.style.removeProperty("stroke-dashoffset");
+        });
+      };
+    }, front);
+    return () => media.revert();
   }, []);
 
   return (

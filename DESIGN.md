@@ -21,7 +21,7 @@ The primary replacement site is the rich eight-chapter experience at `/`: paper,
 
 `/view` remains an isolated, noindex comparison experiment in the same material language: the spiral portrait leads into an introduction, one quiet dated excerpt from personal writing, and direct paths onward. It is not the intended replacement for `/`.
 
-The introduction and personal metadata foreground consciousness and self-awareness. The first concerns the nature of experience and its relation to reality; the second concerns thoughts, emotions, habits, and choices in ordinary life. These are connected questions rather than a settled doctrine. The main journey keeps its attention on Kumma’s perspective. KOTA and other project showcases belong under Work, while complete essays belong under Writing.
+The introduction and personal metadata foreground consciousness, self-awareness, and imagination. Distinguish personally affirmed beliefs, continuing questions, dated writing, and aspirations. The main journey keeps its attention on Kumma’s perspective. KOTA and other project showcases belong under Work, while complete essays belong under Writing.
 
 ## Colors
 
@@ -55,11 +55,21 @@ Work and Writing are the two primary destinations in the paper shell. Its name a
 
 The opening offers quiet Work, Writing, and Email links so visitors can act without completing the chapter sequence. Footer contact paths repeat access at the end. These links belong to the existing paper typography and visible-focus treatment; they should remain subordinate to the personal introduction while being easy to find and use.
 
+## Connected Experience
+
+The connected experience develops the incumbent world through a retained reader contribution. The finished outline from Agency returns beside an awareness question and the outward invitation. Its shape, proportions, and reader/pen attribution remain consistent. An authored line supplies the complete composition when participation is skipped. Current-mount memory defines its lifetime.
+
+The phone opening places name, face, and substantive first-person language within the first viewport. Reason uses a monumental display phrase, large Junicode italic, an open brush impression, and the retained mark. The caption sits outside the circle with reserved clearance. The ending gives the user's intention to meet the world with love a large typographic composition and stable Email/Writing access. The existing eight marks and final brush character remain in the visual vocabulary.
+
+Interaction is available in reduced motion with immediate state changes. All paper routes use native scrolling. Native chapter links have a two-rem scroll margin. Font-axis compensation and section/thread anchors remain the basis of material motion and measured geometry.
+
+Motion preferences also work when changed during a visit. Media-scoped animation contexts clean up observers, idle calibration, manual ink styles, and timers. A completed portrait settles immediately when reduction is selected. No-JavaScript visits receive a generated static portrait made from the same spiral geometry and tone data. The public share image carries the name, face, and red horizon.
+
 The `/view` writing fragment is a short exact excerpt, visibly dated and connected to its source. It supplies a particular piece of personal thought without an article-promotion title, explanatory summary, or replay control. The final paths provide Writing, Work, X, and email. Navigation remains reachable before the experience is complete.
 
 ## Motion and Typographic Material
 
-On experience surfaces, motion makes a specific relationship visible: a change of view, an edit, or a change of reading emphasis. Settled compositions must still be expressive. Use ink geometry, type contrast, and variable-font shape where they carry meaning; avoid repeated fade-and-rise entrances. Preserve the original words and their source context. Prominent sequences run once, can be replayed, and leave readable static states in reduced motion or without JavaScript. Reserve typographic measure before varying weight so reading does not jump. Indexes and long articles remain calm.
+On experience surfaces, motion makes a specific relationship visible through a change of view, an edit, or a change of reading emphasis. Settled compositions must still be expressive. Use ink geometry, type contrast, and variable-font shape where they carry meaning. Preserve the original words and their source context. Prominent arrival sequences run once per visit, while scroll-linked type responds to reading position. Reduced motion and no-JavaScript reading have complete still compositions. Reserve typographic measure before varying weight so reading does not jump. Indexes and long articles remain calm.
 
 In the compact `/view` journey, the portrait’s change of perspective is the sole focal animation. The introduction, writing fragment, and onward paths provide a quiet reading interval; removing the project section does not create a requirement for replacement animation. Short viewports use normal document flow so the complete introduction remains readable.
 

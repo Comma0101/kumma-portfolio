@@ -20,10 +20,12 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: "22"
           cache: 'npm'
       - name: Install dependencies
-        run: npm install
+        run: npm ci
+      - name: Check source quality
+        run: npm run lint && npm test
       - name: Build Next.js site
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
@@ -34,6 +36,8 @@ jobs:
           NEXT_PUBLIC_UMAMI_ID: ${{ secrets.NEXT_PUBLIC_UMAMI_ID }}
           NEXT_PUBLIC_GSC_TOKEN: ${{ secrets.NEXT_PUBLIC_GSC_TOKEN }}
         run: npm run build
+      - name: Verify generated site
+        run: npm run typecheck && npm run audit:export
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

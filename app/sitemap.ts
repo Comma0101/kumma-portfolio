@@ -18,8 +18,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // Voice AI rebuild routes
     "/contact",
     "/about",
-    "/call",
-    "/benchmark",
     "/latency",
     "/patterns",
     "/patterns/barge-in",

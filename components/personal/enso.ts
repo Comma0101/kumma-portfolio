@@ -6,6 +6,23 @@ import { fitPoints, type Point } from "./pen";
 // beside the last column if there is room, beneath it on a phone; its
 // opening toward the text.
 export function ensoRing(host: HTMLElement) {
+  const field = anchor(host, "reflection-field");
+  if (field) {
+    const radius = Math.min(field.width, field.height) * 0.43;
+    const cx = field.x + field.width / 2;
+    const cy = field.y + field.height / 2;
+    const ring: Point[] = fitPoints(
+      ensoPath({ seed: 33, facing: -Math.PI / 6 }),
+      {
+        x: field.x + field.width * 0.07,
+        y: field.y + field.height * 0.05,
+        width: field.width * 0.86,
+        height: field.height * 0.9,
+      },
+    );
+    return { ring, cx, cy, radius, below: field.y + field.height + 10 };
+  }
+
   const clause = anchor(host, "not-form");
   const seen = anchor(host, "seen");
   if (!clause || !seen) return null;

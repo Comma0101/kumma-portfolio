@@ -16,6 +16,7 @@ export function isPaperRoute(pathname: string | null | undefined) {
 // Old addresses whose pages now live on paper: each still answers, and
 // sends the reader on.
 export const moved: Record<string, { to: string; label: string }> = {
+  "/call": { to: "/work/kota/", label: "KOTA" },
   "/projects": { to: "/work/", label: "Build" },
   "/projects/kota": { to: "/work/kota/", label: "KOTA" },
   "/projects/archon": { to: "/work/archon/", label: "ARCHON" },

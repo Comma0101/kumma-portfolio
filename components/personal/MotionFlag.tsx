@@ -6,9 +6,17 @@ import { useLayoutEffect } from "react";
 // paint so drawn marks still start undrawn.
 export default function MotionFlag() {
   useLayoutEffect(() => {
-    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      document.documentElement.dataset.front = "motion";
-    }
+    const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => {
+      if (preference.matches) delete document.documentElement.dataset.front;
+      else document.documentElement.dataset.front = "motion";
+    };
+    update();
+    preference.addEventListener("change", update);
+    return () => {
+      preference.removeEventListener("change", update);
+      delete document.documentElement.dataset.front;
+    };
   }, []);
   return null;
 }

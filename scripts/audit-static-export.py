@@ -18,6 +18,7 @@ class Page(HTMLParser):
         super().__init__()
         self.meta, self.links, self.ids, self.ld = {}, [], set(), []
         self.canonical = None
+        self.images, self.contributions = [], {}
         self.collect = False
         self.parts = []
         self.feed(path.read_text(encoding="utf-8"))
@@ -27,6 +28,10 @@ class Page(HTMLParser):
             self.ids.add(a["id"])
         if tag == "a" and a.get("href"):
             self.links.append(a["href"])
+        if tag == "img" and a.get("src"):
+            self.images.append(a["src"])
+        if tag == "figure" and a.get("data-contribution-place"):
+            self.contributions[a["data-contribution-place"]] = a.get("data-contribution-source")
         if tag == "meta":
             key = a.get("name") or a.get("property")
             if key:
@@ -74,6 +79,12 @@ assert len(home.ld) == 1 and home.ld[0]["@graph"][0]["@type"] == "Person"
 assert home.ld[0]["@graph"][0]["knowsAbout"][:2] == ["Consciousness", "Self-awareness"]
 assert all(href in home.links for href in ("/work/", "/notes/", "mailto:dev@kumma.me"))
 assert len(home.ids.intersection({"name", "agency", "catch-up", "steps", "practice", "rules", "reason", "dao"})) == 8
+assert home.contributions == {"reflection": "authored", "ending": "authored"}
+assert "/og/face.png" in home.images
+face = (root / "og/face.png").read_bytes()
+assert face[:8] == b"\x89PNG\r\n\x1a\n"
+assert int.from_bytes(face[16:20], "big") == 600
+assert int.from_bytes(face[20:24], "big") == 600
 assert pages[target("/view/")].meta["robots"] == ["noindex, follow"]
 retired = pages[target("/projects/market-systems/")]
 assert "noindex" in retired.meta["robots"][0]
@@ -83,6 +94,12 @@ contact = pages[target("/contact/")]
 assert contact.meta["description"] == contact.meta["og:description"] == contact.meta["twitter:description"]
 assert (root / "CNAME").read_text().strip() == "kumma.me"
 ET.parse(root / "sitemap.xml")
+sitemap_urls = {node.text.rstrip("/") for node in ET.parse(root / "sitemap.xml").iter("{http://www.sitemaps.org/schemas/sitemap/0.9}loc")}
+for draft in ("/benchmark/", "/call/"):
+    assert "noindex" in pages[target(draft)].meta["robots"][0]
+    assert f"https://kumma.me{draft}".rstrip("/") not in sitemap_urls
+assert not pages[target("/benchmark/")].ld
+assert pages[target("/call/")].canonical == "https://kumma.me/work/kota/"
 ET.parse(root / "feed.xml")
 for name in ("llms.txt", "llms-full.txt"):
     assert (root / name).read_bytes() == (repo / "public" / name).read_bytes()

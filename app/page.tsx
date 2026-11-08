@@ -3,7 +3,7 @@ import Front from "@/components/personal/Front";
 import { JsonLd, homeLd } from "@/components/seo/JsonLd";
 
 const description =
-  "Kumma Wu explores consciousness, self-awareness, and how understanding enters everyday life. A personal site of writing, software, and visual inquiry.";
+  "Kumma Wu explores consciousness, self-awareness, and imagination through writing, software, and visual experiments, seeking to live with love.";
 
 export const metadata: Metadata = {
   title: { absolute: "Kumma Wu" },

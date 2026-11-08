@@ -108,14 +108,14 @@ export default function Opening() {
         </p>
         <div className={styles.openingNote}>
           <p>
-            I return to questions about consciousness: what experience is, how it
-            relates to reality, and how awareness of my thoughts, emotions, and
-            habits changes the way I live.
+            I believe imagination participates in the making of reality. I want
+            to understand the self I observe, and let that understanding change
+            how I live.
           </p>
           <p>
-            I write and build software, read philosophy, religion, and history,
-            train, and trade. These pages hold things I’ve made and thoughts
-            I’m still working through.
+            I write, build software, and explore sound, movement, and imagined
+            worlds. I read, train, and trade. These pages hold work and questions
+            I’m still living with.
           </p>
         </div>
         <Portrait />

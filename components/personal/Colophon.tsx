@@ -25,13 +25,11 @@ export default function Colophon() {
         </ol>
       </nav>
       <p className={styles.howDrawn}>
-        Eight characters I return to in reading and in life.
+        Questions, observations, and intentions.
         <br />
         The marks remain; my understanding can change.
       </p>
       <p className={styles.howDrawn}>
-        Personal reflections informed by the <i>Zhuangzi</i>, the <i>Daodejing</i>, and Buddhist texts.
-        <br />
         <Link href="/studies">How it is drawn →</Link>
       </p>
       <Elsewhere />

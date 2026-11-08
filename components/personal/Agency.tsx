@@ -1,151 +1,259 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import gsap from "gsap";
-import Ink, { type Trace } from "./Ink";
-import { anchor } from "./anchors";
-import { inkStroke } from "./ink";
-import { handLine, type Point } from "./pen";
+import { centerline } from "./ink";
+import { handLine, type Box, type Point } from "./pen";
 import { crossesOut } from "./strike";
+import { createContribution, MAX_CONTRIBUTION_POINTS, type Contribution } from "./contribution";
+import { useContribution } from "./Contribution";
 import ChapterMark from "./ChapterMark";
 import ThenNow from "./ThenNow";
-import { draw, reveal, useBeat } from "./useBeat";
 import styles from "./Front.module.css";
 
-// 主: agency is an edit, and the reader makes it. Drag a line through the
-// "Re" of "Reacting." and your own stroke is the ink; tap it (or press the
-// button) and the pen strikes it for you. Either way the struck letters
-// stay on the paper, faded — a hand that cannot erase, only decide — and
-// only then does the present arrive under the past. Scroll past without
-// acting and "Reacting." stays as it is.
-const strike: Trace = (_, host) => {
-  const re = anchor(host, "re");
-  if (!re) return { points: [] };
-  // Across the letters' middle, rising a little as a hand does.
-  const y = re.y + re.height * 0.5;
-  return {
-    points: handLine([re.x - re.height * 0.06, y + 4], [re.x + re.width + re.height * 0.08, y - 6], 31, 0.5),
-    size: Math.max(4, re.height * 0.075),
-    emphasis: [{ from: 0, to: 1, weight: 1.4 }],
-  };
+type Stroke = {
+  contribution: Contribution;
+  placement: Box;
+  maskWidth: number;
 };
 
-type Stroke = { d: string };
 const MAX_STROKES = 6;
+
+function placedStroke(contribution: Contribution, word: Box, size: number): Stroke {
+  const { bounds } = contribution;
+  return {
+    contribution,
+    placement: {
+      x: (bounds.x - word.x) / word.height,
+      y: (bounds.y - word.y) / word.height,
+      width: bounds.width / word.height,
+      height: bounds.height / word.height,
+    },
+    maskWidth: size * 4,
+  };
+}
 
 export default function Agency() {
   const ref = useRef<HTMLElement>(null);
   const reRef = useRef<HTMLSpanElement>(null);
+  const maskId = `agency-${useId().replace(/:/g, "")}`;
+  const { setContribution } = useContribution();
   const [strokes, setStrokes] = useState<Stroke[]>([]);
   const [live, setLive] = useState<Stroke | null>(null);
+  const [wordBox, setWordBox] = useState<Box | null>(null);
   const [struck, setStruck] = useState(false);
   const [interactive, setInteractive] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
   const done = useRef(false);
+  const byPen = useRef(false);
+  const settled = useRef(false);
 
-  // The invitation appears a beat after the word does.
-  useBeat(ref, (root, tl) => {
-    tl.to(root.querySelector("[data-hint]"), { opacity: 1, duration: 0.8, ease: "power1.out" }, 0.9);
-  });
-
-  useEffect(() => {
-    // With reduced motion the page arrives finished: struck, glossed, now.
-    setInteractive(!window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  const measureWord = useCallback(() => {
+    const root = ref.current;
+    const word = reRef.current;
+    if (!root || !word) return null;
+    const host = root.getBoundingClientRect();
+    const box = word.getBoundingClientRect();
+    if (!box.height || !box.width) return null;
+    const measured = {
+      x: box.left - host.left,
+      y: box.top - host.top,
+      width: box.width,
+      height: box.height,
+    };
+    setWordBox(measured);
+    return measured;
   }, []);
 
-  // What follows the decision, however it was made.
-  const commit = (byPen: boolean) => {
-    const root = ref.current;
-    if (!root || done.current) return;
-    done.current = true;
-    setStruck(true);
-    const tl = gsap.timeline();
-    if (byPen) draw(tl, reveal(root, "strike"), { duration: 0.42, ease: "power2.in", position: 0 });
-    tl.to(root.querySelector("[data-struck]"), { opacity: 0.16, duration: 0.7, ease: "power1.out" }, byPen ? ">0.05" : 0.1)
-      .to(root.querySelector("[data-hint]"), { opacity: 0, duration: 0.4 }, "<")
-      .set(root.querySelector("[data-source]"), { visibility: "visible" }, ">0.1")
-      .to(root.querySelector("[data-now]"), { opacity: 1, duration: 1.1, ease: "power1.out" }, ">0.5");
-  };
+  useEffect(() => {
+    const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const updatePreference = () => setReducedMotion(preference.matches);
+    updatePreference();
+    setInteractive(true);
+    preference.addEventListener("change", updatePreference);
+    return () => preference.removeEventListener("change", updatePreference);
+  }, []);
 
   useEffect(() => {
     const root = ref.current;
-    const re = reRef.current;
-    if (!interactive || !root || !re) return;
+    const word = reRef.current;
+    if (!root || !word) return;
+    let frame = 0;
+    let mounted = true;
+    const schedule = () => {
+      if (frame || !mounted) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = 0;
+        measureWord();
+      });
+    };
+    measureWord();
+    const observer = new ResizeObserver(schedule);
+    observer.observe(root);
+    observer.observe(word);
+    document.fonts.ready.then(schedule).catch(() => undefined);
+    return () => {
+      mounted = false;
+      observer.disconnect();
+      window.cancelAnimationFrame(frame);
+    };
+  }, [measureWord]);
+
+  const retain = useCallback((stroke: Stroke) => {
+    setStrokes((previous) => [...previous, stroke].slice(-MAX_STROKES));
+    setContribution(stroke.contribution);
+  }, [setContribution]);
+
+  const commit = useCallback((withPen: boolean) => {
+    if (done.current) return;
+    if (withPen) {
+      const word = measureWord();
+      if (!word) return;
+      const size = Math.max(4, word.height * 0.075);
+      const y = word.y + word.height * 0.5;
+      const points = handLine(
+        [word.x - word.height * 0.06, y + 4],
+        [word.x + word.width + word.height * 0.08, y - 6],
+        31,
+        0.5,
+      );
+      const contribution = createContribution(points, "pen", {
+        size,
+        seed: 31,
+        emphasis: [{ from: 0, to: 1, weight: 1.4 }],
+      });
+      if (!contribution) return;
+      retain(placedStroke(contribution, word, size));
+    }
+    byPen.current = withPen;
+    done.current = true;
+    setStruck(true);
+  }, [measureWord, retain]);
+
+  useEffect(() => {
+    const root = ref.current;
+    if (!root || !struck) return;
+    const targets = {
+      word: root.querySelector("[data-struck]"),
+      source: root.querySelector("[data-source]"),
+      pen: root.querySelector("[data-pen-reveal]"),
+    };
+    const context = gsap.context(() => {
+      if (reducedMotion || settled.current) {
+        settled.current = true;
+        gsap.set(targets.word, { opacity: 0.16 });
+        gsap.set(targets.source, { visibility: "visible" });
+        if (targets.pen) gsap.set(targets.pen, { strokeDashoffset: 0 });
+        return;
+      }
+      const timeline = gsap.timeline({ onComplete: () => { settled.current = true; } });
+      if (byPen.current && targets.pen) {
+        timeline.fromTo(targets.pen, { strokeDashoffset: 1 }, {
+          strokeDashoffset: 0,
+          duration: 0.42,
+          ease: "power2.in",
+        });
+      }
+      timeline.to(targets.word, { opacity: 0.16, duration: 0.7, ease: "power1.out" }, byPen.current ? ">0.05" : 0.1)
+        .set(targets.source, { visibility: "visible" }, ">0.1");
+    }, root);
+    return () => context.revert();
+  }, [struck, reducedMotion]);
+
+  useEffect(() => {
+    const root = ref.current;
+    if (!interactive || !root) return;
     let points: Point[] = [];
-    let down: Point | null = null;
-    let id = -1;
-    let seed = 60;
+    let word: Box | null = null;
+    let pointer: number | null = null;
+    let seed = 60 + strokes.length;
+    let frame = 0;
     const local = (event: PointerEvent): Point => {
-      const box = root.getBoundingClientRect();
-      return [event.clientX - box.left, event.clientY - box.top];
+      const host = root.getBoundingClientRect();
+      return [
+        Math.max(0, Math.min(root.clientWidth, event.clientX - host.left)),
+        Math.max(0, Math.min(root.clientHeight, event.clientY - host.top)),
+      ];
     };
-    const area = () => {
-      const box = root.getBoundingClientRect();
-      const r = re.getBoundingClientRect();
-      return { x: r.left - box.left, y: r.top - box.top, width: r.width, height: r.height };
+    const render = () => {
+      if (!word) return null;
+      const size = Math.max(4, word.height * 0.075);
+      const contribution = createContribution(points, "reader", { size, seed });
+      return contribution ? placedStroke(contribution, word, size) : null;
     };
-    const render = (line: Point[]) => {
-      const { height } = area();
-      if (line.length < 2) return null;
-      const ink = inkStroke(line, { size: Math.max(4, height * 0.075), seed, smoothing: 2, lift: 2 });
-      return { d: ink.outline };
+    const release = () => {
+      const captured = pointer;
+      pointer = null;
+      if (captured !== null && root.hasPointerCapture?.(captured)) root.releasePointerCapture(captured);
+      window.cancelAnimationFrame(frame);
+      frame = 0;
+      setLive(null);
     };
     const onDown = (event: PointerEvent) => {
-      if (done.current || strokes.length >= MAX_STROKES) return;
+      if (done.current || pointer !== null || strokes.length >= MAX_STROKES || event.button !== 0) return;
+      if ((event.target as Element).closest("button, a")) return;
+      const measured = measureWord();
+      if (!measured) return;
       const p = local(event);
-      const a = area();
-      // Begin anywhere near the word's start: the margin, the R, the e.
-      if (p[0] < a.x - a.height * 0.8 || p[0] > a.x + a.width * 1.3 || p[1] < a.y - a.height * 0.4 || p[1] > a.y + a.height * 1.2) return;
-      // A stroke, not a text selection or an image drag.
+      const nearWord = p[0] >= measured.x - measured.height * 0.8
+        && p[0] <= measured.x + measured.width * 1.3
+        && p[1] >= measured.y - measured.height * 0.4
+        && p[1] <= measured.y + measured.height * 1.2;
+      if (!nearWord) return;
       event.preventDefault();
-      id = event.pointerId;
-      down = p;
+      pointer = event.pointerId;
+      word = measured;
       points = [p];
-      root.setPointerCapture?.(id);
+      root.setPointerCapture?.(pointer);
     };
     const onMove = (event: PointerEvent) => {
-      if (event.pointerId !== id || !down) return;
+      if (event.pointerId !== pointer) return;
       const p = local(event);
       const last = points[points.length - 1];
       if (Math.hypot(p[0] - last[0], p[1] - last[1]) < 2) return;
-      points.push(p);
-      setLive(render(points));
+      if (points.length < MAX_CONTRIBUTION_POINTS) points.push(p);
+      else points[MAX_CONTRIBUTION_POINTS - 1] = p;
+      if (!frame) frame = window.requestAnimationFrame(() => {
+        frame = 0;
+        setLive(render());
+      });
     };
     const onUp = (event: PointerEvent) => {
-      if (event.pointerId !== id || !down) return;
-      const start = down;
-      down = null;
-      id = -1;
-      const moved = points.reduce((max, p) => Math.max(max, Math.hypot(p[0] - start[0], p[1] - start[1])), 0);
-      setLive(null);
-      // A tap is a request: the pen strikes for you.
+      if (event.pointerId !== pointer || !word) return;
+      const moved = points.reduce((distance, p) => Math.max(
+        distance,
+        Math.hypot(p[0] - points[0][0], p[1] - points[0][1]),
+      ), 0);
+      const stroke = render();
+      release();
       if (moved < 6) {
         commit(true);
         return;
       }
-      const drawn = render(points);
+      if (stroke) retain(stroke);
       seed += 1;
-      // Whatever was drawn stays; it counts once it crosses the word out.
-      if (drawn) setStrokes((all) => [...all, drawn]);
-      if (crossesOut(points, area())) commit(false);
+      if (crossesOut(points, word)) commit(false);
     };
-    const onCancel = () => {
-      down = null;
-      id = -1;
-      setLive(null);
+    const onCancel = (event: PointerEvent) => {
+      if (event.pointerId === pointer) release();
     };
     root.addEventListener("pointerdown", onDown);
     root.addEventListener("pointermove", onMove);
     root.addEventListener("pointerup", onUp);
     root.addEventListener("pointercancel", onCancel);
+    root.addEventListener("lostpointercapture", onCancel);
     return () => {
       root.removeEventListener("pointerdown", onDown);
       root.removeEventListener("pointermove", onMove);
       root.removeEventListener("pointerup", onUp);
       root.removeEventListener("pointercancel", onCancel);
+      root.removeEventListener("lostpointercapture", onCancel);
+      if (pointer !== null && root.hasPointerCapture?.(pointer)) root.releasePointerCapture(pointer);
+      window.cancelAnimationFrame(frame);
     };
-    // Re-bound when a stroke is added, so the count is current.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [interactive, strokes.length]);
+  }, [interactive, strokes.length, measureWord, retain, commit]);
+
+  const marks = live ? [...strokes, live] : strokes;
 
   return (
     <section
@@ -154,6 +262,7 @@ export default function Agency() {
       aria-labelledby="agency"
       data-thread="agency"
       data-struck-state={struck ? "struck" : "open"}
+      data-participation={interactive ? "ready" : undefined}
     >
       <p className={styles.label}>
         <ChapterMark char="主" label="Agency" />
@@ -161,32 +270,77 @@ export default function Agency() {
       <p className={styles.first}>Before I call a choice my own, I want to notice what is moving me.</p>
       <h2 id="agency" className={styles.agencyLine} data-interactive={interactive ? "" : undefined}>
         <span aria-hidden="true">
-          <span ref={reRef} className={styles.struck} data-anchor="re" data-struck>
-            Re
-          </span>
+          <span
+            ref={reRef}
+            className={styles.struck}
+            data-anchor="re"
+            data-struck
+            style={interactive && !struck ? { opacity: 1 } : undefined}
+          >Re</span>
           acting.
         </span>
         <span className="sr-only">Reacting — strike out the “re” to leave “acting.”</span>
       </h2>
-      <Ink trace={strike} mark="strike" size={5} seed={31} lift={2} className={styles.thread} />
-      {/* The reader's own strokes: whatever is drawn stays. */}
-      <svg className={styles.readerInk} aria-hidden="true" focusable="false">
-        {strokes.map((stroke, index) => (
-          <path key={index} d={stroke.d} />
-        ))}
-        {live && <path d={live.d} />}
-      </svg>
-      <p className={styles.agencyHint} data-hint aria-hidden={struck ? "true" : undefined}>
+      {wordBox && marks.map((stroke, index) => {
+        const { contribution, placement } = stroke;
+        const { bounds } = contribution;
+        const pen = contribution.source === "pen";
+        const mask = `${maskId}-${index}`;
+        return (
+          <svg
+            key={index}
+            className={styles.readerInk}
+            aria-hidden="true"
+            focusable="false"
+            viewBox={`${bounds.x} ${bounds.y} ${bounds.width} ${bounds.height}`}
+            preserveAspectRatio="xMidYMid meet"
+            data-contribution-source={contribution.source}
+            style={{
+              inset: "auto",
+              left: wordBox.x + placement.x * wordBox.height,
+              top: wordBox.y + placement.y * wordBox.height,
+              width: placement.width * wordBox.height,
+              height: placement.height * wordBox.height,
+            }}
+          >
+            {pen && (
+              <defs>
+                <mask id={mask} maskUnits="userSpaceOnUse" x={bounds.x} y={bounds.y} width={bounds.width} height={bounds.height}>
+                  <path
+                    d={centerline(contribution.points)}
+                    pathLength={1}
+                    strokeWidth={stroke.maskWidth}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeDasharray="1 1"
+                    strokeDashoffset={reducedMotion ? 0 : 1}
+                    data-pen-reveal
+                    style={{ fill: "none", stroke: "white" }}
+                  />
+                </mask>
+              </defs>
+            )}
+            <path d={contribution.d} mask={pen ? `url(#${mask})` : undefined} data-contribution-outline />
+          </svg>
+        );
+      })}
+      <p
+        className={styles.agencyHint}
+        data-hint
+        hidden={!interactive}
+        aria-hidden={struck ? "true" : undefined}
+        style={{ opacity: struck ? 0 : 1 }}
+      >
         Draw a line through the “Re”.{" "}
-        <button type="button" className={styles.agencyButton} onClick={() => commit(true)} disabled={struck}>
+        <button type="button" className={styles.agencyButton} onClick={() => commit(true)} disabled={!interactive || struck}>
           Or let the pen do it
         </button>
       </p>
+      <p className="sr-only" role="status">{struck ? "Acting. The earlier word and its mark stay on the page." : ""}</p>
       <p className={styles.agencyGloss} data-source>
         <span lang="zh-Hant">主體</span> Agency: to be the subject of your own sentence, not its object.
       </p>
       <ThenNow
-        waitFor="act"
         then="Habit and other people’s expectations can move me before I have asked whether I agree."
         now="I want to notice those influences, choose what I will act on, and answer for the consequences."
       />
