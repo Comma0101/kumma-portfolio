@@ -184,8 +184,8 @@ async function portraitCard() {
           color: "#6b6760",
         },
         [
-          el("div", {}, "Consciousness, self-awareness, and how to live."),
-          el("div", { marginTop: 6 }, "Writing, software, and visual inquiry."),
+          el("div", {}, "Consciousness, self-awareness, and imagination."),
+          el("div", { marginTop: 6 }, "Writing, software, and living with love."),
         ],
       ),
       el(
@@ -213,8 +213,8 @@ const projects = [
 
 async function run() {
   await portraitCard();
-  await card("default", "Consciousness and self-awareness.", "Kumma Wu", "Writing, software, and questions about how to live");
-  await card("home", "Consciousness and self-awareness.", "Kumma Wu", "Writing, software, and questions about how to live");
+  await card("default", "Consciousness and imagination.", "Kumma Wu", "Writing, software, and questions about living with love");
+  await card("home", "Consciousness and imagination.", "Kumma Wu", "Writing, software, and questions about living with love");
   for (const p of projects) {
     await card(`projects-${p.slug}`, p.title, "Selected work", p.sub);
   }

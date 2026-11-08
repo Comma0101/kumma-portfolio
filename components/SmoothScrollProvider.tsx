@@ -1,10 +1,12 @@
 "use client";
 
 import { useLayoutEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { shouldInitializeSmoothScroll } from "./viz/reducedMotionState";
+import { isPaperRoute } from "./personal/routes";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -14,11 +16,13 @@ export default function SmoothScrollProvider({
   children: React.ReactNode;
 }) {
   const lenisRef = useRef<Lenis | null>(null);
+  const pathname = usePathname();
 
   useLayoutEffect(() => {
     const prefersReducedMotion = window.matchMedia?.(
       "(prefers-reduced-motion: reduce)",
     ).matches;
+    if (isPaperRoute(pathname)) return;
     if (!shouldInitializeSmoothScroll(prefersReducedMotion)) return;
 
     // Initialize Lenis
@@ -82,15 +86,17 @@ export default function SmoothScrollProvider({
 
     // Sync Lenis target with restored scroll position before first refresh
     lenis.scrollTo(scrollPositionRef.current, { immediate: true });
-    requestAnimationFrame(() => ScrollTrigger.refresh());
+    const refreshFrame = requestAnimationFrame(() => ScrollTrigger.refresh());
 
     return () => {
+      cancelAnimationFrame(refreshFrame);
       lenis.destroy();
       lenis.off("scroll", handleLenisScroll);
       gsap.ticker.remove(tickerProxy);
+      ScrollTrigger.scrollerProxy(scrollElement);
       (window as any).lenis = null;
     };
-  }, []);
+  }, [pathname]);
 
   return <>{children}</>;
 }

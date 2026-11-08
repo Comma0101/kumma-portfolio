@@ -27,6 +27,15 @@
   color-scheme: light;
 }
 
+:global(html):has(.front) {
+  scroll-behavior: auto;
+}
+
+.front h1[id],
+.front h2[id] {
+  scroll-margin-top: 2rem;
+}
+
 .front ::selection {
   background: var(--red);
   color: var(--paper);
@@ -230,7 +239,7 @@
 .opening {
   position: relative;
   min-height: 100svh;
-  padding: 0 var(--gutter) 16svh;
+  padding: 0 var(--gutter) 10svh;
 }
 
 .opening > .label {
@@ -454,7 +463,7 @@
 .name {
   position: relative;
   display: inline-block;
-  margin: calc(56svh - 0.74em) 0 0 -0.076em;
+  margin: max(10rem, 22svh) 0 0 -0.076em;
   font-family: var(--font-display), Georgia, serif;
   font-size: clamp(5rem, 13.3vw, 19rem);
   font-weight: 200;
@@ -490,8 +499,8 @@
 .below {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  column-gap: 4vw;
-  margin: 6svh 0 0 calc(var(--indent) - var(--gutter));
+  column-gap: 7vw;
+  margin: 5svh 0 0 calc(var(--indent) - var(--gutter));
 }
 
 .kicker {
@@ -520,7 +529,7 @@
   grid-column: 2;
   grid-row: 1 / span 3;
   align-self: start;
-  width: clamp(200px, 19vw, 300px);
+  width: clamp(220px, 24vw, 360px);
   aspect-ratio: 1;
   max-width: 100%;
   margin: 0;
@@ -654,6 +663,9 @@
 }
 
 .agencyButton {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   padding: 0 0 2px;
   border: 0;
   border-bottom: 1px solid currentColor;
@@ -678,11 +690,12 @@
   opacity: 0;
 }
 
-/* Reduced motion: the page arrives finished, with nothing to ask. */
-@media (prefers-reduced-motion: reduce) {
-  .agencyHint {
-    display: none;
-  }
+.agency[data-participation="ready"][data-struck-state="open"] .struck {
+  opacity: 1;
+}
+
+.agency[data-struck-state="struck"] .struck {
+  opacity: 0.16;
 }
 
 .agencyGloss {
@@ -741,7 +754,7 @@
 .bodyFill {
   position: relative;
   display: block;
-  font-weight: var(--wght, 200);
+  font-weight: var(--wght, 150);
 }
 
 /* ---------- Three steps forward, two back ---------- */
@@ -769,6 +782,7 @@
 
 .practice {
   position: relative;
+  min-height: auto;
   padding: calc(7svh + 3rem) var(--gutter) 8svh var(--indent);
 }
 
@@ -850,13 +864,13 @@
 }
 
 .practiceExcerpt {
-  max-width: 42rem;
-  margin: 5svh 0 0;
+  max-width: 38rem;
+  margin: 7svh 0 0 auto;
 }
 
 .practiceExcerpt blockquote {
   margin: 0;
-  font-size: clamp(1.4rem, 2.3vw, 2rem);
+  font-size: clamp(1.5rem, 2.5vw, 2.4rem);
   font-style: italic;
   line-height: 1.3;
 }
@@ -905,7 +919,7 @@
 .ending {
   display: flex;
   flex-direction: column;
-  min-height: 100svh;
+  min-height: auto;
 }
 
 .ending > .close {
@@ -921,12 +935,12 @@
 }
 
 .ending .daoGlyph {
-  width: min(52svh, 46vw);
+  width: min(30svh, 28vw);
 }
 
 .dao {
   display: grid;
-  flex: 1;
+  min-height: 55svh;
   grid-template-columns: auto minmax(0, 24rem);
   justify-content: start;
   align-items: center;
@@ -964,7 +978,8 @@
 
 .rules {
   position: relative;
-  padding: calc(7svh + 4rem) var(--gutter) 16svh var(--indent);
+  min-height: auto;
+  padding: calc(7svh + 4rem) var(--gutter) 10svh var(--indent);
 }
 
 .ruleContext {
@@ -982,7 +997,7 @@
   position: relative;
   margin: 0;
   font-family: var(--font-display), Georgia, serif;
-  font-size: clamp(3rem, 9vw, 9.6rem);
+  font-size: clamp(2.8rem, 7vw, 7.6rem);
   font-weight: 190;
   font-variation-settings: "wdth" 190;
   letter-spacing: -0.03em;
@@ -1443,36 +1458,55 @@
   }
 
   .opening {
-    min-height: 92svh;
-    padding: 0 12px 12svh;
+    min-height: 100svh;
+    padding: 6rem 16px 10svh;
+  }
+
+  .opening > .label {
+    position: static;
+    margin-left: calc(var(--indent) - 16px);
   }
 
   .name {
-    margin-top: calc(34svh - 0.74em);
-    font-size: 13.4vw;
+    margin-top: 3.6rem;
+    font-size: 13vw;
   }
 
   /* On a phone the face comes first under the line, on the right; the
      words under it. */
   .below {
-    grid-template-columns: minmax(0, 1fr);
-    margin: 5svh 0 0 calc(var(--indent) - 12px);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 1rem;
+    margin: 2.4rem 0 0 calc(var(--indent) - 16px);
   }
 
   .portrait {
-    grid-column: 1;
-    grid-row: 1;
+    grid-column: 2;
+    grid-row: 1 / span 2;
     justify-self: end;
-    width: 54vw;
-    margin: 0 0 6svh;
+    width: 100%;
+    margin: 0;
   }
 
   .kicker {
-    font-size: 1.15rem;
+    align-self: end;
+    font-size: 1rem;
   }
 
   .attention {
-    font-size: 8.2vw;
+    font-size: 6.9vw;
+    font-variation-settings: "wdth" 110;
+    line-height: 1.07;
+  }
+
+  .openingNote {
+    grid-column: 1 / -1;
+    margin-top: 1.8rem;
+    font-size: 1.12rem;
+  }
+
+  .practiceExcerpt {
+    margin-left: 0;
   }
 
   .close {
@@ -1509,7 +1543,7 @@
   }
 
   .rule {
-    font-size: 9.4vw;
+    font-size: 8.6vw;
   }
 
   .ending {
@@ -1517,8 +1551,9 @@
   }
 
   .dao {
-    padding-top: 8svh;
-    padding-bottom: 10svh;
+    min-height: auto;
+    padding-top: 7svh;
+    padding-bottom: 6svh;
   }
 
 
@@ -1568,11 +1603,16 @@
   }
 
   .dao {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: minmax(0, 0.75fr) minmax(0, 1fr);
+    gap: 1.5rem;
   }
 
-  .daoGlyph {
-    width: min(78vw, 360px);
+  .ending .daoGlyph {
+    width: 100%;
+  }
+
+  .daoGloss p {
+    font-size: 1.1rem;
   }
 
   .practice li {

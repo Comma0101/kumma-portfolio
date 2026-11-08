@@ -1,81 +1,106 @@
 "use client";
 
-import { useRef } from "react";
-import Ink, { type Trace } from "./Ink";
-import { anchor } from "./anchors";
-import { profiles } from "./brush";
-import { ensoRing } from "./enso";
-import { draw, reveal, useBeat } from "./useBeat";
+import { useId, useRef } from "react";
+import { ensoPath, profiles } from "./brush";
+import { inkStroke } from "./ink";
+import { fitPoints } from "./pen";
+import { draw, useBeat } from "./useBeat";
 import ChapterMark from "./ChapterMark";
-import styles from "./Front.module.css";
+import ContributionMark from "./ContributionMark";
+import paper from "./Front.module.css";
+import styles from "./Encounter.module.css";
 
-// The brush is about a fifth of the circle's radius.
-const enso: Trace = (_, host) => {
-  const ring = ensoRing(host);
-  const sutra = anchor(host, "sutra");
-  if (ring && sutra) {
-    // The circle moves below the columns when they leave too little room
-    // beside them. Keep the reading note below the actual ink at any size.
-    const clearance = Math.max(0, ring.below - (sutra.y + sutra.height) + 24);
-    host.style.setProperty("--enso-clearance", `${clearance}px`);
-  }
-  return ring ? { points: ring.ring, size: ring.radius * 0.22 } : { points: [] };
-};
+// A fixed brush impression gives the settled composition its complete form
+// before hydration. Its mask reveals the same material during the live beat.
+const circle = inkStroke(
+  fitPoints(ensoPath({ seed: 33, facing: -Math.PI / 6 }), {
+    x: 70,
+    y: 50,
+    width: 860,
+    height: 900,
+  }),
+  {
+    size: 64,
+    seed: 33,
+    profile: profiles.enso,
+    thinning: 0.8,
+    dry: 0.55,
+    smoothing: 1,
+    lift: 3,
+    skips: false,
+  },
+);
 
-// The sutra stands still; nothing touches the characters. Beside it the
-// brush is set down once (the reader's vermilion circle, see brush.ts): pressed in,
-// one quick sweep that runs dry, released at the opening toward the text.
 export default function Line() {
   const ref = useRef<HTMLElement>(null);
+  const maskId = `reflection-${useId().replace(/:/g, "")}`;
+
   useBeat(ref, (root, tl) => {
-    // Held on landing, then one quick sweep that runs dry.
-    draw(tl, reveal(root, "enso"), { duration: 1.5, ease: "none", position: 0.2 });
+    draw(tl, root.querySelector("[data-circle-reveal]"), {
+      duration: 1.35,
+      ease: "none",
+      position: 0.2,
+    });
   });
 
   return (
-    <section ref={ref} id="reason" className={styles.line} aria-label="Diamond Sutra" data-thread="reason">
-      <p className={styles.label} data-anchor="reason">
+    <section ref={ref} className={styles.reflection} aria-labelledby="reason" data-thread="reason">
+      <p className={paper.label} data-anchor="reason">
         <ChapterMark char="理" label="Reason" />
       </p>
-      <p className={styles.sutra} lang="zh-Hant" data-anchor="sutra">
-        <span className={styles.column}>凡所有相，</span>
-        <span className={styles.column}>皆是虛妄；</span>
-        <span className={styles.column} data-anchor="not-form">
-          若見諸相非相，
-        </span>
-        <span className={`${styles.column} ${styles.seen}`} data-anchor="seen">
-          則見如來
-          <span className={styles.stopMark}>
-            。
-          </span>
-        </span>
-      </p>
-      <Ink
-        trace={enso}
-        mark="enso"
-        thinning={0.8}
-        profile={profiles.enso}
-        emphasis={[
-          { from: 0, to: 0.06, slow: 6 },
-          { from: 0.08, to: 0.92, slow: 0.7 },
-        ]}
-        dry={0.55}
-        smoothing={1}
-        seed={33}
-        lift={3}
-        className={styles.thread}
-      />
-      <div className={styles.gloss}>
-        <cite>Diamond Sutra · Kumārajīva</cite>
-        <p>
-          Some passages stay with me because I don’t finish understanding them.
+
+      <div className={styles.reflectionMain}>
+        <h2 id="reason" className={styles.question} aria-label="What remains aware when the “I” falls quiet?">
+          <span className={styles.questionLead}>What remains</span>
+          <em className={styles.questionCore}>aware</em>
+          <span className={styles.questionTail}>when the “I” falls quiet?</span>
+        </h2>
+
+        <div className={styles.reflectionField} data-anchor="reflection-field">
+          <svg
+            className={styles.circle}
+            viewBox="0 0 1000 1000"
+            aria-hidden="true"
+            focusable="false"
+            data-pace={circle.pace.join(",")}
+          >
+            <defs>
+              <mask id={maskId} maskUnits="userSpaceOnUse" x="-100" y="-100" width="1200" height="1200">
+                <path
+                  d={circle.center}
+                  pathLength={1}
+                  className={styles.ringReveal}
+                  data-circle-reveal
+                  fill="none"
+                  stroke="#fff"
+                  strokeWidth={210}
+                  strokeLinecap="round"
+                />
+                {circle.dry.map((streak, index) => (
+                  <path
+                    key={index}
+                    d={streak.d}
+                    fill="none"
+                    stroke="#000"
+                    strokeWidth={streak.width}
+                    strokeLinecap="round"
+                  />
+                ))}
+              </mask>
+            </defs>
+            <path d={circle.outline} fill="currentColor" mask={`url(#${maskId})`} />
+          </svg>
+          <ContributionMark place="reflection" />
+        </div>
+      </div>
+
+      <div className={styles.reflectionReading}>
+        <p className={styles.belief}>
+          I believe imagination participates in the making of reality.
         </p>
-        <p>
-          What am I experiencing, and what have I already decided it means? I ask
-          this about a thought, an identity, and the reality I take for granted.
-        </p>
-        <p>
-          I want to read closely enough to let a text disagree with me.
+        <p className={styles.reflectionNote}>
+          I can observe the person I call myself. I keep asking what it means
+          to live from that awareness.
         </p>
       </div>
     </section>

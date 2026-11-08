@@ -8,7 +8,7 @@ const practice = [
   { word: "Trade.", line: "Decisions under uncertainty, with consequences I have to accept." },
   {
     word: "Build.",
-    line: "Making tools and systems, and learning from what happens when they are used.",
+    line: "Tools, systems, and imagined worlds. Making room for both use and play.",
     href: "/work",
   },
   {
@@ -48,13 +48,13 @@ export default function Practice() {
       <figure className={styles.practiceExcerpt}>
         <blockquote>
           <p>
-            Reason tells us how to walk,
-            <br />
-            emotion reminds us why we walk.
+            I’ve come to realize that emotions aren’t enemies.
+            They’re simply parts of ourselves—just the parts that are more
+            honest, less rehearsed.
           </p>
         </blockquote>
         <figcaption>
-          <cite>On Emotions</cite> · <time dateTime="2025-10">October 2025</time>
+          <cite>On Emotions</cite> · <time dateTime="2025-10-26">October 26, 2025</time>
           <Link href="/notes/on-emotions">Read the essay →</Link>
         </figcaption>
       </figure>

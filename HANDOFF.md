@@ -42,7 +42,15 @@ Public identity wording should use his own beliefs, questions, and commitments. 
 
 The revised proposal develops the rich paper/ink world through an actual reader contribution that remains recognisable in later compositions. Distinguish authored spine, reader mark, and typography, with a complete authored reading for people who skip interaction. Give beliefs, questions, dated writing, observations, and intentions different roles. Love remains the user's stated intention and guides accommodation and contact. The current prominent closing Follow action gives social following greater visual weight than that newly confirmed outward commitment.
 
-The next reviewable deliverables are an eight-part composition study and a thin connected passage from the existing intervention through one changed reading/type state to the proposed shared ending. Prove the continuity and review its still states before extensive opening/ending polish. The brief defines contribution ownership, visit lifetime, input alternatives, resize/interruption behaviour, and observable acceptance tests. PRODUCT contains the updated personal truth. DESIGN describes the shipped visual system. Suggested copy, metaphors, and new interactions await visual review. The live UI and public metadata remain at the released implementation.
+The first connected prototype is implemented on `feat/personal-expression-prototype`. The eight chapters retain their structure with varied pacing, a compact phone opening, a dated extract from the existing emotion essay, an authored awareness question, and an outward love/contact composition. The Chinese chapter marks and final brush-written character remain part of the prototype's visual vocabulary. Main identity copy uses the user's own positions and intentions. The earlier sourced passage is available through the existing reading references.
+
+`ContributionProvider` owns the latest completed contribution for the current homepage mount. `Agency` retains its finished outline, bounded centreline, bounds, and reader/pen source. `ContributionMark` renders the identical outline in Reason and the ending. A fresh mount begins with an authored composition. Drawing, the native pen action, skipped interaction, and reduced motion have complete paths. Typography and source labels accommodate a changed viewport without regenerating the selected mark.
+
+Paper routes now use native scrolling. The shared smooth-scroll provider skips them and clears its scroller proxy on cleanup. This resolved a chapter-jump failure after text resizing. Headings reserve a small scroll margin. The new reflection caption sits outside the brush circle with reserved space, including at 320 px and enlarged text.
+
+Local validation passed all 16 test-file subprocesses, lint with the five documented legacy warnings, standalone type checking, the 66-route production build, and export audit with 507 internal links / 42 legacy moves / zero broken destinations. Chromium checks covered distinct drawn strokes, keyboard pen action, emulated touch drawing, equal retained outlines, resizing, enlarged text, no-JavaScript reading, reduced motion, direct chapter entry, and return navigation. A focused interaction run on a desktop host with 4× CPU throttling recorded no long tasks. Physical iPhone/Safari and personal/emotional accuracy await user review.
+
+The temporary HTTPS review URL is <https://theology-quoted-bend-engaged.trycloudflare.com/>. It serves the completed `out/` through a local server on 127.0.0.1:4242 with `X-Robots-Tag: noindex, nofollow`. The server is `/tmp/kumma-expression-preview-server.py` and the tunnel uses `cloudflared tunnel --config '' --no-autoupdate --protocol http2 --url http://127.0.0.1:4242`. The explicit empty config avoids loading the machine's existing named-tunnel settings. Both processes remain running for review. Inventory their actual processes before stopping them. This URL is temporary and depends on those processes. Production runs `master` at kumma.me. No production release was made for this prototype.
 
 ## Architecture map
 
@@ -51,6 +59,8 @@ The next reviewable deliverables are an eight-part composition study and a thin 
 | Canonical homepage | `app/page.tsx`, `components/personal/Front.tsx` |
 | Eight sections | `Opening`, `Agency`, `CatchUp`, `Steps`, `Practice`, `Rules`, `Line`, `Dao` in `components/personal/` |
 | Chapter reflections/navigation | `chapters.ts`, `ChapterMark.tsx`, `MarginNav.tsx`, `Colophon.tsx` |
+| Retained reader contribution | `Contribution.tsx`, `contribution.ts`, `Agency.tsx`, `ContributionMark.tsx` |
+| Reflection and outward composition | `Line.tsx`, `Close.tsx`, `Encounter.module.css` |
 | Visual system | `Front.module.css`, `type.ts`, local fonts |
 | Ink and motion | `Thread.tsx`, `Ink.tsx`, `ink.ts`, `pen.ts`, `brush.ts`, `useBeat.ts`, `Portrait.tsx` |
 | Auxiliary fonts/build reliability | `components/legacyFonts.ts`, `components/fonts/README.md` |
@@ -113,6 +123,6 @@ The stale February `PROJECT_CONTEXT.json` is preserved at `docs/archive/PROJECT_
 
 ## Where the next agent should start
 
-Begin with the next user request, a clean status check, PRODUCT/DESIGN, and the current design brief above. The user placed personal accuracy and visual expression ahead of growth work. Carry the expert-team proposal into a reviewable prototype when building resumes. The earlier launch audit left search indexing and real-user mobile performance unverified, and identified older demo/benchmark public promises for review before broad promotion. Those findings are separate from the completed release validation.
+Begin with the user's prototype feedback, a clean status check, PRODUCT/DESIGN, and the current design brief above. The user placed personal accuracy and visual expression ahead of growth work. Review the live temporary prototype and improve the compositions based on that feedback. The earlier launch audit left search indexing and real-user mobile performance unverified, and identified older demo/benchmark public promises for review before broad promotion. Those findings are separate from the completed release validation.
 
 Keep this file current, append verified outcomes to the project log, and record what was actually tested. Publication is complete only after the workflow succeeds and the live domain serves the intended result.

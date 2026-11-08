@@ -1,11 +1,11 @@
 # Kumma Wu
 
-> Kumma Wu, Los Angeles. His personal site centres on consciousness and self-awareness: questions about experience, the self, and reality, alongside attention to thoughts, emotions, habits, and choices. He writes, builds software, reads philosophy, religion, and history, trains, and trades.
+> Kumma Wu, Los Angeles. His personal site explores consciousness, self-awareness, and imagination through writing, software, and visual experiments. He seeks to know himself, keep growing, and meet the world with love. He also reads philosophy, religion, and history, trains, and trades.
 
 The fuller context is at https://kumma.me/llms-full.txt.
 
 ## Pages
-- [Home](https://kumma.me/): a personal inquiry into consciousness, self-awareness, and how understanding enters life, connected by one red line.
+- [Home](https://kumma.me/) presents a personal inquiry into consciousness, imagination, self-discovery, and how understanding changes a life, connected by one red line. Kumma's beliefs, questions, and intentions appear alongside an optional reader contribution.
 - [Work](https://kumma.me/work/): KOTA (restaurant phone calls into menu-verified kitchen tickets), ARCHON (an inspectable control plane for models, tools, memory and coding agents), Audiobook AI, a trade ledger, a voice-agent demo and a draft stress suite for voice agents.
 - [Writing](https://kumma.me/notes/): essays on emotion, faith and awareness, and Camus, with reading references. Two essays also in Chinese.
 - [Visual studies](https://kumma.me/studies/): browser-rendered artwork made for the website — bamboo in vermilion, an ensō, 道 in stroke order, a face as one spiral line.

@@ -1,47 +1,34 @@
-"use client";
-
-import { useRef } from "react";
-import Ink, { type Trace } from "./Ink";
-import { anchor } from "./anchors";
-import { handLine } from "./pen";
-import { draw, reveal, useBeat } from "./useBeat";
-import { X_URL } from "./links";
-import styles from "./Front.module.css";
-
-// The pen set down again for the one action: a single underline from under
-// the F to past the X — no frame around the words.
-const last: Trace = (_, host) => {
-  const follow = anchor(host, "follow");
-  if (!follow) return { points: [] };
-  // Just below the letters: the face's line box is tighter than its glyphs.
-  const y = follow.y + follow.height + 8;
-  return {
-    points: handLine(
-      [follow.x + 2, y - 3],
-      [Math.min(follow.x + follow.width + 36, host.clientWidth - 10), y - 6],
-      77,
-      0.7,
-    ),
-    // The horizon's weight.
-    emphasis: [{ from: 0, to: 1, weight: 1.55 }],
-  };
-};
+import Link from "next/link";
+import ContributionMark from "./ContributionMark";
+import styles from "./Encounter.module.css";
 
 export default function Close() {
-  const ref = useRef<HTMLElement>(null);
-
-  // A beat after the words arrive, the line under them: gathering speed
-  // and running out past the X.
-  useBeat(ref, (root, tl) => {
-    draw(tl, reveal(root, "last"), { duration: 0.75, ease: "power2.in", position: 0.35 });
-  });
-
   return (
-    <section ref={ref} className={styles.close} aria-label="Follow">
-      <a className={styles.followBig} href={X_URL} rel="me" data-anchor="follow">
-        Follow on X
-      </a>
-      <Ink trace={last} mark="last" size={3.6} seed={77} lift={14} className={styles.thread} />
+    <section className={styles.outward} aria-labelledby="encounter" data-encounter>
+      <div className={styles.outwardMain}>
+        <h2 id="encounter" className={styles.intention} aria-label="I want to meet the world with love.">
+          <span className={styles.intentionLead}>I want to meet</span>
+          <span className={styles.intentionWorld}>the world</span>
+          <em className={styles.intentionLove}>with love.</em>
+        </h2>
+
+        <div className={styles.sharedField}>
+          <span className={styles.sharedRule} aria-hidden="true" />
+          <ContributionMark place="ending" />
+        </div>
+      </div>
+
+      <div className={styles.invitation}>
+        <p>If something here stays with you, I’d like to hear it.</p>
+        <nav aria-label="Continue the conversation">
+          <a href="mailto:dev@kumma.me">
+            Write to me <span aria-hidden="true">↗</span>
+          </a>
+          <Link href="/notes">
+            Writing <span aria-hidden="true">→</span>
+          </Link>
+        </nav>
+      </div>
     </section>
   );
 }

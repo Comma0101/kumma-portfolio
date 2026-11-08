@@ -32,7 +32,7 @@ export default function CatchUp() {
       // as its outline at each weight: the ink grows inside the outline
       // instead of sliding out of register. Solving forces layout, so only
       // the resting weight is solved up front; the rest waits for idle time.
-      const weights = [10, 55, 100, 150, 200];
+      const weights = [10, 55, 100, 150];
       const tables: Array<Array<[number, number]>> = lines.map(() => []);
       const solveAt = (weight: number) =>
         lines.forEach((line, i) => {
@@ -73,11 +73,11 @@ export default function CatchUp() {
       tl.fromTo(
         state,
         { weight: 10 },
-        { weight: 200, ease: "power3.in", immediateRender: false, onUpdate: apply },
+        { weight: 150, ease: "power3.in", immediateRender: false, onUpdate: apply },
       );
       // What was understood gives way as it is lived: the outline fades
       // while the ink arrives, so the two are never seen out of register.
-      tl.fromTo(outline, { opacity: 1 }, { opacity: 0.1, ease: "power2.out", immediateRender: false }, 0);
+      tl.fromTo(outline, { opacity: 1 }, { opacity: 0.18, ease: "power2.out", immediateRender: false }, 0);
     },
     // The body is slower than the mind: the ink keeps filling for a moment
     // after the reader stops.
