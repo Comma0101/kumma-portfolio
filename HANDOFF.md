@@ -6,10 +6,10 @@ Last updated 2026-11-08. Read this first, then PRODUCT.md and DESIGN.md. The [pr
 
 - Public site: <https://kumma.me/>.
 - Source: <https://github.com/Comma0101/kumma-portfolio>, production branch `master`.
-- The rich personal-site replacement shipped through [PR #17](https://github.com/Comma0101/kumma-portfolio/pull/17), merge `41949da5473d60de4e8fb577c7f1430d50bb1730`.
-- [Deployment run 41528963290](https://github.com/Comma0101/kumma-portfolio/actions/runs/41528963290) succeeded. Desktop/phone navigation, language editions, metadata, feed, sitemap, and retired-page handling were checked on the live domain.
-- The original reviewed release commit is `57d9cc8312d62e5d84766ad6c6a3cc21734dccb3`. The previous engineering-site revision is `709e2ca0c3ee745f3b1daddbf2c3b4e59cc53063`, retained in Git history as the pre-replacement reference.
-- Later documentation/cleanup commits build on that release. Use the current `origin/master` for new work rather than checking out a fixed historical SHA.
+- The complete connected experience shipped through [PR #20](https://github.com/Comma0101/kumma-portfolio/pull/20), merge `2ba36b2118af397e18af6722ac81981827d4f8d0`.
+- [Deployment run 42531658432](https://github.com/Comma0101/kumma-portfolio/actions/runs/42531658432) passed locked installation, lint/tests, build, generated-site verification, and deployment. The public domain serves the new personal belief, contribution fields, outward ending, and portrait fallback.
+- The reviewed release head is `027080f9c411f0d5fca66b384758529f44e92311`. The original paper-site release remains in [PR #17](https://github.com/Comma0101/kumma-portfolio/pull/17). The previous engineering site is retained at `709e2ca0c3ee745f3b1daddbf2c3b4e59cc53063`.
+- Later release-record commits build on the deployed implementation. Use the current `origin/master` for new work.
 
 ## Start in the correct checkout
 
@@ -36,25 +36,23 @@ Projects, including KOTA, belong under Work. The main page has no featured proje
 
 ## Current design work
 
-The user authorized the complete build, editorial decisions, and production deployment on 2026-11-08. The [personal-expression brief](docs/design/personal-expression-brief.md) records the expert-team review and independent challenge. The release candidate implements revision 2, with local source, build, and browser validation complete. Actions and public-domain verification are the remaining release gates.
+The user authorized the complete build, editorial decisions, and production deployment on 2026-11-08. The [personal-expression brief](docs/design/personal-expression-brief.md) records the expert-team review and independent challenge. The completed release implements revision 2 and has passed the production workflow. Source, build, and browser evidence is recorded in the project log.
 
 Public identity wording uses his own beliefs, questions, and commitments. The philosophical influences discussed in discovery provide internal context. The release retains the Chinese chapter marks and final brush character as visual vocabulary, uses the authored awareness question in Reason, and keeps attributed reading references under Writing.
 
 The revised proposal develops the rich paper/ink world through an actual reader contribution that remains recognisable in later compositions. Distinguish authored spine, reader mark, and typography, with a complete authored reading for people who skip interaction. Give beliefs, questions, dated writing, observations, and intentions different roles. Love remains the user's stated intention and guides accommodation and contact. The current prominent closing Follow action gives social following greater visual weight than that newly confirmed outward commitment.
 
-The first connected prototype is implemented on `feat/personal-expression-prototype`. The eight chapters retain their structure with varied pacing, a compact phone opening, a dated extract from the existing emotion essay, an authored awareness question, and an outward love/contact composition. The Chinese chapter marks and final brush-written character remain part of the prototype's visual vocabulary. Main identity copy uses the user's own positions and intentions. The earlier sourced passage is available through the existing reading references.
+The connected experience is on `master`. The eight chapters retain their structure with varied pacing, a compact phone opening, a dated extract from the existing emotion essay, an authored awareness question, and an outward love/contact composition. The Chinese chapter marks and final brush-written character remain visual vocabulary. Main identity copy uses the user's own positions and intentions. The earlier sourced passage is available through the existing reading references.
 
 `ContributionProvider` owns the latest completed contribution for the current homepage mount. `Agency` retains its finished outline, bounded centreline, bounds, and reader/pen source. `ContributionMark` renders the identical outline in Reason and the ending. A fresh mount begins with an authored composition. Drawing, the native pen action, skipped interaction, and reduced motion have complete paths. Typography and source labels accommodate a changed viewport without regenerating the selected mark.
 
-Paper routes now use native scrolling. The shared smooth-scroll provider skips them and clears its scroller proxy on cleanup. This resolved a chapter-jump failure after text resizing. Headings reserve a small scroll margin. The new reflection caption sits outside the brush circle with reserved space, including at 320 px and enlarged text.
+Paper routes use native scrolling. The legacy smooth-scroll integration uses the document's native position without a custom proxy, so recovery into a paper route leaves no destroyed-scroller callbacks. Headings reserve a small scroll margin. The reflection caption sits outside the brush circle with reserved space, including at 320 px and enlarged text.
 
-Local validation passed all 16 test-file subprocesses, lint with the five documented legacy warnings, standalone type checking, the 66-route production build, and export audit with 507 internal links / 42 legacy moves / zero broken destinations. Chromium checks covered distinct drawn strokes, keyboard pen action, emulated touch drawing, equal retained outlines, resizing, enlarged text, no-JavaScript reading, reduced motion, direct chapter entry, and return navigation. A focused interaction run on a desktop host with 4× CPU throttling recorded no long tasks. Physical iPhone/Safari and personal/emotional accuracy await user review.
+Shared beats, the first chapter mark, Thread, and Portrait respond to live motion preferences. Calibration preserves displayed type, rebuilds after real width/font changes, and cancels pending work on disposal. The no-JavaScript portrait is generated from the same data and spiral functions during prebuild. Opaque noscript markup prevents a duplicate image download for JavaScript visits. The share card uses the name, spiral face, and red horizon.
 
-The repaired temporary HTTPS review URL is <https://zum-operations-vote-answer.trycloudflare.com/>. The original tool-session preview stopped after the work turn, producing the user's reported 1033 error. The replacement server and tunnel are transient user services managed by systemd, independently of the tool session, with a 24-hour runtime limit.
+Validation passed all 16 test-file subprocesses, lint with the five documented legacy warnings, standalone type checking, the 66-route production build, and export audit with 507 internal links / 43 legacy moves / zero broken destinations. Chromium checks covered distinct drawn strokes, keyboard pen action, emulated touch drawing, equal retained outlines, resizing, enlarged text, no-JavaScript reading and face, reduced motion, live preference changes, calibrated type registration, direct chapter entry, and not-found recovery. A focused interaction run on a desktop host with 4× CPU throttling recorded no long tasks. Physical iPhone hardware and human recall/emotional response remain follow-up evidence.
 
-The server serves the completed `out/` on 127.0.0.1:4242 with `X-Robots-Tag: noindex, nofollow`. Its source is `/tmp/kumma-expression-preview-server.py`. The tunnel uses `cloudflared tunnel --config '' --no-autoupdate --protocol http2 --url http://127.0.0.1:4242`. The explicit empty config avoids loading the machine's existing named-tunnel settings. Production runs `master` at kumma.me. No production release was made for this prototype.
-
-Inspect these services with `systemctl --user status kumma-expression-preview kumma-expression-tunnel`. Retrieve the current URL from `journalctl --user -u kumma-expression-tunnel -o cat`. Stop this preview with `systemctl --user stop kumma-expression-tunnel kumma-expression-preview`. The preview service restarts on failure. Review or stop both services after the review window. The hostname is temporary and tied to the current tunnel. Keep the machine's unrelated named tunnel separate.
+The public review and delivery URL is <https://kumma.me/>. The temporary tunnel was an interim preview. Its user services are `kumma-expression-preview` and `kumma-expression-tunnel`. Inspect their state before reusing port 4242, and stop only these preview services when they are no longer needed. Keep the machine's unrelated named tunnel separate. The project log preserves the 1033 repair history.
 
 ## Architecture map
 
@@ -113,7 +111,7 @@ For UI changes, inspect desktop and phone renders and exercise keyboard focus, c
 
 ## Compatibility and privacy
 
-- Forty-two legacy paths have compatibility pages. The retired `/projects/market-systems/` address points generically to `/work/`; do not restore its retired content.
+- Forty-three legacy paths have compatibility pages. The retired `/projects/market-systems/` address points generically to `/work/`; do not restore its retired content. `/call/` moves to the KOTA project. The benchmark is an unreleased draft with accurate metadata, no Dataset claim, noindex, and no sitemap entry.
 - Moved project slugs are included in static params independently of the public project list. Adding a map entry alone is insufficient if the export does not generate that path.
 - `/view` remains noindex and is absent from the sitemap. Keep it separate from the chosen homepage.
 - Contact uses the existing mailto flow. Browser QA must not send forms, email, or demo calls unless explicitly authorized.
@@ -127,6 +125,6 @@ The stale February `PROJECT_CONTEXT.json` is preserved at `docs/archive/PROJECT_
 
 ## Where the next agent should start
 
-Begin with the user's prototype feedback, a clean status check, PRODUCT/DESIGN, and the current design brief above. The user placed personal accuracy and visual expression ahead of growth work. Review the live temporary prototype and improve the compositions based on that feedback. The earlier launch audit left search indexing and real-user mobile performance unverified, and identified older demo/benchmark public promises for review before broad promotion. Those findings are separate from the completed release validation.
+Begin with the next user request, a clean status check, PRODUCT/DESIGN, and the current design brief. The user authorized the completed release. Preserve its personal truth and rich visual vocabulary. The earlier launch audit left search indexing and real-user mobile performance unverified. The unverified demo promise and benchmark metadata have been resolved. Growth/account setup and physical-device evidence are follow-up work.
 
 Keep this file current, append verified outcomes to the project log, and record what was actually tested. Publication is complete only after the workflow succeeds and the live domain serves the intended result.

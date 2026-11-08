@@ -4,7 +4,7 @@ Prepared 2026-11-08 from the user's clarification and a review by three speciali
 
 Revision 2 incorporates an independent challenge by three further agents covering originality, personal accuracy, and typography/implementation feasibility. The user asked whether the plan could improve before building.
 
-Status is an implemented release candidate on `feat/personal-expression-prototype`. The user authorized completion, editorial decisions, and deployment on 2026-11-08. Personal commitments below come from the user. The direction and acceptance criteria remain the basis of review. Actual validation and deployment evidence are recorded in HANDOFF and the project log.
+Status is deployed on `master` through PR #20 and successful Pages run 42531658432. The user authorized completion, editorial decisions, and deployment on 2026-11-08. Personal commitments below come from the user. The direction and acceptance criteria remain the basis of review. Actual validation and deployment evidence are recorded in HANDOFF and the project log.
 
 ## Purpose
 
