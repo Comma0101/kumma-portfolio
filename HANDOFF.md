@@ -1,6 +1,6 @@
 # Project handoff
 
-Last updated: 2026-11-02. Read this first, then PRODUCT.md and DESIGN.md. The [project log](docs/PROJECT_LOG.md) preserves decisions and release evidence.
+Last updated 2026-11-08. Read this first, then PRODUCT.md and DESIGN.md. The [project log](docs/PROJECT_LOG.md) preserves decisions and release evidence.
 
 ## What is live
 
@@ -30,9 +30,19 @@ The outer `/home/comma/Documents/kumma-portfolio` checkout is an older `feature/
 
 The user chose the eight-part paper-and-ink site over a shorter `/view` experiment. Preserve the red spine, large variable type, spiral portrait, participatory edit, practice marks, vertical Chinese text, and brush-written ending. Do not restart the rejected reduction to a portrait, a question, and a single excerpt.
 
-Both consciousness and self-awareness matter: experience/self/reality questions and attention to thoughts, emotions, habits, and choices. The site introduces an ongoing inquiry and real commitments; it does not declare a settled metaphysics or spiritual attainment. The user is learning to draw. Existing essays are dated positions, not automatic summaries of every present belief.
+Both consciousness and self-awareness matter, including experience/self/reality questions and attention to thoughts, emotions, habits, and choices. The user has since affirmed personal beliefs about imagination participating in reality and awareness observing the mental “I”, with an observer remaining. He describes humans as witnesses and participants. Finding his true self, cultivating himself, and engaging with the world with love give this inquiry its practical direction. PRODUCT records these as personal convictions, aspirations, and continuing questions. The user is learning to draw. Existing essays are dated positions whose present significance requires his account.
 
 Projects, including KOTA, belong under Work. The main page has no featured project case study. Work, Writing, and Email are visible in the opening and available again at the end. Trading reminders retain their specific domain.
+
+## Current design work
+
+The user requested an expert team to develop exceptional visual typography and animation representing his clarified philosophy. The [personal-expression brief](docs/design/personal-expression-brief.md) records the three specialist agents' findings and the proposed next prototype.
+
+Public identity wording should use his own beliefs, questions, and commitments. The philosophical influences discussed in discovery provide internal context. Existing quotations carry their source attribution wherever used. The role of the current source-led passage and final character needs explicit editorial resolution within this new direction.
+
+The proposal develops the rich paper/ink world through a composed opening, the existing material typographic transformation, and an ending that opens toward care and contact. Different chapter tempos should carry the sequence. The current prominent closing Follow action gives social following greater visual weight than the newly confirmed outward commitment.
+
+The next reviewable deliverable is a high-fidelity opening and ending at desktop and phone sizes, including settled, motion, touch, keyboard, and reduced-motion states. PRODUCT contains the updated personal truth. DESIGN describes the shipped visual system. The proposal is planning material, and its suggested copy and new interactions await visual review. The live UI and public metadata remain at the released implementation.
 
 ## Architecture map
 
@@ -103,6 +113,6 @@ The stale February `PROJECT_CONTEXT.json` is preserved at `docs/archive/PROJECT_
 
 ## Where the next agent should start
 
-There is no unresolved production blocker from the personal-site release. Begin with the next user request, a clean status check, and PRODUCT/DESIGN. Useful future work may include specific personal writing, bounded review of legacy lint warnings, or CI/runtime maintenance; these are possible follow-ups, not permission for an unsolicited redesign.
+Begin with the next user request, a clean status check, PRODUCT/DESIGN, and the current design brief above. The user placed personal accuracy and visual expression ahead of growth work. Carry the expert-team proposal into a reviewable prototype when building resumes. The earlier launch audit left search indexing and real-user mobile performance unverified, and identified older demo/benchmark public promises for review before broad promotion. Those findings are separate from the completed release validation.
 
 Keep this file current, append verified outcomes to the project log, and record what was actually tested. Publication is complete only after the workflow succeeds and the live domain serves the intended result.

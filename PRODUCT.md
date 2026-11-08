@@ -14,6 +14,19 @@ People finding Kumma Wu and encountering his perspective, with direct access to 
 
 A personal site centred on Kumma Wu’s inquiry into consciousness and self-awareness. Consciousness concerns the nature of experience, the self, and their relation to reality; self-awareness concerns noticing thoughts, emotions, habits, and choices. Both are explicitly important to him. The site should communicate his perspective and how he lives, with software, writing, and reading as parts of that life. His confirmed interests also include training, trading, philosophy, religion, and history.
 
+## Personal Philosophy
+
+The user clarified these positions on 2026-11-08. Attribute convictions to Kumma and distinguish them from the questions he continues to investigate.
+
+- He believes imagination participates in reality both at the level of existence itself and through human choices and actions.
+- Within that view, physical existence follows physical laws.
+- He distinguishes the mental image of the “I” from the awareness that can observe it. He affirms that an observer remains when identification with that image falls away.
+- He accepts the description of human beings as witnesses and participants in creation.
+- His stated direction is finding his true self, cultivating himself, and interacting with the world with love. These are aspirations and commitments.
+- How the infinite gives rise to finite existence, and the role of human consciousness within that relationship, remain active questions.
+
+The traditions mentioned during discovery serve as background for understanding him. Public identity copy should express his own beliefs, questions, and intentions in his own voice. Actual quoted texts require accurate source attribution wherever presented. Project briefs support an interest in companionship, perceptual environments, games, practical tools, and commercial experiments. Their personal motives and significance require his account.
+
 ## Capabilities and Constraints
 
 The existing site uses Next.js 14, React, TypeScript, and npm, with static export for GitHub Pages. Work write-ups live under `/work`; writing lives under `/notes`, including existing Chinese editions. `/studies` contains browser-rendered website artwork. Preserve working destinations, static deployment, and unrelated local changes.
@@ -26,7 +39,7 @@ The user is learning to draw and explicitly excludes “draw” as a personal id
 
 ## Brand Commitments
 
-Public identity: Kumma Wu, also Kumma. Use direct, personal language with conviction and room for uncertainty. Lead with his inquiry into awareness and consciousness rather than his profession. Visual animation and typography are the site's primary expressive language, not a finishing layer over prose. The user values meaningful art, typography, and motion. Generic aphorisms, a quote anthology, and a tidy invented biography have been rejected. The central interests are confirmed; a metaphysical theory, religious affiliation, or spiritual attainment is not. Do not invent beliefs, life events, credentials, expertise, private information, or proof.
+Public identity: Kumma Wu, also Kumma. Use direct, personal language with conviction and room for uncertainty. Centre consciousness, imagination, self-discovery, and loving participation in the world. Visual animation and typography are the site's primary expressive language. The user explicitly requests an expert design team and Awwwards-quality craft. Judge the work through original composition, expressive typography, purposeful interaction, reading quality, responsive behaviour, and runtime reliability. The confirmed personal beliefs above provide material for authorship. Generic aphorisms, a quote anthology, and a tidy invented biography have been rejected. Do not invent beliefs, life events, credentials, expertise, religious affiliation, spiritual attainment, private information, or proof.
 
 ## Evidence on Hand
 
@@ -43,4 +56,4 @@ Existing software write-ups, essays, public identity links, the procedural spira
 
 ## Open Decisions
 
-The primary `/` structure and intent to publish its replacement are confirmed. Kumma’s account of his worldview can continue to develop through specific writing; this does not imply a settled metaphysical theory. Audience precision and any future change of visual identity remain open.
+The primary `/` structure and incumbent visual vocabulary are confirmed. The user's clarified personal beliefs and aspirations guide the next design pass. The [expert-team proposal](docs/design/personal-expression-brief.md) develops that vocabulary through a more varied rhythm and an outward ending. Its specific compositions, interactions, and display copy require visual review. Audience precision, the meaning of “true self” in particular experiences, and the personal significance of individual projects remain open.
