@@ -66,8 +66,7 @@
 .catchUp > .label,
 .steps > .label,
 .practice > .label,
-.rules > .label,
-.line > .label {
+.rules > .label {
   position: absolute;
   top: 7svh;
   left: var(--indent);
@@ -745,9 +744,16 @@
 .outline {
   position: absolute;
   inset: 0;
+  font-weight: 150;
   color: transparent;
   -webkit-text-stroke: 1.2px rgba(20, 20, 20, 0.5);
   pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .outline {
+    opacity: 0.18;
+  }
 }
 
 /* What is lived: the ink that grows into it. */
@@ -922,18 +928,6 @@
   min-height: auto;
 }
 
-.ending > .close {
-  flex: none;
-  min-height: 0;
-  padding: 0 var(--gutter) 0 var(--indent);
-}
-
-/* At the end the invitation is a line under the way, not a second title. */
-.ending .followBig {
-  margin-left: -0.04em;
-  font-size: clamp(2.2rem, 5.6vw, 5.6rem);
-}
-
 .ending .daoGlyph {
   width: min(30svh, 28vw);
 }
@@ -1035,94 +1029,6 @@
   font-variation-settings: "wdth" var(--wdth, 100);
   transform: scale(0.6);
   transform-origin: left 70%;
-}
-
-/* ---------- The reason (sutra) ---------- */
-
-.line {
-  position: relative;
-  overflow: clip;
-  min-height: 100svh;
-  padding: 12svh var(--gutter) 4svh var(--indent);
-}
-
-.sutra {
-  display: block;
-  width: fit-content;
-  margin: 0 8vw 0 auto;
-  writing-mode: vertical-rl;
-  font-family: var(--font-tc), "Noto Serif TC", "Songti TC", serif;
-  font-size: min(9.4svh, 15vw);
-  font-weight: 500;
-  line-height: 1.3;
-}
-
-.column {
-  position: relative;
-  display: block;
-  margin-block-end: 0.28em;
-}
-
-.seen {
-  font-weight: 700;
-}
-
-.stopMark {
-  position: relative;
-}
-
-.gloss {
-  max-width: 38rem;
-  margin-top: max(5svh, var(--enso-clearance, 0px));
-  text-wrap: pretty;
-}
-
-.gloss p {
-  margin: 0 0 1rem;
-  font-family: var(--font-text), Georgia, serif;
-  font-size: clamp(1.2rem, 1.6vw, 1.6rem);
-  font-style: italic;
-  line-height: 1.4;
-}
-
-.gloss cite {
-  display: block;
-  margin-bottom: 1.5rem;
-  color: var(--grey);
-  font-size: 1rem;
-  font-style: normal;
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.1em;
-}
-
-/* ---------- Close ---------- */
-
-/* The bookend: alone on its screen, hung from the gutter like the name. */
-.close {
-  position: relative;
-  display: flex;
-  align-items: center;
-  min-height: 100svh;
-  padding: 0 var(--gutter);
-}
-
-.followBig {
-  position: relative;
-  display: inline-block;
-  margin-left: -0.061em;
-  font-family: var(--font-display), Georgia, serif;
-  font-size: clamp(3.4rem, 18.5vw, 26rem);
-  font-weight: 60;
-  font-variation-settings: "wdth" 100;
-  letter-spacing: -0.02em;
-  line-height: 0.85;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-/* A clean change, not a fade through brown. */
-.followBig:hover {
-  color: var(--red);
 }
 
 .elsewhere {
@@ -1509,37 +1415,8 @@
     margin-left: 0;
   }
 
-  .close {
-    min-height: 70svh;
-  }
-
-  .line {
-    display: flex;
-    flex-direction: column;
-    gap: 8svh;
-    min-height: auto;
-  }
-
-  .sutra {
-    margin: 0 auto;
-    font-size: min(9svh, 13.5vw);
-  }
-
-  .gloss {
-    position: static;
-    margin-top: max(10rem, var(--enso-clearance, 0px));
-  }
-
   .catchLine {
     font-size: 9.5vw;
-  }
-
-  .followBig {
-    font-size: 18.8vw;
-  }
-
-  .ending .followBig {
-    font-size: 10vw;
   }
 
   .rule {
@@ -1572,14 +1449,9 @@
     padding-bottom: calc(210px + 10svh);
   }
 
-  .line {
-    padding-top: 8svh;
-  }
-
   .catchUp > .label,
   .steps > .label,
-  .rules > .label,
-  .line > .label {
+  .rules > .label {
     position: static;
   }
 

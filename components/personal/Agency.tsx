@@ -9,7 +9,6 @@ import { createContribution, MAX_CONTRIBUTION_POINTS, type Contribution } from "
 import { useContribution } from "./Contribution";
 import ChapterMark from "./ChapterMark";
 import ThenNow from "./ThenNow";
-import { useBeat } from "./useBeat";
 import styles from "./Front.module.css";
 
 type Stroke = {
@@ -48,10 +47,6 @@ export default function Agency() {
   const done = useRef(false);
   const byPen = useRef(false);
   const settled = useRef(false);
-
-  useBeat(ref, (root, tl) => {
-    tl.to(root.querySelector("[data-hint]"), { opacity: 1, duration: 0.8, ease: "power1.out" }, 0.9);
-  });
 
   const measureWord = useCallback(() => {
     const root = ref.current;
@@ -140,7 +135,6 @@ export default function Agency() {
     if (!root || !struck) return;
     const targets = {
       word: root.querySelector("[data-struck]"),
-      hint: root.querySelector("[data-hint]"),
       source: root.querySelector("[data-source]"),
       pen: root.querySelector("[data-pen-reveal]"),
     };
@@ -148,7 +142,6 @@ export default function Agency() {
       if (reducedMotion || settled.current) {
         settled.current = true;
         gsap.set(targets.word, { opacity: 0.16 });
-        gsap.set(targets.hint, { opacity: 0 });
         gsap.set(targets.source, { visibility: "visible" });
         if (targets.pen) gsap.set(targets.pen, { strokeDashoffset: 0 });
         return;
@@ -162,7 +155,6 @@ export default function Agency() {
         });
       }
       timeline.to(targets.word, { opacity: 0.16, duration: 0.7, ease: "power1.out" }, byPen.current ? ">0.05" : 0.1)
-        .to(targets.hint, { opacity: 0, duration: 0.4 }, "<")
         .set(targets.source, { visibility: "visible" }, ">0.1");
     }, root);
     return () => context.revert();
@@ -332,7 +324,13 @@ export default function Agency() {
           </svg>
         );
       })}
-      <p className={styles.agencyHint} data-hint hidden={!interactive} aria-hidden={struck ? "true" : undefined}>
+      <p
+        className={styles.agencyHint}
+        data-hint
+        hidden={!interactive}
+        aria-hidden={struck ? "true" : undefined}
+        style={{ opacity: struck ? 0 : 1 }}
+      >
         Draw a line through the “Re”.{" "}
         <button type="button" className={styles.agencyButton} onClick={() => commit(true)} disabled={!interactive || struck}>
           Or let the pen do it

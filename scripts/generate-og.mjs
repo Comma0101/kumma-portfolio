@@ -3,7 +3,7 @@ import path from "node:path";
 import satori from "satori";
 import { Resvg } from "@resvg/resvg-js";
 import matter from "gray-matter";
-import { getStroke } from "perfect-freehand";
+import ts from "typescript";
 
 const OUT = path.join("public", "og");
 fs.mkdirSync(OUT, { recursive: true });
@@ -58,86 +58,51 @@ async function card(key, title, kicker, sub) {
   fs.writeFileSync(path.join(OUT, `${key}.png`), png);
 }
 
-// The homepage card is the page's signature, made of the same pen: paper,
-// the name, and one red line that runs out from under it into 道, written
-// in stroke order (components/personal/dao.ts). This is the image that
-// travels when kumma.me is posted on X.
+// The share image carries the same name, spiral face, and red horizon as the page.
 // The page's own type, as static files (OFL; see scripts/fonts/*-OFL.txt).
 const wide = fs.readFileSync(path.join("scripts", "fonts", "Sprat-ExtendedBlack.otf"));
 const regular = fs.readFileSync(path.join("scripts", "fonts", "Junicode-Regular.ttf"));
 
-// An exported array literal from dao.ts, by name.
-function daoArray(name) {
-  const src = fs.readFileSync(path.join("components", "personal", "dao.ts"), "utf8");
-  const from = src.indexOf("= [", src.indexOf(`export const ${name}`)) + 2;
-  const to = src.indexOf("\n];", from) + 2;
-  return JSON.parse(src.slice(from, to).replace(/,\s*\]$/, "]"));
-}
-const daoStrokes = () => daoArray("dao");
-
-// Dense samples at steady pressure: the stroke data is a few centreline
-// points, and simulated pressure on so few points wobbles.
-function dense(points, step = 3) {
-  const out = [points[0]];
-  for (let i = 1; i < points.length; i += 1) {
-    const [ax, ay] = points[i - 1];
-    const [bx, by] = points[i];
-    const n = Math.max(1, Math.ceil(Math.hypot(bx - ax, by - ay) / step));
-    for (let k = 1; k <= n; k += 1) out.push([ax + ((bx - ax) * k) / n, ay + ((by - ay) * k) / n]);
-  }
-  return out.map(([x, y]) => [x, y, 0.62]);
-}
-
-function outline(points, size, { start = size * 2, end = size * 3 } = {}) {
-  const stroke = getStroke(dense(points), {
-    size,
-    thinning: 0.5,
-    smoothing: 0.6,
-    streamline: 0.3,
-    simulatePressure: false,
-    start: { taper: start, cap: true },
-    end: { taper: end, cap: true },
+// These two fixed source modules export only portrait data and pure geometry.
+// Transpilation removes their type-only imports so Node 18 can reuse them.
+async function portraitSource(name) {
+  const source = fs.readFileSync(path.join("components", "personal", name), "utf8");
+  const { outputText } = ts.transpileModule(source, {
+    compilerOptions: { target: ts.ScriptTarget.ES2020, module: ts.ModuleKind.ESNext },
   });
-  return `M ${stroke.map(([x, y]) => `${x.toFixed(1)} ${y.toFixed(1)}`).join(" L ")} Z`;
+  return import(`data:text/javascript;base64,${Buffer.from(outputText).toString("base64")}`);
 }
 
-function line(from, to, steps = 12, bow = 0) {
-  const out = [];
-  for (let i = 0; i <= steps; i += 1) {
-    const t = i / steps;
-    out.push([from[0] + (to[0] - from[0]) * t, from[1] + (to[1] - from[1]) * t + Math.sin(Math.PI * t) * bow]);
+async function portraitFallback() {
+  const [{ portrait }, { spiralPath, decodeTones }] = await Promise.all([
+    portraitSource("portrait.ts"),
+    portraitSource("spiral.ts"),
+  ]);
+  const points = spiralPath(portrait).reverse();
+  const tones = decodeTones(portrait.tones, portrait.count).reverse();
+  const pitch = portrait.radius / portrait.turns;
+  const paths = Array.from({ length: 16 }, () => []);
+
+  for (let i = 0; i < points.length - 1; i += 1) {
+    const [x0, y0] = points[i];
+    const [x1, y1] = points[i + 1];
+    const tone = Math.round(tones[i] * 15);
+    paths[tone].push(`M${x0.toFixed(3)} ${y0.toFixed(3)}L${x1.toFixed(3)} ${y1.toFixed(3)}`);
   }
-  return out;
+
+  const half = portrait.radius * 1.02;
+  const marks = paths.map((segments, tone) => {
+    const width = 0.35 + (0.92 * pitch - 0.35) * tone / 15;
+    return `<path d="${segments.join("")}" stroke-width="${width}"/>`;
+  }).join("");
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="${-half} ${-half} ${half * 2} ${half * 2}"><g fill="none" stroke="#a3121b" stroke-linecap="butt">${marks}</g><circle r="1.8" fill="#a3121b"/></svg>`;
+  fs.writeFileSync(path.join(OUT, "face.png"), new Resvg(svg).render().asPng());
 }
 
 async function portraitCard() {
   const red = "#a3121b";
-  // 道 sits in its own square on the right, clear of the name.
-  const box = { x: 800, y: 96, s: 360 };
-  const at = ([x, y]) => [box.x + (x * box.s) / 100, box.y + (y * box.s) / 100];
-  const strokes = daoStrokes().map((stroke) => stroke.map(at));
-  // The thread: under the name, then down and across into the first stroke.
-  const first = strokes[0][0];
-  // One curve: along under the name, then rising into 道's first stroke.
-  const under = 300;
-  const thread = [...line([86, under], [640, under - 4], 18, 1.5)];
-  const [cx, cy] = [first[0] - 70, under - 10];
-  for (let i = 1; i <= 24; i += 1) {
-    const t = i / 24;
-    const [x0, y0] = [640, under - 4];
-    thread.push([
-      (1 - t) * (1 - t) * x0 + 2 * (1 - t) * t * cx + t * t * first[0],
-      (1 - t) * (1 - t) * y0 + 2 * (1 - t) * t * cy + t * t * first[1],
-    ]);
-  }
-  const marks = [
-    `<path d="${outline(thread, 6, { start: 14, end: 0 })}"/>`,
-    // The font's own brush shapes, as the page writes them (Wu).
-    `<g transform="translate(${box.x} ${box.y + (900 * box.s) / 1024}) scale(${box.s / 1024} ${-box.s / 1024})">${daoArray("daoOutlines")
-      .map((d) => `<path d="${d}"/>`)
-      .join("")}</g>`,
-  ].join("");
-  const ink = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630"><g fill="${red}">${marks}</g></svg>`;
+  const ink = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630"><path d="M86 304C274 306 481 300 724 303" fill="none" stroke="${red}" stroke-width="4.5" stroke-linecap="round"/></svg>`;
+  const face = fs.readFileSync(path.join(OUT, "face.png"));
   const node = el(
     "div",
     {
@@ -156,6 +121,15 @@ async function portraitCard() {
           width: 1200,
           height: 630,
           style: { position: "absolute", left: 0, top: 0 },
+        },
+      },
+      {
+        type: "img",
+        props: {
+          src: `data:image/png;base64,${face.toString("base64")}`,
+          width: 360,
+          height: 360,
+          style: { position: "absolute", left: 790, top: 128 },
         },
       },
       el(
@@ -212,6 +186,7 @@ const projects = [
 ];
 
 async function run() {
+  await portraitFallback();
   await portraitCard();
   await card("default", "Consciousness and imagination.", "Kumma Wu", "Writing, software, and questions about living with love");
   await card("home", "Consciousness and imagination.", "Kumma Wu", "Writing, software, and questions about living with love");

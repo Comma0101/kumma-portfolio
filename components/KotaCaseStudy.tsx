@@ -410,7 +410,7 @@ export default function KotaCaseStudy() {
             Messy speech in; a ticket the kitchen can trust out.
           </p>
           <p className={styles.closeLinks}>
-            <Link href="/call">Try it on the demo diner →</Link>
+            <Link href="/contact">Ask about this project →</Link>
             <Link href="/work">← All work</Link>
           </p>
         </footer>

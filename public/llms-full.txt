@@ -26,7 +26,7 @@ Finding his true self, cultivating himself, and interacting with the world with 
   - ARCHON: an open-source, self-hostable agent that works as a control plane: it routes across Claude, GPT and Gemini, delegates to coding agents (Claude Code, Codex, OpenCode) and keeps its work inspectable. https://kumma.me/work/archon/ — repo https://github.com/Comma0101/archon
   - Audiobook AI: any document read as one continuous audiobook. https://kumma.me/work/audiobook/
   - Trade ledger: a brokerage export turned into a correct per-trade record. https://kumma.me/work/robinhood-dashboard/
-  - Voice agent demo: https://kumma.me/call/ · Stress suite for voice agents: https://kumma.me/benchmark/
+  - An unreleased draft stress-suite outline is at https://kumma.me/benchmark/. Audio and a scoring repository are planned.
 - Study: philosophy, religion, and history. Dated essays and attributed reading references are at https://kumma.me/notes/ — On Emotions; We’re All Walking Toward the Same Light; The outsider’s truth (on Camus’s The Stranger).
 - Visual studies: artwork used in the website’s design, rendered in the browser. https://kumma.me/studies/
 

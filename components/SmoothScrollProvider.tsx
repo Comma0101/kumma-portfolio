@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect } from "react";
 import { usePathname } from "next/navigation";
 import Lenis from "lenis";
 import gsap from "gsap";
@@ -15,7 +15,6 @@ export default function SmoothScrollProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const lenisRef = useRef<Lenis | null>(null);
   const pathname = usePathname();
 
   useLayoutEffect(() => {
@@ -37,41 +36,13 @@ export default function SmoothScrollProvider({
       infinite: false,
     });
 
-    lenisRef.current = lenis;
-
     // Expose lenis globally for components to access
     (window as any).lenis = lenis;
 
     const scrollElement = document.documentElement;
-    const scrollPositionRef = { current: scrollElement.scrollTop || 0 };
-
-    // Wire Lenis to ScrollTrigger so refreshes occur with the virtual scroller
-    ScrollTrigger.scrollerProxy(scrollElement, {
-      scrollTop(value) {
-        if (value !== undefined) {
-          const numericValue = value as number;
-          lenis.scrollTo(numericValue, { immediate: true });
-          scrollPositionRef.current = numericValue;
-          return;
-        }
-        return scrollPositionRef.current;
-      },
-      getBoundingClientRect() {
-        return {
-          top: 0,
-          left: 0,
-          width: window.innerWidth,
-          height: window.innerHeight,
-        };
-      },
-      fixedMarkers: true,
-      pinType: document.body.style.transform ? "transform" : "fixed",
-    });
-    ScrollTrigger.defaults({ scroller: scrollElement });
-
-    // Sync Lenis with GSAP ScrollTrigger
-    const handleLenisScroll = ({ scroll }: { scroll: number }) => {
-      scrollPositionRef.current = scroll;
+    // Lenis scrolls the document itself. ScrollTrigger reads that native
+    // position, so route changes leave no proxy bound to a destroyed instance.
+    const handleLenisScroll = () => {
       ScrollTrigger.update();
     };
     lenis.on("scroll", handleLenisScroll);
@@ -85,7 +56,7 @@ export default function SmoothScrollProvider({
     gsap.ticker.lagSmoothing(0);
 
     // Sync Lenis target with restored scroll position before first refresh
-    lenis.scrollTo(scrollPositionRef.current, { immediate: true });
+    lenis.scrollTo(scrollElement.scrollTop || 0, { immediate: true });
     const refreshFrame = requestAnimationFrame(() => ScrollTrigger.refresh());
 
     return () => {
@@ -93,7 +64,6 @@ export default function SmoothScrollProvider({
       lenis.destroy();
       lenis.off("scroll", handleLenisScroll);
       gsap.ticker.remove(tickerProxy);
-      ScrollTrigger.scrollerProxy(scrollElement);
       (window as any).lenis = null;
     };
   }, [pathname]);

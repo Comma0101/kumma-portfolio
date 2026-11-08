@@ -36,9 +36,9 @@ Projects, including KOTA, belong under Work. The main page has no featured proje
 
 ## Current design work
 
-The user requested an expert team to develop exceptional visual typography and animation representing his clarified philosophy. The [personal-expression brief](docs/design/personal-expression-brief.md) records the initial specialist review and a second independent challenge. Revision 2 strengthens the continuity, content roles, implementation contract, and rejection tests.
+The user authorized the complete build, editorial decisions, and production deployment on 2026-11-08. The [personal-expression brief](docs/design/personal-expression-brief.md) records the expert-team review and independent challenge. The release candidate implements revision 2, with local source, build, and browser validation complete. Actions and public-domain verification are the remaining release gates.
 
-Public identity wording should use his own beliefs, questions, and commitments. The philosophical influences discussed in discovery provide internal context. Existing quotations carry their source attribution wherever used. The role of the current source-led passage and final character needs explicit editorial resolution within this new direction.
+Public identity wording uses his own beliefs, questions, and commitments. The philosophical influences discussed in discovery provide internal context. The release retains the Chinese chapter marks and final brush character as visual vocabulary, uses the authored awareness question in Reason, and keeps attributed reading references under Writing.
 
 The revised proposal develops the rich paper/ink world through an actual reader contribution that remains recognisable in later compositions. Distinguish authored spine, reader mark, and typography, with a complete authored reading for people who skip interaction. Give beliefs, questions, dated writing, observations, and intentions different roles. Love remains the user's stated intention and guides accommodation and contact. The current prominent closing Follow action gives social following greater visual weight than that newly confirmed outward commitment.
 

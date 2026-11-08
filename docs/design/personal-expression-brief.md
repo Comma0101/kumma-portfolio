@@ -4,7 +4,7 @@ Prepared 2026-11-08 from the user's clarification and a review by three speciali
 
 Revision 2 incorporates an independent challenge by three further agents covering originality, personal accuracy, and typography/implementation feasibility. The user asked whether the plan could improve before building.
 
-Status is an implemented first prototype on `feat/personal-expression-prototype`, with personal and visual review pending. Personal commitments below come from the user. The direction and acceptance criteria remain the basis of review. Actual validation and preview details are recorded in HANDOFF and the project log.
+Status is an implemented release candidate on `feat/personal-expression-prototype`. The user authorized completion, editorial decisions, and deployment on 2026-11-08. Personal commitments below come from the user. The direction and acceptance criteria remain the basis of review. Actual validation and deployment evidence are recorded in HANDOFF and the project log.
 
 ## Purpose
 
@@ -92,9 +92,9 @@ The first prototype uses the existing Agency intervention as its source. Define 
 
 The shared representation needs the completed rendered outline, its bounded centreline, measured bounds, and contribution source. Retain the finished outline so brush size, seed, smoothing, and lift preserve their visible result. Uniform scale and translation operate on that retained geometry. The selected trace belongs to document memory for the current visit. Update the shared contribution on a completed gesture, and keep pointer sampling local to the interaction.
 
-Current Agency strokes are component-local SVG paths. Thread generates separate geometry and currently ends beside the reading passage. Sharing the contribution and extending its composed relationship into the ending are new work to prove. The prototype should expose a simple source/geometry inspection for QA.
+The implementation retains the exact completed Agency outline in current-mount state and renders it in both later compositions. Thread has separate authored geometry that ends beside the reflection field. Contribution-source and retained-outline data attributes expose the relationship for QA.
 
-Current Agency also couples reduced motion with disabled drawing and a hidden pen control. The prototype must separate participation from motion preference. Reduced-motion readers receive immediate state changes and equivalent contribution choices.
+The original baseline coupled reduced motion with disabled drawing and a hidden pen control. The release separates participation from motion preference. Reduced-motion readers receive immediate state changes and equivalent contribution choices.
 
 ## Content and personality
 
@@ -123,7 +123,7 @@ The portfolio of projects suggests warmth, play, perception, and ambitious makin
 | Reason | A live question and a return to familiar material in a changed relationship. |
 | The way | A continuing intention, a shared field, and a reachable invitation to connect. |
 
-The eight roles are the initial working surface. The public role of existing sourced passages and the final character needs editorial resolution against the newest restriction. Keep accurate provenance wherever a quotation remains in use.
+The eight roles remain the working structure. The release retains their Chinese marks and final brush character as visual vocabulary, leads Reason with an authored question, and keeps attributed reading passages under Writing. The main identity wording uses the user's own positions and intentions.
 
 ## Copy candidates
 

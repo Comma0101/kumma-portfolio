@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useId, useRef } from "react";
 import { portrait } from "./portrait";
 import { decodeTones, spiralPath, timeline } from "./spiral";
 import styles from "./Front.module.css";
@@ -16,11 +16,13 @@ const DURATION = 2800;
 // the studies it starts when the plate comes into view.
 export default function Portrait({ when = "lifted", className }: { when?: "lifted" | "visible"; className?: string }) {
   const ref = useRef<HTMLCanvasElement>(null);
+  const id = `portrait-${useId().replace(/:/g, "")}`;
 
   useEffect(() => {
     const canvas = ref.current;
     const context = canvas?.getContext("2d");
     if (!canvas || !context) return;
+    const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
     const points = spiralPath(portrait);
     const tones = decodeTones(portrait.tones, portrait.count);
     // The pen draws from the rim inward: reverse the walk.
@@ -62,6 +64,7 @@ export default function Portrait({ when = "lifted", className }: { when?: "lifte
         context.beginPath();
         context.arc(0, 0, 1.8 * scale, 0, Math.PI * 2);
         context.fill();
+        canvas.dataset.portraitState = "complete";
       }
     };
     const redraw = () => {
@@ -72,14 +75,16 @@ export default function Portrait({ when = "lifted", className }: { when?: "lifte
     };
     fit();
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      drawTo(points.length);
-    }
-
     let frame = 0;
     let started = 0;
     const tick = (now: number) => {
+      if (preference.matches) {
+        drawTo(points.length);
+        frame = 0;
+        return;
+      }
       if (!started) started = now;
+      canvas.dataset.portraitState = "drawing";
       const t = Math.min(1, (now - started) / DURATION);
       // The sample the pen has reached at time t.
       let lo = 0;
@@ -96,21 +101,35 @@ export default function Portrait({ when = "lifted", className }: { when?: "lifte
     const begin = () => {
       if (drawn || frame || delay) return;
       delay = window.setTimeout(() => {
+        delay = 0;
         frame = window.requestAnimationFrame(tick);
       }, 300);
     };
     // After the name's underline pulls taut (Opening), or soon regardless.
     let fallback = 0;
     let seen: IntersectionObserver | undefined;
-    if (when === "lifted") {
+    if (!preference.matches && when === "lifted") {
       window.addEventListener("kumma:lifted", begin, { once: true });
       fallback = window.setTimeout(begin, 3600);
-    } else {
+    } else if (!preference.matches) {
       seen = new IntersectionObserver(([entry]) => {
         if (entry.isIntersecting) begin();
       }, { rootMargin: "0px 0px -20% 0px" });
       seen.observe(canvas);
     }
+    const settleForPreference = () => {
+      if (!preference.matches) return;
+      window.clearTimeout(fallback);
+      window.clearTimeout(delay);
+      window.cancelAnimationFrame(frame);
+      fallback = 0;
+      delay = 0;
+      frame = 0;
+      seen?.disconnect();
+      drawTo(points.length);
+    };
+    preference.addEventListener("change", settleForPreference);
+    settleForPreference();
     const observer = new ResizeObserver(() => {
       if (Math.abs(canvas.getBoundingClientRect().width - size) > 1) redraw();
     });
@@ -118,6 +137,7 @@ export default function Portrait({ when = "lifted", className }: { when?: "lifte
 
     return () => {
       window.removeEventListener("kumma:lifted", begin);
+      preference.removeEventListener("change", settleForPreference);
       window.clearTimeout(fallback);
       seen?.disconnect();
       window.clearTimeout(delay);
@@ -129,8 +149,13 @@ export default function Portrait({ when = "lifted", className }: { when?: "lifte
   }, []);
 
   return (
-    <figure className={className ?? styles.portrait}>
+    <figure id={id} className={className ?? styles.portrait}>
       <canvas ref={ref} role="img" aria-label="Kumma Wu, drawn as one red spiral line" />
+      {/* Keep fallback markup opaque to hydration so JavaScript visits
+          retain the canvas without fetching the static image as well. */}
+      <noscript dangerouslySetInnerHTML={{
+        __html: `<style>#${id} canvas{display:none}</style><img src="/og/face.png" width="600" height="600" alt="Kumma Wu, drawn as one red spiral line" loading="eager" style="display:block;width:100%;height:auto">`,
+      }} />
     </figure>
   );
 }

@@ -6,7 +6,7 @@ import { centerline, pace, resample } from "./ink";
 import type { Point } from "./pen";
 import { chapterStrokes } from "./chapterStrokes";
 import { chapterOf } from "./chapters";
-import { draw, useBeat } from "./useBeat";
+import { draw, settleInk, useBeat } from "./useBeat";
 import styles from "./Front.module.css";
 
 const length = (line: Point[]) => line.slice(1).reduce((sum, p, k) => sum + Math.hypot(p[0] - line[k][0], p[1] - line[k][1]), 0);
@@ -58,17 +58,26 @@ export default function ChapterMark({ char, label, when = "beat" }: { char: stri
 
   useEffect(() => {
     const root = ref.current;
-    if (when !== "lifted" || !root || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const tl = gsap.timeline({ paused: true });
-    write(root, tl);
-    const play = () => tl.play();
-    window.addEventListener("kumma:lifted", play, { once: true });
-    const fallback = window.setTimeout(play, 3600);
-    return () => {
-      window.removeEventListener("kumma:lifted", play);
-      window.clearTimeout(fallback);
-      tl.kill();
-    };
+    if (when !== "lifted" || !root) return;
+    const media = gsap.matchMedia();
+    let played = false;
+    media.add("(prefers-reduced-motion: no-preference)", () => {
+      const tl = gsap.timeline({ paused: true });
+      write(root, tl);
+      const play = () => {
+        played = true;
+        tl.play();
+      };
+      if (played) tl.progress(1);
+      else window.addEventListener("kumma:lifted", play, { once: true });
+      const fallback = played ? 0 : window.setTimeout(play, 3600);
+      return () => {
+        window.removeEventListener("kumma:lifted", play);
+        window.clearTimeout(fallback);
+        settleInk(root);
+      };
+    }, root);
+    return () => media.revert();
   }, [when]);
 
   return (
