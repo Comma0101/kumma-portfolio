@@ -139,3 +139,19 @@ Local release validation passed all 16 test-file subprocesses, lint with five ex
 The public domain returned the new personally attributed belief, retained contribution fields, outward ending, and no-JavaScript portrait asset reference. The maintained checkout was fast-forwarded to the deployed master. Subsequent release-record commits retain this implementation. Physical iPhone hardware and an unbriefed human recall study remain outside the completed automated validation.
 
 The production-domain regression matrix subsequently passed the no-JavaScript image and reading path, initial/settled type calibration, desktop-to-320 px registration, exact pen outline continuity, live motion reduction/restoration, reduced-first Name visibility, zero JavaScript fallback-image requests, not-found recovery, native chapter positioning, and `/call/` compatibility navigation. It reported zero page errors. Independent Chromium checks also passed. A cached WebKit launch produced no usable engine result before host interruption, so WebKit and physical iPhone validation are unverified.
+
+## 2026-11-08 — Map Art compositions
+
+The user described belonging through places people are from, formerly lived, and live now. Overlapping histories can express community. He chose visual art as the current form and approved two compositions with a dedicated presentation within Work.
+
+The new `/work/map-art/` surface presents an imagined history between Amsterdam and Los Angeles, followed by three imagined histories meeting in Amsterdam. Pasadena and Long Beach supply two additional area crops from the existing Los Angeles County pack. Each map is fitted independently. Both compositions are visibly labelled illustrative. Their connections are authored gestures.
+
+The authoring script reuses the separate Map Art project's decoder, projection and topology-selected handwriting. `mapArt.ts` supplies the shared browser/export composition definitions. Committed assets include four lossless city-layer WebPs totalling 496,354 bytes, the Work preview, a social image, two SVG prints and source provenance with pack hashes, bounds, detail scope and snapshots. Ordinary production builds use these committed assets.
+
+Work has an image-led Map Art entrance and a broader introduction. The new page has consistent metadata, a sitemap entry and AI-summary links. PRODUCT records the confirmed motivation. HANDOFF and the surface brief describe implementation and reproduction.
+
+Independent editorial and finish reviews checked the artwork's relationship to belonging, actual geography, illustrative histories, attribution, and phone layout. Review found clipped map labels at 320 px with 200% text enlargement and hidden-only export attribution. End/bottom anchoring corrected the labels. Exported SVGs now include visible source and illustrative-history credits.
+
+Local validation passed all 16 existing test-file subprocesses, lint with the five documented legacy warnings, standalone type checking, and the 67-route production build. The export audit passed 62 HTML pages, 517 internal links and 43 compatibility moves with zero broken targets. Its Map Art checks cover the Work link, canonical/social metadata, sitemap entry, WebP signatures, downloads and visible SVG credit.
+
+Chromium checks against the production export passed desktop and 320/390/760 px layouts, all placed images, settled arrivals, 200% text enlargement, keyboard navigation from Work, visible download focus, a real SVG download, live motion reduction/restoration and no-JavaScript viewing. The matrix recorded zero page errors. Physical iPhone/Safari and the user's aesthetic assessment remain unverified.

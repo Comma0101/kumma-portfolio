@@ -45,6 +45,10 @@ Public identity: Kumma Wu, also Kumma. Use direct, personal language with convic
 
 Existing software write-ups, essays, public identity links, the procedural spiral portrait, and browser-rendered linework. Use source content and confirmed statements; distinguish exploratory ideas from completed work.
 
+### Map Art
+
+The user clarified Map Art's personal motivation on 2026-11-08. Places people are from, formerly lived, and live now can express belonging. Overlapping histories across those places can express community. He chose visual artwork as the current form. The two Work-page studies use real local OpenStreetMap geometry and explicitly imagined histories. They do not establish Kumma's residences or collected participant records. The sound visualizer remains in algorithm development.
+
 ## Product Principles
 
 - Let actual work and writing substantiate the person’s perspective; preserve their independent purposes.

@@ -56,6 +56,18 @@ The public review and delivery URL is <https://kumma.me/>. The temporary tunnel 
 
 ## Architecture map
 
+### Map Art
+
+The new artwork surface is `/work/map-art/`, with an image-led entrance in Work. Its two compositions explore the user's confirmed interest in belonging through places people are from, formerly lived, and live now. The examples use Amsterdam and Los Angeles-area street geometry with explicitly imagined histories. Personal motives are recorded in PRODUCT.
+
+Start with `MapArt.tsx`, `MapArtPrint.tsx`, `mapArt.ts` and `MapArt.module.css`. The shared `mapArt.ts` composition definitions also drive the downloadable SVGs. Four lossless city-layer WebPs are reused across the two studies. Native no-JavaScript and reduced-motion readings show the finished images. The bounded arrival responds to live motion changes and cleans up its observer, media listener and timer.
+
+Assets and provenance are committed under `public/art/map-art/`. Source packs came from the separate `/home/comma/Documents/map-art` project, which was read without modification. Reproduce assets with `node scripts/generate-map-art.mjs /path/to/map-art` from this portfolio checkout. That authoring command needs Python/Pillow and reuses the map project's decoder, projection and topology-selected handwriting. Ordinary site builds use the committed assets.
+
+The SVGs carry visible OpenStreetMap/ODbL attribution and illustrative-history labels. The portfolio export audit checks the route, Work link, metadata, sitemap, image signatures, downloads and visible credit. The external map runtime and general city availability still require separate verification. The sound visualizer remains in algorithm development.
+
+### Existing site
+
 | Area | Start here |
 | --- | --- |
 | Canonical homepage | `app/page.tsx`, `components/personal/Front.tsx` |
@@ -105,7 +117,7 @@ Cleanup aligned TypeScript with the tests' ES2020 target, added `npm run typeche
 
 `npm run lint` currently passes with five existing warnings in legacy `AboutGallery.tsx`, `Animations/AnimationTwo.tsx`, `LiquidPortalTransition.tsx`, and `Logo3D.tsx` (image/hook guidance). They are not new cleanup regressions. Do not silence them globally or rewrite archived effects without tracing usage.
 
-The production build skips ESLint, and the current deployment workflow runs the build rather than all local gates. Run lint/type/tests separately before publishing. The export audit checks real generated internal links, legacy destinations, metadata/JSON-LD, the retired project stub, sitemap/feed, identity summaries, and domain configuration.
+The production build skips ESLint. The deployment workflow runs locked installation, lint/tests, build, type checking and export audit as separate gates. Run those checks locally before publishing. The export audit checks real generated internal links, legacy destinations, metadata/JSON-LD, the retired project stub, sitemap/feed, identity summaries, domain configuration and the Map Art surface.
 
 For UI changes, inspect desktop and phone renders and exercise keyboard focus, chapter interaction, reduced motion, no-JavaScript reading, Work/Writing/contact, and Chinese/English switching. Allow the opening drawing to settle before judging a screenshot: the portrait has a deliberate drawing sequence and fallback delay. Element screenshots can capture fixed skip links outside their normal viewport position; verify actual focus and geometry before treating this as a UI defect.
 
