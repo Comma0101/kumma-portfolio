@@ -10,6 +10,7 @@ Last updated 2026-11-08. Read this first, then PRODUCT.md and DESIGN.md. The [pr
 - [Deployment run 42531658432](https://github.com/Comma0101/kumma-portfolio/actions/runs/42531658432) passed locked installation, lint/tests, build, generated-site verification, and deployment. The public domain serves the new personal belief, contribution fields, outward ending, and portrait fallback.
 - The reviewed release head is `027080f9c411f0d5fca66b384758529f44e92311`. The original paper-site release remains in [PR #17](https://github.com/Comma0101/kumma-portfolio/pull/17). The previous engineering site is retained at `709e2ca0c3ee745f3b1daddbf2c3b4e59cc53063`.
 - Later release-record commits build on the deployed implementation. Use the current `origin/master` for new work.
+- Map Art is live at <https://kumma.me/work/map-art/> through [PR #21](https://github.com/Comma0101/kumma-portfolio/pull/21), merge `18e6581e1adea6a2e83169e271b4322378018dc4`. [Pages run 42541090578](https://github.com/Comma0101/kumma-portfolio/actions/runs/42541090578) passed all build and deployment gates. Public Chromium checks passed desktop, phone widths, enlarged text, keyboard/download access, live motion changes and no-JavaScript viewing with zero page errors. Both public SVG files matched the committed source bytes.
 
 ## Start in the correct checkout
 
