@@ -100,6 +100,24 @@ for draft in ("/benchmark/", "/call/"):
     assert f"https://kumma.me{draft}".rstrip("/") not in sitemap_urls
 assert not pages[target("/benchmark/")].ld
 assert pages[target("/call/")].canonical == "https://kumma.me/work/kota/"
+map_art = pages[target("/work/map-art/")]
+assert map_art.canonical.rstrip("/") == "https://kumma.me/work/map-art"
+assert map_art.meta["description"] == map_art.meta["og:description"] == map_art.meta["twitter:description"]
+assert "/work/map-art/" in pages[target("/work/")].links
+assert "https://kumma.me/work/map-art" in sitemap_urls
+for study in ("one-life", "shared-places"):
+    svg_path = f"/art/map-art/{study}.svg"
+    assert svg_path in map_art.links
+    svg = ET.parse(root / svg_path.lstrip("/")).getroot()
+    description = svg.find("{http://www.w3.org/2000/svg}desc").text or ""
+    assert any(term in description.lower() for term in ("illustrative", "imagined"))
+    assert "OpenStreetMap" in svg.find("{http://www.w3.org/2000/svg}metadata").text
+    visible_credit = " ".join(node.text or "" for node in svg.iter("{http://www.w3.org/2000/svg}text"))
+    assert "Map data from OpenStreetMap contributors" in visible_credit
+    assert "Illustrative histories" in visible_credit
+for city in ("amsterdam", "los-angeles", "pasadena", "long-beach"):
+    image = (root / f"art/map-art/{city}.webp").read_bytes()
+    assert image[:4] == b"RIFF" and image[8:12] == b"WEBP"
 ET.parse(root / "feed.xml")
 for name in ("llms.txt", "llms-full.txt"):
     assert (root / name).read_bytes() == (repo / "public" / name).read_bytes()

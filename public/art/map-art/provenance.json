@@ -1,0 +1,81 @@
+{
+  "author": "Kumma Wu",
+  "data": "© OpenStreetMap contributors, ODbL 1.0",
+  "copyright": "https://www.openstreetmap.org/copyright",
+  "license": "https://opendatacommons.org/licenses/odbl/1-0/",
+  "renderer": "Reliquary projectCity, decodeCityPack and buildMediumGeometry handwriting, reused without modification",
+  "histories": "Authored illustrative compositions. No personal or participant location records.",
+  "scale": "Each area is independently fitted. Positions and connecting lines are authored.",
+  "sourcePacks": [
+    {
+      "file": "amsterdam-canal-ring.ctpk",
+      "sha256": "53a41cc205e050f1cf5a1f7a57069c1704d6b6521bcab5d52429bf8ccddcae61",
+      "bounds": [
+        52.357,
+        4.875,
+        52.382,
+        4.915
+      ],
+      "snapshot": "2026-08-29T22:52:25Z",
+      "detail": "all"
+    },
+    {
+      "file": "los-angeles-county.ctpk",
+      "sha256": "f09f30229dc250ff94cce4565296bb8119fa15bad4da9c6bc91ab0d33868988a",
+      "bounds": [
+        32.75004,
+        -118.9517221,
+        34.8233121,
+        -117.64627
+      ],
+      "snapshot": "2026-08-30T02:19:35Z",
+      "detail": "structure"
+    }
+  ],
+  "areas": [
+    {
+      "id": "amsterdam",
+      "name": "Amsterdam canal ring",
+      "bounds": [
+        52.357,
+        4.875,
+        52.382,
+        4.915
+      ],
+      "ways": 7527
+    },
+    {
+      "id": "los-angeles",
+      "name": "Los Angeles area",
+      "bounds": [
+        33.95,
+        -118.4,
+        34.15,
+        -118.12
+      ],
+      "ways": 28131
+    },
+    {
+      "id": "pasadena",
+      "name": "Pasadena area",
+      "bounds": [
+        34.12,
+        -118.2,
+        34.2,
+        -118.07
+      ],
+      "ways": 3495
+    },
+    {
+      "id": "long-beach",
+      "name": "Long Beach area",
+      "bounds": [
+        33.73,
+        -118.24,
+        33.87,
+        -118.1
+      ],
+      "ways": 7975
+    }
+  ]
+}

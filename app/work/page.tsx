@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Work from "@/components/personal/Work";
 
 const description =
-  "Four systems by Kumma Wu: restaurant voice orders, agent orchestration, document-to-audiobook synthesis, and a trade ledger. Inputs, outputs, and engineering decisions.";
+  "Software and visual experiments by Kumma Wu. Map Art explores belonging through places, alongside voice AI, agent orchestration, audiobooks, and a trade ledger.";
 
 export const metadata: Metadata = {
   title: "Work",

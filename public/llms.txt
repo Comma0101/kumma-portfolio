@@ -7,6 +7,7 @@ The fuller context is at https://kumma.me/llms-full.txt.
 ## Pages
 - [Home](https://kumma.me/) presents a personal inquiry into consciousness, imagination, self-discovery, and how understanding changes a life, connected by one red line. Kumma's beliefs, questions, and intentions appear alongside an optional reader contribution.
 - [Work](https://kumma.me/work/): KOTA (restaurant phone calls into menu-verified kitchen tickets), ARCHON (an inspectable control plane for models, tools, memory and coding agents), Audiobook AI, and a trade ledger.
+- Map Art presents two visual studies of belonging through places people have called home, with real street geometry, illustrative histories, and downloadable prints. https://kumma.me/work/map-art/
 - [Writing](https://kumma.me/notes/): essays on emotion, faith and awareness, and Camus, with reading references. Two essays also in Chinese.
 - [Visual studies](https://kumma.me/studies/): browser-rendered artwork made for the website — bamboo in vermilion, an ensō, 道 in stroke order, a face as one spiral line.
 

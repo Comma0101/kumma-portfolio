@@ -29,6 +29,7 @@ Finding his true self, cultivating himself, and interacting with the world with 
   - An unreleased draft stress-suite outline is at https://kumma.me/benchmark/. Audio and a scoring repository are planned.
 - Study: philosophy, religion, and history. Dated essays and attributed reading references are at https://kumma.me/notes/ — On Emotions; We’re All Walking Toward the Same Light; The outsider’s truth (on Camus’s The Stranger).
 - Visual studies: artwork used in the website’s design, rendered in the browser. https://kumma.me/studies/
+- Map Art explores belonging through places people are from, formerly lived, and live now. Two studies use real OpenStreetMap street geometry and explicitly imagined histories. SVG prints are available. https://kumma.me/work/map-art/
 
 ## Contact
 - X: https://x.com/Comma_9fie

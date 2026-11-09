@@ -1,9 +1,9 @@
 import Link from "next/link";
+import Image from "next/image";
 import Shell from "./Shell";
 import styles from "./Work.module.css";
 
-// A reading shelf for the four public write-ups. Inputs, outputs, and
-// decisions are drawn from the corresponding case-study components.
+// Art gets an image-led entrance. The system write-ups retain their decisions.
 const work = [
   {
     id: "kota",
@@ -52,10 +52,28 @@ export default function Work() {
           <path d="M2 7 C 220 5.6, 460 8.2, 700 6.4 S 930 5.4, 998 6" />
         </svg>
         <p className={styles.lede}>
-          Four systems, and a closer look at how they work. What comes in, what
-          comes out, and the decisions in between.
+          Software, visual experiments, and the decisions that shape them.
         </p>
       </header>
+
+      <article className={styles.artwork} aria-labelledby="work-map-art">
+        <Link href="/work/map-art" className={styles.artworkLink} aria-labelledby="work-map-art">
+          <div className={styles.artworkCopy}>
+            <h2 id="work-map-art" className={styles.artworkTitle}>Map Art <span aria-hidden="true">→</span></h2>
+            <p>Places we have called home, and the histories that overlap through them.</p>
+            <span className={styles.artworkAction}>View the two studies</span>
+          </div>
+          <Image
+            className={styles.artworkImage}
+            src="/art/map-art/one-life.webp"
+            width={1200}
+            height={1200}
+            alt="Amsterdam and Los Angeles street drawings overlap in red and black ink."
+            sizes="(max-width: 760px) 100vw, 60vw"
+            priority
+          />
+        </Link>
+      </article>
 
       <ul className={styles.list} role="list">
         {work.map((item) => (
